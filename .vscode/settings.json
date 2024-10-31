@@ -1,0 +1,11 @@
+{
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "jdk.java.imports.groups": [
+        "java",
+        "javax",
+        "org",
+        "com",
+        ""
+    ]
+}
