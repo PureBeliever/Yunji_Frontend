@@ -207,6 +207,7 @@ Future<void> _onEvent(AuthResponseModel event) async {
       context: contexts!,
       builder: (BuildContext context) {
 
+        // ignore: deprecated_member_use
         return WillPopScope(
           onWillPop: () async {
             FocusManager.instance.primaryFocus?.unfocus();
