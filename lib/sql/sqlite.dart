@@ -174,7 +174,8 @@ class DatabaseManager {
     final List<Map<String, dynamic>> jiyiku = await db!.query(
         'personaljiyikudianji',
         where: whereClause,
-        whereArgs: whereArgs
+        whereArgs: whereArgs,
+         orderBy: 'NULL',
         );
 
     return jiyiku;
@@ -187,7 +188,7 @@ class DatabaseManager {
 
     List<dynamic> whereArgs = ids;
     final List<Map<String, dynamic>> jiyiku = await db!
-        .query('personaljiyiku', where: whereClause, whereArgs: whereArgs);
+        .query('personaljiyiku', where: whereClause, whereArgs: whereArgs, orderBy: 'NULL',);
 
     return jiyiku;
   }
@@ -195,7 +196,7 @@ class DatabaseManager {
   Future<List<Map<String, dynamic>>> chajiyiku() async {
     final db = database;
 
-    final List<Map<String, dynamic>> jiyiku = await db!.query('jiyiku');
+    final List<Map<String, dynamic>> jiyiku = await db!.query('jiyiku', orderBy: 'NULL',);
     return jiyiku;
   }
 

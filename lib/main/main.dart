@@ -206,7 +206,6 @@ Future<void> _onEvent(AuthResponseModel event) async {
     showDialog(
       context: contexts!,
       builder: (BuildContext context) {
-
         // ignore: deprecated_member_use
         return WillPopScope(
           onWillPop: () async {
@@ -1136,7 +1135,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 thickness: 0.9,
                                 height: 0.9,
                               ),
-                              const SizedBox(height: 6),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     top: 3.0, bottom: 3.0, right: 15, left: 2),
@@ -1169,7 +1167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const SizedBox(height: 3),
+                                          const SizedBox(height: 5),
                                           Row(
                                             children: [
                                               Flexible(
@@ -1183,7 +1181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                 .zhi?[index]
                                                             ['name'],
                                                         style: const TextStyle(
-                                                          fontSize: 18,
+                                                          fontSize: 17,
                                                           color: Colors.black,
                                                           fontWeight:
                                                               FontWeight.w900,
@@ -1228,7 +1226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             '${maincontroller.zhi?[index]['zhuti']}',
                                             style: const TextStyle(
                                                 fontSize: 17,
-                                                fontWeight: FontWeight.w900,
+                                                fontWeight: FontWeight.w500,
                                                 color: Colors.black),
                                           ),
                                           const SizedBox(height: 20),
@@ -1239,8 +1237,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 maincontroller.zhi?[index]
                                                     ['xiabiao']),
                                             style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w500,
                                                 color: Colors.black),
                                             maxLines: 4,
                                             overflow: TextOverflow.ellipsis,
@@ -1253,8 +1251,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 maincontroller.zhi?[index]
                                                     ['xiabiao']),
                                             style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w500,
                                                 color: Colors.black),
                                             maxLines: 7,
                                             overflow: TextOverflow.ellipsis,
@@ -1790,7 +1788,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 5),
                             ],
                           ),
                         );

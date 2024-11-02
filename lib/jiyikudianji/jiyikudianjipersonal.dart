@@ -817,7 +817,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                               thickness: 0.9,
                                               height: 0.9,
                                             ),
-                                            const SizedBox(height: 6),
+                                            
                                             InkWell(
                                               onTap: () {
                                                 jiyikudianjicontroller.cizhi(
@@ -862,7 +862,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 .start,
                                                         children: [
                                                           const SizedBox(
-                                                              height: 3),
+                                                              height: 5),
                                                           Row(
                                                             children: [
                                                               Flexible(
@@ -883,7 +883,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           style:
                                                                               const TextStyle(
                                                                             fontSize:
-                                                                                18,
+                                                                                17,
                                                                             color:
                                                                                 Colors.black,
                                                                             fontWeight:
@@ -950,7 +950,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w900,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                           ),
@@ -967,10 +967,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w400,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                             maxLines: 4,
@@ -991,10 +991,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w400,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                             maxLines: 7,
@@ -1444,6 +1444,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                               ),
                                                               const Spacer(
                                                                   flex: 1),
+                                                                   const Spacer(
+                                                                  flex: 1),
                                                             ],
                                                           ),
                                                         ],
@@ -1453,7 +1455,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 8),
+                                            const SizedBox(height: 5),
                                           ],
                                         );
                                       })),
@@ -1478,7 +1480,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                               thickness: 0.9,
                                               height: 0.9,
                                             ),
-                                            const SizedBox(height: 6),
+                                  
                                             InkWell(
                                               onTap: () {
                                                 jiyikudianjicontroller.cizhi(
@@ -1523,7 +1525,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 .start,
                                                         children: [
                                                           const SizedBox(
-                                                              height: 3),
+                                                              height: 5),
                                                           Row(
                                                             children: [
                                                               Flexible(
@@ -1544,7 +1546,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           style:
                                                                               const TextStyle(
                                                                             fontSize:
-                                                                                18,
+                                                                                17,
                                                                             color:
                                                                                 Colors.black,
                                                                             fontWeight:
@@ -1611,7 +1613,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w900,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                           ),
@@ -1628,10 +1630,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w400,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                             maxLines: 4,
@@ -1652,10 +1654,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w400,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                             maxLines: 7,
@@ -2115,7 +2117,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 8),
+                                            const SizedBox(height: 5),
                                           ],
                                         );
                                       })),
@@ -2143,7 +2145,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                               thickness: 0.9,
                                               height: 0.9,
                                             ),
-                                            const SizedBox(height: 6),
+                                         
                                             InkWell(
                                               onTap: () {
                                                 jiyikudianjicontroller.cizhi(
@@ -2188,7 +2190,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 .start,
                                                         children: [
                                                           const SizedBox(
-                                                              height: 3),
+                                                              height: 5),
                                                           Row(
                                                             children: [
                                                               Flexible(
@@ -2209,7 +2211,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           style:
                                                                               const TextStyle(
                                                                             fontSize:
-                                                                                18,
+                                                                                17,
                                                                             color:
                                                                                 Colors.black,
                                                                             fontWeight:
@@ -2276,7 +2278,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w900,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                           ),
@@ -2293,10 +2295,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w400,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                             maxLines: 4,
@@ -2317,10 +2319,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w400,
+                                                                        .w500,
                                                                 color: Colors
                                                                     .black),
                                                             maxLines: 7,
@@ -2780,7 +2782,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 8),
+                                            const SizedBox(height: 5),
                                           ],
                                         );
                                       })),

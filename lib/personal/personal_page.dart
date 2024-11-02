@@ -1021,6 +1021,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                 .wodezhi?.length,
                                     itemBuilder: (context, index) {
                                       return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           const Divider(
                                             color: Color.fromRGBO(
@@ -1028,7 +1030,9 @@ class _PersonalPageState extends State<PersonalPage>
                                             thickness: 0.9,
                                             height: 0.9,
                                           ),
-                                          const SizedBox(height: 6),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
                                           InkWell(
                                             onTap: () {
                                               jiyikudianjicontroller.cizhi(
@@ -1047,31 +1051,59 @@ class _PersonalPageState extends State<PersonalPage>
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  IconButton(
-                                                      onPressed: () {},
-                                                      icon: CircleAvatar(
-                                                        radius: 21,
-                                                        backgroundImage: personaljiyikucontroller
-                                                                            .wodezhi?[
-                                                                        index][
-                                                                    'touxiang'] !=
-                                                                null
-                                                            ? FileImage(File(
-                                                                personaljiyikucontroller
-                                                                            .wodezhi![
-                                                                        index][
-                                                                    'touxiang']))
-                                                            : const AssetImage(
-                                                                'assets/chuhui.png'),
-                                                      )),
+                                                  Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 20,
+                                                                top: 3),
+                                                        child: SvgPicture.asset(
+                                                            'assets/shijian.svg',
+                                                            width: 20,
+                                                            height: 20),
+                                                      ),
+                                                      IconButton(
+                                                          onPressed: () {},
+                                                          icon: CircleAvatar(
+                                                            radius: 21,
+                                                            backgroundImage: personaljiyikucontroller
+                                                                            .wodezhi?[index]
+                                                                        [
+                                                                        'touxiang'] !=
+                                                                    null
+                                                                ? FileImage(File(
+                                                                    personaljiyikucontroller
+                                                                            .wodezhi![index]
+                                                                        [
+                                                                        'touxiang']))
+                                                                : const AssetImage(
+                                                                    'assets/chuhui.png'),
+                                                          )),
+                                                    ],
+                                                  ),
                                                   Expanded(
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
+                                                        const Text(
+                                                          '距离下一次复习还剩5小时',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            fontSize: 16,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    84,
+                                                                    87,
+                                                                    105,
+                                                                    1),
+                                                          ),
+                                                        ),
                                                         const SizedBox(
-                                                            height: 3),
+                                                            height: 5),
                                                         Row(
                                                           children: [
                                                             Flexible(
@@ -1089,7 +1121,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       style:
                                                                           const TextStyle(
                                                                         fontSize:
-                                                                            18,
+                                                                            17,
                                                                         color: Colors
                                                                             .black,
                                                                         fontWeight:
@@ -1155,7 +1187,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w900,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                         ),
@@ -1173,10 +1205,10 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   ['xiabiao']),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                           maxLines: 4,
@@ -1197,10 +1229,10 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   ['xiabiao']),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                           maxLines: 7,
@@ -1209,91 +1241,88 @@ class _PersonalPageState extends State<PersonalPage>
                                                         ),
                                                         const SizedBox(
                                                             height: 20),
+                                                        SizedBox(height: 20),
                                                         Row(
                                                           children: [
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                42,
-                                                                                91,
-                                                                                255),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                142,
-                                                                                204,
-                                                                                255)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            42,
+                                                                            91,
+                                                                            255),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            142,
+                                                                            204,
+                                                                            255)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              0,
-                                                                              153,
-                                                                              255),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              195,
-                                                                              238,
-                                                                              255),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          0,
+                                                                          153,
+                                                                          255),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          195,
+                                                                          238,
+                                                                          255),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinlaqu(
-                                                                          personaljiyikucontroller
-                                                                                  .wodezhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .wodezhi?[index]
+                                                                          personaljiyikucontroller.wodezhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.wodezhi?[index]
                                                                               [
                                                                               'laqu'],
                                                                           personaljiyikuController
-                                                                                  .wodezhi![
-                                                                              index]);
+                                                                              .wodezhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushilaqu(
-                                                                            personaljiyikucontroller
-                                                                                    .wodezhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushilaqu(
+                                                                        personaljiyikucontroller.wodezhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .swap_calls
-                                                                            : Icons
-                                                                                .swap_calls,
+                                                                            ? Icons.swap_calls
+                                                                            : Icons.swap_calls,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .blue
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
                                                                     likeCount: personaljiyikucontroller
-                                                                            .wodezhi?[
-                                                                        index]['laqu'],
+                                                                            .wodezhi?[index]
+                                                                        [
+                                                                        'laqu'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .blue
@@ -1303,24 +1332,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -1333,90 +1363,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                253,
-                                                                                156,
-                                                                                46),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                174,
-                                                                                120)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            253,
+                                                                            156,
+                                                                            46),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            174,
+                                                                            120)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color
-                                                                              .fromARGB(
-                                                                                  255,
-                                                                                  255,
-                                                                                  102,
-                                                                                  0),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              212,
-                                                                              163),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          102,
+                                                                          0),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          212,
+                                                                          163),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinshoucang(
-                                                                          personaljiyikucontroller
-                                                                                  .wodezhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .wodezhi?[index]
+                                                                          personaljiyikucontroller.wodezhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.wodezhi?[index]
                                                                               [
                                                                               'shoucang'],
                                                                           personaljiyikuController
-                                                                                  .wodezhi![
-                                                                              index]);
+                                                                              .wodezhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushishoucang(
-                                                                            personaljiyikucontroller
-                                                                                    .wodezhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushishoucang(
+                                                                        personaljiyikucontroller.wodezhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .folder
-                                                                            : Icons
-                                                                                .folder_open,
+                                                                            ? Icons.folder
+                                                                            : Icons.folder_open,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .orange
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .wodezhi?[
-                                                                                index]
-                                                                            [
-                                                                            'shoucang'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .wodezhi?[index]
+                                                                        [
+                                                                        'shoucang'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .orange
@@ -1426,24 +1448,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -1456,117 +1479,112 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     size: 20,
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                64,
-                                                                                64),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                206,
-                                                                                206)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            64,
+                                                                            64),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            206,
+                                                                            206)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
                                                                       dotPrimaryColor:
-                                                                          Color
-                                                                              .fromARGB(
-                                                                                  255,
-                                                                                  255,
-                                                                                  0,
-                                                                                  0),
-                                                                      dotSecondaryColor:
                                                                           Color.fromARGB(
                                                                               255,
                                                                               255,
-                                                                              186,
-                                                                              186),
+                                                                              0,
+                                                                              0),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          186,
+                                                                          186),
                                                                     ),
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikucontroller.shuaxinxihuan(
-                                                                          personaljiyikucontroller
-                                                                                  .wodezhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .wodezhi?[index]
+                                                                          personaljiyikucontroller.wodezhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.wodezhi?[index]
                                                                               [
                                                                               'xihuan'],
                                                                           personaljiyikuController
-                                                                                  .wodezhi![
-                                                                              index]);
-                                                                  
+                                                                              .wodezhi![index]);
+
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushixihuan(
-                                                                            personaljiyikucontroller
-                                                                                    .wodezhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushixihuan(
+                                                                        personaljiyikucontroller.wodezhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .favorite
-                                                                            : Icons
-                                                                                .favorite_border,
+                                                                            ? Icons.favorite
+                                                                            : Icons.favorite_border,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .red
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .wodezhi?[
-                                                                                index]
-                                                                            [
-                                                                            'xihuan'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .wodezhi?[index]
+                                                                        [
+                                                                        'xihuan'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
-                                                                          ? Colors.red
+                                                                          ? Colors
+                                                                              .red
                                                                           : const Color
                                                                               .fromRGBO(
                                                                               84,
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -1579,88 +1597,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                237,
-                                                                                42,
-                                                                                255),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                185,
-                                                                                142,
-                                                                                255)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            237,
+                                                                            42,
+                                                                            255),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            185,
+                                                                            142,
+                                                                            255)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              225,
-                                                                              0,
-                                                                              255),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              233,
-                                                                              195,
-                                                                              255),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          225,
+                                                                          0,
+                                                                          255),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          233,
+                                                                          195,
+                                                                          255),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxintiwen(
-                                                                          personaljiyikuController
-                                                                                  .wodezhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikuController
-                                                                                  .wodezhi?[index]
+                                                                          personaljiyikuController.wodezhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikuController.wodezhi?[index]
                                                                               [
                                                                               'tiwen'],
                                                                           personaljiyikuController
-                                                                                  .wodezhi![
-                                                                              index]);
+                                                                              .wodezhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushitiwen(
-                                                                            personaljiyikuController
-                                                                                    .wodezhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushitiwen(
+                                                                        personaljiyikuController.wodezhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .messenger
-                                                                            : Icons
-                                                                                .messenger_outline,
+                                                                            ? Icons.messenger
+                                                                            : Icons.messenger_outline,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .purpleAccent
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikuController
-                                                                                    .wodezhi?[
-                                                                                index]
-                                                                            ['tiwen'],
+                                                                    likeCount: personaljiyikuController
+                                                                            .wodezhi?[index]
+                                                                        [
+                                                                        'tiwen'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .purple
@@ -1670,24 +1682,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -1701,54 +1714,6 @@ class _PersonalPageState extends State<PersonalPage>
                                                                 flex: 1),
                                                           ],
                                                         ),
-                                                        const SizedBox(
-                                                          height: 20,
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            const Text(
-                                                              '距离下一次复习还剩5小时',
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: 16),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 30,
-                                                              child:
-                                                                  ElevatedButton(
-                                                                style: ElevatedButton
-                                                                    .styleFrom(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .all(
-                                                                          5),
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .blue,
-                                                                ),
-                                                                child:
-                                                                    const Text(
-                                                                  "记忆方案二",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          15,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w900,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                                onPressed:
-                                                                    () {},
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
                                                       ],
                                                     ),
                                                   )
@@ -1756,7 +1721,7 @@ class _PersonalPageState extends State<PersonalPage>
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(height: 8),
+                                          const SizedBox(height: 5),
                                         ],
                                       );
                                     })),
@@ -1780,7 +1745,7 @@ class _PersonalPageState extends State<PersonalPage>
                                             thickness: 0.9,
                                             height: 0.9,
                                           ),
-                                          const SizedBox(height: 6),
+                                        
                                           InkWell(
                                             onTap: () {
                                               jiyikudianjicontroller.cizhi(
@@ -1823,7 +1788,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                               .start,
                                                       children: [
                                                         const SizedBox(
-                                                            height: 3),
+                                                            height: 5),
                                                         Row(
                                                           children: [
                                                             Flexible(
@@ -1841,7 +1806,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       style:
                                                                           const TextStyle(
                                                                         fontSize:
-                                                                            18,
+                                                                            17,
                                                                         color: Colors
                                                                             .black,
                                                                         fontWeight:
@@ -1907,7 +1872,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w900,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                         ),
@@ -1925,10 +1890,10 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   ['xiabiao']),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                           maxLines: 4,
@@ -1949,10 +1914,10 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   ['xiabiao']),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                           maxLines: 7,
@@ -1966,86 +1931,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                42,
-                                                                                91,
-                                                                                255),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                142,
-                                                                                204,
-                                                                                255)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            42,
+                                                                            91,
+                                                                            255),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            142,
+                                                                            204,
+                                                                            255)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              0,
-                                                                              153,
-                                                                              255),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              195,
-                                                                              238,
-                                                                              255),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          0,
+                                                                          153,
+                                                                          255),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          195,
+                                                                          238,
+                                                                          255),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinlaqu(
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
+                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.laquzhi?[index]
                                                                               [
                                                                               'laqu'],
                                                                           personaljiyikuController
-                                                                                  .laquzhi![
-                                                                              index]);
+                                                                              .laquzhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushilaqu(
-                                                                            personaljiyikucontroller
-                                                                                    .laquzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushilaqu(
+                                                                        personaljiyikucontroller.laquzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .swap_calls
-                                                                            : Icons
-                                                                                .swap_calls,
+                                                                            ? Icons.swap_calls
+                                                                            : Icons.swap_calls,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .blue
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
                                                                     likeCount: personaljiyikucontroller
-                                                                            .laquzhi?[
-                                                                        index]['laqu'],
+                                                                            .laquzhi?[index]
+                                                                        [
+                                                                        'laqu'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .blue
@@ -2055,24 +2016,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -2085,90 +2047,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                253,
-                                                                                156,
-                                                                                46),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                174,
-                                                                                120)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            253,
+                                                                            156,
+                                                                            46),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            174,
+                                                                            120)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color
-                                                                              .fromARGB(
-                                                                                  255,
-                                                                                  255,
-                                                                                  102,
-                                                                                  0),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              212,
-                                                                              163),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          102,
+                                                                          0),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          212,
+                                                                          163),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinshoucang(
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
+                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.laquzhi?[index]
                                                                               [
                                                                               'shoucang'],
                                                                           personaljiyikuController
-                                                                                  .laquzhi![
-                                                                              index]);
+                                                                              .laquzhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushishoucang(
-                                                                            personaljiyikucontroller
-                                                                                    .laquzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushishoucang(
+                                                                        personaljiyikucontroller.laquzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .folder
-                                                                            : Icons
-                                                                                .folder_open,
+                                                                            ? Icons.folder
+                                                                            : Icons.folder_open,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .orange
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .laquzhi?[
-                                                                                index]
-                                                                            [
-                                                                            'shoucang'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .laquzhi?[index]
+                                                                        [
+                                                                        'shoucang'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .orange
@@ -2178,24 +2132,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -2208,117 +2163,112 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     size: 20,
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                64,
-                                                                                64),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                206,
-                                                                                206)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            64,
+                                                                            64),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            206,
+                                                                            206)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
                                                                       dotPrimaryColor:
-                                                                          Color
-                                                                              .fromARGB(
-                                                                                  255,
-                                                                                  255,
-                                                                                  0,
-                                                                                  0),
-                                                                      dotSecondaryColor:
                                                                           Color.fromARGB(
                                                                               255,
                                                                               255,
-                                                                              186,
-                                                                              186),
+                                                                              0,
+                                                                              0),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          186,
+                                                                          186),
                                                                     ),
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinxihuan(
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
+                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.laquzhi?[index]
                                                                               [
                                                                               'xihuan'],
                                                                           personaljiyikuController
-                                                                                  .laquzhi![
-                                                                              index]);
-                                                                  
+                                                                              .laquzhi![index]);
+
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushixihuan(
-                                                                            personaljiyikucontroller
-                                                                                    .laquzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushixihuan(
+                                                                        personaljiyikucontroller.laquzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .favorite
-                                                                            : Icons
-                                                                                .favorite_border,
+                                                                            ? Icons.favorite
+                                                                            : Icons.favorite_border,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .red
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .laquzhi?[
-                                                                                index]
-                                                                            [
-                                                                            'xihuan'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .laquzhi?[index]
+                                                                        [
+                                                                        'xihuan'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
-                                                                          ? Colors.red
+                                                                          ? Colors
+                                                                              .red
                                                                           : const Color
                                                                               .fromRGBO(
                                                                               84,
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -2331,88 +2281,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                237,
-                                                                                42,
-                                                                                255),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                185,
-                                                                                142,
-                                                                                255)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            237,
+                                                                            42,
+                                                                            255),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            185,
+                                                                            142,
+                                                                            255)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              225,
-                                                                              0,
-                                                                              255),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              233,
-                                                                              195,
-                                                                              255),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          225,
+                                                                          0,
+                                                                          255),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          233,
+                                                                          195,
+                                                                          255),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxintiwen(
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .laquzhi?[index]
+                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.laquzhi?[index]
                                                                               [
                                                                               'tiwen'],
                                                                           personaljiyikuController
-                                                                                  .laquzhi![
-                                                                              index]);
+                                                                              .laquzhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushitiwen(
-                                                                            personaljiyikucontroller
-                                                                                    .laquzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushitiwen(
+                                                                        personaljiyikucontroller.laquzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .messenger
-                                                                            : Icons
-                                                                                .messenger_outline,
+                                                                            ? Icons.messenger
+                                                                            : Icons.messenger_outline,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .purpleAccent
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .laquzhi?[
-                                                                                index]
-                                                                            ['tiwen'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .laquzhi?[index]
+                                                                        [
+                                                                        'tiwen'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .purple
@@ -2422,24 +2366,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -2460,7 +2405,7 @@ class _PersonalPageState extends State<PersonalPage>
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(height: 8),
+                                          const SizedBox(height: 5),
                                         ],
                                       );
                                     })),
@@ -2488,7 +2433,7 @@ class _PersonalPageState extends State<PersonalPage>
                                             thickness: 0.9,
                                             height: 0.9,
                                           ),
-                                          const SizedBox(height: 6),
+                                    
                                           InkWell(
                                             onTap: () {
                                               jiyikudianjicontroller.cizhi(
@@ -2531,7 +2476,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                               .start,
                                                       children: [
                                                         const SizedBox(
-                                                            height: 3),
+                                                            height: 5),
                                                         Row(
                                                           children: [
                                                             Flexible(
@@ -2549,7 +2494,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       style:
                                                                           const TextStyle(
                                                                         fontSize:
-                                                                            18,
+                                                                            17,
                                                                         color: Colors
                                                                             .black,
                                                                         fontWeight:
@@ -2615,7 +2560,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w900,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                         ),
@@ -2633,10 +2578,10 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   ['xiabiao']),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                           maxLines: 4,
@@ -2657,10 +2602,10 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   ['xiabiao']),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 16,
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w500,
                                                                   color: Colors
                                                                       .black),
                                                           maxLines: 7,
@@ -2674,86 +2619,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                42,
-                                                                                91,
-                                                                                255),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                142,
-                                                                                204,
-                                                                                255)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            42,
+                                                                            91,
+                                                                            255),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            142,
+                                                                            204,
+                                                                            255)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              0,
-                                                                              153,
-                                                                              255),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              195,
-                                                                              238,
-                                                                              255),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          0,
+                                                                          153,
+                                                                          255),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          195,
+                                                                          238,
+                                                                          255),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinlaqu(
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
                                                                               [
                                                                               'laqu'],
                                                                           personaljiyikuController
-                                                                                  .xihuanzhi![
-                                                                              index]);
+                                                                              .xihuanzhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushilaqu(
-                                                                            personaljiyikucontroller
-                                                                                    .xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushilaqu(
+                                                                        personaljiyikucontroller.xihuanzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .swap_calls
-                                                                            : Icons
-                                                                                .swap_calls,
+                                                                            ? Icons.swap_calls
+                                                                            : Icons.swap_calls,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .blue
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
                                                                     likeCount: personaljiyikucontroller
-                                                                            .xihuanzhi?[
-                                                                        index]['laqu'],
+                                                                            .xihuanzhi?[index]
+                                                                        [
+                                                                        'laqu'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .blue
@@ -2763,24 +2704,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -2793,90 +2735,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                253,
-                                                                                156,
-                                                                                46),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                174,
-                                                                                120)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            253,
+                                                                            156,
+                                                                            46),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            174,
+                                                                            120)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color
-                                                                              .fromARGB(
-                                                                                  255,
-                                                                                  255,
-                                                                                  102,
-                                                                                  0),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              212,
-                                                                              163),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          102,
+                                                                          0),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          212,
+                                                                          163),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinshoucang(
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
                                                                               [
                                                                               'shoucang'],
                                                                           personaljiyikuController
-                                                                                  .xihuanzhi![
-                                                                              index]);
+                                                                              .xihuanzhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushishoucang(
-                                                                            personaljiyikucontroller
-                                                                                    .xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushishoucang(
+                                                                        personaljiyikucontroller.xihuanzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .folder
-                                                                            : Icons
-                                                                                .folder_open,
+                                                                            ? Icons.folder
+                                                                            : Icons.folder_open,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .orange
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .xihuanzhi?[
-                                                                                index]
-                                                                            [
-                                                                            'shoucang'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .xihuanzhi?[index]
+                                                                        [
+                                                                        'shoucang'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .orange
@@ -2886,24 +2820,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -2916,117 +2851,112 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     size: 20,
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                64,
-                                                                                64),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                206,
-                                                                                206)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            64,
+                                                                            64),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            206,
+                                                                            206)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
                                                                       dotPrimaryColor:
-                                                                          Color
-                                                                              .fromARGB(
-                                                                                  255,
-                                                                                  255,
-                                                                                  0,
-                                                                                  0),
-                                                                      dotSecondaryColor:
                                                                           Color.fromARGB(
                                                                               255,
                                                                               255,
-                                                                              186,
-                                                                              186),
+                                                                              0,
+                                                                              0),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          255,
+                                                                          186,
+                                                                          186),
                                                                     ),
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxinxihuan(
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
                                                                               [
                                                                               'xihuan'],
                                                                           personaljiyikuController
-                                                                                  .xihuanzhi![
-                                                                              index]);
-                                                                  
+                                                                              .xihuanzhi![index]);
+
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushixihuan(
-                                                                            personaljiyikucontroller
-                                                                                    .xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushixihuan(
+                                                                        personaljiyikucontroller.xihuanzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .favorite
-                                                                            : Icons
-                                                                                .favorite_border,
+                                                                            ? Icons.favorite
+                                                                            : Icons.favorite_border,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .red
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .xihuanzhi?[
-                                                                                index]
-                                                                            [
-                                                                            'xihuan'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .xihuanzhi?[index]
+                                                                        [
+                                                                        'xihuan'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
-                                                                          ? Colors.red
+                                                                          ? Colors
+                                                                              .red
                                                                           : const Color
                                                                               .fromRGBO(
                                                                               84,
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -3039,88 +2969,82 @@ class _PersonalPageState extends State<PersonalPage>
                                                             SizedBox(
                                                               width: 70,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
                                                                 children: [
                                                                   LikeButton(
                                                                     circleColor: const CircleColor(
-                                                                        start: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                237,
-                                                                                42,
-                                                                                255),
-                                                                        end: Color
-                                                                            .fromARGB(
-                                                                                255,
-                                                                                185,
-                                                                                142,
-                                                                                255)),
+                                                                        start: Color.fromARGB(
+                                                                            255,
+                                                                            237,
+                                                                            42,
+                                                                            255),
+                                                                        end: Color.fromARGB(
+                                                                            255,
+                                                                            185,
+                                                                            142,
+                                                                            255)),
                                                                     bubblesColor:
                                                                         const BubblesColor(
-                                                                      dotPrimaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              225,
-                                                                              0,
-                                                                              255),
-                                                                      dotSecondaryColor:
-                                                                          Color.fromARGB(
-                                                                              255,
-                                                                              233,
-                                                                              195,
-                                                                              255),
+                                                                      dotPrimaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          225,
+                                                                          0,
+                                                                          255),
+                                                                      dotSecondaryColor: Color.fromARGB(
+                                                                          255,
+                                                                          233,
+                                                                          195,
+                                                                          255),
                                                                     ),
                                                                     size: 20,
                                                                     onTap:
                                                                         (isLiked) async {
                                                                       personaljiyikuController.shuaxintiwen(
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
-                                                                              ['id'],
-                                                                          personaljiyikucontroller
-                                                                                  .xihuanzhi?[index]
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                              [
+                                                                              'id'],
+                                                                          personaljiyikucontroller.xihuanzhi?[index]
                                                                               [
                                                                               'tiwen'],
                                                                           personaljiyikuController
-                                                                                  .xihuanzhi![
-                                                                              index]);
+                                                                              .xihuanzhi![index]);
                                                                       return !isLiked;
                                                                     },
-                                                                    isLiked: personaljiyikuController
-                                                                        .chushitiwen(
-                                                                            personaljiyikucontroller
-                                                                                    .xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
-                                                                    likeBuilder: (bool
-                                                                        isLiked) {
+                                                                    isLiked: personaljiyikuController.chushitiwen(
+                                                                        personaljiyikucontroller.xihuanzhi?[index]
+                                                                            [
+                                                                            'id']),
+                                                                    likeBuilder:
+                                                                        (bool
+                                                                            isLiked) {
                                                                       return Icon(
                                                                         isLiked
-                                                                            ? Icons
-                                                                                .messenger
-                                                                            : Icons
-                                                                                .messenger_outline,
+                                                                            ? Icons.messenger
+                                                                            : Icons.messenger_outline,
                                                                         color: isLiked
                                                                             ? Colors
                                                                                 .purpleAccent
-                                                                            : const Color
-                                                                                .fromRGBO(
+                                                                            : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
                                                                                 105,
                                                                                 1),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                       );
                                                                     },
-                                                                    likeCount:
-                                                                        personaljiyikucontroller
-                                                                                    .xihuanzhi?[
-                                                                                index]
-                                                                            ['tiwen'],
+                                                                    likeCount: personaljiyikucontroller
+                                                                            .xihuanzhi?[index]
+                                                                        [
+                                                                        'tiwen'],
                                                                     countBuilder: (int?
                                                                             count,
-                                                                        bool isLiked,
-                                                                        String text) {
+                                                                        bool
+                                                                            isLiked,
+                                                                        String
+                                                                            text) {
                                                                       var color = isLiked
                                                                           ? Colors
                                                                               .purple
@@ -3130,24 +3054,25 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               87,
                                                                               105,
                                                                               1);
-                                                                      Widget result;
+                                                                      Widget
+                                                                          result;
                                                                       if (count ==
                                                                           0) {
-                                                                        result = Text(
+                                                                        result =
+                                                                            Text(
                                                                           "love",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                                  color),
+                                                                          style:
+                                                                              TextStyle(color: color),
                                                                         );
                                                                       }
-                                                                      result = Text(
+                                                                      result =
+                                                                          Text(
                                                                         text,
                                                                         style: TextStyle(
                                                                             color:
                                                                                 color,
                                                                             fontWeight:
-                                                                                FontWeight
-                                                                                    .w700),
+                                                                                FontWeight.w700),
                                                                       );
                                                                       return result;
                                                                     },
@@ -3168,7 +3093,7 @@ class _PersonalPageState extends State<PersonalPage>
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(height: 8),
+                                          const SizedBox(height: 5),
                                         ],
                                       );
                                     })),
