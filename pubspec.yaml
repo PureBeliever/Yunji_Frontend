@@ -51,6 +51,7 @@ dependencies:
   custom_refresh_indicator: ^4.0.1
   easy_refresh: ^3.4.0
   path: ^1.8.0
+  alarm: ^4.0.9
   
 dev_dependencies:
   flutter_test:

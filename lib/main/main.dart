@@ -6,6 +6,7 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:alarm/alarm.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class Maincontroller extends GetxController {
 }
 
 List<String> lie = [];
+final datetimecontroller = Get.put(DateTimeController());
 final databaseManager = DatabaseManager();
 final bianpersonalController = Get.put(BianpersonalController());
 final placecontroller = Get.put(Placecontroller());
@@ -56,25 +58,24 @@ final jiyikudianjicontroller = Get.put(Jiyikudianjicontroller());
 final jiyikudianjipersonalController =
     Get.put(JiyikudianjipersonalController());
 bool denglu = false;
-List<List<int>> shijian = [
-  [1, 7, 14],
-  [1, 7, 14, 30],
-  [1, 7, 14, 30, 90],
-  [1, 7, 14, 30, 90, 180],
-];
+
 BuildContext? contexts;
 
 void main() async {
   runApp(const MyApp());
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Alarm.init();
+
+
+
   await databaseManager.initDatabase();
   List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
   Map<String, dynamic>? zhi = await databaseManager.chapersonal();
 
-  maincontroller.mainzhi(mainzhi);
-  personaljiyikucontroller.shuaxin(zhi);
-
   if (zhi != null) {
+    maincontroller.mainzhi(mainzhi);
+    personaljiyikucontroller.shuaxin(zhi);
     var shu = zhi;
     denglu = true;
     beicontroller.chushi(shu['beijing']);
@@ -86,10 +87,10 @@ void main() async {
     bianpersonalController.jiaruvalue(shu['jiaru']);
     settingzhanghaoxiugaicontroller.xiugaiusername(shu['username']);
     postpersonalapi(settingzhanghaoxiugaicontroller.username);
+    await shuaxin();
   } else {
     chushi();
   }
-  await shuaxin();
 }
 
 void chushi() async {
@@ -108,9 +109,9 @@ void chushi() async {
                 LoginButtonConfig(loginBtnHeight: 40, loginBtnWidth: 200),
             privacyConfig: PrivacyConfig(privacyConnectTexts: ' ')),
         iosSdk:
-            'W1ndnvFDodUk6DOp4q8UrdTbT7V4AW04I9JuuiCdb38xdr59McuD/HuROKi+LFJzkfwLYOtPxZehYz06Fs9wK7ZIU5SkIJ9MCnWvDJx7fIM+auIkQ1W7hbdWMm1BLkHMyF6BmVefzZiP4XhQ49CYYxIF/NiQJWNoaHWbmBEWUDdhuN9vlD33IEEmpT/EkPbZrUqD23YiHS3HiZHEXsmoPafsuk5OK/HoIBYOWStGpugi/0Gfq3s56QjdMQwUhg77kHSj1pZJplY=',
+            'iXUQkFvwckIqJ1gmASe+DwiFSsvCISFDRcWDn+wnt3DC03ZKs/QQYuItcjCf1u2X7V2UyOC0zLmuODytM6IWR232P4bxsIErwMc9hMxrh+CAPbKWRLsw6X2ecMxT44ykjgaV3HjRermybiluDxV8uHVgEHbJ852Y4VKkvQOgMG/VpnACdQPN9kjB7lIgGjnK76LA49U64ynUqvxKR30x5tiV9DMXJKhkLkDJGBwvBzTruxwLUdHzJFR00futqGp1PLrepZzFFnU=',
         androidSdk:
-            'ZD2xhSLbB7N+D+RB9LdWdow3cbZ24V4oBrGYQ2u/8ZU+jBnSzJ9kzb4qgqGas/+62TFlIhvA/NrUcOyQd+c3Yv/M5t+MEDlWdVS/mjkFdkNDzOrHb/ZT4Z3/SLRdAcNNeYW96PR65jC7MBV6DqpwSkxDlkgFTBDX7sLiyEwT44fVrH9xraUesdJeiXnva1tyOsjhCTgrteiclOdi4eyRgZ2sEoZ5CQ0EDCrXlHzVcewvlAC3tkMYpqNtiTtzkLzcxnmhJknzhvSFrcvi/FVg4PZAtkOBzA+YBxFwdBo3+RF8wDO17dc3fQ=='),
+            '+MTbA7Mr9/7DGkGl5auu/ZyfPOWfhHNF860ms6uc9RoaX175uW0oWxxS35oPmzL6QH2lQSbDNkZ9eh0PryTJP0cZaQ6W2lSgYJ5hOOT1qQwrpCaL1cXYUcIbQy4rHwC+PLavlHX6rfRLrQ8t5LR8saqnD7PtoxS/i+40g6K6iumJd5YlO1ppbHjfpnZNyi/No0d6WjqaR1EA4TkBX5cPBknHLtHIsc/Ic2I4UASnoxspDHNtTakv7nE00WHRH6zL+93ihFYJ4vOBYOuBcMRCVfOjmb0dIOn0t1Dlnxla7NgDtr8fi6gZWg=='),
   );
 
   AliAuthClient.handleEvent(onEvent: _onEvent);
@@ -179,12 +180,12 @@ Future<void> _onEvent(AuthResponseModel event) async {
         dragToClose: true);
     await shuaxin();
     zhi = false;
-    denglu = true;
   } else if (zhi == true &&
       event.resultCode != '600024' &&
       event.resultCode != '600001' &&
       event.resultCode != '600016' &&
-      event.resultCode != '600015') {
+      event.resultCode != '600015' &&
+      event.resultCode != '600012') {
     String code = ' ';
     bool sendCodeBtn = true;
     int seconds = 60;
@@ -193,7 +194,7 @@ Future<void> _onEvent(AuthResponseModel event) async {
     zhi = false;
     String shoujihao = ' ';
     showTimer() {
-      Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+      Timer.periodic(const Duration(seconds: 1), (timer) {
         seconds--;
         if (seconds == 0) {
           timer.cancel();
@@ -985,7 +986,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () async {
+                            await Alarm.stop(42);
+                          },
                           child: ListTile(
                             leading: Padding(
                               padding:

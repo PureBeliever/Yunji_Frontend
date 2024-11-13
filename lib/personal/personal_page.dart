@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -71,6 +72,26 @@ class RollingeffectController extends GetxController {
 
   void onenotitle() {
     shadowtitle = 0;
+    update();
+  }
+}
+
+class DateTimeController extends GetxController {
+  static DateTimeController get to => Get.find();
+
+  String jishi(String dingshi) {
+    DateTime will = DateTime.parse(dingshi);
+    DateTime now = DateTime.now();
+
+    Duration daojishi = will.difference(now);
+    final int days = daojishi.inDays;
+    final int hours = daojishi.inHours % 24;
+    final int minutes = daojishi.inMinutes % 60;
+    String xianshi = "距离下一次复习还剩${days}天${hours}小时${minutes}分钟";
+    return xianshi;
+  }
+
+  void shuaxin() {
     update();
   }
 }
@@ -165,7 +186,6 @@ class PersonaljiyikuController extends GetxController {
       wodezhi = await databaseManager.chaxun(wodecast);
       wodezhi = wodezhi?.reversed.toList();
     }
-
     update();
   }
 
@@ -360,7 +380,9 @@ class _PersonalPageState extends State<PersonalPage>
   @override
   void initState() {
     super.initState();
-
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      datetimecontroller.shuaxin();
+    });
     tabController = TabController(
       length: 4,
       initialIndex: 0,
@@ -1088,20 +1110,33 @@ class _PersonalPageState extends State<PersonalPage>
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        const Text(
-                                                          '距离下一次复习还剩5小时',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            fontSize: 16,
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    84,
-                                                                    87,
-                                                                    105,
-                                                                    1),
-                                                          ),
-                                                        ),
+                                                        GetBuilder<
+                                                                DateTimeController>(
+                                                            init:
+                                                                datetimecontroller,
+                                                            builder:
+                                                                (datetimecontroller) {
+                                                              return Text(
+                                                                datetimecontroller.jishi(
+                                                                    personaljiyikucontroller
+                                                                            .wodezhi![index]
+                                                                        [
+                                                                        'dingshi']),
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w900,
+                                                                  fontSize: 16,
+                                                                  color: Color
+                                                                      .fromRGBO(
+                                                                          84,
+                                                                          87,
+                                                                          105,
+                                                                          1),
+                                                                ),
+                                                              );
+                                                            }),
                                                         const SizedBox(
                                                             height: 5),
                                                         Row(
@@ -1745,7 +1780,6 @@ class _PersonalPageState extends State<PersonalPage>
                                             thickness: 0.9,
                                             height: 0.9,
                                           ),
-                                        
                                           InkWell(
                                             onTap: () {
                                               jiyikudianjicontroller.cizhi(
@@ -2433,7 +2467,6 @@ class _PersonalPageState extends State<PersonalPage>
                                             thickness: 0.9,
                                             height: 0.9,
                                           ),
-                                    
                                           InkWell(
                                             onTap: () {
                                               jiyikudianjicontroller.cizhi(

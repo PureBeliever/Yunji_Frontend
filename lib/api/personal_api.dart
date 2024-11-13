@@ -45,14 +45,23 @@ void xiuzhanghao(String xinusername, String username) async {
   }
 }
 
-void baocunjiyiku(Map<String, String> timu, Map<String, String> huida,
-    String zhuti, String username, int code, List<int> xiabiao) async {
+void baocunjiyiku(
+    Map<String, String> timu,
+    Map<String, String> huida,
+    String zhuti,
+    String username,
+    List<int> code,
+    DateTime dingshi,
+    int jindu,
+    List<int> xiabiao) async {
   Map<String, dynamic> formdata = {
     'username': username,
     'timu': timu,
     'huida': huida,
     'zhuti': zhuti,
     'code': code,
+    'dingshi': dingshi.toString(),
+    'jindu': jindu,
     'xiabiao': xiabiao
   };
   Map<String, String> header = {
@@ -78,6 +87,7 @@ String _generateRandomFilename() {
 }
 
 void shouji(String shouji) async {
+  denglu = true;
   Map<String, String> header = {
     'Content-Type': 'application/json',
   };
@@ -317,7 +327,7 @@ void jiyikupostpersonalapi(String username) async {
   };
   Map<String, dynamic> formdata = {'username': username};
 
-  final response = await dio.post('http://47.92.90.93:36233/postpersonal',
+  final response = await dio.post('http://47.92.90.93:36233/postpersonaldianji',
       data: jsonEncode(formdata), options: Options(headers: header));
   final dirqian = await getApplicationDocumentsDirectory();
   final dir = Directory(join(dirqian.path, 'personaldianjiimage'));
@@ -444,7 +454,6 @@ void postpersonalapi(String username) async {
         personal[i]['touxiang'] = '${dir.path}/$ming';
         await File(personal[i]['touxiang']).writeAsBytes(imageBytes);
       }
-
       for (int y = 0; y < result.length; y++) {
         if (result[y]['username'] == personal[i]['username']) {
           result[y]['name'] = personal[i]['name'];

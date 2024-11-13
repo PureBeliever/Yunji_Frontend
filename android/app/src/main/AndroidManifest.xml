@@ -64,5 +64,9 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/><!--
     开关Wi-Fi状态，解决中国内地机型移动网络权限问题需要 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+<uses-permission android:name="android.permission.WAKE_LOCK"/>
+<!-- For apps with targetSDK 31 (Android 12) and newer -->
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
 </manifest>
