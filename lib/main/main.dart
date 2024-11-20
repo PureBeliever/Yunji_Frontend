@@ -9,9 +9,9 @@ import 'dart:math';
 import 'package:alarm/alarm.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ali_auth/flutter_ali_auth.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:like_button/like_button.dart';
 import 'package:toastification/toastification.dart' as toast;
@@ -778,8 +778,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // 状态栏底色
+      statusBarBrightness: Brightness.dark, // 状态栏文字颜色
+    ));
     contexts = context;
-    double chang = MediaQuery.of(context).size.height * 0.06;
+    double chang = MediaQuery.of(context).size.height * 0.055;
     return Scaffold(
       backgroundColor: Colors.white,
       key: _scaffoldKey,
@@ -1066,13 +1070,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            SliverAppBar(
-              floating: false,
+            SliverPersistentHeader(
               pinned: true,
-              snap: false,
+              delegate: SliverHeaderDelegateshijian.fixedHeight(
+                height: 23,
+                child: Material(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                  
+                  ),
+                ),
+              ),
+            ),
+            SliverAppBar(
+              floating: true,
+              pinned: false,
+              snap: true,
+              expandedHeight: 0,
+      collapsedHeight: chang,
               surfaceTintColor: Colors.white,
               backgroundColor: Colors.white,
               toolbarHeight: chang,
+              
               leading: GetBuilder<Headcontroller>(
                 init: headcontroller,
                 builder: (hcontroller) {
@@ -1082,15 +1103,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             _scaffoldKey.currentState?.openDrawer();
                           },
                           icon: CircleAvatar(
-                              radius: 16,
+                              radius: 20,
                               backgroundImage:
                                   FileImage(headcontroller.headimage!)))
                       : IconButton(
                           icon: SvgPicture.asset(
                             'assets/person.svg',
                             // 将此处的icon_name替换为您的SVG图标名称
-                            width: 30,
-                            height: 30,
+                            width: 40,
+                            height: 40,
                           ),
                           onPressed: () {
                             _scaffoldKey.currentState?.openDrawer();
@@ -1113,10 +1134,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ],
             ),
             SliverPersistentHeader(
-              pinned: false,
-              floating: true,
+              pinned: true,
               delegate: SliverHeaderDelegate.fixedHeight(
-                height: 45,
+                height: 40,
                 child: Material(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -2038,6 +2058,59 @@ class SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverHeaderDelegate oldDelegate) {
+    return oldDelegate.maxExtent != maxExtent ||
+        oldDelegate.minExtent != minExtent;
+  }
+}
+class SliverHeaderDelegateshijian extends SliverPersistentHeaderDelegate {
+  // child 为 header
+  SliverHeaderDelegateshijian({
+    required this.maxHeight,
+    this.minHeight = 0,
+    required Widget child,
+  })  : builder = ((a, b, c) => child),
+        assert(minHeight <= maxHeight && minHeight >= 0);
+
+  //最大和最小高度相同
+  SliverHeaderDelegateshijian.fixedHeight({
+    required double height,
+    required Widget child,
+  })  : builder = ((a, b, c) => child),
+        maxHeight = height,
+        minHeight = height;
+
+  //需要自定义builder时使用
+  SliverHeaderDelegateshijian.builder({
+    required this.maxHeight,
+    this.minHeight = 0,
+    required this.builder,
+  });
+
+  final double maxHeight;
+  final double minHeight;
+  final SliverHeaderBuilder builder;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    Widget child = builder(context, shrinkOffset, overlapsContent);
+
+    return Container(
+
+        child: SizedBox.expand(child: child));
+  }
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(SliverHeaderDelegateshijian oldDelegate) {
     return oldDelegate.maxExtent != maxExtent ||
         oldDelegate.minExtent != minExtent;
   }
