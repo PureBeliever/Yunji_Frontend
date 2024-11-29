@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -112,26 +111,9 @@ class _Yiwang extends State<Yiwang> {
                 Map<String, String> stringhuida = jiyikucontroller.huidazhi
                     .map((key, value) => MapEntry(key.toString(), value));
 
-                DateTime thirtyMinutesLater = now.add(Duration(minutes: 30));
+                DateTime thirtyMinutesLater = now.add(Duration(minutes: 1));
 
-                final alarmSettings = await AlarmSettings(
-                  id: 42,
-                  dateTime: thirtyMinutesLater,
-                  assetAudioPath: 'assets/alarm.mp3',
-                  loopAudio: true,
-                  vibrate: true,
-                  volume: 0.6,
-                  fadeDuration: 3.0,
-                  warningNotificationOnKill: Platform.isIOS,
-                  androidFullScreenIntent: true,
-                  notificationSettings: const NotificationSettings(
-                    title: 'This is the title',
-                    body: 'This is the body',
-                    icon: 'notification_icon',
-                  ),
-                );
-
-                await Alarm.set(alarmSettings: alarmSettings);
+            
                 baocunjiyiku(
                     stringTimu,
                     stringhuida,
@@ -156,9 +138,10 @@ class _Yiwang extends State<Yiwang> {
       body: ListView(
         children: [
           Center(
-            child: SvgPicture.asset(
-              "assets/yiwang.svg",
-            ),
+            child: Image.asset(
+                "assets/yiwang.jpg",
+                width: double.infinity,
+              ),
           ),
           const Padding(
             padding:

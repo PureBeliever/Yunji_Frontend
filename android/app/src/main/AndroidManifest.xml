@@ -3,11 +3,20 @@
     <application
         android:label="云吉记忆"
         android:name="${applicationName}"
-
-    android:networkSecurityConfig="@xml/network"
+        android:networkSecurityConfig="@xml/network"
         android:icon="@mipmap/ic_launcher">
-
-
+        <service android:name=".WakeUpService" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+  
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -61,12 +70,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 检查网络状态 -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 切换网络通道 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 本地信息缓存 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/><!--
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /><!--
     开关Wi-Fi状态，解决中国内地机型移动网络权限问题需要 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-<uses-permission android:name="android.permission.WAKE_LOCK"/>
-<!-- For apps with targetSDK 31 (Android 12) and newer -->
-<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- For apps with targetSDK 31 (Android 12) and newer -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
 </manifest>

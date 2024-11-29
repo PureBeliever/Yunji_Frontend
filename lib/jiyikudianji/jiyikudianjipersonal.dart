@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:keframe/keframe.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/jiyikudianji/jiyikudianji.dart';
@@ -800,122 +801,805 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   context: context,
                                   removeTop: true,
                                   removeBottom: true,
-                                  child: ListView.builder(
-                                      physics: physics,
-                                      itemCount: personaljiyikudianjiController
-                                                  .wodezhi ==
-                                              null
-                                          ? 0
-                                          : personaljiyikudianjiController
-                                              .wodezhi?.length,
-                                      itemBuilder: (context, index) {
-                                        return Column(
-                                          children: [
-                                            const Divider(
-                                              color: Color.fromRGBO(
-                                                  223, 223, 223, 1),
-                                              thickness: 0.9,
-                                              height: 0.9,
-                                            ),
-                                            
-                                            InkWell(
-                                              onTap: () {
-                                                jiyikudianjicontroller.cizhi(
-                                                    personaljiyikudianjiController
-                                                        .wodezhi![index]);
-                                                handleClick(context,
-                                                    const jiyikudianji());
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 3.0,
-                                                    bottom: 3.0,
-                                                    right: 15,
-                                                    left: 2),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () {},
-                                                        icon: CircleAvatar(
-                                                          radius: 21,
-                                                          backgroundImage: personaljiyikudianjiController
+                                  child: SizeCacheWidget(
+                                    child: ListView.builder(
+                                      cacheExtent: 500,
+                                        physics: physics,
+                                        itemCount: personaljiyikudianjiController
+                                                    .wodezhi ==
+                                                null
+                                            ? 0
+                                            : personaljiyikudianjiController
+                                                .wodezhi?.length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            children: [
+                                              const Divider(
+                                                color: Color.fromRGBO(
+                                                    223, 223, 223, 1),
+                                                thickness: 0.9,
+                                                height: 0.9,
+                                              ),
+                                              
+                                              InkWell(
+                                                onTap: () {
+                                                  jiyikudianjicontroller.cizhi(
+                                                      personaljiyikudianjiController
+                                                          .wodezhi![index]);
+                                                  handleClick(context,
+                                                      const jiyikudianji());
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 3.0,
+                                                      bottom: 3.0,
+                                                      right: 15,
+                                                      left: 2),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: () {},
+                                                          icon: CircleAvatar(
+                                                            radius: 21,
+                                                            backgroundImage: personaljiyikudianjiController
+                                                                                .wodezhi?[
+                                                                            index]
+                                                                        [
+                                                                        'touxiang'] !=
+                                                                    null
+                                                                ? FileImage(File(
+                                                                    personaljiyikudianjiController
+                                                                                .wodezhi![
+                                                                            index]
+                                                                        [
+                                                                        'touxiang']))
+                                                                : const AssetImage(
+                                                                    'assets/chuhui.png'),
+                                                          )),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                                height: 5),
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      Container(
+                                                                    child:
+                                                                        RichText(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      text:
+                                                                          TextSpan(
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text: personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'name'],
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontSize:
+                                                                                  17,
+                                                                              color:
+                                                                                  Colors.black,
+                                                                              fontWeight:
+                                                                                  FontWeight.w900,
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' @${personaljiyikudianjiController.wodezhi?[index]['username']}',
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontSize:
+                                                                                  16,
+                                                                              fontWeight:
+                                                                                  FontWeight.w400,
+                                                                              color: Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const Text(
+                                                                  ' ·',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          17,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              84,
+                                                                              87,
+                                                                              105,
+                                                                              1),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w900),
+                                                                ),
+                                                                Text(
+                                                                  '${personaljiyikudianjiController.wodezhi?[index]['xiabiao'].length}个记忆项',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize: 16,
+                                                                    color: Color
+                                                                        .fromRGBO(
+                                                                            84,
+                                                                            87,
+                                                                            105,
+                                                                            1),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                              '${personaljiyikudianjiController.wodezhi?[index]['zhuti']}',
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Text(
+                                                              timuzhi(
+                                                                  personaljiyikudianjiController
                                                                               .wodezhi?[
                                                                           index]
-                                                                      [
-                                                                      'touxiang'] !=
-                                                                  null
-                                                              ? FileImage(File(
+                                                                      ['timu'],
                                                                   personaljiyikudianjiController
-                                                                              .wodezhi![
+                                                                              .wodezhi?[
+                                                                          index][
+                                                                      'xiabiao']),
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                              maxLines: 4,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Text(
+                                                              timuzhi(
+                                                                  personaljiyikudianjiController
+                                                                              .wodezhi?[
                                                                           index]
-                                                                      [
-                                                                      'touxiang']))
-                                                              : const AssetImage(
-                                                                  'assets/chuhui.png'),
-                                                        )),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          const SizedBox(
-                                                              height: 5),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child:
-                                                                    Container(
+                                                                      ['huida'],
+                                                                  personaljiyikudianjiController
+                                                                              .wodezhi?[
+                                                                          index][
+                                                                      'xiabiao']),
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                              maxLines: 7,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Row(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                42,
+                                                                                91,
+                                                                                255),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                142,
+                                                                                204,
+                                                                                255)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              0,
+                                                                              153,
+                                                                              255),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              195,
+                                                                              238,
+                                                                              255),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinlaqu(
+                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
+                                                                                personaljiyikudianjiController.wodezhi?[index]['laqu'],
+                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                    
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushilaqu(
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.swap_calls
+                                                                                : Icons.swap_calls,
+                                                                            color: isLiked
+                                                                                ? Colors.blue
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'laqu'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .blue
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                253,
+                                                                                156,
+                                                                                46),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                174,
+                                                                                120)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              102,
+                                                                              0),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              212,
+                                                                              163),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinshoucang(
+                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
+                                                                                personaljiyikudianjiController.wodezhi?[index]['shoucang'],
+                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushishoucang(
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.folder
+                                                                                : Icons.folder_open,
+                                                                            color: isLiked
+                                                                                ? Colors.orange
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'shoucang'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .orange
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        size: 20,
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                64,
+                                                                                64),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                206,
+                                                                                206)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              0,
+                                                                              0),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              186,
+                                                                              186),
+                                                                        ),
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinxihuan(
+                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
+                                                                                personaljiyikudianjiController.wodezhi?[index]['xihuan'],
+                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                    
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushixihuan(
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.favorite
+                                                                                : Icons.favorite_border,
+                                                                            color: isLiked
+                                                                                ? Colors.red
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'xihuan'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .red
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                237,
+                                                                                42,
+                                                                                255),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                185,
+                                                                                142,
+                                                                                255)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              225,
+                                                                              0,
+                                                                              255),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              233,
+                                                                              195,
+                                                                              255),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxintiwen(
+                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
+                                                                                personaljiyikudianjiController.wodezhi?[index]['tiwen'],
+                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushitiwen(
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.messenger
+                                                                                : Icons.messenger_outline,
+                                                                            color: isLiked
+                                                                                ? Colors.purpleAccent
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.wodezhi?[index]
+                                                                                [
+                                                                                'tiwen'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .purple
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                     const Spacer(
+                                                                    flex: 1),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                            ],
+                                          );
+                                        }),
+                                  )),
+                              MediaQuery.removePadding(
+                                  context: context,
+                                  removeTop: true,
+                                  removeBottom: true,
+                                  child: SizeCacheWidget(
+                                    child: ListView.builder(
+                                      cacheExtent: 500,
+                                        physics: physics,
+                                        itemCount: personaljiyikudianjiController
+                                                    .laquzhi ==
+                                                null
+                                            ? 0
+                                            : personaljiyikudianjiController
+                                                .laquzhi?.length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            children: [
+                                              const Divider(
+                                                color: Color.fromRGBO(
+                                                    223, 223, 223, 1),
+                                                thickness: 0.9,
+                                                height: 0.9,
+                                              ),
+                                    
+                                              InkWell(
+                                                onTap: () {
+                                                  jiyikudianjicontroller.cizhi(
+                                                      personaljiyikudianjiController
+                                                          .laquzhi![index]);
+                                                  handleClick(context,
+                                                      const jiyikudianji());
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 3.0,
+                                                      bottom: 3.0,
+                                                      right: 15,
+                                                      left: 2),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: () {},
+                                                          icon: CircleAvatar(
+                                                            radius: 21,
+                                                            backgroundImage: personaljiyikudianjiController
+                                                                                .laquzhi?[
+                                                                            index]
+                                                                        [
+                                                                        'touxiang'] !=
+                                                                    null
+                                                                ? FileImage(File(
+                                                                    personaljiyikudianjiController
+                                                                                .laquzhi![
+                                                                            index]
+                                                                        [
+                                                                        'touxiang']))
+                                                                : const AssetImage(
+                                                                    'assets/chuhui.png'),
+                                                          )),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                                height: 5),
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
                                                                   child:
-                                                                      RichText(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    text:
-                                                                        TextSpan(
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text: personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'name'],
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                17,
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight:
-                                                                                FontWeight.w900,
+                                                                      Container(
+                                                                    child:
+                                                                        RichText(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      text:
+                                                                          TextSpan(
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text: personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'name'],
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontSize:
+                                                                                  17,
+                                                                              color:
+                                                                                  Colors.black,
+                                                                              fontWeight:
+                                                                                  FontWeight.w900,
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text:
-                                                                              ' @${personaljiyikudianjiController.wodezhi?[index]['username']}',
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
-                                                                            color: Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' @${personaljiyikudianjiController.laquzhi?[index]['username']}',
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontSize:
+                                                                                  16,
+                                                                              fontWeight:
+                                                                                  FontWeight.w400,
+                                                                              color: Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1),
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                      ],
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                              const Text(
-                                                                ' ·',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        17,
+                                                                const Text(
+                                                                  ' ·',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          17,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              84,
+                                                                              87,
+                                                                              105,
+                                                                              1),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w900),
+                                                                ),
+                                                                Text(
+                                                                  '${personaljiyikudianjiController.laquzhi?[index]['xiabiao'].length}个记忆项',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize: 16,
                                                                     color: Color
                                                                         .fromRGBO(
                                                                             84,
@@ -924,1326 +1608,670 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             1),
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .w900),
-                                                              ),
-                                                              Text(
-                                                                '${personaljiyikudianjiController.wodezhi?[index]['xiabiao'].length}个记忆项',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 16,
-                                                                  color: Color
-                                                                      .fromRGBO(
-                                                                          84,
-                                                                          87,
-                                                                          105,
-                                                                          1),
+                                                                            .w400,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                              '${personaljiyikudianjiController.laquzhi?[index]['zhuti']}',
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Text(
-                                                            '${personaljiyikudianjiController.wodezhi?[index]['zhuti']}',
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Text(
-                                                            timuzhi(
-                                                                personaljiyikudianjiController
-                                                                            .wodezhi?[
-                                                                        index]
-                                                                    ['timu'],
-                                                                personaljiyikudianjiController
-                                                                            .wodezhi?[
-                                                                        index][
-                                                                    'xiabiao']),
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                            maxLines: 4,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Text(
-                                                            timuzhi(
-                                                                personaljiyikudianjiController
-                                                                            .wodezhi?[
-                                                                        index]
-                                                                    ['huida'],
-                                                                personaljiyikudianjiController
-                                                                            .wodezhi?[
-                                                                        index][
-                                                                    'xiabiao']),
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                            maxLines: 7,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Row(
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              42,
-                                                                              91,
-                                                                              255),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              142,
-                                                                              204,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            0,
-                                                                            153,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            195,
-                                                                            238,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinlaqu(
-                                                                              personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                              personaljiyikudianjiController.wodezhi?[index]['laqu'],
-                                                                              personaljiyikudianjiController.wodezhi![index]);
-
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushilaqu(
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.swap_calls
-                                                                              : Icons.swap_calls,
-                                                                          color: isLiked
-                                                                              ? Colors.blue
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'laqu'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .blue
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              253,
-                                                                              156,
-                                                                              46),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              174,
-                                                                              120)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            102,
-                                                                            0),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            212,
-                                                                            163),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinshoucang(
-                                                                              personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                              personaljiyikudianjiController.wodezhi?[index]['shoucang'],
-                                                                              personaljiyikudianjiController.wodezhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushishoucang(
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.folder
-                                                                              : Icons.folder_open,
-                                                                          color: isLiked
-                                                                              ? Colors.orange
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'shoucang'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .orange
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      size: 20,
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              64,
-                                                                              64),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              206,
-                                                                              206)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            0,
-                                                                            0),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            186,
-                                                                            186),
-                                                                      ),
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinxihuan(
-                                                                              personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                              personaljiyikudianjiController.wodezhi?[index]['xihuan'],
-                                                                              personaljiyikudianjiController.wodezhi![index]);
-
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushixihuan(
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.favorite
-                                                                              : Icons.favorite_border,
-                                                                          color: isLiked
-                                                                              ? Colors.red
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'xihuan'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .red
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              237,
-                                                                              42,
-                                                                              255),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              185,
-                                                                              142,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            225,
-                                                                            0,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            233,
-                                                                            195,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxintiwen(
-                                                                              personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                              personaljiyikudianjiController.wodezhi?[index]['tiwen'],
-                                                                              personaljiyikudianjiController.wodezhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushitiwen(
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.messenger
-                                                                              : Icons.messenger_outline,
-                                                                          color: isLiked
-                                                                              ? Colors.purpleAccent
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.wodezhi?[index]
-                                                                              [
-                                                                              'tiwen'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .purple
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                                   const Spacer(
-                                                                  flex: 1),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                          ],
-                                        );
-                                      })),
-                              MediaQuery.removePadding(
-                                  context: context,
-                                  removeTop: true,
-                                  removeBottom: true,
-                                  child: ListView.builder(
-                                      physics: physics,
-                                      itemCount: personaljiyikudianjiController
-                                                  .laquzhi ==
-                                              null
-                                          ? 0
-                                          : personaljiyikudianjiController
-                                              .laquzhi?.length,
-                                      itemBuilder: (context, index) {
-                                        return Column(
-                                          children: [
-                                            const Divider(
-                                              color: Color.fromRGBO(
-                                                  223, 223, 223, 1),
-                                              thickness: 0.9,
-                                              height: 0.9,
-                                            ),
-                                  
-                                            InkWell(
-                                              onTap: () {
-                                                jiyikudianjicontroller.cizhi(
-                                                    personaljiyikudianjiController
-                                                        .laquzhi![index]);
-                                                handleClick(context,
-                                                    const jiyikudianji());
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 3.0,
-                                                    bottom: 3.0,
-                                                    right: 15,
-                                                    left: 2),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () {},
-                                                        icon: CircleAvatar(
-                                                          radius: 21,
-                                                          backgroundImage: personaljiyikudianjiController
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Text(
+                                                              timuzhi(
+                                                                  personaljiyikudianjiController
                                                                               .laquzhi?[
                                                                           index]
-                                                                      [
-                                                                      'touxiang'] !=
-                                                                  null
-                                                              ? FileImage(File(
+                                                                      ['timu'],
                                                                   personaljiyikudianjiController
-                                                                              .laquzhi![
-                                                                          index]
-                                                                      [
-                                                                      'touxiang']))
-                                                              : const AssetImage(
-                                                                  'assets/chuhui.png'),
-                                                        )),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          const SizedBox(
-                                                              height: 5),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child:
-                                                                    Container(
-                                                                  child:
-                                                                      RichText(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    text:
-                                                                        TextSpan(
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text: personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'name'],
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                17,
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight:
-                                                                                FontWeight.w900,
-                                                                          ),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text:
-                                                                              ' @${personaljiyikudianjiController.laquzhi?[index]['username']}',
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
-                                                                            color: Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              const Text(
-                                                                ' ·',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        17,
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                            84,
-                                                                            87,
-                                                                            105,
-                                                                            1),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w900),
-                                                              ),
-                                                              Text(
-                                                                '${personaljiyikudianjiController.laquzhi?[index]['xiabiao'].length}个记忆项',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 16,
-                                                                  color: Color
-                                                                      .fromRGBO(
-                                                                          84,
-                                                                          87,
-                                                                          105,
-                                                                          1),
+                                                                              .laquzhi?[
+                                                                          index][
+                                                                      'xiabiao']),
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Text(
-                                                            '${personaljiyikudianjiController.laquzhi?[index]['zhuti']}',
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Text(
-                                                            timuzhi(
-                                                                personaljiyikudianjiController
-                                                                            .laquzhi?[
-                                                                        index]
-                                                                    ['timu'],
-                                                                personaljiyikudianjiController
-                                                                            .laquzhi?[
-                                                                        index][
-                                                                    'xiabiao']),
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                            maxLines: 4,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Text(
-                                                            timuzhi(
-                                                                personaljiyikudianjiController
-                                                                            .laquzhi?[
-                                                                        index]
-                                                                    ['huida'],
-                                                                personaljiyikudianjiController
-                                                                            .laquzhi?[
-                                                                        index][
-                                                                    'xiabiao']),
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                            maxLines: 7,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Row(
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                              maxLines: 4,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Text(
+                                                              timuzhi(
+                                                                  personaljiyikudianjiController
+                                                                              .laquzhi?[
+                                                                          index]
+                                                                      ['huida'],
+                                                                  personaljiyikudianjiController
+                                                                              .laquzhi?[
+                                                                          index][
+                                                                      'xiabiao']),
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                              maxLines: 7,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Row(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                42,
+                                                                                91,
+                                                                                255),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                142,
+                                                                                204,
+                                                                                255)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
                                                                               255,
-                                                                              42,
-                                                                              91,
+                                                                              0,
+                                                                              153,
                                                                               255),
-                                                                          end: Color.fromARGB(
+                                                                          dotSecondaryColor: Color.fromARGB(
                                                                               255,
-                                                                              142,
-                                                                              204,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            0,
-                                                                            153,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            195,
-                                                                            238,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinlaqu(
-                                                                              personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.laquzhi?[index]['laqu'],
-                                                                              personaljiyikudianjiController.laquzhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushilaqu(
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.swap_calls
-                                                                              : Icons.swap_calls,
-                                                                          color: isLiked
-                                                                              ? Colors.blue
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'laqu'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .blue
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              253,
-                                                                              156,
-                                                                              46),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              174,
-                                                                              120)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            102,
-                                                                            0),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            212,
-                                                                            163),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinshoucang(
-                                                                              personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.laquzhi?[index]['shoucang'],
-                                                                              personaljiyikudianjiController.laquzhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushishoucang(
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.folder
-                                                                              : Icons.folder_open,
-                                                                          color: isLiked
-                                                                              ? Colors.orange
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'shoucang'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .orange
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      size: 20,
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              64,
-                                                                              64),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              206,
-                                                                              206)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            0,
-                                                                            0),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            186,
-                                                                            186),
-                                                                      ),
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinxihuan(
-                                                                              personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.laquzhi?[index]['xihuan'],
-                                                                              personaljiyikudianjiController.laquzhi![index]);
-
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushixihuan(
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.favorite
-                                                                              : Icons.favorite_border,
-                                                                          color: isLiked
-                                                                              ? Colors.red
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'xihuan'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .red
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              237,
-                                                                              42,
+                                                                              195,
+                                                                              238,
                                                                               255),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              185,
-                                                                              142,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            225,
-                                                                            0,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            233,
-                                                                            195,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxintiwen(
-                                                                              personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.laquzhi?[index]['tiwen'],
-                                                                              personaljiyikudianjiController.laquzhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushitiwen(
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.messenger
-                                                                              : Icons.messenger_outline,
-                                                                          color: isLiked
-                                                                              ? Colors.purpleAccent
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.laquzhi?[index]
-                                                                              [
-                                                                              'tiwen'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .purple
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinlaqu(
+                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.laquzhi?[index]['laqu'],
+                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushilaqu(
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.swap_calls
+                                                                                : Icons.swap_calls,
+                                                                            color: isLiked
+                                                                                ? Colors.blue
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'laqu'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .blue
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
                                                                           result =
                                                                               Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
                                                                           );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                253,
+                                                                                156,
+                                                                                46),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                174,
+                                                                                120)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              102,
+                                                                              0),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              212,
+                                                                              163),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinshoucang(
+                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.laquzhi?[index]['shoucang'],
+                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushishoucang(
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.folder
+                                                                                : Icons.folder_open,
+                                                                            color: isLiked
+                                                                                ? Colors.orange
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'shoucang'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .orange
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        size: 20,
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                64,
+                                                                                64),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                206,
+                                                                                206)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              0,
+                                                                              0),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              186,
+                                                                              186),
+                                                                        ),
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinxihuan(
+                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.laquzhi?[index]['xihuan'],
+                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                    
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushixihuan(
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.favorite
+                                                                                : Icons.favorite_border,
+                                                                            color: isLiked
+                                                                                ? Colors.red
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'xihuan'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .red
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                237,
+                                                                                42,
+                                                                                255),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                185,
+                                                                                142,
+                                                                                255)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              225,
+                                                                              0,
+                                                                              255),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              233,
+                                                                              195,
+                                                                              255),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxintiwen(
+                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.laquzhi?[index]['tiwen'],
+                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushitiwen(
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.messenger
+                                                                                : Icons.messenger_outline,
+                                                                            color: isLiked
+                                                                                ? Colors.purpleAccent
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.laquzhi?[index]
+                                                                                [
+                                                                                'tiwen'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .purple
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                          ],
-                                        );
-                                      })),
-                              ListView.builder(itemBuilder: (context, index) {
-                                return null;
-                              }),
+                                              const SizedBox(height: 5),
+                                            ],
+                                          );
+                                        }),
+                                  )),
+                              SizeCacheWidget(
+                                child: ListView.builder(
+                                  cacheExtent: 500,
+                                  itemBuilder: (context, index) {
+                                  return null;
+                                }),
+                              ),
                               MediaQuery.removePadding(
                                   context: context,
                                   removeTop: true,
                                   removeBottom: true,
-                                  child: ListView.builder(
-                                      physics: physics,
-                                      itemCount: personaljiyikudianjiController
-                                                  .xihuanzhi ==
-                                              null
-                                          ? 0
-                                          : personaljiyikudianjiController
-                                              .xihuanzhi?.length,
-                                      itemBuilder: (context, index) {
-                                        return Column(
-                                          children: [
-                                            const Divider(
-                                              color: Color.fromRGBO(
-                                                  223, 223, 223, 1),
-                                              thickness: 0.9,
-                                              height: 0.9,
-                                            ),
-                                         
-                                            InkWell(
-                                              onTap: () {
-                                                jiyikudianjicontroller.cizhi(
-                                                    personaljiyikudianjiController
-                                                        .xihuanzhi![index]);
-                                                handleClick(context,
-                                                    const jiyikudianji());
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 3.0,
-                                                    bottom: 3.0,
-                                                    right: 15,
-                                                    left: 2),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () {},
-                                                        icon: CircleAvatar(
-                                                          radius: 21,
-                                                          backgroundImage: personaljiyikudianjiController
-                                                                              .xihuanzhi?[
-                                                                          index]
-                                                                      [
-                                                                      'touxiang'] !=
-                                                                  null
-                                                              ? FileImage(File(
-                                                                  personaljiyikudianjiController
-                                                                              .xihuanzhi![
-                                                                          index]
-                                                                      [
-                                                                      'touxiang']))
-                                                              : const AssetImage(
-                                                                  'assets/chuhui.png'),
-                                                        )),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          const SizedBox(
-                                                              height: 5),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child:
-                                                                    Container(
+                                  child: SizeCacheWidget(
+                                    child: ListView.builder(
+                                      cacheExtent: 500,
+                                        physics: physics,
+                                        itemCount: personaljiyikudianjiController
+                                                    .xihuanzhi ==
+                                                null
+                                            ? 0
+                                            : personaljiyikudianjiController
+                                                .xihuanzhi?.length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            children: [
+                                              const Divider(
+                                                color: Color.fromRGBO(
+                                                    223, 223, 223, 1),
+                                                thickness: 0.9,
+                                                height: 0.9,
+                                              ),
+                                           
+                                              InkWell(
+                                                onTap: () {
+                                                  jiyikudianjicontroller.cizhi(
+                                                      personaljiyikudianjiController
+                                                          .xihuanzhi![index]);
+                                                  handleClick(context,
+                                                      const jiyikudianji());
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 3.0,
+                                                      bottom: 3.0,
+                                                      right: 15,
+                                                      left: 2),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: () {},
+                                                          icon: CircleAvatar(
+                                                            radius: 21,
+                                                            backgroundImage: personaljiyikudianjiController
+                                                                                .xihuanzhi?[
+                                                                            index]
+                                                                        [
+                                                                        'touxiang'] !=
+                                                                    null
+                                                                ? FileImage(File(
+                                                                    personaljiyikudianjiController
+                                                                                .xihuanzhi![
+                                                                            index]
+                                                                        [
+                                                                        'touxiang']))
+                                                                : const AssetImage(
+                                                                    'assets/chuhui.png'),
+                                                          )),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                                height: 5),
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
                                                                   child:
-                                                                      RichText(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    text:
-                                                                        TextSpan(
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text: personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'name'],
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                17,
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight:
-                                                                                FontWeight.w900,
+                                                                      Container(
+                                                                    child:
+                                                                        RichText(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      text:
+                                                                          TextSpan(
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text: personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'name'],
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontSize:
+                                                                                  17,
+                                                                              color:
+                                                                                  Colors.black,
+                                                                              fontWeight:
+                                                                                  FontWeight.w900,
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text:
-                                                                              ' @${personaljiyikudianjiController.xihuanzhi?[index]['username']}',
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
-                                                                            color: Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' @${personaljiyikudianjiController.xihuanzhi?[index]['username']}',
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              fontSize:
+                                                                                  16,
+                                                                              fontWeight:
+                                                                                  FontWeight.w400,
+                                                                              color: Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1),
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                      ],
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                              const Text(
-                                                                ' ·',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        17,
+                                                                const Text(
+                                                                  ' ·',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          17,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              84,
+                                                                              87,
+                                                                              105,
+                                                                              1),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w900),
+                                                                ),
+                                                                Text(
+                                                                  '${personaljiyikudianjiController.xihuanzhi?[index]['xiabiao'].length}个记忆项',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize: 16,
                                                                     color: Color
                                                                         .fromRGBO(
                                                                             84,
@@ -2252,540 +2280,526 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             1),
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .w900),
-                                                              ),
-                                                              Text(
-                                                                '${personaljiyikudianjiController.xihuanzhi?[index]['xiabiao'].length}个记忆项',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 16,
-                                                                  color: Color
-                                                                      .fromRGBO(
-                                                                          84,
-                                                                          87,
-                                                                          105,
-                                                                          1),
+                                                                            .w400,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                              '${personaljiyikudianjiController.xihuanzhi?[index]['zhuti']}',
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Text(
-                                                            '${personaljiyikudianjiController.xihuanzhi?[index]['zhuti']}',
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Text(
-                                                            timuzhi(
-                                                                personaljiyikudianjiController
-                                                                            .xihuanzhi?[
-                                                                        index]
-                                                                    ['timu'],
-                                                                personaljiyikudianjiController
-                                                                            .xihuanzhi?[
-                                                                        index][
-                                                                    'xiabiao']),
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                            maxLines: 4,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Text(
-                                                            timuzhi(
-                                                                personaljiyikudianjiController
-                                                                            .xihuanzhi?[
-                                                                        index]
-                                                                    ['huida'],
-                                                                personaljiyikudianjiController
-                                                                            .xihuanzhi?[
-                                                                        index][
-                                                                    'xiabiao']),
-                                                            style: const TextStyle(
-                                                                fontSize: 17,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black),
-                                                            maxLines: 7,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          Row(
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Text(
+                                                              timuzhi(
+                                                                  personaljiyikudianjiController
+                                                                              .xihuanzhi?[
+                                                                          index]
+                                                                      ['timu'],
+                                                                  personaljiyikudianjiController
+                                                                              .xihuanzhi?[
+                                                                          index][
+                                                                      'xiabiao']),
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                              maxLines: 4,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Text(
+                                                              timuzhi(
+                                                                  personaljiyikudianjiController
+                                                                              .xihuanzhi?[
+                                                                          index]
+                                                                      ['huida'],
+                                                                  personaljiyikudianjiController
+                                                                              .xihuanzhi?[
+                                                                          index][
+                                                                      'xiabiao']),
+                                                              style: const TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black),
+                                                              maxLines: 7,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Row(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                42,
+                                                                                91,
+                                                                                255),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                142,
+                                                                                204,
+                                                                                255)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
                                                                               255,
-                                                                              42,
-                                                                              91,
+                                                                              0,
+                                                                              153,
                                                                               255),
-                                                                          end: Color.fromARGB(
+                                                                          dotSecondaryColor: Color.fromARGB(
                                                                               255,
-                                                                              142,
-                                                                              204,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            0,
-                                                                            153,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            195,
-                                                                            238,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinlaqu(
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['laqu'],
-                                                                              personaljiyikudianjiController.xihuanzhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushilaqu(
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.swap_calls
-                                                                              : Icons.swap_calls,
-                                                                          color: isLiked
-                                                                              ? Colors.blue
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'laqu'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .blue
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              253,
-                                                                              156,
-                                                                              46),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              174,
-                                                                              120)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            102,
-                                                                            0),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            212,
-                                                                            163),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinshoucang(
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['shoucang'],
-                                                                              personaljiyikudianjiController.xihuanzhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushishoucang(
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.folder
-                                                                              : Icons.folder_open,
-                                                                          color: isLiked
-                                                                              ? Colors.orange
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'shoucang'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .orange
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      size: 20,
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              64,
-                                                                              64),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              206,
-                                                                              206)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            0,
-                                                                            0),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            255,
-                                                                            186,
-                                                                            186),
-                                                                      ),
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxinxihuan(
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['xihuan'],
-                                                                              personaljiyikudianjiController.xihuanzhi![index]);
-
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushixihuan(
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.favorite
-                                                                              : Icons.favorite_border,
-                                                                          color: isLiked
-                                                                              ? Colors.red
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'xihuan'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .red
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              237,
-                                                                              42,
+                                                                              195,
+                                                                              238,
                                                                               255),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              185,
-                                                                              142,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            225,
-                                                                            0,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            233,
-                                                                            195,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikucontroller.shuaxintiwen(
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                              personaljiyikudianjiController.xihuanzhi?[index]['tiwen'],
-                                                                              personaljiyikudianjiController.xihuanzhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          chushi();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikucontroller.chushitiwen(
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.messenger
-                                                                              : Icons.messenger_outline,
-                                                                          color: isLiked
-                                                                              ? Colors.purpleAccent
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          personaljiyikudianjiController.xihuanzhi?[index]
-                                                                              [
-                                                                              'tiwen'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .purple
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinlaqu(
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['laqu'],
+                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushilaqu(
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.swap_calls
+                                                                                : Icons.swap_calls,
+                                                                            color: isLiked
+                                                                                ? Colors.blue
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'laqu'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .blue
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
                                                                           result =
                                                                               Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
                                                                           );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                253,
+                                                                                156,
+                                                                                46),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                174,
+                                                                                120)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              102,
+                                                                              0),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              212,
+                                                                              163),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinshoucang(
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['shoucang'],
+                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushishoucang(
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.folder
+                                                                                : Icons.folder_open,
+                                                                            color: isLiked
+                                                                                ? Colors.orange
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'shoucang'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .orange
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        size: 20,
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                64,
+                                                                                64),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                255,
+                                                                                206,
+                                                                                206)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              0,
+                                                                              0),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              255,
+                                                                              186,
+                                                                              186),
+                                                                        ),
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxinxihuan(
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['xihuan'],
+                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                    
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushixihuan(
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.favorite
+                                                                                : Icons.favorite_border,
+                                                                            color: isLiked
+                                                                                ? Colors.red
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'xihuan'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .red
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                SizedBox(
+                                                                  width: 70,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      LikeButton(
+                                                                        circleColor: const CircleColor(
+                                                                            start: Color.fromARGB(
+                                                                                255,
+                                                                                237,
+                                                                                42,
+                                                                                255),
+                                                                            end: Color.fromARGB(
+                                                                                255,
+                                                                                185,
+                                                                                142,
+                                                                                255)),
+                                                                        bubblesColor:
+                                                                            const BubblesColor(
+                                                                          dotPrimaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              225,
+                                                                              0,
+                                                                              255),
+                                                                          dotSecondaryColor: Color.fromARGB(
+                                                                              255,
+                                                                              233,
+                                                                              195,
+                                                                              255),
+                                                                        ),
+                                                                        size: 20,
+                                                                        onTap:
+                                                                            (isLiked) async {
+                                                                          if (denglu ==
+                                                                              true) {
+                                                                            personaljiyikucontroller.shuaxintiwen(
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['tiwen'],
+                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                            return !isLiked;
+                                                                          } else {
+                                                                            chushi();
+                                                                            return isLiked;
+                                                                          }
+                                                                        },
+                                                                        isLiked: personaljiyikucontroller.chushitiwen(
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'id']),
+                                                                        likeBuilder:
+                                                                            (bool
+                                                                                isLiked) {
+                                                                          return Icon(
+                                                                            isLiked
+                                                                                ? Icons.messenger
+                                                                                : Icons.messenger_outline,
+                                                                            color: isLiked
+                                                                                ? Colors.purpleAccent
+                                                                                : const Color.fromRGBO(84, 87, 105, 1),
+                                                                            size:
+                                                                                20,
+                                                                          );
+                                                                        },
+                                                                        likeCount:
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]
+                                                                                [
+                                                                                'tiwen'],
+                                                                        countBuilder: (int?
+                                                                                count,
+                                                                            bool
+                                                                                isLiked,
+                                                                            String
+                                                                                text) {
+                                                                          var color = isLiked
+                                                                              ? Colors
+                                                                                  .purple
+                                                                              : const Color.fromRGBO(
+                                                                                  84,
+                                                                                  87,
+                                                                                  105,
+                                                                                  1);
+                                                                          Widget
+                                                                              result;
+                                                                          if (count ==
+                                                                              0) {
+                                                                            result =
+                                                                                Text(
+                                                                              "love",
+                                                                              style:
+                                                                                  TextStyle(color: color),
+                                                                            );
+                                                                          }
+                                                                          result =
+                                                                              Text(
+                                                                            text,
+                                                                            style: TextStyle(
+                                                                                color: color,
+                                                                                fontWeight: FontWeight.w700),
+                                                                          );
+                                                                          return result;
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                                const Spacer(
+                                                                    flex: 1),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                          ],
-                                        );
-                                      })),
+                                              const SizedBox(height: 5),
+                                            ],
+                                          );
+                                        }),
+                                  )),
                             ],
                           );
                         });

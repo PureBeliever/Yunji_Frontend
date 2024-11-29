@@ -51,7 +51,13 @@ dependencies:
   custom_refresh_indicator: ^4.0.1
   easy_refresh: ^3.4.0
   path: ^1.8.0
-  alarm: ^4.0.9
+  flutter_local_notifications: ^18.0.1
+  permission_handler: ^11.3.1
+  timezone: ^0.10.0
+  alarm: ^4.0.12
+  app_settings: ^5.1.1
+  keframe: ^3.0.0
+  
   
 dev_dependencies:
   flutter_test:

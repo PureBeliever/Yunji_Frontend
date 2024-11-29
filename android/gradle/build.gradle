@@ -36,6 +36,11 @@ compileOptions {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17
 }
+  configurations.all {
+        resolutionStrategy {
+            force "androidx.appcompat:appcompat:1.6.1"
+        }
+    }
 
 kotlinOptions {
     jvmTarget = '17'
