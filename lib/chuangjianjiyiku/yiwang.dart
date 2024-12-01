@@ -47,6 +47,7 @@ class _Yiwang extends State<Yiwang> {
     return Padding(
       padding: const EdgeInsets.only(left: 17.0, top: 15),
       child: ChoiceChip(
+        backgroundColor: Colors.white,
         label: Text(
           jiyi[index],
           softWrap: true,
@@ -141,8 +142,7 @@ class _Yiwang extends State<Yiwang> {
       body: ListView(
         children: [
           Padding(
-             padding:
-                EdgeInsets.only(left: 10.0, right: 10.0),
+            padding: EdgeInsets.only(left: 10.0, right: 10.0),
             child: Card(
               color: Color.fromARGB(255, 232, 232, 232),
               elevation: 3,
