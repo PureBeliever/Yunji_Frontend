@@ -57,10 +57,9 @@ class _Jiyiku extends State<Jiyiku> {
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   final List<Item> _data = generateItems(1);
-  
+
   int heng = 0;
   String? zhuti;
-
 
   @override
   void dispose() {
@@ -68,12 +67,15 @@ class _Jiyiku extends State<Jiyiku> {
     super.dispose();
   }
 
+  void initState() {
+    setState(() {
+      _data.add(Item(shu: heng, wen: '您有什么疑惑或学习目标', da: '请输入讲解的内容'));
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-     setState(() {
-                    _data.add(
-                        Item(shu: heng, wen: '您有什么疑惑或学习目标', da: '请输入讲解的内容'));
-                  });
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -126,8 +128,8 @@ class _Jiyiku extends State<Jiyiku> {
               padding: const EdgeInsets.only(right: 10.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.only(left: 5, right: 5, top: 0, bottom: 0),
+                  padding: const EdgeInsets.only(
+                      left: 5, right: 5, top: 0, bottom: 0),
                   backgroundColor: Colors.blue,
                 ),
                 child: const Text(
@@ -189,6 +191,7 @@ class _Jiyiku extends State<Jiyiku> {
                           dragToClose: true);
                       FocusScope.of(context).requestFocus(_focusNode);
                     } else {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       jiyikucontroller.cizhi(timu, huida, zhuti!);
                       handleClick(context, const Yiwang());
                     }
@@ -212,8 +215,8 @@ class _Jiyiku extends State<Jiyiku> {
                 width: double.infinity,
               ),
               Theme(
-                data:
-                    Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                data: Theme.of(context)
+                    .copyWith(dividerColor: Colors.transparent),
                 child: const sizeExpansionTile(
                   collapsedIconColor: Colors.black,
                   iconColor: Colors.blue,
@@ -265,7 +268,8 @@ class _Jiyiku extends State<Jiyiku> {
                             fontWeight: FontWeight.w800),
                       ),
                       TextSpan(
-                        text: "第二步：教学\n\n" "创造一个场景，在这个场景中将自己学到的知识讲授给“别人”，过程中遇到的问题，比如说不清楚的，模棱两可的，就说明这些知识点并没有熟练掌握，尝试教授和发现薄弱点就是这一步的重点，",
+                        text: "第二步：教学\n\n"
+                            "创造一个场景，在这个场景中将自己学到的知识讲授给“别人”，过程中遇到的问题，比如说不清楚的，模棱两可的，就说明这些知识点并没有熟练掌握，尝试教授和发现薄弱点就是这一步的重点，",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
@@ -279,7 +283,8 @@ class _Jiyiku extends State<Jiyiku> {
                             fontWeight: FontWeight.w800),
                       ),
                       TextSpan(
-                        text: "第三步：纠错\n\n" "在教授的过程中说错的、说不清楚的、模棱两可的知识，需要进行纠错和重新学习，得以强化，直到可以顺利的教授相应的知识\n\n",
+                        text: "第三步：纠错\n\n"
+                            "在教授的过程中说错的、说不清楚的、模棱两可的知识，需要进行纠错和重新学习，得以强化，直到可以顺利的教授相应的知识\n\n",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
@@ -293,7 +298,8 @@ class _Jiyiku extends State<Jiyiku> {
                             fontWeight: FontWeight.w800),
                       ),
                       TextSpan(
-                        text: "第四步：简化\n\n" "对上面学习的内容进行提炼、简化，以至于让一个非专业人士（60岁的老人或10岁的小孩）都能听懂，简化知识的过程，将极大程度的学习知识\n\n",
+                        text: "第四步：简化\n\n"
+                            "对上面学习的内容进行提炼、简化，以至于让一个非专业人士（60岁的老人或10岁的小孩）都能听懂，简化知识的过程，将极大程度的学习知识\n\n",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
@@ -439,7 +445,8 @@ class _Jiyiku extends State<Jiyiku> {
             body: Padding(
                 padding: const EdgeInsets.only(left: 17.0, right: 9),
                 child: TextFormField(
-                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 16),
                   minLines: 1,
                   maxLines: 27,
                   maxLength: 1500,
@@ -466,8 +473,8 @@ class _Jiyiku extends State<Jiyiku> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       const Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 25, top: 20),
+                                        padding:
+                                            EdgeInsets.only(left: 25, top: 20),
                                         child: Text(
                                           '编辑记忆库',
                                           style: TextStyle(

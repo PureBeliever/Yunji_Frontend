@@ -1143,9 +1143,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                         InkWell(
                           onTap: () async {
-                            // zhuce();
-                            AppSettings.openAppSettings(
-                                type: AppSettingsType.settings);
+                            zhuce();
+                          
                           },
                           child: ListTile(
                             leading: Padding(

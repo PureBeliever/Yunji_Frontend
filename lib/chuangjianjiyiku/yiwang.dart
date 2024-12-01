@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:app_settings/app_settings.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -20,7 +23,8 @@ class _Yiwang extends State<Yiwang> {
   final settingzhanghaoxiugaicontroller =
       Get.put(Settingzhanghaoxiugaicontroller());
   final jiyikucontroller = Get.put(Jiyikucontroller());
-
+  bool message = false;
+  bool alarm_information = false;
   List<List<int>> shijian = [
     [0],
     [24, 168, 336],
@@ -113,7 +117,6 @@ class _Yiwang extends State<Yiwang> {
 
                 DateTime thirtyMinutesLater = now.add(Duration(minutes: 1));
 
-            
                 baocunjiyiku(
                     stringTimu,
                     stringhuida,
@@ -137,11 +140,86 @@ class _Yiwang extends State<Yiwang> {
       ),
       body: ListView(
         children: [
+          Padding(
+             padding:
+                EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Card(
+              color: Color.fromARGB(255, 232, 232, 232),
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Column(
+                children: [
+                  SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Transform.scale(
+                        scale: 0.7,
+                        child: CupertinoSwitch(
+                          value: message,
+                          onChanged: (value) {
+                            setState(() {
+                              message = value;
+                            });
+                          },
+                        ),
+                      ),
+                      Text('信息通知',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(84, 87, 105, 1),
+                              fontSize: 16)),
+                      SizedBox(width: 20),
+                      Transform.scale(
+                        scale: 0.7,
+                        child: CupertinoSwitch(
+                          value: alarm_information,
+                          onChanged: (value) {
+                            setState(() {
+                              alarm_information = value;
+                            });
+                          },
+                        ),
+                      ),
+                      Text('闹钟信息通知',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(84, 87, 105, 1),
+                              fontSize: 16)),
+                    ],
+                  ),
+                  RichText(
+                      text: TextSpan(children: <TextSpan>[
+                    TextSpan(
+                        text: '若需信息或闹钟提醒复习,需点击并打开：',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromRGBO(84, 87, 105, 1),
+                            fontSize: 16)),
+                    TextSpan(
+                        text: '自启动权限',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.green,
+                          fontSize: 16,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            AppSettings.openAppSettings(
+                                type: AppSettingsType.settings);
+                          })
+                  ])),
+                  SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ),
           Center(
             child: Image.asset(
-                "assets/yiwang.jpg",
-                width: double.infinity,
-              ),
+              "assets/yiwang.jpg",
+              width: double.infinity,
+            ),
           ),
           const Padding(
             padding:
