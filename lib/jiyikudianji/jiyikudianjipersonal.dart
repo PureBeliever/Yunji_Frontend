@@ -1053,7 +1053,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -1162,7 +1162,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.wodezhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -1272,7 +1272,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -1381,7 +1381,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.wodezhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -1718,7 +1718,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.laquzhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -1827,7 +1827,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.laquzhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -1937,7 +1937,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -2046,7 +2046,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.laquzhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -2390,7 +2390,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.xihuanzhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -2499,7 +2499,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.xihuanzhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -2609,7 +2609,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
@@ -2718,7 +2718,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.xihuanzhi![index]);
                                                                             return !isLiked;
                                                                           } else {
-                                                                            chushi();
+                                                                            duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },

@@ -250,7 +250,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                       const Padding(
                         padding: EdgeInsets.only(
                             left: 25, top: 10, bottom: 20),
-                        child: Text('放弃更改?', style: TextStyle(fontSize: 15)),
+                        child: Text('放弃更改?', style: TextStyle(fontSize: 16)),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 7),
@@ -264,7 +264,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                               child: const Text(
                                 '取消',
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w900,
                                     color: Colors.black),
                               ),
@@ -287,7 +287,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                               child: const Text(
                                 '放弃',
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w900,
                                     color: Colors.black),
                               ),
@@ -348,7 +348,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                 padding: EdgeInsets.only(
                                     left: 25, top: 10, bottom: 20),
                                 child: Text('放弃更改?',
-                                    style: TextStyle(fontSize: 15)),
+                                    style: TextStyle(fontSize: 16)),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 7),
@@ -362,7 +362,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       child: const Text(
                                         '取消',
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 17,
                                             fontWeight: FontWeight.w900,
                                             color: Colors.black),
                                       ),
@@ -387,7 +387,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       child: const Text(
                                         '放弃',
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 17,
                                             fontWeight: FontWeight.w900,
                                             color: Colors.black),
                                       ),
@@ -447,13 +447,13 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                               child: const Text(
                                 '保存',
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w900),
+                                    fontSize: 17, fontWeight: FontWeight.w900),
                               ),
                             )
                           : const Text(
                               '保存',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 17,
                                 fontWeight: FontWeight.w900,
                                 color: Color.fromARGB(255, 119, 118, 118),
                               ),
@@ -845,7 +845,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                                       child: const Text(
                                                         '取消',
                                                         style: TextStyle(
-                                                            fontSize: 16,
+                                                            fontSize: 17,
                                                             fontWeight:
                                                                 FontWeight.w900,
                                                             color:
@@ -861,7 +861,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                                       child: const Text(
                                                         '移除',
                                                         style: TextStyle(
-                                                            fontSize: 16,
+                                                            fontSize: 17,
                                                             fontWeight:
                                                                 FontWeight.w900,
                                                             color: Colors.red),
@@ -878,7 +878,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                                   child: const Text(
                                                     '确定',
                                                     style: TextStyle(
-                                                        fontSize: 16,
+                                                        fontSize: 17,
                                                         fontWeight:
                                                             FontWeight.w900,
                                                         color: Colors.black),

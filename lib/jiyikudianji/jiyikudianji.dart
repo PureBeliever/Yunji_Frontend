@@ -51,7 +51,6 @@ class Jiyikudianjicontroller extends GetxController {
     update();
   }
 
-
 }
 
 List<Item> generateItems(int numberOfItems, List<int> xiabiao,
@@ -140,7 +139,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Color.fromRGBO(84, 87, 105, 1),
-                                fontSize: 15,
+                                fontSize: 16,
                               ),
                             )
                           ],
@@ -148,7 +147,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                       ],
                     ),
                     SizedBox(
-                      height: 25,
+                      height: 30,
                       width: 55,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -158,7 +157,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         child: const Text(
                           "关注",
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.w900,
                               color: Colors.white),
                         ),
@@ -193,7 +192,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               title: Text(
                                 item.headerValue,
                                 style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700),
+                                    fontSize: 17, fontWeight: FontWeight.w700),
                               ),
                             ),
                           );
@@ -201,7 +200,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         body: ListTile(
                           title: Text(item.expandedValue,
                               style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w700)),
+                                  fontSize: 17, fontWeight: FontWeight.w700)),
                         ),
                         isExpanded: item.isExpanded,
                       );
@@ -221,7 +220,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                     children: [
                       Text('${jiyikudianjicontroller.zhi['laqu']} ',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w900)),
+                              fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
                         '拉取',
                         style: TextStyle(
@@ -233,7 +232,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                       const Spacer(flex: 2),
                       Text('${jiyikudianjicontroller.zhi['shoucang']} ',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w900)),
+                              fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
                         '收藏',
                         style: TextStyle(
@@ -245,7 +244,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                       const Spacer(flex: 2),
                       Text('${jiyikudianjicontroller.zhi['xihuan']} ',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w900)),
+                              fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
                         '喜欢',
                         style: TextStyle(
@@ -257,7 +256,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                       const Spacer(flex: 2),
                       Text('${jiyikudianjicontroller.zhi['tiwen']} ',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w900)),
+                              fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
                         '回复',
                         style: TextStyle(

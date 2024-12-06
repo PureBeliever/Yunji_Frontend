@@ -53,7 +53,10 @@ void baocunjiyiku(
     List<int> code,
     DateTime dingshi,
     int jindu,
-    List<int> xiabiao) async {
+    List<int> xiabiao,
+    bool duanxin,
+    bool naozhong,
+    ) async {
   Map<String, dynamic> formdata = {
     'username': username,
     'timu': timu,
@@ -62,7 +65,10 @@ void baocunjiyiku(
     'code': code,
     'dingshi': dingshi.toString(),
     'jindu': jindu,
-    'xiabiao': xiabiao
+    'xiabiao': xiabiao,
+    'duanxin':duanxin,
+    'naozhong':naozhong,
+   
   };
   Map<String, String> header = {
     'Content-Type': 'application/json',

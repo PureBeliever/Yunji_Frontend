@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:like_button/like_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart' as toast;
+import 'package:yunji/fuxi/fuxi_page.dart';
 import 'package:yunji/modified_component/ball_indicator.dart';
 import 'package:yunji/personal/bianpersonal_page.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
@@ -79,43 +80,6 @@ class NotificationHelper {
     await _notificationsPlugin.initialize(initializationSettings);
   }
 
-//  显示通知
-  Future<void> showNotification(
-      {required String title, required String body}) async {
-    // 安卓的通知
-    // 'your channel id'：用于指定通知通道的ID。
-    // 'your channel name'：用于指定通知通道的名称。
-    // 'your channel description'：用于指定通知通道的描述。
-    // Importance.max：用于指定通知的重要性，设置为最高级别。
-    // Priority.high：用于指定通知的优先级，设置为高优先级。
-    // 'ticker'：用于指定通知的提示文本，即通知出现在通知中心的文本内容。
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your.channel.id', '提醒信息通知',
-            channelDescription: '提醒复习时使用的通知类别',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-
-    // ios的通知
-    const String darwinNotificationCategoryPlain = 'plainCategory';
-    const DarwinNotificationDetails iosNotificationDetails =
-        DarwinNotificationDetails(
-      categoryIdentifier: darwinNotificationCategoryPlain, // 通知分类
-    );
-    // 创建跨平台通知
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidNotificationDetails, iOS: iosNotificationDetails);
-
-    // 发起一个通知
-    await _notificationsPlugin.show(
-      1,
-      title,
-      body,
-      platformChannelSpecifics,
-    );
-  }
-
-// 定时通知
   Future<void> zonedScheduleNotification(
       {required int id,
       required String title,
@@ -160,10 +124,10 @@ final beicontroller = Get.put(Beicontroller());
 final headcontroller = Get.put(Headcontroller());
 final maincontroller = Get.put(Maincontroller());
 final jiyikudianjicontroller = Get.put(Jiyikudianjicontroller());
+final fuxiController = Get.put(FuxiController());
 final jiyikudianjipersonalController =
     Get.put(JiyikudianjipersonalController());
 bool denglu = false;
-final NotificationHelper _notificationHelper = NotificationHelper();
 
 BuildContext? contexts;
 
@@ -298,312 +262,157 @@ Future<void> _onEvent(AuthResponseModel event) async {
       event.resultCode != '600016' &&
       event.resultCode != '600015' &&
       event.resultCode != '600012') {
-    String code = ' ';
-    bool sendCodeBtn = true;
-    int seconds = 60;
-    bool shoujifou = false;
-    bool cishu = true;
-    zhi = false;
-    String shoujihao = ' ';
-    showTimer() {
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        seconds--;
-        if (seconds == 0) {
-          timer.cancel();
-          sendCodeBtn = true;
-          seconds = 60;
-        }
-      });
-    }
+    duanxinyanzheng();
+  }
+}
 
-    showDialog(
-      context: contexts!,
-      builder: (BuildContext context) {
-        // ignore: deprecated_member_use
-        return WillPopScope(
-          onWillPop: () async {
-            FocusManager.instance.primaryFocus?.unfocus();
-            return false;
-          },
-          child: Dialog(
-              child: SizedBox(
-            height: 320,
-            width: 200,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, top: 10, bottom: 10),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(width: 8),
-                      const Text(
-                        '注册登录',
-                        style: TextStyle(
-                            fontSize: 21, fontWeight: FontWeight.w800),
-                      ),
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(
-                            Icons.clear,
-                            color: Colors.black,
-                          ))
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    cursorColor: Colors.blue,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                    maxLines: 1,
-                    maxLength: 11,
-                    onChanged: (value) {
-                      shoujihao = value;
-                    },
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 2),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      border: const OutlineInputBorder(),
-                      labelText: '手机号',
-                      labelStyle: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromARGB(255, 119, 118, 118),
-                      ),
-                      counterText: "",
+void duanxinyanzheng() {
+  String code = ' ';
+  bool sendCodeBtn = true;
+  int seconds = 60;
+  bool shoujifou = false;
+  bool cishu = true;
+  zhi = false;
+  String shoujihao = ' ';
+  showTimer() {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      seconds--;
+      if (seconds == 0) {
+        timer.cancel();
+        sendCodeBtn = true;
+        seconds = 60;
+      }
+    });
+  }
+
+  showDialog(
+    context: contexts!,
+    builder: (BuildContext context) {
+      // ignore: deprecated_member_use
+      return WillPopScope(
+        onWillPop: () async {
+          FocusManager.instance.primaryFocus?.unfocus();
+          return false;
+        },
+        child: Dialog(
+            child: SizedBox(
+          height: 320,
+          width: 200,
+          child: Padding(
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(width: 8),
+                    const Text(
+                      '注册登录',
+                      style:
+                          TextStyle(fontSize: 21, fontWeight: FontWeight.w800),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          cursorColor: Colors.blue,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                          maxLines: 1,
-                          maxLength: 4,
-                          onChanged: (value) {
-                            code = value;
-                          },
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.blue, width: 2),
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            border: const OutlineInputBorder(),
-                            labelText: '验证码',
-                            labelStyle: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              color: Color.fromARGB(255, 119, 118, 118),
-                            ),
-                            counterText: "",
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      TextButton(
-                        child: const Text(
-                          "获取验证码",
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        onPressed: () {
-                          RegExp regex = RegExp(r'^\d*$');
-                          if (shoujihao.length < 11) {
-                            shoujifou = false;
-                            toast.toastification.show(
-                                context: context,
-                                type: toast.ToastificationType.warning,
-                                style: toast.ToastificationStyle.flatColored,
-                                title: const Text("手机号位数异常",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 17)),
-                                description: const Text(
-                                  "手机号位数异常",
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 119, 118, 118),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                alignment: Alignment.topLeft,
-                                autoCloseDuration: const Duration(seconds: 4),
-                                borderRadius: BorderRadius.circular(12.0),
-                                boxShadow: toast.lowModeShadow,
-                                dragToClose: true);
-                          } else if (!regex.hasMatch(shoujihao)) {
-                            shoujifou = false;
-                            toast.toastification.show(
-                                context: context,
-                                type: toast.ToastificationType.warning,
-                                style: toast.ToastificationStyle.flatColored,
-                                title: const Text("手机号数值异常",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 17)),
-                                description: const Text(
-                                  "手机号数值异常",
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 119, 118, 118),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                alignment: Alignment.topLeft,
-                                autoCloseDuration: const Duration(seconds: 4),
-                                borderRadius: BorderRadius.circular(12.0),
-                                boxShadow: toast.lowModeShadow,
-                                dragToClose: true);
-                          } else {
-                            if (sendCodeBtn == true) {
-                              shoujifou = true;
-                              duanxin(shoujihao);
-                              toast.toastification.show(
-                                  context: context,
-                                  type: toast.ToastificationType.success,
-                                  style: toast.ToastificationStyle.flatColored,
-                                  title: const Text("验证码已发送",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 17)),
-                                  description: const Text(
-                                    "验证码已发送",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 119, 118, 118),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  alignment: Alignment.topRight,
-                                  autoCloseDuration: const Duration(seconds: 4),
-                                  primaryColor: const Color(0xff047aff),
-                                  backgroundColor: const Color(0xffedf7ff),
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  boxShadow: toast.lowModeShadow,
-                                  dragToClose: true);
-                              sendCodeBtn = false;
-                              showTimer();
-                            } else {
-                              toast.toastification.show(
-                                  context: context,
-                                  type: toast.ToastificationType.success,
-                                  style: toast.ToastificationStyle.flatColored,
-                                  title: Text("需等待$seconds秒",
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 17)),
-                                  description: Text(
-                                    "需等待$seconds秒",
-                                    style: const TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 119, 118, 118),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  alignment: Alignment.topRight,
-                                  autoCloseDuration: const Duration(seconds: 4),
-                                  primaryColor: const Color(0xff047aff),
-                                  backgroundColor: const Color(0xffedf7ff),
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  boxShadow: toast.lowModeShadow,
-                                  dragToClose: true);
-                            }
-                          }
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
                         },
-                      ),
-                    ],
+                        child: const Icon(
+                          Icons.clear,
+                          color: Colors.black,
+                        ))
+                  ],
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  cursorColor: Colors.blue,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  maxLength: 11,
+                  onChanged: (value) {
+                    shoujihao = value;
+                  },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      borderSide:
+                          const BorderSide(color: Colors.black, width: 2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 2),
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    border: const OutlineInputBorder(),
+                    labelText: '手机号',
+                    labelStyle: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: Color.fromARGB(255, 119, 118, 118),
+                    ),
+                    counterText: "",
                   ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 30.0),
-                        child: Checkbox(
-                          value: true,
-                          activeColor: Colors.blue,
-                          onChanged: (bool? value) {},
-                        ),
-                      ),
-                      Expanded(
-                        child: RichText(
-                          text: const TextSpan(
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 119, 118, 118),
-                                fontSize: 14),
-                            children: [
-                              TextSpan(text: '我已阅读并同意'),
-                              TextSpan(
-                                text: '使用协议',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              TextSpan(text: '和'),
-                              TextSpan(
-                                text: '隐私协议,',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              TextSpan(text: '未注册绑定的手机号验证成功后将自动注册')
-                            ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        cursorColor: Colors.blue,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        maxLength: 4,
+                        onChanged: (value) {
+                          code = value;
+                        },
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.black, width: 2),
+                            borderRadius: BorderRadius.circular(25.0),
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          border: const OutlineInputBorder(),
+                          labelText: '验证码',
+                          labelStyle: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: Color.fromARGB(255, 119, 118, 118),
+                          ),
+                          counterText: "",
                         ),
                       ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.only(
-                          top: 5, bottom: 5, left: 90, right: 90),
-                      backgroundColor: Colors.blue,
                     ),
-                    child: const Text(
-                      "验证登录",
-                      style: TextStyle(
+                    const SizedBox(width: 5),
+                    TextButton(
+                      child: const Text(
+                        "获取验证码",
+                        style: TextStyle(
                           fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      if (shoujifou == true &&
-                          sendCodeBtn == false &&
-                          cishu == true) {
-                        bool zhi = await yanzheng(shoujihao, code);
-                        cishu = false;
-                        if (zhi == false) {
+                          color: Colors.blue,
+                        ),
+                      ),
+                      onPressed: () {
+                        RegExp regex = RegExp(r'^\d*$');
+                        if (shoujihao.length < 11) {
+                          shoujifou = false;
                           toast.toastification.show(
-                              // ignore: use_build_context_synchronously
                               context: context,
                               type: toast.ToastificationType.warning,
                               style: toast.ToastificationStyle.flatColored,
-                              title: const Text("验证码错误",
+                              title: const Text("手机号位数异常",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 17)),
                               description: const Text(
-                                "验证码错误",
+                                "手机号位数异常",
                                 style: TextStyle(
                                     color: Color.fromARGB(255, 119, 118, 118),
                                     fontSize: 15,
@@ -614,70 +423,154 @@ Future<void> _onEvent(AuthResponseModel event) async {
                               borderRadius: BorderRadius.circular(12.0),
                               boxShadow: toast.lowModeShadow,
                               dragToClose: true);
-                          cishu = true;
+                        } else if (!regex.hasMatch(shoujihao)) {
+                          shoujifou = false;
+                          toast.toastification.show(
+                              context: context,
+                              type: toast.ToastificationType.warning,
+                              style: toast.ToastificationStyle.flatColored,
+                              title: const Text("手机号数值异常",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 17)),
+                              description: const Text(
+                                "手机号数值异常",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 119, 118, 118),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              alignment: Alignment.topLeft,
+                              autoCloseDuration: const Duration(seconds: 4),
+                              borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: toast.lowModeShadow,
+                              dragToClose: true);
                         } else {
-                          toast.toastification.show(
-                              context: contexts,
-                              type: toast.ToastificationType.success,
-                              style: toast.ToastificationStyle.flatColored,
-                              title: const Text("右滑可查看个人资料",
+                          if (sendCodeBtn == true) {
+                            shoujifou = true;
+                            duanxin(shoujihao);
+                            toast.toastification.show(
+                                context: context,
+                                type: toast.ToastificationType.success,
+                                style: toast.ToastificationStyle.flatColored,
+                                title: const Text("验证码已发送",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 17)),
+                                description: const Text(
+                                  "验证码已发送",
                                   style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 17)),
-                              description: const Text(
-                                "右滑可查看个人资料",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 119, 118, 118),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              alignment: Alignment.topCenter,
-                              autoCloseDuration: const Duration(seconds: 10),
-                              primaryColor: const Color(0xff047aff),
-                              backgroundColor: const Color(0xffedf7ff),
-                              borderRadius: BorderRadius.circular(12.0),
-                              boxShadow: toast.lowModeShadow,
-                              dragToClose: true);
-                          toast.toastification.show(
-                              context: contexts,
-                              type: toast.ToastificationType.success,
-                              style: toast.ToastificationStyle.flatColored,
-                              title: const Text("登录成功,欢迎您使用本应用！",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 17)),
-                              description: const Text(
-                                "这是一款帮助学习和记忆的应用,希望对您产生帮助",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 119, 118, 118),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              alignment: Alignment.topCenter,
-                              autoCloseDuration: const Duration(seconds: 10),
-                              primaryColor: const Color(0xff047aff),
-                              backgroundColor: const Color(0xffedf7ff),
-                              borderRadius: BorderRadius.circular(12.0),
-                              boxShadow: toast.lowModeShadow,
-                              dragToClose: true);
-                          Navigator.pop(contexts!);
-                          cishu = true;
-                          denglu = true;
+                                      color: Color.fromARGB(255, 119, 118, 118),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                alignment: Alignment.topRight,
+                                autoCloseDuration: const Duration(seconds: 4),
+                                primaryColor: const Color(0xff047aff),
+                                backgroundColor: const Color(0xffedf7ff),
+                                borderRadius: BorderRadius.circular(12.0),
+                                boxShadow: toast.lowModeShadow,
+                                dragToClose: true);
+                            sendCodeBtn = false;
+                            showTimer();
+                          } else {
+                            toast.toastification.show(
+                                context: context,
+                                type: toast.ToastificationType.success,
+                                style: toast.ToastificationStyle.flatColored,
+                                title: Text("需等待$seconds秒",
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 17)),
+                                description: Text(
+                                  "需等待$seconds秒",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 119, 118, 118),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                alignment: Alignment.topRight,
+                                autoCloseDuration: const Duration(seconds: 4),
+                                primaryColor: const Color(0xff047aff),
+                                backgroundColor: const Color(0xffedf7ff),
+                                borderRadius: BorderRadius.circular(12.0),
+                                boxShadow: toast.lowModeShadow,
+                                dragToClose: true);
+                          }
                         }
-                      } else {
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 30.0),
+                      child: Checkbox(
+                        value: true,
+                        activeColor: Colors.blue,
+                        onChanged: (bool? value) {},
+                      ),
+                    ),
+                    Expanded(
+                      child: RichText(
+                        text: const TextSpan(
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 119, 118, 118),
+                              fontSize: 14),
+                          children: [
+                            TextSpan(text: '我已阅读并同意'),
+                            TextSpan(
+                              text: '使用协议',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            TextSpan(text: '和'),
+                            TextSpan(
+                              text: '隐私协议,',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            TextSpan(text: '未注册绑定的手机号验证成功后将自动注册')
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(
+                        top: 5, bottom: 5, left: 90, right: 90),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    "验证登录",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    if (shoujifou == true &&
+                        sendCodeBtn == false &&
+                        cishu == true) {
+                      bool zhi = await yanzheng(shoujihao, code);
+                      cishu = false;
+                      if (zhi == false) {
                         toast.toastification.show(
+                            // ignore: use_build_context_synchronously
                             context: context,
                             type: toast.ToastificationType.warning,
                             style: toast.ToastificationStyle.flatColored,
-                            title: const Text("验证码过期",
+                            title: const Text("验证码错误",
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 17)),
                             description: const Text(
-                              "验证码过期",
+                              "验证码错误",
                               style: TextStyle(
                                   color: Color.fromARGB(255, 119, 118, 118),
                                   fontSize: 15,
@@ -689,17 +582,90 @@ Future<void> _onEvent(AuthResponseModel event) async {
                             boxShadow: toast.lowModeShadow,
                             dragToClose: true);
                         cishu = true;
+                      } else {
+                        toast.toastification.show(
+                            context: contexts,
+                            type: toast.ToastificationType.success,
+                            style: toast.ToastificationStyle.flatColored,
+                            title: const Text("右滑可查看个人资料",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 17)),
+                            description: const Text(
+                              "右滑可查看个人资料",
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 119, 118, 118),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            alignment: Alignment.topCenter,
+                            autoCloseDuration: const Duration(seconds: 10),
+                            primaryColor: const Color(0xff047aff),
+                            backgroundColor: const Color(0xffedf7ff),
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: toast.lowModeShadow,
+                            dragToClose: true);
+                        toast.toastification.show(
+                            context: contexts,
+                            type: toast.ToastificationType.success,
+                            style: toast.ToastificationStyle.flatColored,
+                            title: const Text("登录成功,欢迎您使用本应用！",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 17)),
+                            description: const Text(
+                              "这是一款帮助学习和记忆的应用,希望对您产生帮助",
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 119, 118, 118),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            alignment: Alignment.topCenter,
+                            autoCloseDuration: const Duration(seconds: 10),
+                            primaryColor: const Color(0xff047aff),
+                            backgroundColor: const Color(0xffedf7ff),
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: toast.lowModeShadow,
+                            dragToClose: true);
+                        Navigator.pop(contexts!);
+                        cishu = true;
+                        denglu = true;
                       }
-                    },
-                  ),
-                ],
-              ),
+                    } else {
+                      toast.toastification.show(
+                          context: context,
+                          type: toast.ToastificationType.warning,
+                          style: toast.ToastificationStyle.flatColored,
+                          title: const Text("验证码过期",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 17)),
+                          description: const Text(
+                            "验证码过期",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 119, 118, 118),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          alignment: Alignment.topLeft,
+                          autoCloseDuration: const Duration(seconds: 4),
+                          borderRadius: BorderRadius.circular(12.0),
+                          boxShadow: toast.lowModeShadow,
+                          dragToClose: true);
+                      cishu = true;
+                    }
+                  },
+                ),
+              ],
             ),
-          )),
-        );
-      },
-    );
-  }
+          ),
+        )),
+      );
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -968,7 +934,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             biancontroller.name,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
-                              fontSize: 20,
+                              fontSize: 21,
                             ),
                           );
                         },
@@ -981,7 +947,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Color.fromRGBO(84, 87, 105, 1),
-                                fontSize: 15,
+                                fontSize: 16,
                               ),
                             );
                           }),
@@ -992,7 +958,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             '10 ',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 15,
+                              fontSize: 16,
                             ),
                           ),
                           Text(
@@ -1000,14 +966,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontWeight: FontWeight.w400,
                               color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 15.5,
+                              fontSize: 16,
                             ),
                           ),
                           Text(
                             '0 ',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 15,
+                              fontSize: 16,
                             ),
                           ),
                           Text(
@@ -1015,7 +981,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontWeight: FontWeight.w400,
                               color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 15.5,
+                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -1065,16 +1031,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         InkWell(
-                          onTap: () async {
-                            DateTime now = DateTime.now();
-                            DateTime thirtyMinutesLater =
-                                now.add(Duration(minutes: 1));
-                            _notificationHelper.zonedScheduleNotification(
-                                id: 2,
-                                title: 'dfsjkl',
-                                body: 'djslkf',
-                                scheduledDateTime: thirtyMinutesLater);
-                          },
+                          onTap: () async {},
                           child: ListTile(
                             leading: Padding(
                               padding:
@@ -1097,29 +1054,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         InkWell(
-                          onTap: () async {
-                            DateTime now = DateTime.now();
-                            DateTime thirtyMinutesLater =
-                                now.add(Duration(minutes: 1));
-                            final alarmSettings = AlarmSettings(
-                              id: 42,
-                              dateTime: thirtyMinutesLater,
-                              assetAudioPath: 'assets/alarm.mp3',
-                              loopAudio: true,
-                              vibrate: true,
-                              volume: 0.8,
-                              fadeDuration: 3.0,
-                              warningNotificationOnKill: Platform.isIOS,
-                              androidFullScreenIntent: true,
-                              notificationSettings: const NotificationSettings(
-                                title: 'This is the title',
-                                body: 'This is the body',
-                                stopButton: 'Stop the alarm',
-                                icon: 'notification_icon',
-                              ),
-                            );
-                            await Alarm.set(alarmSettings: alarmSettings);
-                          },
+                          onTap: () async {},
                           child: ListTile(
                             leading: Padding(
                               padding:
@@ -1144,7 +1079,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         InkWell(
                           onTap: () async {
                             zhuce();
-                          
                           },
                           child: ListTile(
                             leading: Padding(
@@ -1287,7 +1221,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     ),
                     child: TabBar(
                       labelStyle: const TextStyle(
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         fontSize: 17,
                         color: Colors.black,
                         fontFamily: 'Raleway',
@@ -1495,7 +1429,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                     105,
                                                                     1),
                                                             fontWeight:
-                                                                FontWeight.w400,
+                                                                FontWeight.w500,
                                                           ),
                                                         )
                                                       ],
@@ -1596,7 +1530,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                               maincontroller.zhi![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          chushi();
+                                                                          duanxinyanzheng();
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -1705,7 +1639,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                               maincontroller.zhi![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          chushi();
+                                                                          duanxinyanzheng();
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -1815,7 +1749,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
                                                                           return !isLiked;
                                                                         } else {
-                                                                          chushi();
+                                                                          duanxinyanzheng();
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -1924,7 +1858,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                               maincontroller.zhi![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          chushi();
+                                                                          duanxinyanzheng();
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -2054,7 +1988,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     fontSize: 20.0, fontWeight: FontWeight.w700),
                 onTap: () {
                   if (denglu == false) {
-                    chushi();
+                    duanxinyanzheng();
                     toast.toastification.show(
                         context: contexts,
                         type: toast.ToastificationType.success,
@@ -2104,11 +2038,11 @@ class _Memory extends State<Memory> {
             iconColor: Colors.blue,
             trailing: null,
             title: Padding(
-              padding: EdgeInsets.only(left: 15),
+              padding: EdgeInsets.only(left: 16),
               child: Text('记忆分析',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
-                    fontSize: 18,
+                    fontSize: 17,
                   )),
             ),
             children: [
