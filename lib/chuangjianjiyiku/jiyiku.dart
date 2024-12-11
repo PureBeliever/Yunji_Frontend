@@ -205,121 +205,126 @@ class _Jiyiku extends State<Jiyiku> {
           surfaceTintColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        body: SizeCacheWidget(
-          child: ListView(
-            cacheExtent: 500,
-            controller: _scrollController,
-            children: [
-              SizedBox(height: 10),
-              Image.asset(
-                "assets/xuexi.jpg",
-                width: double.infinity,
-              ),
-              Theme(
-                data: Theme.of(context)
-                    .copyWith(dividerColor: Colors.transparent),
-                child: const sizeExpansionTile(
-                  collapsedIconColor: Colors.black,
-                  iconColor: Colors.blue,
-                  trailing: null,
-                  title: Text('以教代学是费曼学习法的核心',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 17,
-                      )),
-                  subtitle: Text(
-                    '您将扮演学生与老师两名角色，学生提出想要学习的内容，老师给予已经学到的回答',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromRGBO(84, 87, 105, 1),
-                      fontSize: 16,
-                    ),
-                  ),
-                  children: [
-                    ListTile(
-                        title: Text.rich(TextSpan(children: [
-                      TextSpan(
-                        text:
-                            "费曼学习法：世界公认的最好学习法，由诺贝尔奖得主理查德·费曼创立，它的核心是通过简单易懂的语言去解释知识，并不断修正和完善自己的解释，以达到高效学习的目的，",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "本软件依照费曼学习法设定，旨在建立一个帮助学习和记忆的学习平台\n\n",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(
-                        text:
-                            "当我们能够用简单的语言解释一个概念时，这意味着我们真正掌握了它，简单来说，费曼学习法就是能够把深奥的知识以简单易懂的方式解释给一个外行、无任何背景知识的人听，这种能力越强，代表我们对所学知识的理解越透彻\n\n下面我们就来了解一下费曼学习法的具体步骤:\n\n第一步：选择目标\n\n确定您要学什么，在这里比如学习一门技术、学习一门语言等，都可以作为目标，",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "即作为学生问出想要学习和了解的问题(设定目标）\n\n",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(
-                        text: "第二步：教学\n\n"
-                            "创造一个场景，在这个场景中将自己学到的知识讲授给“别人”，过程中遇到的问题，比如说不清楚的，模棱两可的，就说明这些知识点并没有熟练掌握，尝试教授和发现薄弱点就是这一步的重点，",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "即作为老师回答问题\n\n",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(
-                        text: "第三步：纠错\n\n"
-                            "在教授的过程中说错的、说不清楚的、模棱两可的知识，需要进行纠错和重新学习，得以强化，直到可以顺利的教授相应的知识\n\n",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "可通过查询学习书籍或ai,浏览器等，补全知识，继续回答\n\n",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(
-                        text: "第四步：简化\n\n"
-                            "对上面学习的内容进行提炼、简化，以至于让一个非专业人士（60岁的老人或10岁的小孩）都能听懂，简化知识的过程，将极大程度的学习知识\n\n",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "此时，您完成了费曼学习法的所有步骤，最有效的学习了知识",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800),
-                      ),
-                    ]))),
-                  ],
+        body: MediaQuery.removePadding(
+                          context: context,
+                          removeTop: true,
+                          removeBottom: true,
+                          child:SizeCacheWidget(
+            child: ListView(
+              cacheExtent: 500,
+              controller: _scrollController,
+              children: [
+                SizedBox(height: 10),
+                Image.asset(
+                  "assets/xuexi.jpg",
+                  width: double.infinity,
                 ),
-              ),
-              const SizedBox(width: double.infinity, height: 20),
-              _buildPanel(),
-            ],
+                Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: const sizeExpansionTile(
+                    collapsedIconColor: Colors.black,
+                    iconColor: Colors.blue,
+                    trailing: null,
+                    title: Text('费曼学习法详解',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 17,
+                        )),
+                    subtitle: Text(
+                      '您将以扮演学生与老师，提问与讲解的方法，提高学习内容的留存率',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(84, 87, 105, 1),
+                        fontSize: 16,
+                      ),
+                    ),
+                    children: [
+                      ListTile(
+                          title: Text.rich(TextSpan(children: [
+                        TextSpan(
+                          text:
+                              "费曼学习法：由诺贝尔奖得主理查德·费曼创立，它的核心是通过简单易懂的语言去解释知识，并不断修正和完善自己的解释，以达到高效学习的目的，\n\n",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "软件依照费曼学习法设定，旨在建立一个帮助学习和记忆的学习平台\n\n",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800),
+                        ),
+                        TextSpan(
+                          text:
+                              "简单来说，费曼学习法就是能够把深奥的知识以简单易懂的方式解释给一个外行、无任何背景知识的人听，这种能力越强，代表我们对所学知识的理解越透彻\n\n费曼学习法的具体步骤:\n\n第一步：选择目标\n\n确定您要学什么，在这里比如学习一门技术、学习一门语言等，都可以作为目标，",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "即作为学生问出想要学习和了解的问题(设定目标）\n\n",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800),
+                        ),
+                        TextSpan(
+                          text: "第二步：教学\n\n"
+                              "创造一个场景，在这个场景中将自己学到的知识讲授给“别人”，过程中遇到的问题，比如说不清楚的，模棱两可的，就说明这些知识点并没有熟练掌握，尝试教授和发现薄弱点就是这一步的重点\n\n",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "即作为老师讲解问题\n\n",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800),
+                        ),
+                        TextSpan(
+                          text: "第三步：纠错\n\n"
+                              "在教授的过程中说错的、说不清楚的、模棱两可的知识，需要进行纠错和重新学习，得以强化，直到可以顺利的教授相应的知识\n\n",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "可通过查询学习书籍或ai，浏览器等，完善讲解\n\n",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800),
+                        ),
+                        TextSpan(
+                          text: "第四步：简化\n\n"
+                              "对上面学习的内容进行提炼、简化，到让一个非专业人士都能听懂，简化知识的过程，将极大程度的学习知识\n\n",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "此时，您以费曼学习法最有效的学习了知识",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800),
+                        ),
+                      ]))),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: double.infinity, height: 20),
+                _buildPanel(),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Padding(
@@ -538,6 +543,7 @@ class _Jiyiku extends State<Jiyiku> {
                           );
                         },
                         child: const Icon(
+                          color: Color.fromRGBO(134, 134, 134, 1),
                           Icons.remove,
                           size: 26,
                         )),

@@ -1,8 +1,10 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:yunji/modified_component/mydefaultcupertion.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:yunji/api/personal_api.dart';
@@ -12,6 +14,7 @@ import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:toastification/toastification.dart' as toast;
 
 class BianpersonalController extends GetxController {
   static BianpersonalController get to => Get.find();
@@ -123,7 +126,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
             ]);
         headcontroller.hanbianheadimage(File(croppedFile!.path));
       }
-    // ignore: empty_catches
+      // ignore: empty_catches
     } catch (err) {}
   }
 
@@ -157,7 +160,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
             ]);
         headcontroller.hanbianheadimage(File(croppedFile!.path));
       }
-    // ignore: empty_catches
+      // ignore: empty_catches
     } catch (err) {}
   }
 
@@ -248,8 +251,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                         ),
                       ),
                       const Padding(
-                        padding: EdgeInsets.only(
-                            left: 25, top: 10, bottom: 20),
+                        padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
                         child: Text('放弃更改?', style: TextStyle(fontSize: 16)),
                       ),
                       Padding(
@@ -335,8 +337,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Padding(
-                                padding:
-                                    EdgeInsets.only(left: 25, top: 20),
+                                padding: EdgeInsets.only(left: 25, top: 20),
                                 child: Text(
                                   '编辑个人资料',
                                   style: TextStyle(
@@ -481,9 +482,54 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextButton(
-                                  onPressed: () {
-                                    beiselectCamera();
-                                    Navigator.pop(context);
+                                  onPressed: () async {
+                                    var status = await Permission.camera.status;
+
+                                    if (status.isGranted) {
+                                      beiselectCamera();
+                                      Navigator.pop(context);
+                                    } else {
+                                      var permissionStatus =
+                                          await Permission.camera.request();
+                                      if (permissionStatus.isGranted) {
+                                        beiselectCamera();
+                                        Navigator.pop(context);
+                                      } else {
+                                        toast.toastification.show(
+                                            context: context,
+                                            callbacks:
+                                                toast.ToastificationCallbacks(
+                                              onTap: (toastItem) =>
+                                                  AppSettings.openAppSettings(
+                                                      type: AppSettingsType
+                                                          .settings),
+                                            ),
+                                            type: toast
+                                                .ToastificationType.warning,
+                                            style: toast.ToastificationStyle
+                                                .flatColored,
+                                            title: const Text("未授权相机权限",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 17)),
+                                            description: const Text(
+                                              "无法开启相机，点击提示开启权限",
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 119, 118, 118),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            alignment: Alignment.topLeft,
+                                            autoCloseDuration:
+                                                const Duration(seconds: 4),
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                            boxShadow: toast.lowModeShadow,
+                                            dragToClose: true);
+                                      }
+                                    }
                                   },
                                   child: const SizedBox(
                                     width: double.infinity,
@@ -560,7 +606,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                             init: headcontroller,
                             builder: (hcontroller) {
                               return GestureDetector(
-                                onTap: () {
+                                onTap: () async {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -577,9 +623,75 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             TextButton(
-                                                onPressed: () {
-                                                  selectCamera();
-                                                  Navigator.pop(context);
+                                                onPressed: () async {
+                                                  var status = await Permission
+                                                      .camera.status;
+
+                                                  if (status.isGranted) {
+                                                    selectCamera();
+                                                    Navigator.pop(context);
+                                                  } else {
+                                                    var permissionStatus =
+                                                        await Permission.camera
+                                                            .request();
+                                                    if (permissionStatus
+                                                        .isGranted) {
+                                                      selectCamera();
+                                                      Navigator.pop(context);
+                                                    } else {
+                                                      toast.toastification.show(
+                                                          context: context,
+                                                          callbacks: toast
+                                                              .ToastificationCallbacks(
+                                                            onTap: (toastItem) =>
+                                                                AppSettings.openAppSettings(
+                                                                    type: AppSettingsType
+                                                                        .settings),
+                                                          ),
+                                                          type: toast
+                                                              .ToastificationType
+                                                              .warning,
+                                                          style: toast
+                                                              .ToastificationStyle
+                                                              .flatColored,
+                                                          title: const Text(
+                                                              "未授权相机权限",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                  fontSize:
+                                                                      17)),
+                                                          description:
+                                                              const Text(
+                                                            "无法开启相机",
+                                                            style: TextStyle(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        119,
+                                                                        118,
+                                                                        118),
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600),
+                                                          ),
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          autoCloseDuration:
+                                                              const Duration(
+                                                                  seconds: 4),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  12.0),
+                                                          boxShadow: toast
+                                                              .lowModeShadow,
+                                                          dragToClose: true);
+                                                    }
+                                                  }
                                                 },
                                                 child: const SizedBox(
                                                   width: double.infinity,
@@ -619,11 +731,12 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     backgroundColor: Colors.grey,
-                                    backgroundImage:
-                                        headcontroller.bianheadimage != null
-                                            ? FileImage(
-                                                headcontroller.bianheadimage!)
-                                            : const AssetImage('assets/chuhui.png'),
+                                    backgroundImage: headcontroller
+                                                .bianheadimage !=
+                                            null
+                                        ? FileImage(
+                                            headcontroller.bianheadimage!)
+                                        : const AssetImage('assets/chuhui.png'),
                                     radius: 47.5,
                                     child: Stack(
                                       alignment: Alignment.center,
@@ -666,7 +779,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                           children: [
                             TextFormField(
                               cursorColor: Colors.blue,
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                               controller: TextEditingController(
                                   text: bcontroller.name == ' '
                                       ? null
@@ -683,8 +797,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       BorderSide(color: Colors.black, width: 2),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Colors.blue, width: 2),
+                                  borderSide: const BorderSide(
+                                      color: Colors.blue, width: 2),
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
                                 border: const OutlineInputBorder(),
@@ -701,7 +815,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                             const SizedBox(width: double.infinity, height: 20),
                             TextFormField(
                               cursorColor: Colors.blue,
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                               controller: TextEditingController(
                                   text: bcontroller.brief == ' '
                                       ? null
@@ -718,8 +833,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       BorderSide(color: Colors.black, width: 2),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Colors.blue, width: 2),
+                                  borderSide: const BorderSide(
+                                      color: Colors.blue, width: 2),
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
                                 border: const OutlineInputBorder(),
@@ -743,7 +858,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                         return Column(
                           children: [
                             TextFormField(
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                               onTap: () async {
                                 Result? result =
                                     await CityPickers.showCityPicker(
@@ -751,7 +867,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                 );
                                 if (result != null &&
                                     result.provinceId != 'kong') {
-                                  formatteplace = '${result.provinceName!}.${result.cityName!}.${result.areaName!}';
+                                  formatteplace =
+                                      '${result.provinceName!}.${result.cityName!}.${result.areaName!}';
                                   pcontroller.weizhi(formatteplace);
                                 } else if (result?.provinceId == 'kong') {
                                   formatteplace = ' ';
@@ -771,8 +888,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       BorderSide(color: Colors.black, width: 2),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Colors.blue, width: 2),
+                                  borderSide: const BorderSide(
+                                      color: Colors.blue, width: 2),
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
                                 border: const OutlineInputBorder(),
@@ -787,7 +904,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                             ),
                             const SizedBox(width: double.infinity, height: 20),
                             TextFormField(
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                               onTap: () {
                                 showDialog(
                                   context: context,
@@ -906,8 +1024,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       BorderSide(color: Colors.black, width: 2),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Colors.blue, width: 2),
+                                  borderSide: const BorderSide(
+                                      color: Colors.blue, width: 2),
                                   borderRadius: BorderRadius.circular(25.0),
                                 ),
                                 border: const OutlineInputBorder(),

@@ -1,18 +1,27 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:alarm/alarm.dart';
+import 'package:app_settings/app_settings.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/main/main.dart';
+import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
+import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 
 class Item {
   Item({
-    required this.expandedValue,
-    required this.headerValue,
+    required this.huida,
+    required this.tiwen,
     this.isExpanded = true,
   });
 
-  String expandedValue;
-  String headerValue;
+  String huida;
+  String tiwen;
+
   bool isExpanded;
 }
 
@@ -20,8 +29,8 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
     Map<String, dynamic> timu, Map<String, dynamic> huida) {
   return List<Item>.generate(numberOfItems, (int index) {
     return Item(
-      headerValue: timu['${xiabiao[index]}'] ?? '',
-      expandedValue: huida['${xiabiao[index]}'] ?? '',
+      tiwen: timu['${xiabiao[index]}'] ?? '',
+      huida: huida['${xiabiao[index]}'] ?? '',
     );
   });
 }
@@ -34,13 +43,26 @@ class FuxiController extends GetxController {
   Map<String, dynamic> timu = {};
   Map<String, dynamic> huida = {};
   String zhuti = '';
+  List<dynamic> code = [];
+  Map<String, dynamic> cishu = {};
+  bool duanxin = false;
+  bool naozhong = false;
+  bool zhuangtai = false;
+  int id = -1;
+
   void cizhi(Map<String, dynamic> cizhi) {
+    id = cizhi['id'];
     zhi = cizhi;
     zhuti = cizhi['zhuti'];
     length = cizhi['xiabiao'].length;
     lengthxiabiao = cizhi['xiabiao'];
     timu = jsonDecode(cizhi['timu']);
     huida = jsonDecode(cizhi['huida']);
+    code = jsonDecode(cizhi['code']);
+    cishu = jsonDecode(cizhi['cishu']);
+    duanxin = cizhi['duanxin'] == 1 ? true : false;
+    naozhong = cizhi['naozhong'] == 1 ? true : false;
+    zhuangtai = cizhi['zhuangtai'] == 1 ? true : false;
   }
 
   void zhankai() {
@@ -60,6 +82,13 @@ class _FuxiPage extends State<FuxiPage> {
       fuxiController.lengthxiabiao, fuxiController.timu, fuxiController.huida);
   final _controller = TextEditingController(text: fuxiController.zhuti);
   String zhuti = ' ';
+  bool message = fuxiController.duanxin;
+  bool alarm_information = fuxiController.naozhong;
+  final jiyikucontroller = Get.put(Jiyikucontroller());
+  final NotificationHelper _notificationHelper = NotificationHelper();
+  final settingzhanghaoxiugaicontroller =
+      Get.put(Settingzhanghaoxiugaicontroller());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +99,97 @@ class _FuxiPage extends State<FuxiPage> {
             },
             child: const Icon(Icons.close, size: 30)),
         actions: [
+          SizedBox(
+            height: 30,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 0, bottom: 0),
+                backgroundColor: Colors.green,
+              ),
+              child: const Text(
+                "清空讲解",
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white),
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: SizedBox(
+                        height: 150,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: 25, top: 20),
+                              child: Text(
+                                '复习',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w900),
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                  left: 25, top: 10, bottom: 20),
+                              child: Text('是否清空所有讲解?',
+                                  style: TextStyle(fontSize: 16)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 7),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text(
+                                      '取消',
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.black),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _data.forEach((item) {
+                                          item.huida = ' ';
+                                        });
+                                      });
+
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text(
+                                      '确定',
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.black),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.only(right: 10.0),
+            padding: const EdgeInsets.only(left: 15, right: 10),
             child: SizedBox(
               height: 30,
               child: ElevatedButton(
@@ -87,7 +205,87 @@ class _FuxiPage extends State<FuxiPage> {
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  int zhi = 0;
+                  Map<int, String> stringTimu = {};
+                  Map<int, String> stringHuida = {};
+                  DateTime dingshi = DateTime.now();
+                  List<int> code = List.from(fuxiController.code);
+                  code.removeAt(0);
+                  Map<String, String> cishu = fuxiController.cishu
+                      .map((key, value) => MapEntry(key.toString(), value));
+
+                  List<int> sortedList = [];
+                  _data.forEach((uio) {
+                    sortedList.add(zhi);
+                    stringTimu[zhi] = uio.tiwen;
+                    stringHuida[zhi] = uio.huida;
+                    zhi++;
+                  });
+                  Map<String, String> stringtimu = stringTimu
+                      .map((key, value) => MapEntry(key.toString(), value));
+                  Map<String, String> stringhuida = stringHuida
+                      .map((key, value) => MapEntry(key.toString(), value));
+                  bool zhuangtai = fuxiController.zhuangtai;
+
+                  if (code.isNotEmpty) {
+                    // dingshi = dingshi.add(Duration(hours: code[0]));
+                    dingshi = dingshi.add(Duration(minutes: code[0]));
+                    if (alarm_information == true) {
+                      final alarmSettings = AlarmSettings(
+                        id: 42,
+                        dateTime: dingshi,
+                        assetAudioPath: 'assets/alarm.mp3',
+                        loopAudio: true,
+                        vibrate: true,
+                        volume: 0.6,
+                        fadeDuration: 3.0,
+                        warningNotificationOnKill: Platform.isIOS,
+                        androidFullScreenIntent: true,
+                        notificationSettings: NotificationSettings(
+                          title: '开始复习 !',
+                          body: '记忆库${zhuti}到达预定的复习时间',
+                          stopButton: '停止闹钟',
+                          icon: 'notification_icon',
+                        ),
+                      );
+                      await Alarm.set(alarmSettings: alarmSettings);
+                    }
+                    if (message == true) {
+                      _notificationHelper.zonedScheduleNotification(
+                          id: 888,
+                          title: '开始复习 !',
+                          body: '记忆库${zhuti}到达预定的复习时间',
+                          scheduledDateTime: dingshi);
+                    }
+                  } else {
+                    zhuangtai = true;
+                    Iterator<MapEntry<String, dynamic>> iterator =
+                        cishu.entries.iterator;
+                    iterator.moveNext();
+                    int ci = int.parse(iterator.current.key);
+                    int key = ci + 1;
+                    String value = iterator.current.value;
+                    Map<String, String> newEntries = {'${key}': value};
+                    cishu.remove('${ci}');
+                    cishu.addEntries(newEntries.entries);
+                  }
+
+                  xiugaijiyiku(
+                      stringtimu,
+                      stringhuida,
+                      fuxiController.id,
+                      zhuti,
+                      settingzhanghaoxiugaicontroller.username,
+                      code,
+                      dingshi,
+                      sortedList,
+                      message,
+                      alarm_information,
+                      zhuangtai,
+                      cishu);
+                  Navigator.of(context).pop();
+                },
               ),
             ),
           ),
@@ -101,6 +299,57 @@ class _FuxiPage extends State<FuxiPage> {
           builder: (jiyikudianjicontroller) {
             return ListView(
               children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 30,
+                          child: Transform.scale(
+                            scale: 0.7,
+                            child: CupertinoSwitch(
+                              value: message,
+                              onChanged: (value) {
+                                setState(() {
+                                  message = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Text('信息通知',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(84, 87, 105, 1),
+                                fontSize: 17)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 30,
+                          child: Transform.scale(
+                            scale: 0.7,
+                            child: CupertinoSwitch(
+                              value: alarm_information,
+                              onChanged: (value) {
+                                setState(() {
+                                  alarm_information = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Text('闹钟信息通知',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(84, 87, 105, 1),
+                                fontSize: 17)),
+                      ],
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: Text(
@@ -113,7 +362,8 @@ class _FuxiPage extends State<FuxiPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 5, right: 15, top: 50,bottom: 0),
+                  padding: const EdgeInsets.only(
+                      left: 5, right: 15, top: 50, bottom: 0),
                   child: TextField(
                     onChanged: (value) {
                       zhuti = value;
@@ -159,8 +409,10 @@ class _FuxiPage extends State<FuxiPage> {
                       headerBuilder: (BuildContext context, bool isExpanded) {
                         return ListTile(
                           title: TextField(
-                            controller:
-                                TextEditingController(text: item.headerValue),
+                            onChanged: (value) {
+                              item.tiwen = value;
+                            },
+                            controller: TextEditingController(text: item.tiwen),
                             maxLength: 150,
                             maxLines: 10,
                             minLines: 1,
@@ -193,10 +445,12 @@ class _FuxiPage extends State<FuxiPage> {
                         );
                       },
                       body: ListTile(
-                        contentPadding: EdgeInsets.all(5),
+                        contentPadding: EdgeInsets.only(left: 5, right: 10),
                         title: TextField(
-                          controller:
-                              TextEditingController(text: item.expandedValue),
+                          onChanged: (value) {
+                            item.huida = value;
+                          },
+                          controller: TextEditingController(text: item.huida),
                           maxLength: 1500,
                           maxLines: 30,
                           minLines: 1,
@@ -205,7 +459,100 @@ class _FuxiPage extends State<FuxiPage> {
                               color: Colors.black,
                               fontSize: 17),
                           textInputAction: TextInputAction.done,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        child: SizedBox(
+                                          height: 150,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 25, top: 20),
+                                                child: Text(
+                                                  '复习',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w900),
+                                                ),
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 25,
+                                                    top: 10,
+                                                    bottom: 20),
+                                                child: Text('是否清空选择讲解?',
+                                                    style: TextStyle(
+                                                        fontSize: 16)),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 7),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: const Text(
+                                                        '取消',
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          item.huida = '';
+                                                        });
+
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: const Text(
+                                                        '确定',
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Icon(
+                                  color: Color.fromRGBO(134, 134, 134, 1),
+                                  Icons.remove,
+                                  size: 26,
+                                )),
+                            border: InputBorder.none,
                             counterText: "",
                             filled: true,
                             fillColor: Colors.white,
@@ -231,6 +578,18 @@ class _FuxiPage extends State<FuxiPage> {
               ],
             );
           }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        elevation: 5.0,
+        highlightElevation: 20.0,
+        backgroundColor: Colors.blue,
+        child: const Text(
+          '退出\n键盘',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 }

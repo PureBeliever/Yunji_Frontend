@@ -5,7 +5,6 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
@@ -30,7 +29,7 @@ class _Yiwang extends State<Yiwang> {
   bool alarm_information = false;
   List<List<int>> shijian = [
     [0],
-    [24, 168, 336],
+    [2, 2, 2],
     [24, 168, 336, 720],
     [24, 168, 336, 720, 2160],
     [24, 168, 336, 720, 2160, 4320],
@@ -105,9 +104,11 @@ class _Yiwang extends State<Yiwang> {
                     color: Colors.white),
               ),
               onPressed: () async {
+                bool zhuangtai = false;
+                Map<String, String> cishu = {"0": "方案${_valueChoice + 1}"};
                 DateTime now = DateTime.now();
-                DateTime dingshi =
-                    now.add(Duration(hours: shijian[_valueChoice][0]));
+                // DateTime dingshi =
+                //     now.add(Duration(hours: shijian[_valueChoice][0]));
                 List<int> timukey = jiyikucontroller.timuzhi.keys.toList();
                 List<int> huidakey = jiyikucontroller.huidazhi.keys.toList();
                 Set<int> combinedSet = Set<int>.from(timukey)..addAll(huidakey);
@@ -117,51 +118,52 @@ class _Yiwang extends State<Yiwang> {
                     .map((key, value) => MapEntry(key.toString(), value));
                 Map<String, String> stringhuida = jiyikucontroller.huidazhi
                     .map((key, value) => MapEntry(key.toString(), value));
-
-                if (alarm_information == true&&_valueChoice!=0) {
-                  final alarmSettings = AlarmSettings(
-                    id: 42,
-                    dateTime: dingshi,
-                    assetAudioPath: 'assets/alarm.mp3',
-                    loopAudio: true,
-                    vibrate: true,
-                    volume: 0.6,
-                    fadeDuration: 3.0,
-                    warningNotificationOnKill: Platform.isIOS,
-                    androidFullScreenIntent: true,
-                    notificationSettings: NotificationSettings(
-                      title: '开始复习 !',
-                      body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
-                      stopButton: '停止闹钟',
-                      icon: 'notification_icon',
-                    ),
-                  );
-                  await Alarm.set(alarmSettings: alarmSettings);
+                DateTime dingshi =
+                    now.add(Duration(minutes: shijian[_valueChoice][0]));
+                if (_valueChoice == 0) {
+                  zhuangtai = true;
+                } else {
+                  if (alarm_information == true) {
+                    final alarmSettings = AlarmSettings(
+                      id: 42,
+                      dateTime: dingshi,
+                      assetAudioPath: 'assets/alarm.mp3',
+                      loopAudio: true,
+                      vibrate: true,
+                      volume: 0.6,
+                      fadeDuration: 3.0,
+                      warningNotificationOnKill: Platform.isIOS,
+                      androidFullScreenIntent: true,
+                      notificationSettings: NotificationSettings(
+                        title: '开始复习 !',
+                        body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
+                        stopButton: '停止闹钟',
+                        icon: 'notification_icon',
+                      ),
+                    );
+                    await Alarm.set(alarmSettings: alarmSettings);
+                  }
+                  if (message == true) {
+                    _notificationHelper.zonedScheduleNotification(
+                        id: 2,
+                        title: '开始复习 !',
+                        body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
+                        scheduledDateTime: dingshi);
+                  }
                 }
-                if (message == true&&_valueChoice!=0) {
-                  _notificationHelper.zonedScheduleNotification(
-                      id: 2,
-                      title: '开始复习 !',
-                      body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
-                      scheduledDateTime: dingshi);
-                }
-                
-                DateTime dingshi1 =
-                    now.add(Duration(minutes: 2));
                 baocunjiyiku(
                     stringTimu,
                     stringhuida,
-                    
                     jiyikucontroller.zhutizhi!,
                     settingzhanghaoxiugaicontroller.username,
                     shijian[_valueChoice],
-                    dingshi1,
-                    0,
+                    dingshi,
                     sortedList,
                     message,
-                    alarm_information
-                    );
-              
+                    alarm_information,
+                    zhuangtai,
+                    cishu);
+
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
                 handleClick(context, const PersonalPage());
@@ -212,6 +214,7 @@ class _Yiwang extends State<Yiwang> {
                             value: alarm_information,
                             onChanged: (value) {
                               setState(() {
+                                print(value);
                                 alarm_information = value;
                               });
                             },

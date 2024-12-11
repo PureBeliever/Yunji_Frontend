@@ -112,14 +112,14 @@ class DatabaseManager {
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
         await db.execute(
-          'CREATE TABLE jiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT AUTO_INCREMENT PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code int,shoucang int,laqu int,xihuan int ,tiwen int);',
+          'CREATE TABLE jiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,shoucang int,laqu int,xihuan int ,tiwen int);',
         );
         await db.execute(
-          'CREATE TABLE personaljiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT AUTO_INCREMENT PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,dingshi char(30),jindu int,shoucang int,laqu int,xihuan int ,tiwen int,duanxin bool,naozhong bool);',
+          'CREATE TABLE personaljiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,dingshi char(30),jindu int,shoucang int,laqu int,xihuan int ,tiwen int,duanxin bool,naozhong bool,zhuangtai bool ,cishu JSON);',
         );
         //dingshi类型与后端不一样
         await db.execute(
-          'CREATE TABLE personaljiyikudianji(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT AUTO_INCREMENT PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code int,shoucang int,laqu int,xihuan int ,tiwen int);',
+          'CREATE TABLE personaljiyikudianji(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,shoucang int,laqu int,xihuan int ,tiwen int);',
         );
       },
       version: 1,
@@ -133,6 +133,7 @@ class DatabaseManager {
     zhi.forEach((xhi) {
       xhi['timu'] = jsonEncode(xhi['timu']);
       xhi['huida'] = jsonEncode(xhi['huida']);
+      xhi['code'] = jsonEncode(xhi['code']);
 
       db?.insert(
         'jiyiku',
@@ -148,6 +149,8 @@ class DatabaseManager {
     zhi.forEach((xhi) {
       xhi['timu'] = jsonEncode(xhi['timu']);
       xhi['huida'] = jsonEncode(xhi['huida']);
+      xhi['code'] = jsonEncode(xhi['code']);
+  
 
       db?.insert('personaljiyikudianji', xhi,
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -160,6 +163,8 @@ class DatabaseManager {
     zhi.forEach((xhi) {
       xhi['timu'] = jsonEncode(xhi['timu']);
       xhi['huida'] = jsonEncode(xhi['huida']);
+      xhi['cishu'] = jsonEncode(xhi['cishu']);
+      xhi['code'] = jsonEncode(xhi['code']);
 
       db?.insert('personaljiyiku', xhi,
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -173,11 +178,11 @@ class DatabaseManager {
 
     List<dynamic> whereArgs = ids;
     final List<Map<String, dynamic>> jiyiku = await db!.query(
-        'personaljiyikudianji',
-        where: whereClause,
-        whereArgs: whereArgs,
-         orderBy: 'NULL',
-        );
+      'personaljiyikudianji',
+      where: whereClause,
+      whereArgs: whereArgs,
+      orderBy: 'NULL',
+    );
 
     return jiyiku;
   }
@@ -188,8 +193,12 @@ class DatabaseManager {
     String whereClause = ' id IN (${ids.map((id) => '?').join(',')})';
 
     List<dynamic> whereArgs = ids;
-    final List<Map<String, dynamic>> jiyiku = await db!
-        .query('personaljiyiku', where: whereClause, whereArgs: whereArgs, orderBy: 'NULL',);
+    final List<Map<String, dynamic>> jiyiku = await db!.query(
+      'personaljiyiku',
+      where: whereClause,
+      whereArgs: whereArgs,
+      orderBy: 'NULL',
+    );
 
     return jiyiku;
   }
@@ -197,7 +206,10 @@ class DatabaseManager {
   Future<List<Map<String, dynamic>>> chajiyiku() async {
     final db = database;
 
-    final List<Map<String, dynamic>> jiyiku = await db!.query('jiyiku', orderBy: 'NULL',);
+    final List<Map<String, dynamic>> jiyiku = await db!.query(
+      'jiyiku',
+      orderBy: 'NULL',
+    );
     return jiyiku;
   }
 
@@ -337,7 +349,6 @@ class DatabaseManager {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-
 
   Future<void> updatePersonal(Personal personal) async {
     final db = database;

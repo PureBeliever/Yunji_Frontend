@@ -92,34 +92,75 @@ class DateTimeController extends GetxController {
     final int days = daojishi.inDays;
     final int hours = daojishi.inHours % 24;
     final int minutes = daojishi.inMinutes % 60;
-
+    Map<String, dynamic> cishu = jsonDecode(cizhi['cishu']);
+    int geshu = cishu.length;
+    List<String> jilu = [];
+    Iterator<MapEntry<String, dynamic>> iterator = cishu.entries.iterator;
+    while (iterator.moveNext()) {
+      if (iterator.current.value != '方案1') {
+        jilu.add('已完成${iterator.current.key}次${iterator.current.value}的复习');
+      } else {
+        Text(
+          '未选择复习',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 16,
+            color: Color.fromRGBO(84, 87, 105, 1),
+          ),
+        );
+      }
+    }
     String xianshi = "距离下一次复习还剩${days}天${hours}小时${minutes}分钟";
-    Widget zhi = daojishi.inMinutes <= 0
-        ? GestureDetector(
-            onTap: () {
-              fuxiController.cizhi(cizhi);
-              handleClick(uio, FuxiPage());
-            },
-            child: Text(
-              '开始复习',
+    Widget zhi = SizedBox(
+      width: double.infinity,
+      height: 100,
+      child: ListView.builder(
+          cacheExtent: 500,
+          itemCount: geshu,
+          itemBuilder: (context, index) {
+            return Text(
+              jilu[index],
               style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.green,
+                fontWeight: FontWeight.w900,
                 fontSize: 16,
-                decoration: TextDecoration.underline,
-                decorationColor: Colors.green,
-                decorationStyle: TextDecorationStyle.solid,
+                color: Color.fromRGBO(84, 87, 105, 1),
               ),
-            ),
-          )
-        : Text(
-            xianshi,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-              color: Color.fromRGBO(84, 87, 105, 1),
-            ),
-          );
+            );
+          }),
+    );
+
+    // Widget zhi =Text('fsddfs');
+
+    if (daojishi.inMinutes <= 0 && cizhi['zhuangtai'] == 0) {
+      zhi = GestureDetector(
+        onTap: () {
+          fuxiController.cizhi(cizhi);
+          handleClick(uio, FuxiPage());
+        },
+        child: Text(
+          '开始复习',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Colors.green,
+            fontSize: 16,
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.green,
+            decorationStyle: TextDecorationStyle.solid,
+          ),
+        ),
+      );
+    }
+    if (daojishi.inMinutes > 0 && cizhi['zhuangtai'] == 0) {
+      zhi = Text(
+        xianshi,
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: 16,
+          color: Color.fromRGBO(84, 87, 105, 1),
+        ),
+      );
+    }
+
     return zhi;
   }
 
@@ -772,7 +813,6 @@ class _PersonalPageState extends State<PersonalPage>
                                               color: Colors.white),
                                         ),
                                         onPressed: () async {
-                                          await Permission.camera.request();
                                           if (denglu == false) {
                                             duanxinyanzheng();
                                             toast.toastification.show(

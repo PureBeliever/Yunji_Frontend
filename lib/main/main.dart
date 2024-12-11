@@ -65,11 +65,9 @@ class NotificationHelper {
 
   // 初始化函数
   Future<void> initialize() async {
-    // AndroidInitializationSettings是一个用于设置Android上的本地通知初始化的类
-    // 使用了app_icon作为参数，这意味着在Android上，应用程序的图标将被用作本地通知的图标。
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    // 15.1是DarwinInitializationSettings，旧版本好像是IOSInitializationSettings（有些例子中就是这个）
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings();
     // 初始化
@@ -227,7 +225,7 @@ Future<void> _onEvent(AuthResponseModel event) async {
         alignment: Alignment.topRight,
         autoCloseDuration: const Duration(seconds: 10),
         primaryColor: const Color(0xff047aff),
-        backgroundColor: const Color(0xffedf7ff),
+        backgroundColor: const Color(0xffedf7ff), 
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: toast.lowModeShadow,
         dragToClose: true);
@@ -560,7 +558,7 @@ void duanxinyanzheng() {
                       cishu = false;
                       if (zhi == false) {
                         toast.toastification.show(
-                            // ignore: use_build_context_synchronously
+                       
                             context: context,
                             type: toast.ToastificationType.warning,
                             style: toast.ToastificationStyle.flatColored,
@@ -2042,7 +2040,7 @@ class _Memory extends State<Memory> {
               child: Text('记忆分析',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
-                    fontSize: 17,
+                    fontSize: 18,
                   )),
             ),
             children: [

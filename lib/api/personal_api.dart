@@ -46,17 +46,18 @@ void xiuzhanghao(String xinusername, String username) async {
 }
 
 void baocunjiyiku(
-    Map<String, String> timu,
-    Map<String, String> huida,
-    String zhuti,
-    String username,
-    List<int> code,
-    DateTime dingshi,
-    int jindu,
-    List<int> xiabiao,
-    bool duanxin,
-    bool naozhong,
-    ) async {
+  Map<String, String> timu,
+  Map<String, String> huida,
+  String zhuti,
+  String username,
+  List<int> code,
+  DateTime dingshi,
+  List<int> xiabiao,
+  bool duanxin,
+  bool naozhong,
+  bool zhuangtai,
+  Map<String, String> cishu,
+) async {
   Map<String, dynamic> formdata = {
     'username': username,
     'timu': timu,
@@ -64,11 +65,11 @@ void baocunjiyiku(
     'zhuti': zhuti,
     'code': code,
     'dingshi': dingshi.toString(),
-    'jindu': jindu,
     'xiabiao': xiabiao,
-    'duanxin':duanxin,
-    'naozhong':naozhong,
-   
+    'duanxin': duanxin,
+    'naozhong': naozhong,
+    'zhuangtai': zhuangtai,
+    'cishu': cishu,
   };
   Map<String, String> header = {
     'Content-Type': 'application/json',
@@ -76,7 +77,48 @@ void baocunjiyiku(
 
   String jsonformdata = jsonEncode(formdata);
   final response = await dio.post(
-    'http://47.92.90.93:36233/jiyiku',
+    'http://47.92.90.93:36233/baocunjiyiku',
+    data: jsonformdata,
+    options: Options(headers: header),
+  );
+  postpersonalapi(settingzhanghaoxiugaicontroller.username);
+}
+
+void xiugaijiyiku(
+  Map<String, String> timu,
+  Map<String, String> huida,
+  int id,
+  String zhuti,
+  String username,
+  List<int> code,
+  DateTime dingshi,
+  List<int> xiabiao,
+  bool duanxin,
+  bool naozhong,
+  bool zhuangtai,
+  Map<String, String> cishu,
+) async {
+  Map<String, dynamic> formdata = {
+    'username': username,
+    'timu': timu,
+    'id': id,
+    'huida': huida,
+    'zhuti': zhuti,
+    'code': code,
+    'dingshi': dingshi.toString(),
+    'xiabiao': xiabiao,
+    'duanxin': duanxin,
+    'naozhong': naozhong,
+    'zhuangtai': zhuangtai,
+    'cishu': cishu
+  };
+  Map<String, String> header = {
+    'Content-Type': 'application/json',
+  };
+
+  String jsonformdata = jsonEncode(formdata);
+  final response = await dio.post(
+    'http://47.92.90.93:36233/xiugaijiyiku',
     data: jsonformdata,
     options: Options(headers: header),
   );
@@ -472,8 +514,8 @@ void postpersonalapi(String username) async {
         }
       }
     }
-    await databaseManager.insertpersonaljiyiku(result);
 
+    await databaseManager.insertpersonaljiyiku(result);
     personaljiyikucontroller.apiqingqiu(personalzhi);
   }
 }
