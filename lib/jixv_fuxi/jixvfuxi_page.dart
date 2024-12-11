@@ -35,8 +35,8 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
   });
 }
 
-class FuxiController extends GetxController {
-  static FuxiController get to => Get.find();
+class JixvFuxiController extends GetxController {
+  static JixvFuxiController get to => Get.find();
   Map<String, dynamic> zhi = {};
   int length = 0;
   List<int> lengthxiabiao = List.empty();
@@ -70,20 +70,20 @@ class FuxiController extends GetxController {
   }
 }
 
-class FuxiPage extends StatefulWidget {
-  const FuxiPage({super.key});
+class JixvfuxiPage extends StatefulWidget {
+  const JixvfuxiPage({super.key});
 
   @override
-  State<FuxiPage> createState() => _FuxiPage();
+  State<JixvfuxiPage> createState() => _JixvfuxiPage();
 }
 
-class _FuxiPage extends State<FuxiPage> {
-  final List<Item> _data = generateItems(fuxiController.length,
-      fuxiController.lengthxiabiao, fuxiController.timu, fuxiController.huida);
-  final _controller = TextEditingController(text: fuxiController.zhuti);
+class _JixvfuxiPage extends State<JixvfuxiPage> {
+  final List<Item> _data = generateItems(jixvfuxiController.length,
+      jixvfuxiController.lengthxiabiao, jixvfuxiController.timu, jixvfuxiController.huida);
+  final _controller = TextEditingController(text: jixvfuxiController.zhuti);
   String zhuti = ' ';
-  bool message = fuxiController.duanxin;
-  bool alarm_information = fuxiController.naozhong;
+  bool message = jixvfuxiController.duanxin;
+  bool alarm_information = jixvfuxiController.naozhong;
   final jiyikucontroller = Get.put(Jiyikucontroller());
   final NotificationHelper _notificationHelper = NotificationHelper();
   final settingzhanghaoxiugaicontroller =
@@ -210,9 +210,9 @@ class _FuxiPage extends State<FuxiPage> {
                   Map<int, String> stringTimu = {};
                   Map<int, String> stringHuida = {};
                   DateTime dingshi = DateTime.now();
-                  List<int> code = List.from(fuxiController.code);
+                  List<int> code = List.from(jixvfuxiController.code);
                   code.removeAt(0);
-                  Map<String, String> cishu = fuxiController.cishu
+                  Map<String, String> cishu = jixvfuxiController.cishu
                       .map((key, value) => MapEntry(key.toString(), value));
 
                   List<int> sortedList = [];
@@ -226,7 +226,7 @@ class _FuxiPage extends State<FuxiPage> {
                       .map((key, value) => MapEntry(key.toString(), value));
                   Map<String, String> stringhuida = stringHuida
                       .map((key, value) => MapEntry(key.toString(), value));
-                  bool zhuangtai = fuxiController.zhuangtai;
+                  bool zhuangtai = jixvfuxiController.zhuangtai;
 
                   if (code.isNotEmpty) {
                     // dingshi = dingshi.add(Duration(hours: code[0]));
@@ -273,7 +273,7 @@ class _FuxiPage extends State<FuxiPage> {
                   xiugaijiyiku(
                       stringtimu,
                       stringhuida,
-                      fuxiController.id,
+                      jixvfuxiController.id,
                       zhuti,
                       settingzhanghaoxiugaicontroller.username,
                       code,
@@ -293,8 +293,8 @@ class _FuxiPage extends State<FuxiPage> {
         surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: GetBuilder<FuxiController>(
-          init: fuxiController,
+      body: GetBuilder<JixvFuxiController>(
+          init: jixvfuxiController,
           builder: (jiyikudianjicontroller) {
             return ListView(
               children: [

@@ -20,6 +20,7 @@ import 'package:like_button/like_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/fuxi/fuxi_page.dart';
+import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
 import 'package:yunji/modified_component/ball_indicator.dart';
 import 'package:yunji/personal/bianpersonal_page.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
@@ -123,6 +124,7 @@ final headcontroller = Get.put(Headcontroller());
 final maincontroller = Get.put(Maincontroller());
 final jiyikudianjicontroller = Get.put(Jiyikudianjicontroller());
 final fuxiController = Get.put(FuxiController());
+final jixvfuxiController = Get.put(JixvFuxiController());
 final jiyikudianjipersonalController =
     Get.put(JiyikudianjipersonalController());
 bool denglu = false;
