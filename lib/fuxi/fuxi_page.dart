@@ -49,6 +49,7 @@ class FuxiController extends GetxController {
   bool duanxin = false;
   bool naozhong = false;
   bool zhuangtai = false;
+  String fanganming = ' ';
   int id = -1;
 
   void cizhi(Map<String, dynamic> cizhi) {
@@ -64,6 +65,7 @@ class FuxiController extends GetxController {
     duanxin = cizhi['duanxin'] == 1 ? true : false;
     naozhong = cizhi['naozhong'] == 1 ? true : false;
     zhuangtai = cizhi['zhuangtai'] == 1 ? true : false;
+    fanganming = cizhi['fanganming'];
   }
 
   void zhankai() {
@@ -244,7 +246,7 @@ class _FuxiPage extends State<FuxiPage> {
                         dragToClose: true);
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
-                    FocusManager.instance.primaryFocus?.unfocus();
+                    print('进程');
                     int zhi = 0;
                     Map<int, String> stringTimu = {};
                     Map<int, String> stringHuida = {};
@@ -255,6 +257,7 @@ class _FuxiPage extends State<FuxiPage> {
                         .map((key, value) => MapEntry(key.toString(), value));
 
                     List<int> sortedList = [];
+                    print(_data);
                     _data.forEach((uio) {
                       sortedList.add(zhi);
                       stringTimu[zhi] = uio.tiwen;
@@ -265,6 +268,8 @@ class _FuxiPage extends State<FuxiPage> {
                         .map((key, value) => MapEntry(key.toString(), value));
                     Map<String, String> stringhuida = stringHuida
                         .map((key, value) => MapEntry(key.toString(), value));
+                    print(stringTimu);
+                    print(stringhuida);
                     bool zhuangtai = fuxiController.zhuangtai;
 
                     if (code.isNotEmpty) {
@@ -299,14 +304,22 @@ class _FuxiPage extends State<FuxiPage> {
                       }
                     } else {
                       zhuangtai = true;
-                      List<String> keysList = cishu.keys.toList();
-                      List<String> valuesList = cishu.values.toList();
-                      int ci = int.parse(keysList.last);
-                      int key = ci + 1;
-                      String value = valuesList.last;
-                      Map<String, String> newEntries = {'${key}': value};
-                      cishu.remove('${ci}');
-                      cishu.addEntries(newEntries.entries);
+                      String fanganming = fuxiController.fanganming;
+                      String? stringci;
+                      for (final entry in cishu.entries) {
+                        if (entry.value == fanganming) {
+                          stringci = entry.key;
+                          break;
+                        }
+                      }
+                      if (stringci != null) {
+                        int ci = int.parse(stringci);
+                        int key = ci + 1;
+                        String value = cishu[stringci] ?? ' s';
+                        Map<String, String> newEntries = {'${key}': value};
+                        cishu.remove(stringci);
+                        cishu.addEntries(newEntries.entries);
+                      }
                     }
 
                     xiugaijiyiku(
@@ -321,7 +334,8 @@ class _FuxiPage extends State<FuxiPage> {
                         message,
                         alarm_information,
                         zhuangtai,
-                        cishu);
+                        cishu,
+                        fuxiController.fanganming);
                     Navigator.of(context).pop();
                   }
                 },
@@ -343,6 +357,7 @@ class _FuxiPage extends State<FuxiPage> {
                   children: [
                     Row(
                       children: [
+                        SizedBox(width: 5),
                         SizedBox(
                           height: 30,
                           child: Transform.scale(
@@ -366,6 +381,7 @@ class _FuxiPage extends State<FuxiPage> {
                     ),
                     Row(
                       children: [
+                        SizedBox(width: 5),
                         SizedBox(
                           height: 30,
                           child: Transform.scale(

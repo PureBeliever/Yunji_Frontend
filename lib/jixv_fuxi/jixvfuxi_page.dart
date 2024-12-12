@@ -45,12 +45,16 @@ class JixvFuxiController extends GetxController {
   List<int> lengthxiabiao = List.empty();
   Map<String, dynamic> timu = {};
   Map<String, dynamic> huida = {};
+  Map<int, String> stringTimu = {};
+  Map<int, String> stringHuida = {};
+  List<int> sortedList = [];
   String zhuti = '';
   List<dynamic> code = [];
   Map<String, dynamic> cishu = {};
   bool duanxin = false;
   bool naozhong = false;
   bool zhuangtai = false;
+  String fanganming =' ';
   int id = -1;
 
   void cizhi(Map<String, dynamic> cizhi) {
@@ -66,6 +70,7 @@ class JixvFuxiController extends GetxController {
     duanxin = cizhi['duanxin'] == 1 ? true : false;
     naozhong = cizhi['naozhong'] == 1 ? true : false;
     zhuangtai = cizhi['zhuangtai'] == 1 ? true : false;
+    fanganming =cizhi['fanganming'];
   }
 
   void zhankai() {
@@ -87,11 +92,6 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
       jixvfuxiController.timu,
       jixvfuxiController.huida);
   final _controller = TextEditingController(text: jixvfuxiController.zhuti);
-  String zhuti = ' ';
-  final jiyikucontroller = Get.put(Jiyikucontroller());
-  final NotificationHelper _notificationHelper = NotificationHelper();
-  final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
   final FocusNode _focusNode = FocusNode();
   @override
   void dispose() {
@@ -221,7 +221,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       color: Colors.white),
                 ),
                 onPressed: () async {
-                  if (zhuti.length == 0) {
+                  if (jixvfuxiController.zhuti.length == 0) {
                     toast.toastification.show(
                         context: context,
                         type: toast.ToastificationType.success,
@@ -247,6 +247,14 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                         dragToClose: true);
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
+                    int zhi = 0;
+
+                    _data.forEach((uio) {
+                      jixvfuxiController.sortedList.add(zhi);
+                      jixvfuxiController.stringTimu[zhi] = uio.tiwen;
+                      jixvfuxiController.stringHuida[zhi] = uio.huida;
+                      zhi++;
+                    });
                     handleClick(context, Jixvfuxiyiwang());
                   }
                 },
@@ -279,7 +287,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       left: 5, right: 15, top: 50, bottom: 0),
                   child: TextField(
                     onChanged: (value) {
-                      zhuti = value;
+                      jixvfuxiController.zhuti = value;
                     },
                     controller: _controller,
                     maxLength: 50,

@@ -106,10 +106,10 @@ class PersonaljiyikudianjiController extends GetxController {
 
   void shuaxin() async {
     xihuanzhi = await databaseManager.chaxundianji(xihuan);
+
     laquzhi = await databaseManager.chaxundianji(laqu);
 
     wodezhi = await databaseManager.chaxundianji(wo);
-    wodezhi = wodezhi?.reversed.toList();
 
     update();
   }
@@ -119,7 +119,6 @@ class PersonaljiyikudianjiController extends GetxController {
       var xihuancast = zhi['xihuan'].cast<int>();
       xihuan = xihuancast;
       xihuanzhi = await databaseManager.chaxundianji(xihuancast);
-      xihuanzhi = xihuanzhi?.reversed.toList();
     }
 
     if (zhi['shoucang'] != null) {
@@ -131,7 +130,6 @@ class PersonaljiyikudianjiController extends GetxController {
       var laqucast = zhi['laqu'].cast<int>();
       laqu = laqucast;
       laquzhi = await databaseManager.chaxundianji(laqucast);
-      laquzhi = laquzhi?.reversed.toList();
     }
 
     if (zhi['tiwen'] != null) {
@@ -144,7 +142,6 @@ class PersonaljiyikudianjiController extends GetxController {
       indexname = '${wodecast.length}个';
       wo = wodecast;
       wodezhi = await databaseManager.chaxundianji(wodecast);
-      wodezhi = wodezhi?.reversed.toList();
     }
     update();
   }
@@ -803,14 +800,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   removeBottom: true,
                                   child: SizeCacheWidget(
                                     child: ListView.builder(
-                                      cacheExtent: 500,
+                                        cacheExtent: 500,
                                         physics: physics,
-                                        itemCount: personaljiyikudianjiController
-                                                    .wodezhi ==
-                                                null
-                                            ? 0
-                                            : personaljiyikudianjiController
-                                                .wodezhi?.length,
+                                        itemCount:
+                                            personaljiyikudianjiController
+                                                        .wodezhi ==
+                                                    null
+                                                ? 0
+                                                : personaljiyikudianjiController
+                                                    .wodezhi?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
@@ -820,7 +818,6 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 thickness: 0.9,
                                                 height: 0.9,
                                               ),
-                                              
                                               InkWell(
                                                 onTap: () {
                                                   jiyikudianjicontroller.cizhi(
@@ -830,29 +827,29 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                       const jiyikudianji());
                                                 },
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 3.0,
-                                                      bottom: 3.0,
-                                                      right: 15,
-                                                      left: 2),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 3.0,
+                                                          bottom: 3.0,
+                                                          right: 15,
+                                                          left: 2),
                                                   child: Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       IconButton(
                                                           onPressed: () {},
                                                           icon: CircleAvatar(
                                                             radius: 21,
                                                             backgroundImage: personaljiyikudianjiController
-                                                                                .wodezhi?[
-                                                                            index]
+                                                                            .wodezhi?[index]
                                                                         [
                                                                         'touxiang'] !=
                                                                     null
                                                                 ? FileImage(File(
                                                                     personaljiyikudianjiController
-                                                                                .wodezhi![
-                                                                            index]
+                                                                            .wodezhi![index]
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
@@ -880,17 +877,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           TextSpan(
                                                                         children: [
                                                                           TextSpan(
-                                                                            text: personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'name'],
+                                                                            text:
+                                                                                personaljiyikudianjiController.wodezhi?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
-                                                                              fontSize:
-                                                                                  17,
-                                                                              color:
-                                                                                  Colors.black,
-                                                                              fontWeight:
-                                                                                  FontWeight.w900,
+                                                                              fontSize: 17,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w900,
                                                                             ),
                                                                           ),
                                                                           TextSpan(
@@ -898,15 +891,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 ' @${personaljiyikudianjiController.wodezhi?[index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
-                                                                              fontSize:
-                                                                                  16,
-                                                                              fontWeight:
-                                                                                  FontWeight.w400,
-                                                                              color: Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1),
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w400,
+                                                                              color: Color.fromRGBO(84, 87, 105, 1),
                                                                             ),
                                                                           ),
                                                                         ],
@@ -933,7 +920,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                   '${personaljiyikudianjiController.wodezhi?[index]['xiabiao'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
-                                                                    fontSize: 16,
+                                                                    fontSize:
+                                                                        16,
                                                                     color: Color
                                                                         .fromRGBO(
                                                                             84,
@@ -967,7 +955,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                       ['timu'],
                                                                   personaljiyikudianjiController
                                                                               .wodezhi?[
-                                                                          index][
+                                                                          index]
+                                                                      [
                                                                       'xiabiao']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
@@ -991,7 +980,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                       ['huida'],
                                                                   personaljiyikudianjiController
                                                                               .wodezhi?[
-                                                                          index][
+                                                                          index]
+                                                                      [
                                                                       'xiabiao']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
@@ -1041,7 +1031,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               238,
                                                                               255),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -1050,17 +1041,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.wodezhi?[index]['id'],
                                                                                 personaljiyikudianjiController.wodezhi?[index]['laqu'],
                                                                                 personaljiyikudianjiController.wodezhi![index]);
-                                    
+
                                                                             return !isLiked;
                                                                           } else {
                                                                             duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushilaqu(
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushilaqu(personaljiyikudianjiController.wodezhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1076,23 +1065,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'laqu'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.wodezhi?[index]['laqu'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .blue
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.blue
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1100,16 +1081,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -1151,7 +1130,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               212,
                                                                               163),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -1166,10 +1146,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushishoucang(
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushishoucang(personaljiyikudianjiController.wodezhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1185,23 +1163,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'shoucang'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.wodezhi?[index]['shoucang'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .orange
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.orange
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1209,16 +1179,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -1236,7 +1204,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             .start,
                                                                     children: [
                                                                       LikeButton(
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         circleColor: const CircleColor(
                                                                             start: Color.fromARGB(
                                                                                 255,
@@ -1269,17 +1238,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.wodezhi?[index]['id'],
                                                                                 personaljiyikudianjiController.wodezhi?[index]['xihuan'],
                                                                                 personaljiyikudianjiController.wodezhi![index]);
-                                    
+
                                                                             return !isLiked;
                                                                           } else {
                                                                             duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushixihuan(
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushixihuan(personaljiyikudianjiController.wodezhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1295,23 +1262,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'xihuan'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.wodezhi?[index]['xihuan'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .red
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.red
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1319,16 +1278,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -1370,7 +1327,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               195,
                                                                               255),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -1385,10 +1343,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushitiwen(
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushitiwen(personaljiyikudianjiController.wodezhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1404,23 +1360,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]
-                                                                                [
-                                                                                'tiwen'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.wodezhi?[index]['tiwen'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .purple
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.purple
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1428,16 +1376,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -1447,7 +1393,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 ),
                                                                 const Spacer(
                                                                     flex: 1),
-                                                                     const Spacer(
+                                                                const Spacer(
                                                                     flex: 1),
                                                               ],
                                                             ),
@@ -1469,14 +1415,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   removeBottom: true,
                                   child: SizeCacheWidget(
                                     child: ListView.builder(
-                                      cacheExtent: 500,
+                                        cacheExtent: 500,
                                         physics: physics,
-                                        itemCount: personaljiyikudianjiController
-                                                    .laquzhi ==
-                                                null
-                                            ? 0
-                                            : personaljiyikudianjiController
-                                                .laquzhi?.length,
+                                        itemCount:
+                                            personaljiyikudianjiController
+                                                        .laquzhi ==
+                                                    null
+                                                ? 0
+                                                : personaljiyikudianjiController
+                                                    .laquzhi?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
@@ -1486,7 +1433,6 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 thickness: 0.9,
                                                 height: 0.9,
                                               ),
-                                    
                                               InkWell(
                                                 onTap: () {
                                                   jiyikudianjicontroller.cizhi(
@@ -1496,29 +1442,29 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                       const jiyikudianji());
                                                 },
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 3.0,
-                                                      bottom: 3.0,
-                                                      right: 15,
-                                                      left: 2),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 3.0,
+                                                          bottom: 3.0,
+                                                          right: 15,
+                                                          left: 2),
                                                   child: Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       IconButton(
                                                           onPressed: () {},
                                                           icon: CircleAvatar(
                                                             radius: 21,
                                                             backgroundImage: personaljiyikudianjiController
-                                                                                .laquzhi?[
-                                                                            index]
+                                                                            .laquzhi?[index]
                                                                         [
                                                                         'touxiang'] !=
                                                                     null
                                                                 ? FileImage(File(
                                                                     personaljiyikudianjiController
-                                                                                .laquzhi![
-                                                                            index]
+                                                                            .laquzhi![index]
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
@@ -1546,17 +1492,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           TextSpan(
                                                                         children: [
                                                                           TextSpan(
-                                                                            text: personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'name'],
+                                                                            text:
+                                                                                personaljiyikudianjiController.laquzhi?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
-                                                                              fontSize:
-                                                                                  17,
-                                                                              color:
-                                                                                  Colors.black,
-                                                                              fontWeight:
-                                                                                  FontWeight.w900,
+                                                                              fontSize: 17,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w900,
                                                                             ),
                                                                           ),
                                                                           TextSpan(
@@ -1564,15 +1506,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 ' @${personaljiyikudianjiController.laquzhi?[index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
-                                                                              fontSize:
-                                                                                  16,
-                                                                              fontWeight:
-                                                                                  FontWeight.w400,
-                                                                              color: Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1),
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w400,
+                                                                              color: Color.fromRGBO(84, 87, 105, 1),
                                                                             ),
                                                                           ),
                                                                         ],
@@ -1599,7 +1535,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                   '${personaljiyikudianjiController.laquzhi?[index]['xiabiao'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
-                                                                    fontSize: 16,
+                                                                    fontSize:
+                                                                        16,
                                                                     color: Color
                                                                         .fromRGBO(
                                                                             84,
@@ -1633,7 +1570,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                       ['timu'],
                                                                   personaljiyikudianjiController
                                                                               .laquzhi?[
-                                                                          index][
+                                                                          index]
+                                                                      [
                                                                       'xiabiao']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
@@ -1657,7 +1595,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                       ['huida'],
                                                                   personaljiyikudianjiController
                                                                               .laquzhi?[
-                                                                          index][
+                                                                          index]
+                                                                      [
                                                                       'xiabiao']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
@@ -1707,7 +1646,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               238,
                                                                               255),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -1722,10 +1662,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushilaqu(
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushilaqu(personaljiyikudianjiController.laquzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1741,23 +1679,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'laqu'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.laquzhi?[index]['laqu'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .blue
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.blue
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1765,16 +1695,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -1816,7 +1744,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               212,
                                                                               163),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -1831,10 +1760,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushishoucang(
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushishoucang(personaljiyikudianjiController.laquzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1850,23 +1777,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'shoucang'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.laquzhi?[index]['shoucang'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .orange
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.orange
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1874,16 +1793,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -1901,7 +1818,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             .start,
                                                                     children: [
                                                                       LikeButton(
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         circleColor: const CircleColor(
                                                                             start: Color.fromARGB(
                                                                                 255,
@@ -1934,17 +1852,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.laquzhi?[index]['id'],
                                                                                 personaljiyikudianjiController.laquzhi?[index]['xihuan'],
                                                                                 personaljiyikudianjiController.laquzhi![index]);
-                                    
+
                                                                             return !isLiked;
                                                                           } else {
                                                                             duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushixihuan(
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushixihuan(personaljiyikudianjiController.laquzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1960,23 +1876,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'xihuan'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.laquzhi?[index]['xihuan'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .red
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.red
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -1984,16 +1892,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -2035,7 +1941,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               195,
                                                                               255),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -2050,10 +1957,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushitiwen(
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushitiwen(personaljiyikudianjiController.laquzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2069,23 +1974,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]
-                                                                                [
-                                                                                'tiwen'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.laquzhi?[index]['tiwen'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .purple
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.purple
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -2093,16 +1990,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -2130,10 +2025,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   )),
                               SizeCacheWidget(
                                 child: ListView.builder(
-                                  cacheExtent: 500,
-                                  itemBuilder: (context, index) {
-                                  return null;
-                                }),
+                                    cacheExtent: 500,
+                                    itemBuilder: (context, index) {
+                                      return null;
+                                    }),
                               ),
                               MediaQuery.removePadding(
                                   context: context,
@@ -2141,14 +2036,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   removeBottom: true,
                                   child: SizeCacheWidget(
                                     child: ListView.builder(
-                                      cacheExtent: 500,
+                                        cacheExtent: 500,
                                         physics: physics,
-                                        itemCount: personaljiyikudianjiController
-                                                    .xihuanzhi ==
-                                                null
-                                            ? 0
-                                            : personaljiyikudianjiController
-                                                .xihuanzhi?.length,
+                                        itemCount:
+                                            personaljiyikudianjiController
+                                                        .xihuanzhi ==
+                                                    null
+                                                ? 0
+                                                : personaljiyikudianjiController
+                                                    .xihuanzhi?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
@@ -2158,7 +2054,6 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 thickness: 0.9,
                                                 height: 0.9,
                                               ),
-                                           
                                               InkWell(
                                                 onTap: () {
                                                   jiyikudianjicontroller.cizhi(
@@ -2168,29 +2063,29 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                       const jiyikudianji());
                                                 },
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 3.0,
-                                                      bottom: 3.0,
-                                                      right: 15,
-                                                      left: 2),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 3.0,
+                                                          bottom: 3.0,
+                                                          right: 15,
+                                                          left: 2),
                                                   child: Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       IconButton(
                                                           onPressed: () {},
                                                           icon: CircleAvatar(
                                                             radius: 21,
                                                             backgroundImage: personaljiyikudianjiController
-                                                                                .xihuanzhi?[
-                                                                            index]
+                                                                            .xihuanzhi?[index]
                                                                         [
                                                                         'touxiang'] !=
                                                                     null
                                                                 ? FileImage(File(
                                                                     personaljiyikudianjiController
-                                                                                .xihuanzhi![
-                                                                            index]
+                                                                            .xihuanzhi![index]
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
@@ -2218,17 +2113,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           TextSpan(
                                                                         children: [
                                                                           TextSpan(
-                                                                            text: personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'name'],
+                                                                            text:
+                                                                                personaljiyikudianjiController.xihuanzhi?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
-                                                                              fontSize:
-                                                                                  17,
-                                                                              color:
-                                                                                  Colors.black,
-                                                                              fontWeight:
-                                                                                  FontWeight.w900,
+                                                                              fontSize: 17,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w900,
                                                                             ),
                                                                           ),
                                                                           TextSpan(
@@ -2236,15 +2127,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 ' @${personaljiyikudianjiController.xihuanzhi?[index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
-                                                                              fontSize:
-                                                                                  16,
-                                                                              fontWeight:
-                                                                                  FontWeight.w400,
-                                                                              color: Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1),
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w400,
+                                                                              color: Color.fromRGBO(84, 87, 105, 1),
                                                                             ),
                                                                           ),
                                                                         ],
@@ -2271,7 +2156,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                   '${personaljiyikudianjiController.xihuanzhi?[index]['xiabiao'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
-                                                                    fontSize: 16,
+                                                                    fontSize:
+                                                                        16,
                                                                     color: Color
                                                                         .fromRGBO(
                                                                             84,
@@ -2305,7 +2191,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                       ['timu'],
                                                                   personaljiyikudianjiController
                                                                               .xihuanzhi?[
-                                                                          index][
+                                                                          index]
+                                                                      [
                                                                       'xiabiao']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
@@ -2329,7 +2216,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                       ['huida'],
                                                                   personaljiyikudianjiController
                                                                               .xihuanzhi?[
-                                                                          index][
+                                                                          index]
+                                                                      [
                                                                       'xiabiao']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
@@ -2379,7 +2267,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               238,
                                                                               255),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -2394,10 +2283,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushilaqu(
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushilaqu(personaljiyikudianjiController.xihuanzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2413,23 +2300,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'laqu'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]['laqu'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .blue
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.blue
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -2437,16 +2316,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -2488,7 +2365,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               212,
                                                                               163),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -2503,10 +2381,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushishoucang(
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushishoucang(personaljiyikudianjiController.xihuanzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2522,23 +2398,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'shoucang'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]['shoucang'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .orange
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.orange
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -2546,16 +2414,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -2573,7 +2439,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             .start,
                                                                     children: [
                                                                       LikeButton(
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         circleColor: const CircleColor(
                                                                             start: Color.fromARGB(
                                                                                 255,
@@ -2606,17 +2473,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                                 personaljiyikudianjiController.xihuanzhi?[index]['id'],
                                                                                 personaljiyikudianjiController.xihuanzhi?[index]['xihuan'],
                                                                                 personaljiyikudianjiController.xihuanzhi![index]);
-                                    
+
                                                                             return !isLiked;
                                                                           } else {
                                                                             duanxinyanzheng();
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushixihuan(
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushixihuan(personaljiyikudianjiController.xihuanzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2632,23 +2497,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'xihuan'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]['xihuan'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .red
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.red
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -2656,16 +2513,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },
@@ -2707,7 +2562,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               195,
                                                                               255),
                                                                         ),
-                                                                        size: 20,
+                                                                        size:
+                                                                            20,
                                                                         onTap:
                                                                             (isLiked) async {
                                                                           if (denglu ==
@@ -2722,10 +2578,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             return isLiked;
                                                                           }
                                                                         },
-                                                                        isLiked: personaljiyikucontroller.chushitiwen(
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'id']),
+                                                                        isLiked:
+                                                                            personaljiyikucontroller.chushitiwen(personaljiyikudianjiController.xihuanzhi?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2741,23 +2595,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]
-                                                                                [
-                                                                                'tiwen'],
-                                                                        countBuilder: (int?
-                                                                                count,
+                                                                            personaljiyikudianjiController.xihuanzhi?[index]['tiwen'],
+                                                                        countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
                                                                             String
                                                                                 text) {
                                                                           var color = isLiked
-                                                                              ? Colors
-                                                                                  .purple
-                                                                              : const Color.fromRGBO(
-                                                                                  84,
-                                                                                  87,
-                                                                                  105,
-                                                                                  1);
+                                                                              ? Colors.purple
+                                                                              : const Color.fromRGBO(84, 87, 105, 1);
                                                                           Widget
                                                                               result;
                                                                           if (count ==
@@ -2765,16 +2611,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             result =
                                                                                 Text(
                                                                               "love",
-                                                                              style:
-                                                                                  TextStyle(color: color),
+                                                                              style: TextStyle(color: color),
                                                                             );
                                                                           }
                                                                           result =
                                                                               Text(
                                                                             text,
-                                                                            style: TextStyle(
-                                                                                color: color,
-                                                                                fontWeight: FontWeight.w700),
+                                                                            style:
+                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
                                                                           );
                                                                           return result;
                                                                         },

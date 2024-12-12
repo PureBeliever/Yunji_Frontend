@@ -115,7 +115,7 @@ class DatabaseManager {
           'CREATE TABLE jiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,shoucang int,laqu int,xihuan int ,tiwen int);',
         );
         await db.execute(
-          'CREATE TABLE personaljiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,dingshi char(30),jindu int,shoucang int,laqu int,xihuan int ,tiwen int,duanxin bool,naozhong bool,zhuangtai bool ,cishu JSON);',
+          'CREATE TABLE personaljiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,dingshi char(30),jindu int,shoucang int,laqu int,xihuan int ,tiwen int,duanxin bool,naozhong bool,zhuangtai bool ,cishu JSON,fanganming char(10));',
         );
         //dingshi类型与后端不一样
         await db.execute(
@@ -150,7 +150,6 @@ class DatabaseManager {
       xhi['timu'] = jsonEncode(xhi['timu']);
       xhi['huida'] = jsonEncode(xhi['huida']);
       xhi['code'] = jsonEncode(xhi['code']);
-  
 
       db?.insert('personaljiyikudianji', xhi,
           conflictAlgorithm: ConflictAlgorithm.replace);
@@ -176,15 +175,16 @@ class DatabaseManager {
 
     String whereClause = ' id IN (${ids.map((id) => '?').join(',')})';
 
-    List<dynamic> whereArgs = ids;
+    List<dynamic> whereArgs = ids.reversed.toList();
     final List<Map<String, dynamic>> jiyiku = await db!.query(
       'personaljiyikudianji',
       where: whereClause,
       whereArgs: whereArgs,
-      orderBy: 'NULL',
     );
+    final List<Map<String, dynamic>> sortedResults =
+        whereArgs.map((id) => jiyiku.firstWhere((row) => row['id'] == id)).toList();
 
-    return jiyiku;
+    return sortedResults;
   }
 
   Future<List<Map<String, dynamic>>> chaxun(List<int> ids) async {
@@ -192,15 +192,16 @@ class DatabaseManager {
 
     String whereClause = ' id IN (${ids.map((id) => '?').join(',')})';
 
-    List<dynamic> whereArgs = ids;
+    List<dynamic> whereArgs = ids.reversed.toList();
     final List<Map<String, dynamic>> jiyiku = await db!.query(
       'personaljiyiku',
       where: whereClause,
       whereArgs: whereArgs,
-      orderBy: 'NULL',
     );
+    final List<Map<String, dynamic>> sortedResults =
+        whereArgs.map((id) => jiyiku.firstWhere((row) => row['id'] == id)).toList();
 
-    return jiyiku;
+    return sortedResults;
   }
 
   Future<List<Map<String, dynamic>>> chajiyiku() async {

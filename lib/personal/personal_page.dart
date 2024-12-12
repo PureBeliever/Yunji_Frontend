@@ -231,7 +231,7 @@ class PersonaljiyikuController extends GetxController {
       var xihuancast = zhi['xihuan'].cast<int>();
       xihuan = xihuancast;
       xihuanzhi = await databaseManager.chaxun(xihuancast);
-      xihuanzhi = xihuanzhi?.reversed.toList();
+
     }
 
     if (zhi['shoucang'] != null) {
@@ -243,7 +243,7 @@ class PersonaljiyikuController extends GetxController {
       var laqucast = zhi['laqu'].cast<int>();
       laqu = laqucast;
       laquzhi = await databaseManager.chaxun(laqucast);
-      laquzhi = laquzhi?.reversed.toList();
+
     }
 
     if (zhi['tiwen'] != null) {
@@ -256,7 +256,7 @@ class PersonaljiyikuController extends GetxController {
       indexname = '${wodecast.length}个';
       wo = wodecast;
       wodezhi = await databaseManager.chaxun(wodecast);
-      wodezhi = wodezhi?.reversed.toList();
+
     }
     update();
   }
@@ -273,6 +273,7 @@ class PersonaljiyikuController extends GetxController {
       var xihuancast = xihuanjson.cast<int>();
       xihuan = xihuancast;
       xihuanzhi = await databaseManager.chaxun(xihuancast);
+
     }
 
     if (shoucangjson != null) {
@@ -284,6 +285,7 @@ class PersonaljiyikuController extends GetxController {
       var laqucast = laqujson.cast<int>();
       laqu = laqucast;
       laquzhi = await databaseManager.chaxun(laqucast);
+
     }
 
     if (tiwenjson != null) {
@@ -295,7 +297,7 @@ class PersonaljiyikuController extends GetxController {
       var wodecast = wodejson.cast<int>();
       wo = wodecast;
       wodezhi = await databaseManager.chaxun(wodecast);
-      wodezhi = wodezhi?.reversed.toList();
+
     }
     update();
   }

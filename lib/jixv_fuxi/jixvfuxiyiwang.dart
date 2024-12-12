@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/api/personal_api.dart';
+import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
 import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 import 'package:yunji/main/main.dart';
@@ -21,9 +22,10 @@ class Jixvfuxiyiwang extends StatefulWidget {
 }
 
 class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
+  final jixvfuxiController = Get.put(JixvFuxiController());
   final settingzhanghaoxiugaicontroller =
       Get.put(Settingzhanghaoxiugaicontroller());
-  final jiyikucontroller = Get.put(Jiyikucontroller());
+
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
   bool alarm_information = false;
@@ -95,8 +97,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(
-                      left: 10
-                      , right: 10, top: 0, bottom: 0),
+                      left: 10, right: 10, top: 0, bottom: 0),
                   backgroundColor: Colors.blue,
                 ),
                 child: const Text(
@@ -108,18 +109,32 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                 ),
                 onPressed: () async {
                   bool zhuangtai = false;
-                  Map<String, String> cishu = {"0": "方案${_valueChoice + 1}"};
+
+                  String fanganming = jixvfuxiController.fanganming;
+                  Map<String, String> cishu = jixvfuxiController.cishu
+                      .map((key, value) => MapEntry(key.toString(), value));
+                  String? stringci;
+                  for (final entry in cishu.entries) {
+                    if (entry.value == fanganming) {
+                      stringci = entry.key;
+                      break;
+                    }
+                  }
+                  if (stringci != null) {
+                    fanganming = cishu[stringci]!;
+                  } else {
+                    Map<String, String> cishu1 = {"0": "方案${_valueChoice + 1}"};
+                    cishu.addEntries(cishu1.entries);
+                  }
+
                   DateTime now = DateTime.now();
                   // DateTime dingshi =
                   //     now.add(Duration(hours: shijian[_valueChoice][0]));
-                  List<int> timukey = jiyikucontroller.timuzhi.keys.toList();
-                  List<int> huidakey = jiyikucontroller.huidazhi.keys.toList();
-                  Set<int> combinedSet = Set<int>.from(timukey)..addAll(huidakey);
-                  List<int> sortedList = List<int>.from(combinedSet);
-                  sortedList.sort();
-                  Map<String, String> stringTimu = jiyikucontroller.timuzhi
+
+                  Map<String, String> stringTimu = jixvfuxiController.stringTimu
                       .map((key, value) => MapEntry(key.toString(), value));
-                  Map<String, String> stringhuida = jiyikucontroller.huidazhi
+                  Map<String, String> stringhuida = jixvfuxiController
+                      .stringHuida
                       .map((key, value) => MapEntry(key.toString(), value));
                   DateTime dingshi =
                       now.add(Duration(minutes: shijian[_valueChoice][0]));
@@ -139,7 +154,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                         androidFullScreenIntent: true,
                         notificationSettings: NotificationSettings(
                           title: '开始复习 !',
-                          body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
+                          body: '记忆库${jixvfuxiController.zhuti}到达预定的复习时间',
                           stopButton: '停止闹钟',
                           icon: 'notification_icon',
                         ),
@@ -150,7 +165,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       _notificationHelper.zonedScheduleNotification(
                           id: 2,
                           title: '开始复习 !',
-                          body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
+                          body: '记忆库${jixvfuxiController.zhuti}到达预定的复习时间',
                           scheduledDateTime: dingshi);
                     }
                   }
@@ -158,16 +173,17 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       stringTimu,
                       stringhuida,
                       jixvfuxiController.id,
-                      jiyikucontroller.zhutizhi!,
+                      jixvfuxiController.zhuti,
                       settingzhanghaoxiugaicontroller.username,
                       shijian[_valueChoice],
                       dingshi,
-                      sortedList,
+                      jixvfuxiController.sortedList,
                       message,
                       alarm_information,
                       zhuangtai,
-                      cishu);
-              
+                      cishu,
+                      fanganming);
+
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                   handleClick(context, const PersonalPage());
@@ -181,60 +197,55 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
       ),
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 5.0),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 30,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: CupertinoSwitch(
-                      value: message,
-                      onChanged: (value) {
-                        setState(() {
-                          message = value;
-                        });
-                      },
-                    ),
+          Row(
+            children: [
+              SizedBox(width: 5),
+              SizedBox(
+                height: 30,
+                child: Transform.scale(
+                  scale: 0.7,
+                  child: CupertinoSwitch(
+                    value: message,
+                    onChanged: (value) {
+                      setState(() {
+                        message = value;
+                      });
+                    },
                   ),
                 ),
-                Text('信息通知',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Color.fromRGBO(84, 87, 105, 1),
-                        fontSize: 17)),
-              ],
-            ),
+              ),
+              Text('信息通知',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(84, 87, 105, 1),
+                      fontSize: 17)),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 5.0),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 30,
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: CupertinoSwitch(
-                      value: alarm_information,
-                      onChanged: (value) {
-                        setState(() {
-                          print(value);
-                          alarm_information = value;
-                        });
-                      },
-                    ),
+          Row(
+            children: [
+              SizedBox(width: 5),
+              SizedBox(
+                height: 30,
+                child: Transform.scale(
+                  scale: 0.7,
+                  child: CupertinoSwitch(
+                    value: alarm_information,
+                    onChanged: (value) {
+                      setState(() {
+                        print(value);
+                        alarm_information = value;
+                      });
+                    },
                   ),
                 ),
-                Text('闹钟信息通知',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Color.fromRGBO(84, 87, 105, 1),
-                        fontSize: 17)),
-              ],
-            ),
+              ),
+              Text('闹钟信息通知',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(84, 87, 105, 1),
+                      fontSize: 17)),
+            ],
           ),
-   
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List<Widget>.generate(6, (int index) {

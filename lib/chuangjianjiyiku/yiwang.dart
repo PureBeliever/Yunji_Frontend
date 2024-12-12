@@ -106,6 +106,7 @@ class _Yiwang extends State<Yiwang> {
               onPressed: () async {
                 bool zhuangtai = false;
                 Map<String, String> cishu = {"0": "方案${_valueChoice + 1}"};
+                String fanganming = "方案${_valueChoice + 1}";
                 DateTime now = DateTime.now();
                 // DateTime dingshi =
                 //     now.add(Duration(hours: shijian[_valueChoice][0]));
@@ -162,7 +163,8 @@ class _Yiwang extends State<Yiwang> {
                     message,
                     alarm_information,
                     zhuangtai,
-                    cishu);
+                    cishu,
+                    fanganming);
 
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
@@ -183,6 +185,7 @@ class _Yiwang extends State<Yiwang> {
                 children: [
                   Row(
                     children: [
+                      SizedBox(width: 5),
                       SizedBox(
                         height: 30,
                         child: Transform.scale(
@@ -206,6 +209,7 @@ class _Yiwang extends State<Yiwang> {
                   ),
                   Row(
                     children: [
+                      SizedBox(width: 5),
                       SizedBox(
                         height: 30,
                         child: Transform.scale(
