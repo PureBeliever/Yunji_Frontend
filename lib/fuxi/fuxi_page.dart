@@ -11,6 +11,7 @@ import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/main/main.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:toastification/toastification.dart' as toast;
 
 class Item {
   Item({
@@ -78,6 +79,7 @@ class FuxiPage extends StatefulWidget {
 }
 
 class _FuxiPage extends State<FuxiPage> {
+  final FocusNode _focusNode = FocusNode();
   final List<Item> _data = generateItems(fuxiController.length,
       fuxiController.lengthxiabiao, fuxiController.timu, fuxiController.huida);
   final _controller = TextEditingController(text: fuxiController.zhuti);
@@ -88,6 +90,16 @@ class _FuxiPage extends State<FuxiPage> {
   final NotificationHelper _notificationHelper = NotificationHelper();
   final settingzhanghaoxiugaicontroller =
       Get.put(Settingzhanghaoxiugaicontroller());
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void initState() {
+    super.initState();
+    _focusNode.requestFocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,84 +218,112 @@ class _FuxiPage extends State<FuxiPage> {
                       color: Colors.white),
                 ),
                 onPressed: () async {
-                  int zhi = 0;
-                  Map<int, String> stringTimu = {};
-                  Map<int, String> stringHuida = {};
-                  DateTime dingshi = DateTime.now();
-                  List<int> code = List.from(fuxiController.code);
-                  code.removeAt(0);
-                  Map<String, String> cishu = fuxiController.cishu
-                      .map((key, value) => MapEntry(key.toString(), value));
-
-                  List<int> sortedList = [];
-                  _data.forEach((uio) {
-                    sortedList.add(zhi);
-                    stringTimu[zhi] = uio.tiwen;
-                    stringHuida[zhi] = uio.huida;
-                    zhi++;
-                  });
-                  Map<String, String> stringtimu = stringTimu
-                      .map((key, value) => MapEntry(key.toString(), value));
-                  Map<String, String> stringhuida = stringHuida
-                      .map((key, value) => MapEntry(key.toString(), value));
-                  bool zhuangtai = fuxiController.zhuangtai;
-
-                  if (code.isNotEmpty) {
-                    // dingshi = dingshi.add(Duration(hours: code[0]));
-                    dingshi = dingshi.add(Duration(minutes: code[0]));
-                    if (alarm_information == true) {
-                      final alarmSettings = AlarmSettings(
-                        id: 42,
-                        dateTime: dingshi,
-                        assetAudioPath: 'assets/alarm.mp3',
-                        loopAudio: true,
-                        vibrate: true,
-                        volume: 0.6,
-                        fadeDuration: 3.0,
-                        warningNotificationOnKill: Platform.isIOS,
-                        androidFullScreenIntent: true,
-                        notificationSettings: NotificationSettings(
-                          title: '开始复习 !',
-                          body: '记忆库${zhuti}到达预定的复习时间',
-                          stopButton: '停止闹钟',
-                          icon: 'notification_icon',
+                  if (zhuti.length == 0) {
+                    toast.toastification.show(
+                        context: context,
+                        type: toast.ToastificationType.success,
+                        style: toast.ToastificationStyle.flatColored,
+                        title: const Text("请填写主题",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 17)),
+                        description: const Text(
+                          "主题为空",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 119, 118, 118),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
                         ),
-                      );
-                      await Alarm.set(alarmSettings: alarmSettings);
-                    }
-                    if (message == true) {
-                      _notificationHelper.zonedScheduleNotification(
-                          id: 888,
-                          title: '开始复习 !',
-                          body: '记忆库${zhuti}到达预定的复习时间',
-                          scheduledDateTime: dingshi);
-                    }
+                        alignment: Alignment.topCenter,
+                        autoCloseDuration: const Duration(seconds: 4),
+                        primaryColor: const Color(0xff047aff),
+                        backgroundColor: const Color(0xffedf7ff),
+                        borderRadius: BorderRadius.circular(12.0),
+                        boxShadow: toast.lowModeShadow,
+                        dragToClose: true);
+                    FocusScope.of(context).requestFocus(_focusNode);
                   } else {
-                    zhuangtai = true;
-                    List<String> keysList = cishu.keys.toList();
-                    List<String> valuesList = cishu.values.toList();
-                    int ci = int.parse(keysList.last);
-                    int key = ci + 1;
-                    String value = valuesList.last;
-                    Map<String, String> newEntries = {'${key}': value};
-                    cishu.remove('${ci}');
-                    cishu.addEntries(newEntries.entries);
-                  }
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    int zhi = 0;
+                    Map<int, String> stringTimu = {};
+                    Map<int, String> stringHuida = {};
+                    DateTime dingshi = DateTime.now();
+                    List<int> code = List.from(fuxiController.code);
+                    code.removeAt(0);
+                    Map<String, String> cishu = fuxiController.cishu
+                        .map((key, value) => MapEntry(key.toString(), value));
 
-                  xiugaijiyiku(
-                      stringtimu,
-                      stringhuida,
-                      fuxiController.id,
-                      zhuti,
-                      settingzhanghaoxiugaicontroller.username,
-                      code,
-                      dingshi,
-                      sortedList,
-                      message,
-                      alarm_information,
-                      zhuangtai,
-                      cishu);
-                  Navigator.of(context).pop();
+                    List<int> sortedList = [];
+                    _data.forEach((uio) {
+                      sortedList.add(zhi);
+                      stringTimu[zhi] = uio.tiwen;
+                      stringHuida[zhi] = uio.huida;
+                      zhi++;
+                    });
+                    Map<String, String> stringtimu = stringTimu
+                        .map((key, value) => MapEntry(key.toString(), value));
+                    Map<String, String> stringhuida = stringHuida
+                        .map((key, value) => MapEntry(key.toString(), value));
+                    bool zhuangtai = fuxiController.zhuangtai;
+
+                    if (code.isNotEmpty) {
+                      // dingshi = dingshi.add(Duration(hours: code[0]));
+                      dingshi = dingshi.add(Duration(minutes: code[0]));
+                      if (alarm_information == true) {
+                        final alarmSettings = AlarmSettings(
+                          id: 42,
+                          dateTime: dingshi,
+                          assetAudioPath: 'assets/alarm.mp3',
+                          loopAudio: true,
+                          vibrate: true,
+                          volume: 0.6,
+                          fadeDuration: 3.0,
+                          warningNotificationOnKill: Platform.isIOS,
+                          androidFullScreenIntent: true,
+                          notificationSettings: NotificationSettings(
+                            title: '开始复习 !',
+                            body: '记忆库${zhuti}到达预定的复习时间',
+                            stopButton: '停止闹钟',
+                            icon: 'notification_icon',
+                          ),
+                        );
+                        await Alarm.set(alarmSettings: alarmSettings);
+                      }
+                      if (message == true) {
+                        _notificationHelper.zonedScheduleNotification(
+                            id: 888,
+                            title: '开始复习 !',
+                            body: '记忆库${zhuti}到达预定的复习时间',
+                            scheduledDateTime: dingshi);
+                      }
+                    } else {
+                      zhuangtai = true;
+                      List<String> keysList = cishu.keys.toList();
+                      List<String> valuesList = cishu.values.toList();
+                      int ci = int.parse(keysList.last);
+                      int key = ci + 1;
+                      String value = valuesList.last;
+                      Map<String, String> newEntries = {'${key}': value};
+                      cishu.remove('${ci}');
+                      cishu.addEntries(newEntries.entries);
+                    }
+
+                    xiugaijiyiku(
+                        stringtimu,
+                        stringhuida,
+                        fuxiController.id,
+                        zhuti,
+                        settingzhanghaoxiugaicontroller.username,
+                        code,
+                        dingshi,
+                        sortedList,
+                        message,
+                        alarm_information,
+                        zhuangtai,
+                        cishu);
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
             ),
@@ -367,6 +407,7 @@ class _FuxiPage extends State<FuxiPage> {
                     onChanged: (value) {
                       zhuti = value;
                     },
+                    focusNode: _focusNode,
                     controller: _controller,
                     maxLength: 50,
                     style: const TextStyle(

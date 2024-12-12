@@ -59,7 +59,7 @@ class _Jiyiku extends State<Jiyiku> {
   final List<Item> _data = generateItems(1);
 
   int heng = 0;
-  String? zhuti;
+  String zhuti = '';
 
   @override
   void dispose() {
@@ -72,7 +72,7 @@ class _Jiyiku extends State<Jiyiku> {
       _data.add(Item(shu: heng, wen: '您有什么疑惑或学习目标', da: '请输入讲解的内容'));
     });
     super.initState();
-        _focusNode.requestFocus();
+    _focusNode.requestFocus();
   }
 
   @override
@@ -119,7 +119,9 @@ class _Jiyiku extends State<Jiyiku> {
                 ),
                 contentPadding: EdgeInsets.all(10),
                 hintStyle: TextStyle(
-                    color: Color.fromRGBO(84, 87, 105, 1), fontSize: 17,  fontWeight: FontWeight.w700),
+                    color: Color.fromRGBO(84, 87, 105, 1),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700),
                 hintText: " 今天您想学习些什么呢?",
               ),
             ),
@@ -166,7 +168,7 @@ class _Jiyiku extends State<Jiyiku> {
                         boxShadow: toast.lowModeShadow,
                         dragToClose: true);
                   } else {
-                    if (zhuti?.length == null) {
+                    if (zhuti.length == 0) {
                       toast.toastification.show(
                           context: context,
                           type: toast.ToastificationType.success,
@@ -206,10 +208,10 @@ class _Jiyiku extends State<Jiyiku> {
         ),
         backgroundColor: Colors.white,
         body: MediaQuery.removePadding(
-                          context: context,
-                          removeTop: true,
-                          removeBottom: true,
-                          child:SizeCacheWidget(
+          context: context,
+          removeTop: true,
+          removeBottom: true,
+          child: SizeCacheWidget(
             child: ListView(
               cacheExtent: 500,
               controller: _scrollController,

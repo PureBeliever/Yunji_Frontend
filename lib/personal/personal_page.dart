@@ -84,6 +84,11 @@ class RollingeffectController extends GetxController {
 class DateTimeController extends GetxController {
   static DateTimeController get to => Get.find();
 
+  bool tubiaoxianshi(int zhi) {
+    bool zhuangtai = zhi == 1 ? true : false;
+    return zhuangtai;
+  }
+
   Widget jishi(Map<String, dynamic> cizhi, BuildContext uio) {
     var dingshi = cizhi['dingshi'];
     DateTime will = DateTime.parse(dingshi);
@@ -120,7 +125,7 @@ class DateTimeController extends GetxController {
 
     Widget zhi = SizedBox(
       width: double.infinity,
-      height: 30,
+      height: 46,
       child: ListView(
         children: [
           SizedBox(
@@ -143,7 +148,7 @@ class DateTimeController extends GetxController {
           ),
           GestureDetector(
             onTap: () {
-            jixvfuxiController.cizhi(cizhi);
+              jixvfuxiController.cizhi(cizhi);
               handleClick(uio, JixvfuxiPage());
             },
             child: Text(
@@ -1181,33 +1186,52 @@ class _PersonalPageState extends State<PersonalPage>
                                                     left: 2),
                                                 child: Column(
                                                   children: [
-                                                    Row(children: [
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 28,
-                                                                right: 10,
-                                                                top: 3),
-                                                        child: SvgPicture.asset(
-                                                            'assets/shijian.svg',
-                                                            width: 20,
-                                                            height: 20),
-                                                      ),
-                                                      Expanded(
-                                                        child: GetBuilder<
-                                                                DateTimeController>(
-                                                            init:
-                                                                datetimecontroller,
-                                                            builder:
-                                                                (datetimecontroller) {
-                                                              return datetimecontroller.jishi(
+                                                    GetBuilder<
+                                                            DateTimeController>(
+                                                        init:
+                                                            datetimecontroller,
+                                                        builder:
+                                                            (datetimecontroller) {
+                                                          return Row(children: [
+                                                            datetimecontroller.tubiaoxianshi(
+                                                                        personaljiyikucontroller.wodezhi![index]
+                                                                            [
+                                                                            'zhuangtai']) ==
+                                                                    false
+                                                                ? Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        left:
+                                                                            28,
+                                                                        right:
+                                                                            10,
+                                                                        top: 3),
+                                                                    child: SvgPicture.asset(
+                                                                        'assets/shijian.svg',
+                                                                        width:
+                                                                            20,
+                                                                        height:
+                                                                            20))
+                                                                : Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        left:
+                                                                            21,
+                                                                        right:
+                                                                            10,
+                                                                        top: 3),
+                                                                    child: SvgPicture.asset(
+                                                                        'assets/jiangzhuang.svg',
+                                                                        width:
+                                                                            27,
+                                                                        height: 27)),
+                                                            Expanded(
+                                                              child: datetimecontroller.jishi(
                                                                   personaljiyikucontroller
                                                                           .wodezhi![
                                                                       index],
-                                                                  context);
-                                                            }),
-                                                      ),
-                                                    ]),
+                                                                  context),
+                                                            ),
+                                                          ]);
+                                                        }),
                                                     Row(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment

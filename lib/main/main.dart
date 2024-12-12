@@ -1198,16 +1198,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
               iconTheme: const IconThemeData(color: Colors.black),
               actions: [
-                IconButton(
-                  splashColor: const Color.fromRGBO(145, 145, 145, 1),
-                  icon: SvgPicture.asset(
-                    'assets/shuoming.svg',
-                    // 将此处的icon_name替换为您的SVG图标名称
-                    width: 25,
-                    height: 25,
-                  ),
-                  onPressed: () {},
-                ),
+          
               ],
             ),
             SliverPersistentHeader(
