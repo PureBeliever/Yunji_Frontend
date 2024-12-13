@@ -85,8 +85,8 @@ class NotificationHelper {
       required String body,
       required DateTime scheduledDateTime}) async {
     const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your.channel.id', 'your channel name',
-            channelDescription: 'your channel description',
+        AndroidNotificationDetails('your.channel.id', '新信息通知',
+            channelDescription: '提醒复习时使用的通知类别',
             importance: Importance.max,
             priority: Priority.high,
             ticker: 'ticker');
@@ -103,11 +103,11 @@ class NotificationHelper {
     // 发起通知
     await _notificationsPlugin.zonedSchedule(
       id, title, body,
-      tz.TZDateTime.from(scheduledDateTime, tz.local), // 使用本地时区的时间
+      tz.TZDateTime.from(scheduledDateTime, tz.local), 
       platformChannelSpecifics,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      androidScheduleMode: AndroidScheduleMode.alarmClock, // 设置通知的触发时间是觉得时间
+      androidScheduleMode: AndroidScheduleMode.alarmClock, 
     );
   }
 }

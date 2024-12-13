@@ -85,7 +85,7 @@ class _FuxiPage extends State<FuxiPage> {
   final List<Item> _data = generateItems(fuxiController.length,
       fuxiController.lengthxiabiao, fuxiController.timu, fuxiController.huida);
   final _controller = TextEditingController(text: fuxiController.zhuti);
-  String zhuti = ' ';
+  String zhuti = fuxiController.zhuti;
   bool message = fuxiController.duanxin;
   bool alarm_information = fuxiController.naozhong;
   final jiyikucontroller = Get.put(Jiyikucontroller());
@@ -246,7 +246,7 @@ class _FuxiPage extends State<FuxiPage> {
                         dragToClose: true);
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
-                    print('进程');
+                    
                     int zhi = 0;
                     Map<int, String> stringTimu = {};
                     Map<int, String> stringHuida = {};
@@ -257,7 +257,7 @@ class _FuxiPage extends State<FuxiPage> {
                         .map((key, value) => MapEntry(key.toString(), value));
 
                     List<int> sortedList = [];
-                    print(_data);
+
                     _data.forEach((uio) {
                       sortedList.add(zhi);
                       stringTimu[zhi] = uio.tiwen;
@@ -268,8 +268,7 @@ class _FuxiPage extends State<FuxiPage> {
                         .map((key, value) => MapEntry(key.toString(), value));
                     Map<String, String> stringhuida = stringHuida
                         .map((key, value) => MapEntry(key.toString(), value));
-                    print(stringTimu);
-                    print(stringhuida);
+            
                     bool zhuangtai = fuxiController.zhuangtai;
 
                     if (code.isNotEmpty) {

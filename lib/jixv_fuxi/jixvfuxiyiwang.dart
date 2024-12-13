@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
@@ -31,8 +32,10 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
   bool alarm_information = false;
   List<List<int>> shijian = [
     [0],
-    [2, 2, 2],
-    [24, 168, 336, 720],
+    [1, 1],
+    [1, 1],
+    // [24, 168, 336],
+    // [24, 168, 336, 720],
     [24, 168, 336, 720, 2160],
     [24, 168, 336, 720, 2160, 4320],
     [1, 6, 24, 72, 168, 336, 720, 2160, 4320]
@@ -109,17 +112,20 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                 ),
                 onPressed: () async {
                   bool zhuangtai = false;
-
-                  String fanganming = jixvfuxiController.fanganming;
+                  String fanganming = "方案${_valueChoice + 1}";
                   Map<String, String> cishu = jixvfuxiController.cishu
                       .map((key, value) => MapEntry(key.toString(), value));
                   String? stringci;
+                  print('循环');
                   for (final entry in cishu.entries) {
+                    print(entry.value);
                     if (entry.value == fanganming) {
+                      print('以完成');
                       stringci = entry.key;
                       break;
                     }
                   }
+                  print('stringci为${stringci}');
                   if (stringci != null) {
                     fanganming = cishu[stringci]!;
                   } else {
@@ -186,7 +192,6 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
 
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
-                  handleClick(context, const PersonalPage());
                 },
               ),
             ),
@@ -232,7 +237,6 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                     value: alarm_information,
                     onChanged: (value) {
                       setState(() {
-                        print(value);
                         alarm_information = value;
                       });
                     },

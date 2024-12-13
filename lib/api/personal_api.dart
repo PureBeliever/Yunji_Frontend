@@ -71,7 +71,7 @@ void baocunjiyiku(
     'naozhong': naozhong,
     'zhuangtai': zhuangtai,
     'cishu': cishu,
-    'fanganming':fanganming
+    'fanganming': fanganming
   };
   Map<String, String> header = {
     'Content-Type': 'application/json',
@@ -87,20 +87,19 @@ void baocunjiyiku(
 }
 
 void xiugaijiyiku(
-  Map<String, String> timu,
-  Map<String, String> huida,
-  int id,
-  String zhuti,
-  String username,
-  List<int> code,
-  DateTime dingshi,
-  List<int> xiabiao,
-  bool duanxin,
-  bool naozhong,
-  bool zhuangtai,
-  Map<String, String> cishu,
-  String fanganming
-) async {
+    Map<String, String> timu,
+    Map<String, String> huida,
+    int id,
+    String zhuti,
+    String username,
+    List<int> code,
+    DateTime dingshi,
+    List<int> xiabiao,
+    bool duanxin,
+    bool naozhong,
+    bool zhuangtai,
+    Map<String, String> cishu,
+    String fanganming) async {
   Map<String, dynamic> formdata = {
     'username': username,
     'timu': timu,
@@ -114,12 +113,13 @@ void xiugaijiyiku(
     'naozhong': naozhong,
     'zhuangtai': zhuangtai,
     'cishu': cishu,
-    'fanganming':fanganming
+    'fanganming': fanganming
   };
   Map<String, String> header = {
     'Content-Type': 'application/json',
   };
-print('执行');
+  print('执行');
+  print(formdata);
   String jsonformdata = jsonEncode(formdata);
   final response = await dio.post(
     'http://47.92.90.93:36233/xiugaijiyiku',

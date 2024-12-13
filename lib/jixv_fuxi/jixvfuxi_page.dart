@@ -54,7 +54,7 @@ class JixvFuxiController extends GetxController {
   bool duanxin = false;
   bool naozhong = false;
   bool zhuangtai = false;
-  String fanganming =' ';
+  String fanganming = ' ';
   int id = -1;
 
   void cizhi(Map<String, dynamic> cizhi) {
@@ -70,7 +70,8 @@ class JixvFuxiController extends GetxController {
     duanxin = cizhi['duanxin'] == 1 ? true : false;
     naozhong = cizhi['naozhong'] == 1 ? true : false;
     zhuangtai = cizhi['zhuangtai'] == 1 ? true : false;
-    fanganming =cizhi['fanganming'];
+    fanganming = cizhi['fanganming'];
+    sortedList =cizhi['xiabiao'];
   }
 
   void zhankai() {
@@ -248,9 +249,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     int zhi = 0;
-
                     _data.forEach((uio) {
-                      jixvfuxiController.sortedList.add(zhi);
                       jixvfuxiController.stringTimu[zhi] = uio.tiwen;
                       jixvfuxiController.stringHuida[zhi] = uio.huida;
                       zhi++;
