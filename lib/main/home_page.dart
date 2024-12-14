@@ -1,24 +1,26 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
-import 'dart:async';
-import 'dart:convert';
-import 'dart:core';
-import 'dart:ui';
+// dart包
 import 'dart:io';
 import 'dart:math';
+import 'dart:core';
+import 'dart:convert';
 
+//依赖包
 import 'package:alarm/alarm.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ali_auth/flutter_ali_auth.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:keframe/keframe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:like_button/like_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart' as toast;
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:get/get.dart';
+import 'package:timezone/data/latest.dart' as tz;
+
+//项目文件
 import 'package:yunji/fuxi/fuxi_page.dart';
 import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
 import 'package:yunji/modified_component/ball_indicator.dart';
@@ -33,83 +35,32 @@ import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/setting/setting.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 import 'package:yunji/sql/sqlite.dart';
-import '../modified_component/sizeExpansionTileState.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import '../cut/cut.dart';
-import 'package:get/get.dart';
-import 'package:app_settings/app_settings.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
-import '../chuangjianjiyiku/jiyiku.dart';
+import 'package:yunji/cut/cut.dart';
+import 'package:yunji/modified_component/sizeExpansionTileState.dart';
+import 'package:yunji/main/notification_settings.dart';
+import 'package:yunji/main/login/sms_login.dart';
+import 'package:yunji/main/login/login_settings.dart';
 
-class Maincontroller extends GetxController {
-  static Maincontroller get to => Get.find();
-  List<Map<String, dynamic>>? zhi;
+// 主页记忆板刷新
+class RefreshofHomepageMemoryBankextends extends GetxController {
+  static RefreshofHomepageMemoryBankextends get to => Get.find();
+  List<Map<String, dynamic>> memoryRefreshValue = [];
 
-  void mainzhi(List<Map<String, dynamic>>? uio) {
-    if (uio != null) {
-      zhi = uio.reversed.toList();
+  void updateMemoryRefreshValue(List<Map<String, dynamic>>? value) {
+    if (value != null) {
+      // 将value反转并赋值给memoryRefreshValue
+      memoryRefreshValue = value.reversed.toList();
+      // 更新状态
       update();
     }
   }
 }
 
-class NotificationHelper {
-  // 使用单例模式进行初始化
-  static final NotificationHelper _instance = NotificationHelper._internal();
-  factory NotificationHelper() => _instance;
-  NotificationHelper._internal();
-
-  // FlutterLocalNotificationsPlugin是一个用于处理本地通知的插件，它提供了在Flutter应用程序中发送和接收本地通知的功能。
-  final FlutterLocalNotificationsPlugin _notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-  // 初始化函数
-  Future<void> initialize() async {
-
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings();
-    // 初始化
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
-    await _notificationsPlugin.initialize(initializationSettings);
-  }
-
-  Future<void> zonedScheduleNotification(
-      {required int id,
-      required String title,
-      required String body,
-      required DateTime scheduledDateTime}) async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your.channel.id', '新信息通知',
-            channelDescription: '提醒复习时使用的通知类别',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-
-    // ios的通知
-    const String darwinNotificationCategoryPlain = 'plainCategory';
-    const DarwinNotificationDetails iosNotificationDetails =
-        DarwinNotificationDetails(
-      categoryIdentifier: darwinNotificationCategoryPlain, // 通知分类
-    );
-    // 创建跨平台通知
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidNotificationDetails, iOS: iosNotificationDetails);
-    // 发起通知
-    await _notificationsPlugin.zonedSchedule(
-      id, title, body,
-      tz.TZDateTime.from(scheduledDateTime, tz.local), 
-      platformChannelSpecifics,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidScheduleMode: AndroidScheduleMode.alarmClock, 
-    );
-  }
+Future<void> requestPermission() async {
+  // 请求通知权限
+  await Permission.notification.request();
+  // 请求精确闹钟权限
+  await Permission.scheduleExactAlarm.request();
 }
 
 List<String> lie = [];
@@ -121,36 +72,31 @@ final settingzhanghaoxiugaicontroller =
     Get.put(Settingzhanghaoxiugaicontroller());
 final beicontroller = Get.put(Beicontroller());
 final headcontroller = Get.put(Headcontroller());
-final maincontroller = Get.put(Maincontroller());
+final refreshofHomepageMemoryBankextends =
+    Get.put(RefreshofHomepageMemoryBankextends());
 final jiyikudianjicontroller = Get.put(Jiyikudianjicontroller());
 final fuxiController = Get.put(FuxiController());
 final jixvfuxiController = Get.put(JixvFuxiController());
 final jiyikudianjipersonalController =
     Get.put(JiyikudianjipersonalController());
 bool denglu = false;
-
 BuildContext? contexts;
-
-Future<void> requestNotificationPermission() async {
-  await Permission.notification.request();
-  await Permission.scheduleExactAlarm.request();
-}
 
 void main() async {
   runApp(const MyApp());
   WidgetsFlutterBinding.ensureInitialized();
+  await requestPermission();
   await Alarm.init();
   tz.initializeTimeZones();
   NotificationHelper notificationHelper = NotificationHelper();
   await notificationHelper.initialize();
-  requestNotificationPermission();
   await databaseManager.initDatabase();
 
   List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
   Map<String, dynamic>? zhi = await databaseManager.chapersonal();
 
   if (zhi != null) {
-    maincontroller.mainzhi(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     personaljiyikucontroller.shuaxin(zhi);
     var shu = zhi;
     denglu = true;
@@ -165,508 +111,12 @@ void main() async {
     postpersonalapi(settingzhanghaoxiugaicontroller.username);
     await shuaxin();
   } else {
-    chushi();
+    soginDependencySettings(contexts!);
   }
 }
 
-void chushi() async {
-  await AliAuthClient.initSdk(
-    authConfig: AuthConfig(
-        enableLog: false,
-        authUIStyle: AuthUIStyle.alert,
-        authUIConfig: const AlertUIConfig(
-            alertWindowHeight: 250,
-            alertWindowWidth: 360,
-            logoConfig: LogoConfig(logoIsHidden: true, logoWidth: 30),
-            sloganConfig:
-                SloganConfig(sloganIsHidden: true, sloganTextSize: 20),
-            phoneNumberConfig: PhoneNumberConfig(numberFontSize: 25),
-            loginButtonConfig:
-                LoginButtonConfig(loginBtnHeight: 40, loginBtnWidth: 200),
-            privacyConfig: PrivacyConfig(privacyConnectTexts: ' ')),
-        iosSdk:
-            'iXUQkFvwckIqJ1gmASe+DwiFSsvCISFDRcWDn+wnt3DC03ZKs/QQYuItcjCf1u2X7V2UyOC0zLmuODytM6IWR232P4bxsIErwMc9hMxrh+CAPbKWRLsw6X2ecMxT44ykjgaV3HjRermybiluDxV8uHVgEHbJ852Y4VKkvQOgMG/VpnACdQPN9kjB7lIgGjnK76LA49U64ynUqvxKR30x5tiV9DMXJKhkLkDJGBwvBzTruxwLUdHzJFR00futqGp1PLrepZzFFnU=',
-        androidSdk:
-            '+MTbA7Mr9/7DGkGl5auu/ZyfPOWfhHNF860ms6uc9RoaX175uW0oWxxS35oPmzL6QH2lQSbDNkZ9eh0PryTJP0cZaQ6W2lSgYJ5hOOT1qQwrpCaL1cXYUcIbQy4rHwC+PLavlHX6rfRLrQ8t5LR8saqnD7PtoxS/i+40g6K6iumJd5YlO1ppbHjfpnZNyi/No0d6WjqaR1EA4TkBX5cPBknHLtHIsc/Ic2I4UASnoxspDHNtTakv7nE00WHRH6zL+93ihFYJ4vOBYOuBcMRCVfOjmb0dIOn0t1Dlnxla7NgDtr8fi6gZWg=='),
-  );
 
-  AliAuthClient.handleEvent(onEvent: _onEvent);
-}
 
-String base64Decodes(String digest) {
-  var contentBuffer = base64Decode(digest);
-  String content = utf8.decode(contentBuffer);
-  return content;
-}
-
-bool zhi = true;
-Future<void> _onEvent(AuthResponseModel event) async {
-  if (event.resultCode == "600024") {
-    await AliAuthClient.login();
-  }
-
-  if (zhi == true && event.resultCode == "600000") {
-    String? uio = event.token;
-    shouji(uio!);
-    toast.toastification.show(
-        context: contexts,
-        type: toast.ToastificationType.success,
-        style: toast.ToastificationStyle.flatColored,
-        title: const Text("右滑可查看个人资料",
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                fontSize: 17)),
-        description: const Text(
-          "右滑可查看个人资料",
-          style: TextStyle(
-              color: Color.fromARGB(255, 119, 118, 118),
-              fontSize: 15,
-              fontWeight: FontWeight.w600),
-        ),
-        alignment: Alignment.topRight,
-        autoCloseDuration: const Duration(seconds: 10),
-        primaryColor: const Color(0xff047aff),
-        backgroundColor: const Color(0xffedf7ff), 
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: toast.lowModeShadow,
-        dragToClose: true);
-    toast.toastification.show(
-        context: contexts,
-        type: toast.ToastificationType.success,
-        style: toast.ToastificationStyle.flatColored,
-        title: const Text("登录成功,欢迎您使用本应用！",
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                fontSize: 17)),
-        description: const Text(
-          "这是一款帮助学习和记忆的应用,希望对您产生帮助",
-          style: TextStyle(
-              color: Color.fromARGB(255, 119, 118, 118),
-              fontSize: 15,
-              fontWeight: FontWeight.w600),
-        ),
-        alignment: Alignment.topRight,
-        autoCloseDuration: const Duration(seconds: 10),
-        primaryColor: const Color(0xff047aff),
-        backgroundColor: const Color(0xffedf7ff),
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: toast.lowModeShadow,
-        dragToClose: true);
-    await shuaxin();
-    zhi = false;
-  } else if (zhi == true &&
-      event.resultCode != '600024' &&
-      event.resultCode != '600001' &&
-      event.resultCode != '600016' &&
-      event.resultCode != '600015' &&
-      event.resultCode != '600012') {
-    duanxinyanzheng();
-  }
-}
-
-void duanxinyanzheng() {
-  String code = ' ';
-  bool sendCodeBtn = true;
-  int seconds = 60;
-  bool shoujifou = false;
-  bool cishu = true;
-  zhi = false;
-  String shoujihao = ' ';
-  showTimer() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      seconds--;
-      if (seconds == 0) {
-        timer.cancel();
-        sendCodeBtn = true;
-        seconds = 60;
-      }
-    });
-  }
-
-  showDialog(
-    context: contexts!,
-    builder: (BuildContext context) {
-      // ignore: deprecated_member_use
-      return WillPopScope(
-        onWillPop: () async {
-          FocusManager.instance.primaryFocus?.unfocus();
-          return false;
-        },
-        child: Dialog(
-            child: SizedBox(
-          height: 320,
-          width: 200,
-          child: Padding(
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(width: 8),
-                    const Text(
-                      '注册登录',
-                      style:
-                          TextStyle(fontSize: 21, fontWeight: FontWeight.w800),
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                        ))
-                  ],
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  cursorColor: Colors.blue,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                  maxLines: 1,
-                  maxLength: 11,
-                  onChanged: (value) {
-                    shoujihao = value;
-                  },
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 2),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.blue, width: 2),
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    border: const OutlineInputBorder(),
-                    labelText: '手机号',
-                    labelStyle: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromARGB(255, 119, 118, 118),
-                    ),
-                    counterText: "",
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        cursorColor: Colors.blue,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                        maxLines: 1,
-                        maxLength: 4,
-                        onChanged: (value) {
-                          code = value;
-                        },
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.black, width: 2),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          border: const OutlineInputBorder(),
-                          labelText: '验证码',
-                          labelStyle: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: Color.fromARGB(255, 119, 118, 118),
-                          ),
-                          counterText: "",
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    TextButton(
-                      child: const Text(
-                        "获取验证码",
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      onPressed: () {
-                        RegExp regex = RegExp(r'^\d*$');
-                        if (shoujihao.length < 11) {
-                          shoujifou = false;
-                          toast.toastification.show(
-                              context: context,
-                              type: toast.ToastificationType.warning,
-                              style: toast.ToastificationStyle.flatColored,
-                              title: const Text("手机号位数异常",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 17)),
-                              description: const Text(
-                                "手机号位数异常",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 119, 118, 118),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              alignment: Alignment.topLeft,
-                              autoCloseDuration: const Duration(seconds: 4),
-                              borderRadius: BorderRadius.circular(12.0),
-                              boxShadow: toast.lowModeShadow,
-                              dragToClose: true);
-                        } else if (!regex.hasMatch(shoujihao)) {
-                          shoujifou = false;
-                          toast.toastification.show(
-                              context: context,
-                              type: toast.ToastificationType.warning,
-                              style: toast.ToastificationStyle.flatColored,
-                              title: const Text("手机号数值异常",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 17)),
-                              description: const Text(
-                                "手机号数值异常",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 119, 118, 118),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              alignment: Alignment.topLeft,
-                              autoCloseDuration: const Duration(seconds: 4),
-                              borderRadius: BorderRadius.circular(12.0),
-                              boxShadow: toast.lowModeShadow,
-                              dragToClose: true);
-                        } else {
-                          if (sendCodeBtn == true) {
-                            shoujifou = true;
-                            duanxin(shoujihao);
-                            toast.toastification.show(
-                                context: context,
-                                type: toast.ToastificationType.success,
-                                style: toast.ToastificationStyle.flatColored,
-                                title: const Text("验证码已发送",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 17)),
-                                description: const Text(
-                                  "验证码已发送",
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 119, 118, 118),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                alignment: Alignment.topRight,
-                                autoCloseDuration: const Duration(seconds: 4),
-                                primaryColor: const Color(0xff047aff),
-                                backgroundColor: const Color(0xffedf7ff),
-                                borderRadius: BorderRadius.circular(12.0),
-                                boxShadow: toast.lowModeShadow,
-                                dragToClose: true);
-                            sendCodeBtn = false;
-                            showTimer();
-                          } else {
-                            toast.toastification.show(
-                                context: context,
-                                type: toast.ToastificationType.success,
-                                style: toast.ToastificationStyle.flatColored,
-                                title: Text("需等待$seconds秒",
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 17)),
-                                description: Text(
-                                  "需等待$seconds秒",
-                                  style: const TextStyle(
-                                      color: Color.fromARGB(255, 119, 118, 118),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                alignment: Alignment.topRight,
-                                autoCloseDuration: const Duration(seconds: 4),
-                                primaryColor: const Color(0xff047aff),
-                                backgroundColor: const Color(0xffedf7ff),
-                                borderRadius: BorderRadius.circular(12.0),
-                                boxShadow: toast.lowModeShadow,
-                                dragToClose: true);
-                          }
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
-                      child: Checkbox(
-                        value: true,
-                        activeColor: Colors.blue,
-                        onChanged: (bool? value) {},
-                      ),
-                    ),
-                    Expanded(
-                      child: RichText(
-                        text: const TextSpan(
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 119, 118, 118),
-                              fontSize: 14),
-                          children: [
-                            TextSpan(text: '我已阅读并同意'),
-                            TextSpan(
-                              text: '使用协议',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            TextSpan(text: '和'),
-                            TextSpan(
-                              text: '隐私协议,',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            TextSpan(text: '未注册绑定的手机号验证成功后将自动注册')
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.only(
-                        top: 5, bottom: 5, left: 90, right: 90),
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: const Text(
-                    "验证登录",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white),
-                  ),
-                  onPressed: () async {
-                    if (shoujifou == true &&
-                        sendCodeBtn == false &&
-                        cishu == true) {
-                      bool zhi = await yanzheng(shoujihao, code);
-                      cishu = false;
-                      if (zhi == false) {
-                        toast.toastification.show(
-                       
-                            context: context,
-                            type: toast.ToastificationType.warning,
-                            style: toast.ToastificationStyle.flatColored,
-                            title: const Text("验证码错误",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 17)),
-                            description: const Text(
-                              "验证码错误",
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            alignment: Alignment.topLeft,
-                            autoCloseDuration: const Duration(seconds: 4),
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: toast.lowModeShadow,
-                            dragToClose: true);
-                        cishu = true;
-                      } else {
-                        toast.toastification.show(
-                            context: contexts,
-                            type: toast.ToastificationType.success,
-                            style: toast.ToastificationStyle.flatColored,
-                            title: const Text("右滑可查看个人资料",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 17)),
-                            description: const Text(
-                              "右滑可查看个人资料",
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            alignment: Alignment.topCenter,
-                            autoCloseDuration: const Duration(seconds: 10),
-                            primaryColor: const Color(0xff047aff),
-                            backgroundColor: const Color(0xffedf7ff),
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: toast.lowModeShadow,
-                            dragToClose: true);
-                        toast.toastification.show(
-                            context: contexts,
-                            type: toast.ToastificationType.success,
-                            style: toast.ToastificationStyle.flatColored,
-                            title: const Text("登录成功,欢迎您使用本应用！",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 17)),
-                            description: const Text(
-                              "这是一款帮助学习和记忆的应用,希望对您产生帮助",
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            alignment: Alignment.topCenter,
-                            autoCloseDuration: const Duration(seconds: 10),
-                            primaryColor: const Color(0xff047aff),
-                            backgroundColor: const Color(0xffedf7ff),
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: toast.lowModeShadow,
-                            dragToClose: true);
-                        Navigator.pop(contexts!);
-                        cishu = true;
-                        denglu = true;
-                      }
-                    } else {
-                      toast.toastification.show(
-                          context: context,
-                          type: toast.ToastificationType.warning,
-                          style: toast.ToastificationStyle.flatColored,
-                          title: const Text("验证码过期",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 17)),
-                          description: const Text(
-                            "验证码过期",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 119, 118, 118),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600),
-                          ),
-                          alignment: Alignment.topLeft,
-                          autoCloseDuration: const Duration(seconds: 4),
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: toast.lowModeShadow,
-                          dragToClose: true);
-                      cishu = true;
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-        )),
-      );
-    },
-  );
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -674,7 +124,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '云吉记忆',
+      title: '云忆',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
@@ -799,7 +249,7 @@ Future<void> shuaxin() async {
     await databaseManager.insertjiyiku(result);
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
 
-    maincontroller.mainzhi(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
   }
 
   var count = data["count"];
@@ -864,7 +314,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       statusBarBrightness: Brightness.dark, // 状态栏文字颜色
     ));
     contexts = context;
-    double chang = MediaQuery.of(context).size.height * 0.055;
+    double chang = MediaQuery.of(context).size.height * 0.05;
     return Scaffold(
       backgroundColor: Colors.white,
       key: _scaffoldKey,
@@ -1175,14 +625,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 init: headcontroller,
                 builder: (hcontroller) {
                   return hcontroller.headimage != null
-                      ? IconButton(
-                          onPressed: () {
-                            _scaffoldKey.currentState?.openDrawer();
-                          },
-                          icon: CircleAvatar(
-                              radius: 20,
-                              backgroundImage:
-                                  FileImage(headcontroller.headimage!)))
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: IconButton(
+                              padding: EdgeInsets.all(0),
+                              onPressed: () {
+                                _scaffoldKey.currentState?.openDrawer();
+                              },
+                              icon: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage:
+                                      FileImage(headcontroller.headimage!))),
+                        )
                       : IconButton(
                           icon: SvgPicture.asset(
                             'assets/person.svg',
@@ -1197,9 +651,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 },
               ),
               iconTheme: const IconThemeData(color: Colors.black),
-              actions: [
-             
-              ],
+              actions: [],
             ),
             SliverPersistentHeader(
               pinned: true,
@@ -1277,9 +729,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     Colors.orange,
                     Colors.yellow,
                   ],
-                  child: GetBuilder<Maincontroller>(
-                      init: maincontroller,
-                      builder: (maincontroller) {
+                  child: GetBuilder<RefreshofHomepageMemoryBankextends>(
+                      init: refreshofHomepageMemoryBankextends,
+                      builder: (refreshofHomepageMemoryBankextends) {
                         return MediaQuery.removePadding(
                           context: context,
                           removeTop: true,
@@ -1287,14 +739,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           child: SizeCacheWidget(
                             child: ListView.builder(
                                 cacheExtent: 500,
-                                itemCount: maincontroller.zhi == null
-                                    ? 0
-                                    : maincontroller.zhi?.length,
+                                itemCount: refreshofHomepageMemoryBankextends
+                                        .memoryRefreshValue?.length ??
+                                    0,
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
-                                      jiyikudianjicontroller
-                                          .cizhi(maincontroller.zhi![index]);
+                                      jiyikudianjicontroller.cizhi(
+                                          refreshofHomepageMemoryBankextends
+                                              .memoryRefreshValue[index]);
                                       handleClick(
                                           context, const jiyikudianji());
                                     },
@@ -1318,25 +771,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                             children: [
                                               IconButton(
                                                   onPressed: () {
-                                                    jiyikudianjipersonalController
-                                                        .cizhi(maincontroller
-                                                            .zhi![index]);
+                                                    jiyikudianjipersonalController.cizhi(
+                                                        refreshofHomepageMemoryBankextends
+                                                                .memoryRefreshValue[
+                                                            index]);
                                                     jiyikupostpersonalapi(
-                                                        maincontroller
-                                                                .zhi![index]
-                                                            ['username']);
+                                                        refreshofHomepageMemoryBankextends
+                                                                .memoryRefreshValue[
+                                                            index]['username']);
                                                     handleClick(context,
                                                         const Jiyikudianjipersonal());
                                                   },
                                                   icon: CircleAvatar(
                                                     radius: 21,
-                                                    backgroundImage: maincontroller
-                                                                    .zhi?[index]
+                                                    backgroundImage: refreshofHomepageMemoryBankextends
+                                                                        .memoryRefreshValue[
+                                                                    index]
                                                                 ['touxiang'] !=
                                                             null
                                                         ? FileImage(File(
-                                                            maincontroller
-                                                                    .zhi![index]
+                                                            refreshofHomepageMemoryBankextends
+                                                                        .memoryRefreshValue[
+                                                                    index]
                                                                 ['touxiang']))
                                                         : const AssetImage(
                                                             'assets/chuhui.png'),
@@ -1357,8 +813,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                             text: TextSpan(
                                                               children: [
                                                                 TextSpan(
-                                                                  text: maincontroller
-                                                                              .zhi?[
+                                                                  text: refreshofHomepageMemoryBankextends
+                                                                              .memoryRefreshValue?[
                                                                           index]
                                                                       ['name'],
                                                                   style:
@@ -1374,7 +830,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                 ),
                                                                 TextSpan(
                                                                   text:
-                                                                      ' @${maincontroller.zhi?[index]['username']}',
+                                                                      ' @${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['username']}',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -1395,7 +851,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                           ),
                                                         ),
                                                         const Text(
-                                                          ' ·',
+                                                          '·',
                                                           style: TextStyle(
                                                               fontSize: 17,
                                                               color: Color
@@ -1409,7 +865,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                       .w900),
                                                         ),
                                                         Text(
-                                                          '${maincontroller.zhi?[index]['xiabiao'].length}个记忆项',
+                                                          '${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['xiabiao'].length}个记忆项',
                                                           style:
                                                               const TextStyle(
                                                             fontSize: 16,
@@ -1426,7 +882,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                       ],
                                                     ),
                                                     Text(
-                                                      '${maincontroller.zhi?[index]['zhuti']}',
+                                                      '${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['zhuti']}',
                                                       style: const TextStyle(
                                                           fontSize: 17,
                                                           fontWeight:
@@ -1436,12 +892,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                     const SizedBox(height: 20),
                                                     Text(
                                                       timuzhi(
-                                                          maincontroller
-                                                                  .zhi?[index]
-                                                              ['timu'],
-                                                          maincontroller
-                                                                  .zhi?[index]
-                                                              ['xiabiao']),
+                                                          refreshofHomepageMemoryBankextends
+                                                                  .memoryRefreshValue?[
+                                                              index]['timu'],
+                                                          refreshofHomepageMemoryBankextends
+                                                                  .memoryRefreshValue?[
+                                                              index]['xiabiao']),
                                                       style: const TextStyle(
                                                           fontSize: 17,
                                                           fontWeight:
@@ -1454,12 +910,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                     const SizedBox(height: 20),
                                                     Text(
                                                       timuzhi(
-                                                          maincontroller
-                                                                  .zhi?[index]
-                                                              ['huida'],
-                                                          maincontroller
-                                                                  .zhi?[index]
-                                                              ['xiabiao']),
+                                                          refreshofHomepageMemoryBankextends
+                                                                  .memoryRefreshValue?[
+                                                              index]['huida'],
+                                                          refreshofHomepageMemoryBankextends
+                                                                  .memoryRefreshValue?[
+                                                              index]['xiabiao']),
                                                       style: const TextStyle(
                                                           fontSize: 17,
                                                           fontWeight:
@@ -1516,17 +972,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         if (denglu ==
                                                                             true) {
                                                                           personaljiyikuController.shuaxinlaqu(
-                                                                              maincontroller.zhi?[index]['id'],
-                                                                              maincontroller.zhi?[index]['laqu'],
-                                                                              maincontroller.zhi![index]);
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['laqu'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          duanxinyanzheng();
+                                                                          smsLogin(context);
                                                                           return isLiked;
                                                                         }
                                                                       },
                                                                       isLiked: personaljiyikuController.chushilaqu(
-                                                                          maincontroller.zhi?[index]
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
                                                                               [
                                                                               'id']),
                                                                       likeBuilder:
@@ -1544,7 +1000,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          maincontroller.zhi?[index]
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
                                                                               [
                                                                               'laqu'],
                                                                       countBuilder: (int?
@@ -1625,17 +1081,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         if (denglu ==
                                                                             true) {
                                                                           personaljiyikuController.shuaxinshoucang(
-                                                                              maincontroller.zhi?[index]['id'],
-                                                                              maincontroller.zhi?[index]['shoucang'],
-                                                                              maincontroller.zhi![index]);
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['shoucang'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          duanxinyanzheng();
+                                                                          smsLogin(context);
                                                                           return isLiked;
                                                                         }
                                                                       },
                                                                       isLiked: personaljiyikuController.chushishoucang(
-                                                                          maincontroller.zhi?[index]
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
                                                                               [
                                                                               'id']),
                                                                       likeBuilder:
@@ -1653,7 +1109,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          maincontroller.zhi?[index]
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
                                                                               [
                                                                               'shoucang'],
                                                                       countBuilder: (int?
@@ -1734,18 +1190,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         if (denglu ==
                                                                             true) {
                                                                           personaljiyikuController.shuaxinxihuan(
-                                                                              maincontroller.zhi?[index]['id'],
-                                                                              maincontroller.zhi?[index]['xihuan'],
-                                                                              maincontroller.zhi![index]);
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['xihuan'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
 
                                                                           return !isLiked;
                                                                         } else {
-                                                                          duanxinyanzheng();
+                                                                          smsLogin(context);
                                                                           return isLiked;
                                                                         }
                                                                       },
                                                                       isLiked: personaljiyikuController.chushixihuan(
-                                                                          maincontroller.zhi?[index]
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
                                                                               [
                                                                               'id']),
                                                                       likeBuilder:
@@ -1763,7 +1219,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          maincontroller.zhi?[index]
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
                                                                               [
                                                                               'xihuan'],
                                                                       countBuilder: (int?
@@ -1775,115 +1231,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         var color = isLiked
                                                                             ? Colors
                                                                                 .red
-                                                                            : const Color.fromRGBO(
-                                                                                84,
-                                                                                87,
-                                                                                105,
-                                                                                1);
-                                                                        Widget
-                                                                            result;
-                                                                        if (count ==
-                                                                            0) {
-                                                                          result =
-                                                                              Text(
-                                                                            "love",
-                                                                            style:
-                                                                                TextStyle(color: color),
-                                                                          );
-                                                                        }
-                                                                        result =
-                                                                            Text(
-                                                                          text,
-                                                                          style: TextStyle(
-                                                                              color: color,
-                                                                              fontWeight: FontWeight.w700),
-                                                                        );
-                                                                        return result;
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Spacer(
-                                                                  flex: 1),
-                                                              SizedBox(
-                                                                width: 70,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    LikeButton(
-                                                                      circleColor: const CircleColor(
-                                                                          start: Color.fromARGB(
-                                                                              255,
-                                                                              237,
-                                                                              42,
-                                                                              255),
-                                                                          end: Color.fromARGB(
-                                                                              255,
-                                                                              185,
-                                                                              142,
-                                                                              255)),
-                                                                      bubblesColor:
-                                                                          const BubblesColor(
-                                                                        dotPrimaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            225,
-                                                                            0,
-                                                                            255),
-                                                                        dotSecondaryColor: Color.fromARGB(
-                                                                            255,
-                                                                            233,
-                                                                            195,
-                                                                            255),
-                                                                      ),
-                                                                      size: 20,
-                                                                      onTap:
-                                                                          (isLiked) async {
-                                                                        if (denglu ==
-                                                                            true) {
-                                                                          personaljiyikuController.shuaxintiwen(
-                                                                              maincontroller.zhi?[index]['id'],
-                                                                              maincontroller.zhi?[index]['tiwen'],
-                                                                              maincontroller.zhi![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          duanxinyanzheng();
-                                                                          return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikuController.chushitiwen(
-                                                                          maincontroller.zhi?[index]
-                                                                              [
-                                                                              'id']),
-                                                                      likeBuilder:
-                                                                          (bool
-                                                                              isLiked) {
-                                                                        return Icon(
-                                                                          isLiked
-                                                                              ? Icons.messenger
-                                                                              : Icons.messenger_outline,
-                                                                          color: isLiked
-                                                                              ? Colors.purpleAccent
-                                                                              : const Color.fromRGBO(84, 87, 105, 1),
-                                                                          size:
-                                                                              20,
-                                                                        );
-                                                                      },
-                                                                      likeCount:
-                                                                          maincontroller.zhi?[index]
-                                                                              [
-                                                                              'tiwen'],
-                                                                      countBuilder: (int?
-                                                                              count,
-                                                                          bool
-                                                                              isLiked,
-                                                                          String
-                                                                              text) {
-                                                                        var color = isLiked
-                                                                            ? Colors
-                                                                                .purple
                                                                             : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
@@ -1979,7 +1326,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     fontSize: 20.0, fontWeight: FontWeight.w700),
                 onTap: () {
                   if (denglu == false) {
-                    duanxinyanzheng();
+                    smsLogin(context);
                     toast.toastification.show(
                         context: contexts,
                         type: toast.ToastificationType.success,

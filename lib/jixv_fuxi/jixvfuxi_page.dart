@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/jixv_fuxi/jixvfuxiyiwang.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/home_page.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 import 'package:toastification/toastification.dart' as toast;

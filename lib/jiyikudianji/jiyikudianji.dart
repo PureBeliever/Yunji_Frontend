@@ -6,9 +6,10 @@ import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/home_page.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/personal/personal_page.dart';
+import 'package:yunji/main/login/login_settings.dart';
 
 // ignore: camel_case_types
 class jiyikudianji extends StatefulWidget {
@@ -300,7 +301,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                   );
                                   return !isLiked;
                                 } else {
-                                  chushi();
+                                  soginDependencySettings(context);
                                   return isLiked;
                                 }
                               },
@@ -357,7 +358,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                   );
                                   return !isLiked;
                                 } else {
-                                  chushi();
+                                  soginDependencySettings(context);
                                   return isLiked;
                                 }
                               },
@@ -413,7 +414,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
 
                                   return !isLiked;
                                 } else {
-                                  chushi();
+                                  soginDependencySettings(context);
                                   return isLiked;
                                 }
                               },
@@ -472,7 +473,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                   );
                                   return !isLiked;
                                 } else {
-                                  chushi();
+                                  soginDependencySettings(context);
                                   return isLiked;
                                 }
                               },

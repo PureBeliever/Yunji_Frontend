@@ -6,12 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/notification_settings.dart';
+
 
 class Yiwang extends StatefulWidget {
   const Yiwang({super.key});
@@ -29,13 +31,11 @@ class _Yiwang extends State<Yiwang> {
   bool alarm_information = false;
   List<List<int>> shijian = [
     [0],
-    [1, 1],
-    [1, 1],
-    // [24, 168, 336],
-    // [24, 168, 336, 720],
-    [24, 168, 336, 720, 2160],
-    [24, 168, 336, 720, 2160, 4320],
-    [1, 6, 24, 72, 168, 336, 720, 2160, 4320]
+    [1440, 10080, 20160],
+    [1440, 10080, 20160, 43200],
+    [1440, 10080, 20160, 43200, 129600],
+    [1440, 10080, 20160, 43200, 129600, 259200],
+    [60, 360, 1440, 4320, 10080, 20160, 43200, 129600, 259200]
   ];
   int _valueChoice = 2;
   List<String> jiyi = [

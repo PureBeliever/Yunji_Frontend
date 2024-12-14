@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:toastification/toastification.dart' as toast;
+
 import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/home_page.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:toastification/toastification.dart' as toast;
+import 'package:yunji/main/notification_settings.dart';
 
 class Item {
   Item({
@@ -81,6 +81,9 @@ class FuxiPage extends StatefulWidget {
 }
 
 class _FuxiPage extends State<FuxiPage> {
+  final NotificationHelper _notificationHelper = NotificationHelper();
+
+
   final FocusNode _focusNode = FocusNode();
   final List<Item> _data = generateItems(fuxiController.length,
       fuxiController.lengthxiabiao, fuxiController.timu, fuxiController.huida);
@@ -89,7 +92,7 @@ class _FuxiPage extends State<FuxiPage> {
   bool message = fuxiController.duanxin;
   bool alarm_information = fuxiController.naozhong;
   final jiyikucontroller = Get.put(Jiyikucontroller());
-  final NotificationHelper _notificationHelper = NotificationHelper();
+
   final settingzhanghaoxiugaicontroller =
       Get.put(Settingzhanghaoxiugaicontroller());
   @override

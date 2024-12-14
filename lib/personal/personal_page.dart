@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/home_page.dart';
 import 'package:yunji/personal/bianpersonal_page.dart';
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/jiyikudianji/jiyikudianji.dart';
@@ -22,10 +22,11 @@ import 'package:yunji/fuxi/fuxi_page.dart';
 import 'package:yunji/personal/personal_bei.dart';
 import 'package:yunji/personal/personal_head.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-
+import 'package:yunji/main/home_page.dart';
+import 'package:yunji/main/login/sms_login.dart';
 final settingzhanghaoxiugaicontroller =
     Get.put(Settingzhanghaoxiugaicontroller());
-final maincontroller = Get.put(Maincontroller());
+
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
@@ -84,7 +85,7 @@ class RollingeffectController extends GetxController {
 class DateTimeController extends GetxController {
   static DateTimeController get to => Get.find();
 
-  bool tubiaoxianshi(int zhi) {
+  bool tubiaoxianshi(int? zhi) {
     bool zhuangtai = zhi == 1 ? true : false;
     return zhuangtai;
   }
@@ -231,7 +232,6 @@ class PersonaljiyikuController extends GetxController {
       var xihuancast = zhi['xihuan'].cast<int>();
       xihuan = xihuancast;
       xihuanzhi = await databaseManager.chaxun(xihuancast);
-
     }
 
     if (zhi['shoucang'] != null) {
@@ -243,7 +243,6 @@ class PersonaljiyikuController extends GetxController {
       var laqucast = zhi['laqu'].cast<int>();
       laqu = laqucast;
       laquzhi = await databaseManager.chaxun(laqucast);
-
     }
 
     if (zhi['tiwen'] != null) {
@@ -256,7 +255,6 @@ class PersonaljiyikuController extends GetxController {
       indexname = '${wodecast.length}个';
       wo = wodecast;
       wodezhi = await databaseManager.chaxun(wodecast);
-
     }
     update();
   }
@@ -273,7 +271,6 @@ class PersonaljiyikuController extends GetxController {
       var xihuancast = xihuanjson.cast<int>();
       xihuan = xihuancast;
       xihuanzhi = await databaseManager.chaxun(xihuancast);
-
     }
 
     if (shoucangjson != null) {
@@ -285,7 +282,6 @@ class PersonaljiyikuController extends GetxController {
       var laqucast = laqujson.cast<int>();
       laqu = laqucast;
       laquzhi = await databaseManager.chaxun(laqucast);
-
     }
 
     if (tiwenjson != null) {
@@ -297,7 +293,6 @@ class PersonaljiyikuController extends GetxController {
       var wodecast = wodejson.cast<int>();
       wo = wodecast;
       wodezhi = await databaseManager.chaxun(wodecast);
-
     }
     update();
   }
@@ -323,7 +318,7 @@ class PersonaljiyikuController extends GetxController {
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
-    maincontroller.mainzhi(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     personaljiyikudianjiController.shuaxin();
     personaljiyikucontroller.shuaxin(zhi);
   }
@@ -349,7 +344,7 @@ class PersonaljiyikuController extends GetxController {
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
-    maincontroller.mainzhi(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     personaljiyikudianjiController.shuaxin();
     personaljiyikucontroller.shuaxin(zhi);
   }
@@ -374,7 +369,7 @@ class PersonaljiyikuController extends GetxController {
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
-    maincontroller.mainzhi(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     personaljiyikudianjiController.shuaxin();
     personaljiyikucontroller.shuaxin(zhi);
   }
@@ -400,7 +395,7 @@ class PersonaljiyikuController extends GetxController {
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
-    maincontroller.mainzhi(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     personaljiyikudianjiController.shuaxin();
     personaljiyikucontroller.shuaxin(zhi);
   }
@@ -852,7 +847,7 @@ class _PersonalPageState extends State<PersonalPage>
                                         ),
                                         onPressed: () async {
                                           if (denglu == false) {
-                                            duanxinyanzheng();
+                                            smsLogin(context);
                                             toast.toastification.show(
                                                 context: contexts,
                                                 type: toast
@@ -1196,7 +1191,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                             (datetimecontroller) {
                                                           return Row(children: [
                                                             datetimecontroller.tubiaoxianshi(
-                                                                        personaljiyikucontroller.wodezhi![index]
+                                                                        personaljiyikucontroller.wodezhi?[index]
                                                                             [
                                                                             'zhuangtai']) ==
                                                                     false

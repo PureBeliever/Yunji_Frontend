@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/home_page.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/personal/bianpersonal_page.dart';
 import 'package:yunji/cut/cut.dart';
+import 'package:yunji/main/login/login_settings.dart';
 
 class PersonalHead extends StatefulWidget {
   const PersonalHead({super.key});
@@ -109,7 +110,7 @@ class _PersonalHeadState extends State<PersonalHead> {
           child: OutlinedButton(
             onPressed: () {
               if (denglu == false) {
-                chushi();
+                soginDependencySettings(context);
                 toast.toastification.show(
                     context: contexts,
                     type: toast.ToastificationType.success,

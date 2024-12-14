@@ -10,7 +10,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:yunji/personal/bianpersonal_page.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
-import 'package:yunji/main/main.dart';
+import 'package:yunji/main/home_page.dart';
 import 'package:yunji/personal/personal_bei.dart';
 import 'package:yunji/personal/personal_head.dart';
 import 'package:yunji/personal/personal_page.dart';
@@ -320,9 +320,14 @@ void duanxin(String shoujiyan) async {
   Map<String, dynamic> formdata = {
     'shouji': shoujiyan,
   };
-
-  final response = await dio.post('http://47.92.90.93:36233/duanxin',
-      data: jsonEncode(formdata), options: Options(headers: header));
+  try {
+    final response = await dio.post('http://47.92.90.93:36233/duanxin',
+        data: jsonEncode(formdata), options: Options(headers: header));
+  } on DioError catch (e, s) {
+    // 捕获DioError异常，并获取堆栈跟踪
+    print('Error: $e');
+    print('StackTrace: $s');
+  }
 }
 
 void xihuanapi(String username, String xihuan, int id, int shuzhi) async {

@@ -1,19 +1,16 @@
-import 'dart:async';
+
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/cut/cut.dart';
-import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
+
+import 'package:yunji/main/notification_settings.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
-import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/main/main.dart';
+
 
 class Jixvfuxiyiwang extends StatefulWidget {
   const Jixvfuxiyiwang({super.key});
@@ -32,13 +29,11 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
   bool alarm_information = false;
   List<List<int>> shijian = [
     [0],
-    [1, 1],
-    [1, 1],
-    // [24, 168, 336],
-    // [24, 168, 336, 720],
-    [24, 168, 336, 720, 2160],
-    [24, 168, 336, 720, 2160, 4320],
-    [1, 6, 24, 72, 168, 336, 720, 2160, 4320]
+    [1440, 10080, 20160],
+    [1440, 10080, 20160, 43200],
+    [1440, 10080, 20160, 43200, 129600],
+    [1440, 10080, 20160, 43200, 129600, 259200],
+    [60, 360, 1440, 4320, 10080, 20160, 43200, 129600, 259200]
   ];
   int _valueChoice = 2;
   List<String> jiyi = [
