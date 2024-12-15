@@ -12,7 +12,7 @@ class Settingzhanghao extends StatefulWidget {
 
 class _Settingzhanghao extends State<Settingzhanghao> {
   final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
+      Get.put(UserNameChangeManagement());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,7 @@ class _Settingzhanghao extends State<Settingzhanghao> {
       ),
       body: InkWell(
         onTap: () {
-          handleClick(context, const Settingzhanghaoxiugai());
+          switchPage(context, const Settingzhanghaoxiugai());
         },
         child: ListTile(
             title: const Text(
@@ -44,11 +44,11 @@ class _Settingzhanghao extends State<Settingzhanghao> {
                 fontSize: 17,
               ),
             ),
-            subtitle: GetBuilder<Settingzhanghaoxiugaicontroller>(
-                init: settingzhanghaoxiugaicontroller,
-                builder: (settingzhanghaoxiugai) {
+            subtitle: GetBuilder<UserNameChangeManagement>(
+                init: UserNameChangeManagement.to,
+                builder: (UserNameChangeManagement) {
                   return Text(
-                    '@${settingzhanghaoxiugai.username}' ,
+                    '@${UserNameChangeManagement.userNameValue}' ,
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Color.fromRGBO(84, 87, 105, 1),

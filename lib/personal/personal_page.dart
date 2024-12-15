@@ -24,9 +24,9 @@ import 'package:yunji/personal/personal_head.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 import 'package:yunji/main/home_page.dart';
 import 'package:yunji/main/login/sms_login.dart';
-final settingzhanghaoxiugaicontroller =
-    Get.put(Settingzhanghaoxiugaicontroller());
 
+final userNameChangeManagement =
+    Get.put(UserNameChangeManagement());
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
@@ -81,33 +81,34 @@ class RollingeffectController extends GetxController {
     update();
   }
 }
-
-class DateTimeController extends GetxController {
-  static DateTimeController get to => Get.find();
-
-  bool tubiaoxianshi(int? zhi) {
-    bool zhuangtai = zhi == 1 ? true : false;
-    return zhuangtai;
+// 记忆库完成状态
+class MemoryBankCompletionStatus extends GetxController {
+  static MemoryBankCompletionStatus get to => Get.find();
+// 是否显示其它图标
+  bool displayIconStatus(int? status) {
+    bool displayIconStatusValue = status == 1 ? true : false;
+    return displayIconStatusValue;
   }
 
-  Widget jishi(Map<String, dynamic> cizhi, BuildContext uio) {
-    var dingshi = cizhi['dingshi'];
-    DateTime will = DateTime.parse(dingshi);
-    DateTime now = DateTime.now();
+  Widget memoryLibraryStatusDisplayWidget(
+      Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
+    var setTimeValueDynamic = widgetsDisplayValues['dingshi'];
+    DateTime setTimeValueDateTime = DateTime.parse(setTimeValueDynamic);
+    DateTime presentTimeDateTime = DateTime.now();
 
-    Duration daojishi = will.difference(now);
-    final int days = daojishi.inDays;
-    final int hours = daojishi.inHours % 24;
-    final int minutes = daojishi.inMinutes % 60;
+    Duration setTimeValueDuration = setTimeValueDateTime.difference(presentTimeDateTime);
+    final int numberOfDays = setTimeValueDuration.inDays;
+    final int numberOfHours = setTimeValueDuration.inHours % 24;
+    final int numberOfMinutes = setTimeValueDuration.inMinutes % 60;
 
-    Map<String, dynamic> cishu = jsonDecode(cizhi['cishu']);
+    Map<String, dynamic> theWidgetDisplaysTheValue = jsonDecode(widgetsDisplayValues['cishu']);
 
-    int geshu = cishu.length;
-    List<String> jilu = [];
-    cishu.forEach(
+    int displaysTheNumberOfValues = theWidgetDisplaysTheValue.length;
+    List<String> statusRecord = [];
+    theWidgetDisplaysTheValue.forEach(
       (key, value) {
         if (key != '方案1') {
-          jilu.add('已完成${key}次${value}的复习');
+          statusRecord.add('已完成${key}次${value}的复习');
         } else {
           Text(
             '未选择复习',
@@ -120,25 +121,25 @@ class DateTimeController extends GetxController {
         }
       },
     );
-    String xianshi = "距离下一次复习还剩${days}天${hours}小时${minutes}分钟";
+    String displayStatusRecord = "距离下一次复习还剩${numberOfDays}天${numberOfHours}小时${numberOfMinutes}分钟";
 
-    double gao = geshu * 23;
+    double height = displaysTheNumberOfValues * 23;
 
-    Widget zhi = SizedBox(
+    Widget statusDisplayWidget = SizedBox(
       width: double.infinity,
       height: 46,
       child: ListView(
         children: [
           SizedBox(
             width: double.infinity,
-            height: gao,
+            height: height,
             child: ListView.builder(
                 cacheExtent: 500,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: geshu,
+                itemCount: displaysTheNumberOfValues,   
                 itemBuilder: (context, index) {
                   return Text(
-                    jilu[index],
+                    statusRecord[index],
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 16,
@@ -149,8 +150,8 @@ class DateTimeController extends GetxController {
           ),
           GestureDetector(
             onTap: () {
-              jixvfuxiController.cizhi(cizhi);
-              handleClick(uio, JixvfuxiPage());
+              continueLearningAboutDataManagement.initTheMemoryData(widgetsDisplayValues);
+              switchPage(context, JixvfuxiPage());
             },
             child: Text(
               '继续学习',
@@ -168,11 +169,11 @@ class DateTimeController extends GetxController {
       ),
     );
 
-    if (daojishi.inMinutes <= 0 && cizhi['zhuangtai'] == 0) {
-      zhi = GestureDetector(
+    if (setTimeValueDuration.inMinutes <= 0 && widgetsDisplayValues['zhuangtai'] == 0) {
+      statusDisplayWidget = GestureDetector(
         onTap: () {
-          fuxiController.cizhi(cizhi);
-          handleClick(uio, FuxiPage());
+          reviewTheDataManagementOfMemoryBank.initTheMemoryData(widgetsDisplayValues);
+          switchPage(context, FuxiPage());
         },
         child: Text(
           '开始复习',
@@ -187,9 +188,9 @@ class DateTimeController extends GetxController {
         ),
       );
     }
-    if (daojishi.inMinutes > 0 && cizhi['zhuangtai'] == 0) {
-      zhi = Text(
-        xianshi,
+    if (setTimeValueDuration.inMinutes > 0 && widgetsDisplayValues['zhuangtai'] == 0) {
+      statusDisplayWidget = Text(
+        displayStatusRecord,
         style: TextStyle(
           fontWeight: FontWeight.w900,
           fontSize: 16,
@@ -198,10 +199,10 @@ class DateTimeController extends GetxController {
       );
     }
 
-    return zhi;
+    return statusDisplayWidget;
   }
 
-  void shuaxin() {
+  void refreshDisplay() {
     update();
   }
 }
@@ -306,11 +307,11 @@ class PersonaljiyikuController extends GetxController {
       shuzhi += 1;
     }
 
-    xihuanapi(settingzhanghaoxiugaicontroller.username, jsonEncode(xihuan), id,
+    xihuanapi(userNameChangeManagement.userNameValue, jsonEncode(xihuan), id,
         shuzhi);
 
     await databaseManager.updatepersonalxihuan(
-        settingzhanghaoxiugaicontroller.username,
+        userNameChangeManagement.userNameValue,
         jsonEncode(xihuan),
         id,
         shuzhi,
@@ -332,11 +333,11 @@ class PersonaljiyikuController extends GetxController {
       shuzhi += 1;
     }
 
-    shoucangapi(settingzhanghaoxiugaicontroller.username, jsonEncode(shoucang),
+    shoucangapi(userNameChangeManagement.userNameValue, jsonEncode(shoucang),
         id, shuzhi);
 
     await databaseManager.updatepersonalshoucang(
-        settingzhanghaoxiugaicontroller.username,
+        userNameChangeManagement.userNameValue,
         jsonEncode(shoucang),
         id,
         shuzhi,
@@ -358,10 +359,10 @@ class PersonaljiyikuController extends GetxController {
       shuzhi += 1;
     }
     laquapi(
-        settingzhanghaoxiugaicontroller.username, jsonEncode(laqu), id, shuzhi);
+        userNameChangeManagement.userNameValue, jsonEncode(laqu), id, shuzhi);
 
     await databaseManager.updatepersonallaqu(
-        settingzhanghaoxiugaicontroller.username,
+        userNameChangeManagement.userNameValue,
         jsonEncode(laqu),
         id,
         shuzhi,
@@ -383,11 +384,11 @@ class PersonaljiyikuController extends GetxController {
       shuzhi += 1;
     }
 
-    tiwenapi(settingzhanghaoxiugaicontroller.username, jsonEncode(tiwen), id,
+    tiwenapi(userNameChangeManagement.userNameValue, jsonEncode(tiwen), id,
         shuzhi);
 
     await databaseManager.updatepersonaltiwen(
-        settingzhanghaoxiugaicontroller.username,
+        userNameChangeManagement.userNameValue,
         jsonEncode(tiwen),
         id,
         shuzhi,
@@ -468,11 +469,12 @@ class PersonaljiyikuController extends GetxController {
 class _PersonalPageState extends State<PersonalPage>
     with TickerProviderStateMixin {
   late TabController tabController;
-
+  // 记忆板完成状态
+  final memoryBankCompletionStatus = Get.put(MemoryBankCompletionStatus());
   final personaljiyikucontroller = Get.put(PersonaljiyikuController());
-  final bianpersonalController = Get.put(BianpersonalController());
-  final beicontroller = Get.put(Beicontroller());
-  final headcontroller = Get.put(Headcontroller());
+  final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+  final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement());
+  final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
   final rollingeffectController = Get.put(RollingeffectController());
 
   ScrollController scrollController = ScrollController();
@@ -490,7 +492,7 @@ class _PersonalPageState extends State<PersonalPage>
     super.initState();
 
     Timer.periodic(Duration(minutes: 1), (timer) {
-      datetimecontroller.shuaxin();
+      memoryBankCompletionStatus.refreshDisplay();
     });
     tabController = TabController(
       length: 4,
@@ -520,7 +522,7 @@ class _PersonalPageState extends State<PersonalPage>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-    postpersonalapi(settingzhanghaoxiugaicontroller.username);
+    postpersonalapi(userNameChangeManagement.userNameValue);
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -549,9 +551,9 @@ class _PersonalPageState extends State<PersonalPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: GetBuilder<BianpersonalController>(
-        init: bianpersonalController,
-        builder: (biancontroller) {
+      body: GetBuilder<EditPersonalDataValueManagement>(
+        init: editPersonalDataValueManagement,
+        builder: (editPersonalDataValueManagement) {
           return EasyRefresh.builder(
               callRefreshOverOffset: 5,
               header: ClassicHeader(
@@ -600,7 +602,7 @@ class _PersonalPageState extends State<PersonalPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      biancontroller.name,
+                                      editPersonalDataValueManagement.nameValue,
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(
                                             controller.shadowtitle),
@@ -702,16 +704,16 @@ class _PersonalPageState extends State<PersonalPage>
                                             sigmaY: 0),
                                         child: GestureDetector(
                                           onTap: () {
-                                            handleClick(
+                                            switchPage(
                                                 context, const PersonalBei());
                                           },
-                                          child: GetBuilder<Beicontroller>(
-                                            init: beicontroller,
-                                            builder: (beicontroller) {
-                                              return beicontroller.beiimage !=
+                                          child: GetBuilder<BackgroundImageChangeManagement>(
+                                            init: backgroundImageChangeManagement,
+                                            builder: (backgroundImageChangeManagement) {
+                                              return backgroundImageChangeManagement.backgroundImageValue !=
                                                       null
                                                   ? Image.file(
-                                                      beicontroller.beiimage!,
+                                                      backgroundImageChangeManagement.backgroundImageValue!,
                                                       fit: BoxFit.cover,
                                                     )
                                                   : Image.asset(
@@ -769,22 +771,22 @@ class _PersonalPageState extends State<PersonalPage>
                                               0.06 * kToolbarHeight),
                                     child: GestureDetector(
                                       onTap: () {
-                                        handleClick(
+                                        switchPage(
                                             context, const PersonalHead());
                                       },
                                       child: CircleAvatar(
                                           radius: 27,
                                           backgroundColor: Colors.white,
-                                          child: GetBuilder<Headcontroller>(
-                                              init: headcontroller,
-                                              builder: (headcontroller) {
+                                          child: GetBuilder<HeadPortraitChangeManagement>(
+                                              init: headPortraitChangeManagement,
+                                              builder: (headPortraitChangeManagement) {
                                                 return CircleAvatar(
                                                   backgroundColor: Colors.grey,
-                                                  backgroundImage: headcontroller
-                                                              .headimage !=
+                                                  backgroundImage: headPortraitChangeManagement
+                                                              .headPortraitValue !=
                                                           null
-                                                      ? FileImage(headcontroller
-                                                          .headimage!)
+                                                      ? FileImage(headPortraitChangeManagement
+                                                          .headPortraitValue!)
                                                       : const AssetImage(
                                                           'assets/chuhui.png'),
                                                   radius: 25,
@@ -813,7 +815,7 @@ class _PersonalPageState extends State<PersonalPage>
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          handleClick(
+                                          switchPage(
                                               context, const PersonalHead());
                                         },
                                         child: Container(
@@ -846,7 +848,7 @@ class _PersonalPageState extends State<PersonalPage>
                                               color: Colors.white),
                                         ),
                                         onPressed: () async {
-                                          if (denglu == false) {
+                                          if (loginStatus == false) {
                                             smsLogin(context);
                                             toast.toastification.show(
                                                 context: contexts,
@@ -881,7 +883,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                 boxShadow: toast.lowModeShadow,
                                                 dragToClose: true);
                                           } else {
-                                            handleClick(context,
+                                            switchPage(context,
                                                 const BianpersonalPage());
                                           }
                                         },
@@ -889,7 +891,7 @@ class _PersonalPageState extends State<PersonalPage>
                                     ],
                                   ),
                                   Text(
-                                    biancontroller.name,
+                                    editPersonalDataValueManagement.nameValue,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w900,
                                       fontSize: 24,
@@ -898,11 +900,11 @@ class _PersonalPageState extends State<PersonalPage>
                                       decoration: TextDecoration.none,
                                     ),
                                   ),
-                                  GetBuilder<Settingzhanghaoxiugaicontroller>(
-                                      init: settingzhanghaoxiugaicontroller,
-                                      builder: (settingcontroller) {
+                                  GetBuilder<UserNameChangeManagement>(
+                                      init: UserNameChangeManagement.to,
+                                      builder: (UserNameChangeManagement) {
                                         return Text(
-                                          '@${settingcontroller.username}',
+                                          '@${UserNameChangeManagement.userNameValue}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
@@ -915,11 +917,11 @@ class _PersonalPageState extends State<PersonalPage>
                                       }),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 13.0),
-                                    child: biancontroller.brief
+                                    child: editPersonalDataValueManagement.profileValue
                                             .trim()
                                             .isNotEmpty
                                         ? Text(
-                                            biancontroller.brief,
+                                                editPersonalDataValueManagement.profileValue,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 17,
@@ -937,7 +939,7 @@ class _PersonalPageState extends State<PersonalPage>
                                     direction: Axis.horizontal,
                                     textDirection: TextDirection.ltr,
                                     children: [
-                                      biancontroller.year.trim().isNotEmpty
+                                      editPersonalDataValueManagement.dateOfBirthValue.trim().isNotEmpty
                                           ? Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -951,7 +953,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                 ),
                                                 Expanded(
                                                   child: Text(
-                                                    '出生于 ${biancontroller.year}',
+                                                    '出生于 ${editPersonalDataValueManagement.dateOfBirthValue}',
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w400,
@@ -968,7 +970,7 @@ class _PersonalPageState extends State<PersonalPage>
                                               ],
                                             )
                                           : const SizedBox(),
-                                      biancontroller.place.trim().isNotEmpty
+                                      editPersonalDataValueManagement.residentialAddressValue.trim().isNotEmpty
                                           ? Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -982,7 +984,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                 ),
                                                 Expanded(
                                                   child: Text(
-                                                    biancontroller.place,
+                                                    editPersonalDataValueManagement.residentialAddressValue,
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w400,
@@ -1011,7 +1013,7 @@ class _PersonalPageState extends State<PersonalPage>
                                           ),
                                           Expanded(
                                             child: Text(
-                                              biancontroller.jiaru,
+                                                editPersonalDataValueManagement.dateOfBirthValue,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 16,
@@ -1169,10 +1171,10 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                jiyikudianjicontroller.cizhi(
+                                                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
                                                     personaljiyikuController
                                                         .wodezhi![index]);
-                                                handleClick(context,
+                                                switchPage(context,
                                                     const jiyikudianji());
                                               },
                                               child: Padding(
@@ -1184,13 +1186,13 @@ class _PersonalPageState extends State<PersonalPage>
                                                 child: Column(
                                                   children: [
                                                     GetBuilder<
-                                                            DateTimeController>(
+                                                            MemoryBankCompletionStatus>(
                                                         init:
-                                                            datetimecontroller,
+                                                            memoryBankCompletionStatus,
                                                         builder:
-                                                            (datetimecontroller) {
+                                                            (memoryBankCompletionStatus) {
                                                           return Row(children: [
-                                                            datetimecontroller.tubiaoxianshi(
+                                                            memoryBankCompletionStatus!.displayIconStatus(
                                                                         personaljiyikucontroller.wodezhi?[index]
                                                                             [
                                                                             'zhuangtai']) ==
@@ -1221,11 +1223,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             27,
                                                                         height: 27)),
                                                             Expanded(
-                                                              child: datetimecontroller.jishi(
-                                                                  personaljiyikucontroller
-                                                                          .wodezhi![
-                                                                      index],
-                                                                  context),
+                                                              child: memoryBankCompletionStatus
+                                                                  .memoryLibraryStatusDisplayWidget(
+                                                                      personaljiyikucontroller
+                                                                              .wodezhi![
+                                                                          index],
+                                                                      context),
                                                             ),
                                                           ]);
                                                         }),
@@ -1737,10 +1740,10 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                jiyikudianjicontroller.cizhi(
+                                                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
                                                     personaljiyikuController
                                                         .laquzhi![index]);
-                                                handleClick(context,
+                                                switchPage(context,
                                                     const jiyikudianji());
                                               },
                                               child: Padding(
@@ -2380,10 +2383,10 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                jiyikudianjicontroller.cizhi(
+                                                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
                                                     personaljiyikuController
                                                         .xihuanzhi![index]);
-                                                handleClick(context,
+                                                switchPage(context,
                                                     const jiyikudianji());
                                               },
                                               child: Padding(

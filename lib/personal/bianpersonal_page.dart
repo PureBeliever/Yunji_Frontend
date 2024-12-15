@@ -16,33 +16,42 @@ import 'package:image_picker/image_picker.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-class BianpersonalController extends GetxController {
-  static BianpersonalController get to => Get.find();
+class EditPersonalDataValueManagement extends GetxController {
+  static EditPersonalDataValueManagement get to => Get.find();
 
-  String name = '';
-  String brief = ' ';
-  String year = ' ';
-  String place = ' ';
-  String jiaru = ' ';
-  void jiaruvalue(String jia) {
-    jiaru = jia;
+  // 姓名
+  String nameValue = '';
+  // 简介
+  String profileValue = ' ';
+  // 出生日期
+  String dateOfBirthValue = ' ';
+  // 居住地址
+  String residentialAddressValue = ' ';
+  // 加入日期
+  String applicationDateValue = ' ';
+
+  // 加入日期更改
+  void applicationDateChange(String applicationDateValueChange) {
+    applicationDateValue = applicationDateValueChange;
     update();
   }
 
-  void namevalue(String na, String bri, String pla, String ye) {
-    name = na;
-    brief = bri;
-    place = pla;
-    year = ye;
+  // 个人信息更改
+  void changePersonalInformation(String nameValueChange, String profileValueChange, String residentialAddressValueChange, String dateOfBirthValueChange) {
+    nameValue = nameValueChange;
+    profileValue = profileValueChange;
+    residentialAddressValue = residentialAddressValueChange;
+    dateOfBirthValue = dateOfBirthValueChange;
     update();
   }
 
-  int tuichu(String na, String bri, String pla, String ye) {
-    int nametui = name != na ? 1 : 0;
-    int brieftui = brief != bri ? 1 : 0;
-    int placetui = place != pla ? 1 : 0;
-    int yeartui = year != ye ? 1 : 0;
-    return nametui + brieftui + placetui + yeartui;
+  // 个人信息回滚
+  int rollbackTheChangedValue(String nameValueChange, String profileValueChange, String residentialAddressValueChange, String dateOfBirthValueChange) {
+    int nameChangeStatus = nameValue != nameValueChange ? 1 : 0;
+    int profileChangeStatus = profileValue != profileValueChange ? 1 : 0;
+    int residentialAddressChangeStatus = residentialAddressValue != residentialAddressValueChange ? 1 : 0;
+    int dateOfBirthChangeStatus = dateOfBirthValue != dateOfBirthValueChange ? 1 : 0;
+    return nameChangeStatus + profileChangeStatus + residentialAddressChangeStatus + dateOfBirthChangeStatus;
   }
 }
 
@@ -56,19 +65,19 @@ class Baocuncontroller extends GetxController {
     update();
   }
 }
-
-class Placecontroller extends GetxController {
-  static Placecontroller get to => Get.find();
-  String formattedDate = ' ';
-  String formatteplace = ' ';
-
-  void riqi(String qi) {
-    formattedDate = qi;
+//更新选择器结果显示
+class SelectorResultsUpdateDisplay extends GetxController {
+  static SelectorResultsUpdateDisplay get to => Get.find();
+  String residentialAddressSelectorResultValue = ' ';
+  String dateOfBirthSelectorResultValue = ' ';
+// 日期选择器结果值更改
+  void dateOfBirthSelectorResultValueChange(String dateOfBirthSelectorResultValueChange) {
+    dateOfBirthSelectorResultValue = dateOfBirthSelectorResultValueChange;
     update();
   }
-
-  void weizhi(String pl) {
-    formatteplace = pl;
+// 地址选择器结果值更改
+  void residentialAddressSelectorResultValueChange(String residentialAddressSelectorResultValueChange) {
+    residentialAddressSelectorResultValue = residentialAddressSelectorResultValueChange;
     update();
   }
 }
@@ -81,20 +90,18 @@ class BianpersonalPage extends StatefulWidget {
 }
 
 class _BiannpersonalPage extends State<BianpersonalPage> {
-  static String name = BianpersonalController.to.name;
-  static String brief = BianpersonalController.to.brief;
-  static String formatteplace = BianpersonalController.to.place;
-  static String formattedDate = BianpersonalController.to.year;
-
-  final headcontroller = Get.put(Headcontroller());
-  final bianpersonalController = Get.put(BianpersonalController());
+  static String name = EditPersonalDataValueManagement.to.nameValue;
+  static String brief = EditPersonalDataValueManagement.to.profileValue;
+  static String formatteplace = EditPersonalDataValueManagement.to.residentialAddressValue;
+  static String formattedDate = EditPersonalDataValueManagement.to.dateOfBirthValue;
+final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+  final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
   final baocuncontroller = Get.put(Baocuncontroller());
-  final beicontroller = Get.put(Beicontroller());
-  final placecontroller = Get.put(Placecontroller());
+  final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement());
+  final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
-  final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
-  static String username = Settingzhanghaoxiugaicontroller.to.username;
+  final userNameChangeManagement = Get.put(UserNameChangeManagement());
+  static String username = UserNameChangeManagement.to.userNameValue;
 
   selectImage() async {
     try {
@@ -124,9 +131,9 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                 title: '',
               ),
             ]);
-        headcontroller.hanbianheadimage(File(croppedFile!.path));
+        headPortraitChangeManagement.selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File(croppedFile!.path));
       }
-      // ignore: empty_catches
+   
     } catch (err) {}
   }
 
@@ -158,7 +165,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                 title: '',
               ),
             ]);
-        headcontroller.hanbianheadimage(File(croppedFile!.path));
+        headPortraitChangeManagement.selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File(croppedFile!.path));
       }
       // ignore: empty_catches
     } catch (err) {}
@@ -187,7 +194,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
           title: '',
         ),
       ]);
-      beicontroller.hanbianbeiimage(File(croppedFile!.path));
+      backgroundImageChangeManagement.selectAndShootTheImageToGiveTheChangedBackgroundImage(File(croppedFile!.path));
     }
   }
 
@@ -215,7 +222,7 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
           title: '',
         ),
       ]);
-      beicontroller.hanbianbeiimage(File(croppedFile!.path));
+      backgroundImageChangeManagement.selectAndShootTheImageToGiveTheChangedBackgroundImage(File(croppedFile!.path));
     }
   }
 
@@ -224,11 +231,11 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
     // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
-        if (bianpersonalController.tuichu(
+        if (editPersonalDataValueManagement.rollbackTheChangedValue(
                     name, brief, formatteplace, formattedDate) >
                 0 ||
-            beicontroller.tuichu() == 1 ||
-            headcontroller.tuichu() == 1) {
+            backgroundImageChangeManagement.exitThePageToDetermineWhetherTheBackgroundImageHasChanged() == 1 ||
+            headPortraitChangeManagement.exitThePageToDetermineWhetherTheHeadPortraitHasChanged() == 1) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -273,16 +280,15 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                             ),
                             TextButton(
                               onPressed: () {
-                                placecontroller
-                                    .riqi(bianpersonalController.year);
-                                placecontroller
-                                    .weizhi(bianpersonalController.place);
-                                beicontroller.hanyuan();
-                                headcontroller.hanyuan();
-                                name = bianpersonalController.name;
-                                brief = bianpersonalController.brief;
-                                formatteplace = placecontroller.formatteplace;
-                                formattedDate = placecontroller.formattedDate;
+                                selectorResultsUpdateDisplay
+                                    .dateOfBirthSelectorResultValueChange(editPersonalDataValueManagement.dateOfBirthValue);
+                                selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(editPersonalDataValueManagement.residentialAddressValue);
+                                backgroundImageChangeManagement.restoreAnUnchangedBackgroundImage();
+                                headPortraitChangeManagement.restoreAnUnchangedHeadPortraitImage();
+                                name = editPersonalDataValueManagement.nameValue;
+                                brief = editPersonalDataValueManagement.profileValue;
+                                formatteplace = selectorResultsUpdateDisplay.residentialAddressSelectorResultValue;
+                                formattedDate = selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                               },
@@ -318,11 +324,11 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
             backgroundColor: Colors.white,
             leading: GestureDetector(
               onTap: () {
-                if (bianpersonalController.tuichu(
+                if (editPersonalDataValueManagement.rollbackTheChangedValue(
                             name, brief, formatteplace, formattedDate) >
                         0 ||
-                    beicontroller.tuichu() == 1 ||
-                    headcontroller.tuichu() == 1) {
+                      backgroundImageChangeManagement.exitThePageToDetermineWhetherTheBackgroundImageHasChanged() == 1 ||
+                    headPortraitChangeManagement.exitThePageToDetermineWhetherTheHeadPortraitHasChanged() == 1) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -370,18 +376,18 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        placecontroller
-                                            .riqi(bianpersonalController.year);
-                                        placecontroller.weizhi(
-                                            bianpersonalController.place);
-                                        beicontroller.hanyuan();
-                                        headcontroller.hanyuan();
-                                        name = bianpersonalController.name;
-                                        brief = bianpersonalController.brief;
+                                        selectorResultsUpdateDisplay
+                                            .dateOfBirthSelectorResultValueChange(editPersonalDataValueManagement.dateOfBirthValue);  
+                                        selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
+                                            editPersonalDataValueManagement.residentialAddressValue);
+                                        backgroundImageChangeManagement.restoreAnUnchangedBackgroundImage();
+                                        headPortraitChangeManagement.restoreAnUnchangedHeadPortraitImage();
+                                        name = editPersonalDataValueManagement.nameValue;
+                                        brief = editPersonalDataValueManagement.profileValue;
                                         formatteplace =
-                                            placecontroller.formatteplace;
+                                            selectorResultsUpdateDisplay.residentialAddressSelectorResultValue;
                                         formattedDate =
-                                            placecontroller.formattedDate;
+                                            selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                       },
@@ -423,12 +429,12 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                       return dcontroller.name.isNotEmpty
                           ? GestureDetector(
                               onTap: () {
-                                if (bianpersonalController.tuichu(name, brief,
+                                if (editPersonalDataValueManagement.rollbackTheChangedValue(name, brief,
                                             formatteplace, formattedDate) >
                                         0 ||
-                                    beicontroller.tuichu() == 1 ||
-                                    headcontroller.tuichu() == 1) {
-                                  bianpersonalController.namevalue(name, brief,
+                                    backgroundImageChangeManagement.exitThePageToDetermineWhetherTheBackgroundImageHasChanged() == 1 ||
+                                    headPortraitChangeManagement.exitThePageToDetermineWhetherTheHeadPortraitHasChanged() == 1) {
+                                  editPersonalDataValueManagement.rollbackTheChangedValue(name, brief,          
                                       formatteplace, formattedDate);
 
                                   Navigator.pop(context);
@@ -439,8 +445,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                       brief,
                                       formatteplace,
                                       formattedDate,
-                                      beicontroller.baocun(),
-                                      headcontroller.baocun());
+                                      backgroundImageChangeManagement.returnsTheChangedBackgroundImageSynchronizationBackend(),
+                                      headPortraitChangeManagement.returnsTheChangedHeadPortraitImageSynchronizationBackend());
                                 } else {
                                   Navigator.pop(context);
                                 }
@@ -570,12 +576,12 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                           alignment: Alignment.center,
                           children: <Widget>[
                             Positioned.fill(
-                              child: GetBuilder<Beicontroller>(
-                                init: beicontroller,
-                                builder: (beicontroller) {
-                                  return beicontroller.bianbeiimage != null
+                              child: GetBuilder<BackgroundImageChangeManagement>(
+                                init: backgroundImageChangeManagement,
+                                builder: (backgroundImageChangeManagement) {
+                                  return backgroundImageChangeManagement.changedBackgroundImageValue != null
                                       ? Image.file(
-                                          beicontroller.bianbeiimage!,
+                                          backgroundImageChangeManagement.changedBackgroundImageValue!,
                                           fit: BoxFit.cover,
                                         )
                                       : Image.asset(
@@ -602,9 +608,9 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                       Positioned(
                         top: 197,
                         left: 10,
-                        child: GetBuilder<Headcontroller>(
-                            init: headcontroller,
-                            builder: (hcontroller) {
+                        child: GetBuilder<HeadPortraitChangeManagement>(
+                            init: headPortraitChangeManagement,
+                            builder: (headPortraitChangeManagement) {
                               return GestureDetector(
                                 onTap: () async {
                                   showDialog(
@@ -731,11 +737,11 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     backgroundColor: Colors.grey,
-                                    backgroundImage: headcontroller
-                                                .bianheadimage !=
+                                    backgroundImage: headPortraitChangeManagement
+                                                .changedHeadPortraitValue !=
                                             null
                                         ? FileImage(
-                                            headcontroller.bianheadimage!)
+                                            headPortraitChangeManagement.changedHeadPortraitValue!)
                                         : const AssetImage('assets/chuhui.png'),
                                     radius: 47.5,
                                     child: Stack(
@@ -772,9 +778,9 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    GetBuilder<BianpersonalController>(
-                      init: bianpersonalController,
-                      builder: (bcontroller) {
+                    GetBuilder<EditPersonalDataValueManagement>(
+                      init: editPersonalDataValueManagement,
+                      builder: (editPersonalDataValueManagement) {
                         return Column(
                           children: [
                             TextFormField(
@@ -782,9 +788,9 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                               style:
                                   const TextStyle(fontWeight: FontWeight.w600),
                               controller: TextEditingController(
-                                  text: bcontroller.name == ' '
+                                  text: editPersonalDataValueManagement.nameValue == ' '
                                       ? null
-                                      : bcontroller.name),
+                                      : editPersonalDataValueManagement.nameValue),
                               onChanged: (value) {
                                 name = value.trim();
                                 baocuncontroller.namess(name);
@@ -818,9 +824,9 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                               style:
                                   const TextStyle(fontWeight: FontWeight.w600),
                               controller: TextEditingController(
-                                  text: bcontroller.brief == ' '
+                                  text: editPersonalDataValueManagement.profileValue == ' '
                                       ? null
-                                      : bcontroller.brief),
+                                      : editPersonalDataValueManagement.profileValue),
                               onChanged: (value) {
                                 brief = value.replaceAll('\n', '');
                               },
@@ -852,8 +858,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                       },
                     ),
                     const SizedBox(width: double.infinity, height: 20),
-                    GetBuilder<Placecontroller>(
-                      init: placecontroller,
+                    GetBuilder<SelectorResultsUpdateDisplay>(
+                      init: selectorResultsUpdateDisplay,
                       builder: (pcontroller) {
                         return Column(
                           children: [
@@ -869,16 +875,16 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                     result.provinceId != 'kong') {
                                   formatteplace =
                                       '${result.provinceName!}.${result.cityName!}.${result.areaName!}';
-                                  pcontroller.weizhi(formatteplace);
+                                  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(formatteplace);
                                 } else if (result?.provinceId == 'kong') {
                                   formatteplace = ' ';
-                                  pcontroller.weizhi(formatteplace);
+                                  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(formatteplace);
                                 }
                               },
                               controller: TextEditingController(
-                                  text: pcontroller.formatteplace == ' '
+                                  text: selectorResultsUpdateDisplay.residentialAddressSelectorResultValue == ' '
                                       ? null
-                                      : pcontroller.formatteplace),
+                                      : selectorResultsUpdateDisplay.residentialAddressSelectorResultValue),
                               maxLines: 1,
                               maxLength: 50,
                               readOnly: true,
@@ -973,8 +979,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.pop(context);
-                                                        placecontroller
-                                                            .riqi(' ');
+                                                        selectorResultsUpdateDisplay
+                                                            .dateOfBirthSelectorResultValueChange(' ');
                                                       },
                                                       child: const Text(
                                                         '移除',
@@ -990,8 +996,8 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                                 TextButton(
                                                   onPressed: () {
                                                     Navigator.pop(context);
-                                                    placecontroller
-                                                        .riqi(formattedDate);
+                                                    selectorResultsUpdateDisplay
+                                                        .dateOfBirthSelectorResultValueChange(formattedDate);
                                                   },
                                                   child: const Text(
                                                     '确定',
@@ -1012,9 +1018,9 @@ class _BiannpersonalPage extends State<BianpersonalPage> {
                                 );
                               },
                               controller: TextEditingController(
-                                  text: pcontroller.formattedDate == ' '
+                                  text: selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue == ' '
                                       ? null
-                                      : pcontroller.formattedDate),
+                                      : selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue),
                               maxLines: 1,
                               maxLength: 50,
                               readOnly: true,

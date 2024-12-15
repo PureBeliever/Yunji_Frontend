@@ -8,6 +8,52 @@ import 'package:yunji/main/home_page.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/cut/cut.dart';
 import 'package:yunji/main/login/login_settings.dart';
+
+// 背景图管理
+class BackgroundImageChangeManagement extends GetxController {
+  static BackgroundImageChangeManagement get to => Get.find();
+  File? backgroundImageValue;
+  File? changedBackgroundImageValue;
+
+  // 选择与拍摄图片赐予更改的背景图
+  void selectAndShootTheImageToGiveTheChangedBackgroundImage(
+      File selectedChangedBackgroundImage) {
+    changedBackgroundImageValue = selectedChangedBackgroundImage;
+    update();
+  }
+
+  // 初始化背景图
+  void initBackgroundImage(String? backgroundDiagramInDatabase) {
+    if (backgroundDiagramInDatabase != null) {
+      changedBackgroundImageValue = File(backgroundDiagramInDatabase);
+      backgroundImageValue = File(backgroundDiagramInDatabase);
+      update();
+    }
+  }
+
+  // 恢复未更改的背景图
+  void restoreAnUnchangedBackgroundImage() {
+    changedBackgroundImageValue = backgroundImageValue;
+    update();
+  }
+
+  // 返回更改的背景图同步后端
+  File? returnsTheChangedBackgroundImageSynchronizationBackend() {
+    var backgroundImageOfTheSynchronizationBackend =
+        backgroundImageValue == changedBackgroundImageValue
+            ? null
+            : changedBackgroundImageValue;
+    backgroundImageValue = changedBackgroundImageValue;
+    update();
+    return backgroundImageOfTheSynchronizationBackend;
+  }
+
+  // 退出页面判断背景图是否已更改
+  int exitThePageToDetermineWhetherTheBackgroundImageHasChanged() {
+    return backgroundImageValue != changedBackgroundImageValue ? 1 : 0;
+  }
+}
+
 class PersonalBei extends StatefulWidget {
   const PersonalBei({super.key});
 
@@ -15,43 +61,9 @@ class PersonalBei extends StatefulWidget {
   State<PersonalBei> createState() => _PersonalBeiState();
 }
 
-class Beicontroller extends GetxController {
-  static Beicontroller get to => Get.find();
-  File? beiimage;
-  File? bianbeiimage;
-
-  void chushi(String? uio) {
-    if (uio != null) {
-      bianbeiimage = File(uio);
-      beiimage = bianbeiimage;
-      update();
-    }
-  }
-
-  void hanbianbeiimage(File bei) {
-    bianbeiimage = bei;
-    update();
-  }
-
-  void hanyuan() {
-    bianbeiimage = beiimage;
-    update();
-  }
-
-  File? baocun() {
-    var ty = beiimage == bianbeiimage ? null : bianbeiimage;
-    beiimage = bianbeiimage;
-    update();
-    return ty;
-  }
-
-  int tuichu() {
-    return beiimage != bianbeiimage ? 1 : 0;
-  }
-}
-
 class _PersonalBeiState extends State<PersonalBei> {
-  final beicontroller = Get.put(Beicontroller());
+  final backgroundImageChangeManagement =
+      Get.put(BackgroundImageChangeManagement());
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +96,14 @@ class _PersonalBeiState extends State<PersonalBei> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: GetBuilder<Beicontroller>(
-              init: beicontroller,
-              builder: (controller) {
-                return controller.beiimage != null
+            child: GetBuilder<BackgroundImageChangeManagement>(
+              init: backgroundImageChangeManagement,
+              builder: (backgroundImageChangeManagement) {
+                return backgroundImageChangeManagement.backgroundImageValue !=
+                        null
                     ? PhotoView(
-                        imageProvider: FileImage(controller.beiimage!),
+                        imageProvider: FileImage(backgroundImageChangeManagement
+                            .backgroundImageValue!),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       )
@@ -108,7 +122,7 @@ class _PersonalBeiState extends State<PersonalBei> {
         child: Center(
           child: OutlinedButton(
             onPressed: () {
-              if (denglu == false) {
+              if (loginStatus == false) {
                 soginDependencySettings(context);
                 toast.toastification.show(
                     context: contexts,
@@ -135,7 +149,7 @@ class _PersonalBeiState extends State<PersonalBei> {
                     dragToClose: true);
               } else {
                 Navigator.pop(context);
-                handleClick(context, const BianpersonalPage());
+                switchPage(context, const BianpersonalPage());
               }
             },
             style: OutlinedButton.styleFrom(
@@ -143,7 +157,8 @@ class _PersonalBeiState extends State<PersonalBei> {
                 borderRadius: BorderRadius.circular(18.0),
               ),
               side: const BorderSide(width: 0.5, color: Colors.white),
-              padding: const EdgeInsets.only(left: 13, right: 13, top: 3, bottom: 3),
+              padding:
+                  const EdgeInsets.only(left: 13, right: 13, top: 3, bottom: 3),
               minimumSize: Size.zero,
             ),
             child: const Text(

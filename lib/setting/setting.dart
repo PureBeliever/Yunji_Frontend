@@ -32,7 +32,7 @@ class _Setting extends State<Setting> {
         ),
         body: InkWell(
           onTap: () {
-            handleClick(context, const Settingzhanghao());
+            switchPage(context, const Settingzhanghao());
           },
           child: ListTile(
             leading: Padding(

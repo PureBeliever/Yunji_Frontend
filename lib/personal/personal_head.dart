@@ -16,43 +16,49 @@ class PersonalHead extends StatefulWidget {
   State<PersonalHead> createState() => _PersonalHeadState();
 }
 
-class Headcontroller extends GetxController {
-  static Headcontroller get to => Get.find();
-  File? headimage;
-  File? bianheadimage;
+class HeadPortraitChangeManagement extends GetxController {
+  static HeadPortraitChangeManagement get to => Get.find();
+  File? headPortraitValue;
+  File? changedHeadPortraitValue;
 
-  void hanbianheadimage(File head) {
-    bianheadimage = head;
+  // 选择与拍摄图片赐予更改的头像
+  void selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File selectedChangedHeadPortrait) {
+    changedHeadPortraitValue = selectedChangedHeadPortrait;
     update();
   }
 
-  void chushi(String? uio) {
-    if (uio != null) {
-      headimage = File(uio);
-      bianheadimage = headimage;
+  // 初始化头像
+  void initHeadPortrait(String? headPortraitInDatabase) {
+    if (headPortraitInDatabase != null) {
+      headPortraitValue = File(headPortraitInDatabase);
+      changedHeadPortraitValue = File(headPortraitInDatabase);
       update();
     }
   }
 
-  void hanyuan() {
-    bianheadimage = headimage;
+  // 恢复未更改的头像
+  void restoreAnUnchangedHeadPortraitImage() {
+    changedHeadPortraitValue = headPortraitValue;
     update();
   }
 
-  File? baocun() {
-    var ty = headimage == bianheadimage ? null : bianheadimage;
-    headimage = bianheadimage;
+  // 返回更改的头像同步后端
+  File? returnsTheChangedHeadPortraitImageSynchronizationBackend() {
+    var headPortraitOfTheSynchronizationBackend = headPortraitValue == changedHeadPortraitValue ? null : changedHeadPortraitValue;
+    headPortraitValue = changedHeadPortraitValue;
     update();
-    return ty;
+    return headPortraitOfTheSynchronizationBackend;
   }
 
-  int tuichu() {
-    return headimage != bianheadimage ? 1 : 0;
+  // 退出页面判断头像是否已更改
+  int exitThePageToDetermineWhetherTheHeadPortraitHasChanged() {
+    return headPortraitValue != changedHeadPortraitValue ? 1 : 0;
   }
+
 }
 
 class _PersonalHeadState extends State<PersonalHead> {
-  final headcontroller = Get.put(Headcontroller());
+  final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
 
   @override
   Widget build(BuildContext context) {
@@ -85,12 +91,12 @@ class _PersonalHeadState extends State<PersonalHead> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: GetBuilder<Headcontroller>(
-              init: headcontroller,
-              builder: (controller) {
-                return controller.headimage != null
+            child: GetBuilder<HeadPortraitChangeManagement>(
+              init: headPortraitChangeManagement,
+              builder: (headPortraitChangeManagement) {
+                return headPortraitChangeManagement.headPortraitValue != null
                     ? PhotoView(
-                        imageProvider: FileImage(controller.headimage!),
+                        imageProvider: FileImage(headPortraitChangeManagement.headPortraitValue!),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       )
@@ -109,7 +115,7 @@ class _PersonalHeadState extends State<PersonalHead> {
         child: Center(
           child: OutlinedButton(
             onPressed: () {
-              if (denglu == false) {
+              if (loginStatus == false) {
                 soginDependencySettings(context);
                 toast.toastification.show(
                     context: contexts,
@@ -136,7 +142,7 @@ class _PersonalHeadState extends State<PersonalHead> {
                     dragToClose: true);
               } else {
                 Navigator.pop(context);
-                handleClick(context, const BianpersonalPage());
+                switchPage(context, const BianpersonalPage());
               }
             },
             style: OutlinedButton.styleFrom(

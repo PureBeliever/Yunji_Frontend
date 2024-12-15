@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
@@ -11,7 +10,6 @@ import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 
-
 class Jixvfuxiyiwang extends StatefulWidget {
   const Jixvfuxiyiwang({super.key});
 
@@ -20,9 +18,8 @@ class Jixvfuxiyiwang extends StatefulWidget {
 }
 
 class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
-  final jixvfuxiController = Get.put(JixvFuxiController());
-  final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
+  final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
+  final userNameChangeManagement = Get.put(UserNameChangeManagement());
 
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
@@ -108,7 +105,8 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                 onPressed: () async {
                   bool zhuangtai = false;
                   String fanganming = "方案${_valueChoice + 1}";
-                  Map<String, String> cishu = jixvfuxiController.cishu
+                  Map<String, String> cishu = continueLearningAboutDataManagement
+                      .numberOfReviews
                       .map((key, value) => MapEntry(key.toString(), value));
                   String? stringci;
                   print('循环');
@@ -132,10 +130,11 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                   // DateTime dingshi =
                   //     now.add(Duration(hours: shijian[_valueChoice][0]));
 
-                  Map<String, String> stringTimu = jixvfuxiController.stringTimu
+                  Map<String, String> stringTimu = continueLearningAboutDataManagement
+                      .theNumberOfProblemsString
                       .map((key, value) => MapEntry(key.toString(), value));
-                  Map<String, String> stringhuida = jixvfuxiController
-                      .stringHuida
+                  Map<String, String> stringhuida = continueLearningAboutDataManagement
+                      .theNumberOfAnswersString
                       .map((key, value) => MapEntry(key.toString(), value));
                   DateTime dingshi =
                       now.add(Duration(minutes: shijian[_valueChoice][0]));
@@ -155,7 +154,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                         androidFullScreenIntent: true,
                         notificationSettings: NotificationSettings(
                           title: '开始复习 !',
-                          body: '记忆库${jixvfuxiController.zhuti}到达预定的复习时间',
+                          body: '记忆库${continueLearningAboutDataManagement.theTitleOfTheMemory}到达预定的复习时间',
                           stopButton: '停止闹钟',
                           icon: 'notification_icon',
                         ),
@@ -166,19 +165,18 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       _notificationHelper.zonedScheduleNotification(
                           id: 2,
                           title: '开始复习 !',
-                          body: '记忆库${jixvfuxiController.zhuti}到达预定的复习时间',
+                          body: '记忆库${continueLearningAboutDataManagement.theTitleOfTheMemory}到达预定的复习时间',
                           scheduledDateTime: dingshi);
                     }
                   }
                   xiugaijiyiku(
                       stringTimu,
                       stringhuida,
-                      jixvfuxiController.id,
-                      jixvfuxiController.zhuti,
-                      settingzhanghaoxiugaicontroller.username,
+                      continueLearningAboutDataManagement.id,
+                      continueLearningAboutDataManagement.theTitleOfTheMemory,
                       shijian[_valueChoice],
                       dingshi,
-                      jixvfuxiController.sortedList,
+                      continueLearningAboutDataManagement.theIndexValueOfTheMemoryItem,
                       message,
                       alarm_information,
                       zhuangtai,

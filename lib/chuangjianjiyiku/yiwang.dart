@@ -23,8 +23,6 @@ class Yiwang extends StatefulWidget {
 }
 
 class _Yiwang extends State<Yiwang> {
-  final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
   final jiyikucontroller = Get.put(Jiyikucontroller());
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
@@ -158,7 +156,7 @@ class _Yiwang extends State<Yiwang> {
                     stringTimu,
                     stringhuida,
                     jiyikucontroller.zhutizhi!,
-                    settingzhanghaoxiugaicontroller.username,
+
                     shijian[_valueChoice],
                     dingshi,
                     sortedList,
@@ -170,7 +168,7 @@ class _Yiwang extends State<Yiwang> {
 
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
-                handleClick(context, const PersonalPage());
+                switchPage(context, const PersonalPage());
               },
             ),
           ),

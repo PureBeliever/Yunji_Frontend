@@ -38,43 +38,73 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
   });
 }
 
-class JixvFuxiController extends GetxController {
-  static JixvFuxiController get to => Get.find();
-  Map<String, dynamic> zhi = {};
-  int length = 0;
-  List<int> lengthxiabiao = List.empty();
-  Map<String, dynamic> timu = {};
-  Map<String, dynamic> huida = {};
-  Map<int, String> stringTimu = {};
-  Map<int, String> stringHuida = {};
-  List<int> sortedList = [];
-  String zhuti = '';
-  List<dynamic> code = [];
-  Map<String, dynamic> cishu = {};
-  bool duanxin = false;
-  bool naozhong = false;
-  bool zhuangtai = false;
-  String fanganming = ' ';
+// 继续学习数据管理
+class ContinueLearningAboutDataManagement extends GetxController {
+  static ContinueLearningAboutDataManagement get to => Get.find();
+// 记忆库数据
+  Map<String, dynamic> memoryBankDataValue = {};
+
+  // 记忆库数量
+  int numberOfMemories = 0;
+
+  // 记忆库下标
+  List<int> theIndexValueOfTheMemoryItem = List.empty();
+
+  // 题目
+  Map<String, dynamic> theNumberOfProblems = {};
+
+  // 答案
+  Map<String, dynamic> theNumberOfAnswers = {};
+
+  // String类型的题目
+  Map<int, String> theNumberOfProblemsString = {};
+
+  // String类型的答案
+  Map<int, String> theNumberOfAnswersString = {};
+
+  // 记忆库标题
+  String theTitleOfTheMemory = '';
+
+  // 记忆库复习方案
+  List<dynamic> memoryScheme = [];
+
+  // 记忆库复习次数
+  Map<String, dynamic> numberOfReviews = {};
+
+  // 消息通知状态
+  bool messageNotificationStatus = false;
+
+  // 闹钟通知状态
+  bool alarmInformationStatus = false;
+
+  // 完成复习状态
+  bool completeReviewStatus = false;
+
+  // 记忆库复习方案名称
+  String memorySchemeName = ' ';
+
+  // 记忆库id
   int id = -1;
 
-  void cizhi(Map<String, dynamic> cizhi) {
+  void initTheMemoryData(Map<String, dynamic> cizhi) {
     id = cizhi['id'];
-    zhi = cizhi;
-    zhuti = cizhi['zhuti'];
-    length = cizhi['xiabiao'].length;
-    lengthxiabiao = cizhi['xiabiao'];
-    timu = jsonDecode(cizhi['timu']);
-    huida = jsonDecode(cizhi['huida']);
-    code = jsonDecode(cizhi['code']);
-    cishu = jsonDecode(cizhi['cishu']);
-    duanxin = cizhi['duanxin'] == 1 ? true : false;
-    naozhong = cizhi['naozhong'] == 1 ? true : false;
-    zhuangtai = cizhi['zhuangtai'] == 1 ? true : false;
-    fanganming = cizhi['fanganming'];
-    sortedList =cizhi['xiabiao'];
+    memoryBankDataValue = cizhi;
+    theTitleOfTheMemory = cizhi['zhuti'];
+    numberOfMemories = cizhi['xiabiao'].length;
+    theIndexValueOfTheMemoryItem = cizhi['xiabiao'];
+    theNumberOfProblems = jsonDecode(cizhi['timu']);
+    theNumberOfAnswers = jsonDecode(cizhi['huida']);
+    theNumberOfProblemsString = jsonDecode(cizhi['timu']);
+    theNumberOfAnswersString = jsonDecode(cizhi['huida']);
+    memoryScheme = jsonDecode(cizhi['code']);
+    numberOfReviews = jsonDecode(cizhi['cishu']);
+    messageNotificationStatus = cizhi['duanxin'] == 1 ? true : false;
+    alarmInformationStatus = cizhi['naozhong'] == 1 ? true : false;
+    completeReviewStatus = cizhi['zhuangtai'] == 1 ? true : false;
+    memorySchemeName = cizhi['fanganming'];
   }
 
-  void zhankai() {
+  void refreshExpansionTile() {
     update();
   }
 }
@@ -88,11 +118,11 @@ class JixvfuxiPage extends StatefulWidget {
 
 class _JixvfuxiPage extends State<JixvfuxiPage> {
   final List<Item> _data = generateItems(
-      jixvfuxiController.length,
-      jixvfuxiController.lengthxiabiao,
-      jixvfuxiController.timu,
-      jixvfuxiController.huida);
-  final _controller = TextEditingController(text: jixvfuxiController.zhuti);
+      continueLearningAboutDataManagement.numberOfMemories,
+      continueLearningAboutDataManagement.theIndexValueOfTheMemoryItem,
+      continueLearningAboutDataManagement.theNumberOfProblems,
+      continueLearningAboutDataManagement.theNumberOfAnswers);
+  final _controller = TextEditingController(text: continueLearningAboutDataManagement.theTitleOfTheMemory);
   final FocusNode _focusNode = FocusNode();
   @override
   void dispose() {
@@ -222,7 +252,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       color: Colors.white),
                 ),
                 onPressed: () async {
-                  if (jixvfuxiController.zhuti.length == 0) {
+                  if (continueLearningAboutDataManagement.theTitleOfTheMemory.length == 0) {
                     toast.toastification.show(
                         context: context,
                         type: toast.ToastificationType.success,
@@ -250,11 +280,11 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                   } else {
                     int zhi = 0;
                     _data.forEach((uio) {
-                      jixvfuxiController.stringTimu[zhi] = uio.tiwen;
-                      jixvfuxiController.stringHuida[zhi] = uio.huida;
+                      continueLearningAboutDataManagement.theNumberOfProblemsString[zhi] = uio.tiwen;
+                      continueLearningAboutDataManagement.theNumberOfAnswersString[zhi] = uio.huida;
                       zhi++;
                     });
-                    handleClick(context, Jixvfuxiyiwang());
+                    switchPage(context, Jixvfuxiyiwang());
                   }
                 },
               ),
@@ -265,9 +295,9 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
         surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: GetBuilder<JixvFuxiController>(
-          init: jixvfuxiController,
-          builder: (jiyikudianjicontroller) {
+      body: GetBuilder<ContinueLearningAboutDataManagement>(
+          init: continueLearningAboutDataManagement,
+          builder: (continueLearningAboutDataManagement) {
             return ListView(
               children: [
                 Padding(
@@ -286,7 +316,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       left: 5, right: 15, top: 50, bottom: 0),
                   child: TextField(
                     onChanged: (value) {
-                      jixvfuxiController.zhuti = value;
+                      continueLearningAboutDataManagement.theTitleOfTheMemory = value;
                     },
                     controller: _controller,
                     maxLength: 50,
@@ -322,7 +352,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                   dividerColor: Colors.white,
                   expansionCallback: (int index, bool isExpanded) {
                     _data[index].isExpanded = isExpanded;
-                    jiyikudianjicontroller.zhankai();
+                    continueLearningAboutDataManagement.refreshExpansionTile();
                   },
                   children: _data.map<ExpansionPanel>((Item item) {
                     return ExpansionPanel(

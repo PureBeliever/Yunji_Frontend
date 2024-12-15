@@ -5,36 +5,36 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/api/personal_api.dart';
 
+// 用户名更改管理器
+class UserNameChangeManagement extends GetxController {
+  static UserNameChangeManagement get to => Get.find();
+  String userNameValue = ' ';
+  bool theUserNameChangedStatus = false;
+  void userNameChangedStatusTrue() {
+    theUserNameChangedStatus = true;
+    update();
+  }
+
+  void userNameChangedStatusFalse() {
+    theUserNameChangedStatus = false;
+    update();
+  }
+
+  void userNameChanged(String userNameValueChanged) {
+    userNameValue = userNameValueChanged;
+    update();
+  }
+}
+
 class Settingzhanghaoxiugai extends StatefulWidget {
   const Settingzhanghaoxiugai({super.key});
   @override
   State<Settingzhanghaoxiugai> createState() => _Settingzhanghaoxiugai();
 }
 
-class Settingzhanghaoxiugaicontroller extends GetxController {
-  static Settingzhanghaoxiugaicontroller get to => Get.find();
-  String username = ' ';
-  bool baocun = false;
-  void xiugaitrue() {
-    baocun = true;
-    update();
-  }
-
-  void xiugaifalse() {
-    baocun = false;
-    update();
-  }
-
-  void xiugaiusername(String uio) {
-    username = uio;
-    update();
-  }
-}
-
 class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
-  final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
-  static String username = Settingzhanghaoxiugaicontroller.to.username;
+  final userNameChangeManagement = Get.put(UserNameChangeManagement());
+  static String username = UserNameChangeManagement.to.userNameValue;
 
   bool cunzai = false;
 
@@ -66,11 +66,11 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
     if (response.statusCode == 200) {
       cunzai = true;
       _controller.text = username;
-      settingzhanghaoxiugaicontroller.xiugaitrue();
+      userNameChangeManagement.userNameChangedStatusTrue();
     } else {
       cunzai = false;
       _controller.text = username;
-      settingzhanghaoxiugaicontroller.xiugaifalse();
+      userNameChangeManagement.userNameChangedStatusFalse();
     }
   }
 
@@ -112,10 +112,10 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
         actions: [
           Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: GetBuilder<Settingzhanghaoxiugaicontroller>(
-                  init: settingzhanghaoxiugaicontroller,
-                  builder: (settingzhanghaoxiugai) {
-                    return settingzhanghaoxiugai.baocun == true
+              child: GetBuilder<UserNameChangeManagement>(
+                  init: userNameChangeManagement,
+                  builder: (userNameChangeManagement) {
+                    return userNameChangeManagement.theUserNameChangedStatus == true
                         ? const Text(
                             '保存',
                             style: TextStyle(
@@ -127,9 +127,9 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
                         : GestureDetector(
                             onTap: () {
                               xiuzhanghao(
-                                  username, settingzhanghaoxiugai.username);
-                              settingzhanghaoxiugaicontroller
-                                  .xiugaiusername(username);
+                                  username, userNameChangeManagement.userNameValue);
+                              userNameChangeManagement
+                                  .userNameChanged(username);
                               Navigator.pop(context);
                             },
                             child: const Text(
@@ -173,7 +173,7 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
                     if (value.length > 4) {
                       chazhanghao(username);
                     } else {
-                      settingzhanghaoxiugaicontroller.xiugaitrue();
+                      userNameChangeManagement.userNameChangedStatusTrue();
                     }
                   },
                   maxLength: 17,
@@ -189,7 +189,8 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
                     errorText: _errorText,
                     counterText: "",
                     errorMaxLines: 5,
-                    errorStyle: const TextStyle(color: Colors.red, fontSize: 16),
+                    errorStyle:
+                        const TextStyle(color: Colors.red, fontSize: 16),
                     labelText: '新',
                     labelStyle: const TextStyle(
                       fontWeight: FontWeight.w800,
@@ -208,8 +209,7 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
                       borderSide: BorderSide(color: Colors.red, width: 2),
                     ),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.blue, width: 2),
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
                     ),
                     border: const UnderlineInputBorder(),
                   ),

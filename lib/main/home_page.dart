@@ -9,7 +9,6 @@ import 'package:alarm/alarm.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ali_auth/flutter_ali_auth.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:keframe/keframe.dart';
 import 'package:path_provider/path_provider.dart';
@@ -56,6 +55,7 @@ class RefreshofHomepageMemoryBankextends extends GetxController {
   }
 }
 
+// 请求权限
 Future<void> requestPermission() async {
   // 请求通知权限
   await Permission.notification.request();
@@ -63,23 +63,35 @@ Future<void> requestPermission() async {
   await Permission.scheduleExactAlarm.request();
 }
 
-List<String> lie = [];
-final datetimecontroller = Get.put(DateTimeController());
+// 数据库管理
 final databaseManager = DatabaseManager();
-final bianpersonalController = Get.put(BianpersonalController());
-final placecontroller = Get.put(Placecontroller());
-final settingzhanghaoxiugaicontroller =
-    Get.put(Settingzhanghaoxiugaicontroller());
-final beicontroller = Get.put(Beicontroller());
-final headcontroller = Get.put(Headcontroller());
+
+// 用户名管理
+final userNameChangeManagement = Get.put(UserNameChangeManagement());
+
+// 背景图管理
+final backgroundImageChangeManagement =
+    Get.put(BackgroundImageChangeManagement());
+
+// 头像管理
+final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
+
+// 主页记忆库刷新
 final refreshofHomepageMemoryBankextends =
     Get.put(RefreshofHomepageMemoryBankextends());
-final jiyikudianjicontroller = Get.put(Jiyikudianjicontroller());
-final fuxiController = Get.put(FuxiController());
-final jixvfuxiController = Get.put(JixvFuxiController());
+
+// 查看帖子记忆库数据管理
+final viewPostDataManagementForMemoryBanks = Get.put(ViewPostDataManagementForMemoryBanks());
+
+// 复习数据管理
+final reviewTheDataManagementOfMemoryBank = Get.put(ReviewTheDataManagementOfMemoryBank());
+
+// 继续学习数据管理
+final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
+
 final jiyikudianjipersonalController =
     Get.put(JiyikudianjipersonalController());
-bool denglu = false;
+bool loginStatus = false;
 BuildContext? contexts;
 
 void main() async {
@@ -99,24 +111,23 @@ void main() async {
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     personaljiyikucontroller.shuaxin(zhi);
     var shu = zhi;
-    denglu = true;
-    beicontroller.chushi(shu['beijing']);
-    headcontroller.chushi(shu['touxiang']);
-    placecontroller.riqi(shu['year']);
-    placecontroller.weizhi(shu['place']);
-    bianpersonalController.namevalue(
+    loginStatus = true;
+    backgroundImageChangeManagement.initBackgroundImage(shu['beijing']);
+    headPortraitChangeManagement.initHeadPortrait(shu['touxiang']);
+    selectorResultsUpdateDisplay
+        .dateOfBirthSelectorResultValueChange(shu['year']);
+    selectorResultsUpdateDisplay
+        .residentialAddressSelectorResultValueChange(shu['place']);
+    editPersonalDataValueManagement.changePersonalInformation(
         shu['name'], shu['brief'], shu['place'], shu['year']);
-    bianpersonalController.jiaruvalue(shu['jiaru']);
-    settingzhanghaoxiugaicontroller.xiugaiusername(shu['username']);
-    postpersonalapi(settingzhanghaoxiugaicontroller.username);
+    editPersonalDataValueManagement.applicationDateChange(shu['jiaru']);
+    userNameChangeManagement.userNameChanged(shu['username']);
+    postpersonalapi(userNameChangeManagement.userNameValue);
     await shuaxin();
   } else {
     soginDependencySettings(contexts!);
   }
 }
-
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -267,7 +278,8 @@ Future<void> shuaxin() async {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final headcontroller = Get.put(Headcontroller());
+  final editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
   late TabController tabController;
 
   Future<void> _refresh() async {
@@ -310,8 +322,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // 状态栏底色
-      statusBarBrightness: Brightness.dark, // 状态栏文字颜色
+      statusBarColor: Colors.white,
+      statusBarBrightness: Brightness.dark,
     ));
     contexts = context;
     double chang = MediaQuery.of(context).size.height * 0.05;
@@ -341,13 +353,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              GetBuilder<Headcontroller>(
-                                  init: headcontroller,
-                                  builder: (headcontroller) {
+                              GetBuilder<HeadPortraitChangeManagement>(
+                                  init: headPortraitChangeManagement,
+                                  builder: (headPortraitChangeManagement) {
                                     return IconButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          handleClick(
+                                          switchPage(
                                               context, const PersonalPage());
                                         },
                                         padding: EdgeInsets.zero,
@@ -355,9 +367,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                           backgroundColor: Colors.grey,
                                           radius: 23,
                                           backgroundImage:
-                                              headcontroller.headimage != null
+                                              headPortraitChangeManagement
+                                                          .headPortraitValue !=
+                                                      null
                                                   ? FileImage(
-                                                      headcontroller.headimage!)
+                                                      headPortraitChangeManagement
+                                                          .headPortraitValue!)
                                                   : const AssetImage(
                                                       'assets/chuhui.png'),
                                         ));
@@ -377,11 +392,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      GetBuilder<BianpersonalController>(
-                        init: bianpersonalController,
+                      GetBuilder<EditPersonalDataValueManagement>(
+                        init: editPersonalDataValueManagement,
                         builder: (biancontroller) {
                           return Text(
-                            biancontroller.name,
+                            editPersonalDataValueManagement.nameValue,
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 21,
@@ -389,11 +404,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           );
                         },
                       ),
-                      GetBuilder<Settingzhanghaoxiugaicontroller>(
-                          init: settingzhanghaoxiugaicontroller,
-                          builder: (settingcontroller) {
+                      GetBuilder<UserNameChangeManagement>(
+                          init: userNameChangeManagement,
+                          builder: (userNameChangeManagement) {
                             return Text(
-                              '@${settingcontroller.username}',
+                              '@${userNameChangeManagement.userNameValue}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Color.fromRGBO(84, 87, 105, 1),
@@ -457,7 +472,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         InkWell(
                           onTap: () {
                             Navigator.pop(context);
-                            handleClick(context, const PersonalPage());
+                            switchPage(context, const PersonalPage());
                           },
                           child: ListTile(
                             leading: Padding(
@@ -554,7 +569,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         InkWell(
                           onTap: () {
                             Navigator.pop(context);
-                            handleClick(context, const Setting());
+                            switchPage(context, const Setting());
                           },
                           child: ListTile(
                             leading: Padding(
@@ -621,10 +636,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               surfaceTintColor: Colors.white,
               backgroundColor: Colors.white,
               toolbarHeight: chang,
-              leading: GetBuilder<Headcontroller>(
-                init: headcontroller,
-                builder: (hcontroller) {
-                  return hcontroller.headimage != null
+              leading: GetBuilder<HeadPortraitChangeManagement>(
+                init: headPortraitChangeManagement,
+                builder: (headPortraitChangeManagement) {
+                  return headPortraitChangeManagement.headPortraitValue != null
                       ? Padding(
                           padding: const EdgeInsets.only(left: 15.0),
                           child: IconButton(
@@ -634,8 +649,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               },
                               icon: CircleAvatar(
                                   radius: 30,
-                                  backgroundImage:
-                                      FileImage(headcontroller.headimage!))),
+                                  backgroundImage: FileImage(
+                                      headPortraitChangeManagement
+                                          .headPortraitValue!))),
                         )
                       : IconButton(
                           icon: SvgPicture.asset(
@@ -745,11 +761,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
-                                      jiyikudianjicontroller.cizhi(
+                                      viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
                                           refreshofHomepageMemoryBankextends
                                               .memoryRefreshValue[index]);
-                                      handleClick(
-                                          context, const jiyikudianji());
+                                      switchPage(context, const jiyikudianji());
                                     },
                                     child: Column(
                                       children: [
@@ -779,7 +794,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                         refreshofHomepageMemoryBankextends
                                                                 .memoryRefreshValue[
                                                             index]['username']);
-                                                    handleClick(context,
+                                                    switchPage(context,
                                                         const Jiyikudianjipersonal());
                                                   },
                                                   icon: CircleAvatar(
@@ -969,7 +984,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        if (denglu ==
+                                                                        if (loginStatus ==
                                                                             true) {
                                                                           personaljiyikuController.shuaxinlaqu(
                                                                               refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
@@ -977,7 +992,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                               refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          smsLogin(context);
+                                                                          smsLogin(
+                                                                              context);
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -1078,7 +1094,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        if (denglu ==
+                                                                        if (loginStatus ==
                                                                             true) {
                                                                           personaljiyikuController.shuaxinshoucang(
                                                                               refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
@@ -1086,7 +1102,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                               refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
                                                                           return !isLiked;
                                                                         } else {
-                                                                          smsLogin(context);
+                                                                          smsLogin(
+                                                                              context);
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -1187,7 +1204,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                       ),
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        if (denglu ==
+                                                                        if (loginStatus ==
                                                                             true) {
                                                                           personaljiyikuController.shuaxinxihuan(
                                                                               refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
@@ -1196,7 +1213,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
                                                                           return !isLiked;
                                                                         } else {
-                                                                          smsLogin(context);
+                                                                          smsLogin(
+                                                                              context);
                                                                           return isLiked;
                                                                         }
                                                                       },
@@ -1231,6 +1249,116 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                         var color = isLiked
                                                                             ? Colors
                                                                                 .red
+                                                                            : const Color.fromRGBO(
+                                                                                84,
+                                                                                87,
+                                                                                105,
+                                                                                1);
+                                                                        Widget
+                                                                            result;
+                                                                        if (count ==
+                                                                            0) {
+                                                                          result =
+                                                                              Text(
+                                                                            "love",
+                                                                            style:
+                                                                                TextStyle(color: color),
+                                                                          );
+                                                                        }
+                                                                        result =
+                                                                            Text(
+                                                                          text,
+                                                                          style: TextStyle(
+                                                                              color: color,
+                                                                              fontWeight: FontWeight.w700),
+                                                                        );
+                                                                        return result;
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              const Spacer(
+                                                                  flex: 1),
+                                                              SizedBox(
+                                                                width: 70,
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    LikeButton(
+                                                                      circleColor: const CircleColor(
+                                                                          start: Color.fromARGB(
+                                                                              255,
+                                                                              237,
+                                                                              42,
+                                                                              255),
+                                                                          end: Color.fromARGB(
+                                                                              255,
+                                                                              185,
+                                                                              142,
+                                                                              255)),
+                                                                      bubblesColor:
+                                                                          const BubblesColor(
+                                                                        dotPrimaryColor: Color.fromARGB(
+                                                                            255,
+                                                                            225,
+                                                                            0,
+                                                                            255),
+                                                                        dotSecondaryColor: Color.fromARGB(
+                                                                            255,
+                                                                            233,
+                                                                            195,
+                                                                            255),
+                                                                      ),
+                                                                      size: 20,
+                                                                      onTap:
+                                                                          (isLiked) async {
+                                                                        if (loginStatus ==
+                                                                            true) {
+                                                                          personaljiyikuController.shuaxintiwen(
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['tiwen'],
+                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
+                                                                          return !isLiked;
+                                                                        } else {
+                                                                          smsLogin(
+                                                                              context);
+                                                                          return isLiked;
+                                                                        }
+                                                                      },
+                                                                      isLiked: personaljiyikuController.chushitiwen(
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
+                                                                              [
+                                                                              'id']),
+                                                                      likeBuilder:
+                                                                          (bool
+                                                                              isLiked) {
+                                                                        return Icon(
+                                                                          isLiked
+                                                                              ? Icons.messenger
+                                                                              : Icons.messenger_outline,
+                                                                          color: isLiked
+                                                                              ? Colors.purpleAccent
+                                                                              : const Color.fromRGBO(84, 87, 105, 1),
+                                                                          size:
+                                                                              20,
+                                                                        );
+                                                                      },
+                                                                      likeCount:
+                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
+                                                                              [
+                                                                              'tiwen'],
+                                                                      countBuilder: (int?
+                                                                              count,
+                                                                          bool
+                                                                              isLiked,
+                                                                          String
+                                                                              text) {
+                                                                        var color = isLiked
+                                                                            ? Colors
+                                                                                .purple
                                                                             : const Color.fromRGBO(
                                                                                 84,
                                                                                 87,
@@ -1325,7 +1453,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 labelStyle: const TextStyle(
                     fontSize: 20.0, fontWeight: FontWeight.w700),
                 onTap: () {
-                  if (denglu == false) {
+                  if (loginStatus == false) {
                     smsLogin(context);
                     toast.toastification.show(
                         context: contexts,
@@ -1351,7 +1479,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         boxShadow: toast.lowModeShadow,
                         dragToClose: true);
                   } else {
-                    handleClick(context, const Jiyiku());
+                    switchPage(context, const Jiyiku());
                   }
                 }),
           ]),

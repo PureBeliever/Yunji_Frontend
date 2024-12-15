@@ -31,37 +31,50 @@ class Item {
   bool isExpanded;
 }
 
-class Jiyikudianjicontroller extends GetxController {
-  static Jiyikudianjicontroller get to => Get.find();
-  Map<String, dynamic> zhi = {};
-  int length = 0;
-  List<int> lengthxiabiao = List.empty();
-  Map<String, dynamic> timu = {};
-  Map<String, dynamic> huida = {};
-  String zhuti = '';
-  void cizhi(Map<String, dynamic> cizhi) {
-    zhi = cizhi;
-    zhuti = cizhi['zhuti'];
-    length = cizhi['xiabiao'].length;
-    lengthxiabiao = cizhi['xiabiao'];
-    timu = jsonDecode(cizhi['timu']);
-    huida = jsonDecode(cizhi['huida']);
+// 查看帖子的记忆库数据管理
+class ViewPostDataManagementForMemoryBanks extends GetxController {
+  static ViewPostDataManagementForMemoryBanks get to => Get.find();
+
+  // 帖子的记忆库数据
+  Map<String, dynamic> theMemoryBankValueOfThePost = {};
+
+  // 记忆库
+  int numberOfMemories = 0;
+
+  // 记忆库下标
+  List<int> theIndexValueOfTheMemoryItem = List.empty();
+
+  // 题目
+  Map<String, dynamic> theNumberOfProblems = {};
+
+  // 答案
+  Map<String, dynamic> theNumberOfAnswers = {};
+  
+  // 记忆库标题
+  String theTitleOfTheMemory = '';
+
+  // 初始化记忆库数据
+  void initTheMemoryDataForThePost(Map<String, dynamic> theMemoryDataForThePost) {
+    theMemoryBankValueOfThePost = theMemoryDataForThePost;
+    theTitleOfTheMemory = theMemoryDataForThePost['zhuti'];
+    numberOfMemories = theMemoryDataForThePost['xiabiao'].length;
+    theIndexValueOfTheMemoryItem = theMemoryDataForThePost['xiabiao'];
+    theNumberOfProblems = jsonDecode(theMemoryDataForThePost['timu']);
+    theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['huida']);
   }
 
-  void zhankai() {
+  // 刷新ExpansionTile
+  void refreshExpansionTile() {
     update();
   }
-
 }
 
 List<Item> generateItems(int numberOfItems, List<int> xiabiao,
     Map<String, dynamic> timu, Map<String, dynamic> huida) {
   return List<Item>.generate(numberOfItems, (int index) {
     return Item(
-      headerValue:
-          timu['${xiabiao[index]}'] ?? '',
-      expandedValue:
-          huida['${xiabiao[index]}'] ?? '',
+      headerValue: timu['${xiabiao[index]}'] ?? '',
+      expandedValue: huida['${xiabiao[index]}'] ?? '',
     );
   });
 }
@@ -69,10 +82,10 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
 // ignore: camel_case_types
 class _jiyikudianjiState extends State<jiyikudianji> {
   final List<Item> _data = generateItems(
-      jiyikudianjicontroller.length,
-      jiyikudianjicontroller.lengthxiabiao,
-      jiyikudianjicontroller.timu,
-      jiyikudianjicontroller.huida);
+      viewPostDataManagementForMemoryBanks.numberOfMemories,
+      viewPostDataManagementForMemoryBanks.theIndexValueOfTheMemoryItem,
+      viewPostDataManagementForMemoryBanks.theNumberOfProblems,
+      viewPostDataManagementForMemoryBanks.theNumberOfAnswers);
   final personaljiyikucontroller = Get.put(PersonaljiyikuController());
   final jiyikudianjipersonalController =
       Get.put(JiyikudianjipersonalController());
@@ -91,7 +104,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
             ),
           ),
           title: Text(
-            jiyikudianjicontroller.zhuti,
+            viewPostDataManagementForMemoryBanks.theTitleOfTheMemory,
             style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
           ),
         ),
@@ -100,10 +113,10 @@ class _jiyikudianjiState extends State<jiyikudianji> {
             InkWell(
               onTap: () {
                 jiyikudianjipersonalController
-                    .cizhi(jiyikudianjicontroller.zhi);
-               jiyikupostpersonalapi(
+                    .cizhi(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
+                jiyikupostpersonalapi(
                     jiyikudianjipersonalController.zhi['username']);
-                handleClick(context, const Jiyikudianjipersonal());
+                switchPage(context, const Jiyikudianjipersonal());
               },
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -115,11 +128,12 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                       children: [
                         CircleAvatar(
                           radius: 21,
-                          backgroundImage: jiyikudianjicontroller
-                                      .zhi['touxiang'] !=
+                          backgroundImage: viewPostDataManagementForMemoryBanks
+                                      .theMemoryBankValueOfThePost['touxiang'] !=
                                   null
                               ? FileImage(
-                                  File(jiyikudianjicontroller.zhi['touxiang']))
+                                  File(viewPostDataManagementForMemoryBanks
+                                      .theMemoryBankValueOfThePost['touxiang']))
                               : const AssetImage('assets/chuhui.png'),
                         ),
                         const SizedBox(width: 11),
@@ -127,7 +141,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              jiyikudianjicontroller.zhi['name'],
+                                viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['name'],
                               style: const TextStyle(
                                 fontWeight: FontWeight.w900,
                                 color: Colors.black,
@@ -135,8 +149,8 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                             ),
                             Text(
-                              // ignore: prefer_interpolation_to_compose_strings
-                              '@' + jiyikudianjicontroller.zhi['username'],
+                             
+                              '@' + viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['username'],
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Color.fromRGBO(84, 87, 105, 1),
@@ -169,16 +183,16 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                 ),
               ),
             ),
-            GetBuilder<Jiyikudianjicontroller>(
-                init: jiyikudianjicontroller,
-                builder: (jiyikudianjicontroller) {
+            GetBuilder<ViewPostDataManagementForMemoryBanks>(
+                init: ViewPostDataManagementForMemoryBanks(),
+                builder: (ViewPostDataManagementForMemoryBanks) {
                   return ExpansionPanelList(
                     materialGapSize: 15,
                     elevation: 0,
                     dividerColor: Colors.white,
                     expansionCallback: (int index, bool isExpanded) {
                       _data[index].isExpanded = isExpanded;
-                      jiyikudianjicontroller.zhankai();
+                      ViewPostDataManagementForMemoryBanks.refreshExpansionTile();
                     },
                     children: _data.map<ExpansionPanel>((Item item) {
                       return ExpansionPanel(
@@ -187,7 +201,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                           return GestureDetector(
                             onTap: () {
                               item.isExpanded = !isExpanded;
-                              jiyikudianjicontroller.zhankai();
+                              ViewPostDataManagementForMemoryBanks.refreshExpansionTile();
                             },
                             child: ListTile(
                               title: Text(
@@ -219,7 +233,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                   ),
                   Row(
                     children: [
-                      Text('${jiyikudianjicontroller.zhi['laqu']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['laqu']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -231,7 +245,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         ),
                       ),
                       const Spacer(flex: 2),
-                      Text('${jiyikudianjicontroller.zhi['shoucang']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['shoucang']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -243,7 +257,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         ),
                       ),
                       const Spacer(flex: 2),
-                      Text('${jiyikudianjicontroller.zhi['xihuan']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['xihuan']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -255,7 +269,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         ),
                       ),
                       const Spacer(flex: 2),
-                      Text('${jiyikudianjicontroller.zhi['tiwen']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['tiwen']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -293,12 +307,14 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                               size: 25,
                               onTap: (isLiked) async {
-                                if (denglu == true) {
+                                if (loginStatus == true) {
                                   personaljiyikucontroller.shuaxinlaqu(
-                                    jiyikudianjicontroller.zhi['id'],
-                                    jiyikudianjicontroller.zhi['laqu']+personaljiyikuController.chushilaquint(jiyikudianjicontroller.zhi['id']),
-                                    jiyikudianjicontroller.zhi
-                                  );
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['laqu'] +
+                                          personaljiyikuController
+                                              .chushilaquint(
+                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
                                   return !isLiked;
                                 } else {
                                   soginDependencySettings(context);
@@ -306,7 +322,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                 }
                               },
                               isLiked: personaljiyikucontroller
-                                  .chushilaqu(jiyikudianjicontroller.zhi['id']),
+                                  .chushilaqu(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked ? Icons.swap_calls : Icons.swap_calls,
@@ -350,12 +366,14 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                               size: 25,
                               onTap: (isLiked) async {
-                                if (denglu == true) {
+                                if (loginStatus == true) {
                                   personaljiyikucontroller.shuaxinshoucang(
-                                    jiyikudianjicontroller.zhi['id'],
-                                    jiyikudianjicontroller.zhi['shoucang']+personaljiyikuController.chushishoucangint(jiyikudianjicontroller.zhi['id']),
-                                    jiyikudianjicontroller.zhi
-                                  );
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['shoucang'] +
+                                          personaljiyikuController
+                                              .chushishoucangint(
+                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
                                   return !isLiked;
                                 } else {
                                   soginDependencySettings(context);
@@ -363,7 +381,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                 }
                               },
                               isLiked: personaljiyikucontroller.chushishoucang(
-                                  jiyikudianjicontroller.zhi['id']),
+                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked ? Icons.folder : Icons.folder_open,
@@ -406,11 +424,14 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                     Color.fromARGB(255, 255, 186, 186),
                               ),
                               onTap: (isLiked) async {
-                                if (denglu == true) {
+                                if (loginStatus == true) {
                                   personaljiyikucontroller.shuaxinxihuan(
-                                      jiyikudianjicontroller.zhi['id'],
-                                      jiyikudianjicontroller.zhi['xihuan']+personaljiyikuController.chushixihuanint(jiyikudianjicontroller.zhi['id']),
-                                      jiyikudianjicontroller.zhi);
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['xihuan'] +
+                                          personaljiyikuController
+                                              .chushixihuanint(
+                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
 
                                   return !isLiked;
                                 } else {
@@ -419,7 +440,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                 }
                               },
                               isLiked: personaljiyikucontroller.chushixihuan(
-                                  jiyikudianjicontroller.zhi['id']),
+                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked
@@ -465,12 +486,14 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                               size: 25,
                               onTap: (isLiked) async {
-                                if (denglu == true) {
+                                if (loginStatus == true) {
                                   personaljiyikucontroller.shuaxintiwen(
-                                    jiyikudianjicontroller.zhi['id'],
-                                    jiyikudianjicontroller.zhi['tiwen']+personaljiyikuController.chushitiwenint(jiyikudianjicontroller.zhi['id']),
-                                    jiyikudianjicontroller.zhi
-                                  );
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['tiwen'] +
+                                          personaljiyikuController
+                                              .chushitiwenint(
+                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
                                   return !isLiked;
                                 } else {
                                   soginDependencySettings(context);
@@ -478,7 +501,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                 }
                               },
                               isLiked: personaljiyikucontroller.chushitiwen(
-                                  jiyikudianjicontroller.zhi['id']),
+                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked

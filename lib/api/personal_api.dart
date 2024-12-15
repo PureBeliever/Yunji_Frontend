@@ -19,12 +19,11 @@ import 'package:yunji/sql/sqlite.dart';
 
 final dio = dios.Dio();
 
-final bianpersonalController = Get.put(BianpersonalController());
-final placecontroller = Get.put(Placecontroller());
-final beicontroller = Get.put(Beicontroller());
-final headcontroller = Get.put(Headcontroller());
-final settingzhanghaoxiugaicontroller =
-    Get.put(Settingzhanghaoxiugaicontroller());
+final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
+final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement());
+final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
+final userNameChangeManagement = Get.put(UserNameChangeManagement());
 final personaljiyikucontroller = Get.put(PersonaljiyikuController());
 final personaljiyikudianjiController =
     Get.put(PersonaljiyikudianjiController());
@@ -49,7 +48,6 @@ void baocunjiyiku(
   Map<String, String> timu,
   Map<String, String> huida,
   String zhuti,
-  String username,
   List<int> code,
   DateTime dingshi,
   List<int> xiabiao,
@@ -60,7 +58,7 @@ void baocunjiyiku(
   String fanganming,
 ) async {
   Map<String, dynamic> formdata = {
-    'username': username,
+    'username': userNameChangeManagement.userNameValue,
     'timu': timu,
     'huida': huida,
     'zhuti': zhuti,
@@ -83,7 +81,7 @@ void baocunjiyiku(
     data: jsonformdata,
     options: Options(headers: header),
   );
-  postpersonalapi(settingzhanghaoxiugaicontroller.username);
+  postpersonalapi(userNameChangeManagement.userNameValue);
 }
 
 void xiugaijiyiku(
@@ -91,7 +89,7 @@ void xiugaijiyiku(
     Map<String, String> huida,
     int id,
     String zhuti,
-    String username,
+
     List<int> code,
     DateTime dingshi,
     List<int> xiabiao,
@@ -101,7 +99,7 @@ void xiugaijiyiku(
     Map<String, String> cishu,
     String fanganming) async {
   Map<String, dynamic> formdata = {
-    'username': username,
+    'username': userNameChangeManagement.userNameValue,
     'timu': timu,
     'id': id,
     'huida': huida,
@@ -126,7 +124,7 @@ void xiugaijiyiku(
     data: jsonformdata,
     options: Options(headers: header),
   );
-  postpersonalapi(settingzhanghaoxiugaicontroller.username);
+  postpersonalapi(userNameChangeManagement.userNameValue);
 }
 
 String _generateRandomFilename() {
@@ -139,7 +137,7 @@ String _generateRandomFilename() {
 }
 
 void shouji(String shouji) async {
-  denglu = true;
+  loginStatus = true;
   Map<String, String> header = {
     'Content-Type': 'application/json',
   };
@@ -187,19 +185,19 @@ void shouji(String shouji) async {
       touxiang: tou,
       jiaru: serverData['jiaru']!);
   databaseManager.insertPersonalzhi(fido);
-  placecontroller.riqi(serverData['year']!);
-  placecontroller.weizhi(serverData['place']!);
-  beicontroller.chushi(bei);
-  headcontroller.chushi(tou);
-  bianpersonalController.namevalue(
+  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(serverData['year']!);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(serverData['place']!);
+  backgroundImageChangeManagement.initBackgroundImage(bei);
+  headPortraitChangeManagement.initHeadPortrait(tou);
+  editPersonalDataValueManagement.changePersonalInformation(
     serverData['name']!,
     serverData['brief']!,
     serverData['place']!,
     serverData['year']!,
   );
-  settingzhanghaoxiugaicontroller.xiugaiusername(serverData['username']!);
-  bianpersonalController.jiaruvalue(serverData['jiaru']!);
-  postpersonalapi(settingzhanghaoxiugaicontroller.username);
+  userNameChangeManagement.userNameChanged(serverData['username']!);
+  editPersonalDataValueManagement.applicationDateChange(serverData['jiaru']!);
+  postpersonalapi(userNameChangeManagement.userNameValue);
 }
 
 void zhuce() async {
@@ -247,19 +245,19 @@ void zhuce() async {
       touxiang: tou,
       jiaru: serverData['jiaru']!);
   databaseManager.insertPersonalzhi(fido);
-  placecontroller.riqi(serverData['year']!);
-  placecontroller.weizhi(serverData['place']!);
-  beicontroller.chushi(bei);
-  headcontroller.chushi(tou);
-  bianpersonalController.namevalue(
+  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(serverData['year']!);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(serverData['place']!);
+  backgroundImageChangeManagement.initBackgroundImage(bei);
+  headPortraitChangeManagement.initHeadPortrait(tou);
+  editPersonalDataValueManagement.changePersonalInformation(
     serverData['name']!,
     serverData['brief']!,
     serverData['place']!,
     serverData['year']!,
   );
-  settingzhanghaoxiugaicontroller.xiugaiusername(serverData['username']!);
-  bianpersonalController.jiaruvalue(serverData['jiaru']!);
-  postpersonalapi(settingzhanghaoxiugaicontroller.username);
+  userNameChangeManagement.userNameChanged(serverData['username']!);
+  editPersonalDataValueManagement.applicationDateChange(serverData['jiaru']!);
+  postpersonalapi(userNameChangeManagement.userNameValue);
 }
 
 Future<String> imageFile(File imageFile) async {
@@ -289,8 +287,8 @@ void PostHttp(String username, String name, String brief, String place,
       data: formdata, options: Options(headers: header));
 
   if (response.statusCode == 200) {
-    String? bei = beicontroller.beiimage?.path;
-    String? head = headcontroller.headimage?.path;
+    String? bei = backgroundImageChangeManagement.backgroundImageValue?.path;
+    String? head = headPortraitChangeManagement.headPortraitValue?.path;
     if (beijing != null) {
       bei = beijing.path;
     }
@@ -309,7 +307,7 @@ void PostHttp(String username, String name, String brief, String place,
         jiaru: null);
 
     databaseManager.updatePersonal(fido);
-    postpersonalapi(settingzhanghaoxiugaicontroller.username);
+    postpersonalapi(userNameChangeManagement.userNameValue);
   }
 }
 
@@ -481,19 +479,19 @@ void postpersonalapi(String username) async {
       wode: jsonEncode(personalzhi['wode']));
 
   databaseManager.insertPersonalzhi(fido);
-  placecontroller.riqi(personalzhi['year']!);
-  placecontroller.weizhi(personalzhi['place']!);
-  beicontroller.chushi(bei);
-  headcontroller.chushi(tou);
-  bianpersonalController.namevalue(
+  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(personalzhi['year']!);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(personalzhi['place']!);
+  backgroundImageChangeManagement.initBackgroundImage(bei);
+  headPortraitChangeManagement.initHeadPortrait(tou);
+  editPersonalDataValueManagement.changePersonalInformation(
     personalzhi['name']!,
     personalzhi['brief']!,
     personalzhi['place']!,
     personalzhi['year']!,
   );
 
-  settingzhanghaoxiugaicontroller.xiugaiusername(personalzhi['username']!);
-  bianpersonalController.jiaruvalue(personalzhi['jiaru']!);
+  userNameChangeManagement.userNameChanged(personalzhi['username']!);
+  editPersonalDataValueManagement.applicationDateChange(personalzhi['jiaru']!);
 
   if (zhi['results'] != null) {
     var result = zhi["results"];
@@ -624,19 +622,19 @@ Future<bool> yanzheng(String shoujiyan, String code) async {
         touxiang: tou,
         jiaru: serverData['jiaru']!);
     databaseManager.insertPersonalzhi(fido);
-    placecontroller.riqi(serverData['year']!);
-    placecontroller.weizhi(serverData['place']!);
-    beicontroller.chushi(bei);
-    headcontroller.chushi(tou);
-    bianpersonalController.namevalue(
+    selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(serverData['year']!);
+    selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(serverData['place']!);
+    backgroundImageChangeManagement.initBackgroundImage(bei);
+    headPortraitChangeManagement.initHeadPortrait(tou);
+    editPersonalDataValueManagement.changePersonalInformation(
       serverData['name']!,
       serverData['brief']!,
       serverData['place']!,
       serverData['year']!,
     );
-    settingzhanghaoxiugaicontroller.xiugaiusername(serverData['username']!);
-    bianpersonalController.jiaruvalue(serverData['jiaru']!);
-    postpersonalapi(settingzhanghaoxiugaicontroller.username);
+    userNameChangeManagement.userNameChanged(serverData['username']!);
+    editPersonalDataValueManagement.applicationDateChange(serverData['jiaru']!);
+    postpersonalapi(userNameChangeManagement.userNameValue);
   }
   return zhi;
 }

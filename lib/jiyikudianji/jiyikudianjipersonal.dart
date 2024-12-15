@@ -79,21 +79,32 @@ class JiyikudianjipersonalController extends GetxController {
   }
 }
 
-final settingzhanghaoxiugaicontroller =
-    Get.put(Settingzhanghaoxiugaicontroller());
-final personaljiyikudianjiController =
-    Get.put(PersonaljiyikudianjiController());
+final userNameChangeManagement = Get.put(UserNameChangeManagement());
+final otherPeoplePersonalInformationManagement =
+    Get.put(OtherPeoplePersonalInformationManagement());
 
-class PersonaljiyikudianjiController extends GetxController {
-  static PersonaljiyikudianjiController get to => Get.find();
-  List<Map<String, dynamic>>? xihuanzhi = [];
-  List<Map<String, dynamic>>? laquzhi = [];
-  List<Map<String, dynamic>>? wodezhi = [];
-  List<int> xihuan = [];
-  List<int> shoucang = [];
-  List<int> laqu = [];
-  List<int> tiwen = [];
-  List<int> wo = [];
+// 其他人的个人信息管理
+class OtherPeoplePersonalInformationManagement extends GetxController {
+  static OtherPeoplePersonalInformationManagement get to => Get.find();
+  //其他人喜欢的记忆库
+  List<Map<String, dynamic>>? otherPeopleFavoriteMemoryBank = [];
+
+  //其他人拉取的记忆库
+  List<Map<String, dynamic>>? otherPeoplePulledMemoryBank = [];
+
+  //其他人创建的记忆库
+  List<Map<String, dynamic>>? otherPeopleCreatedMemoryBank = [];
+
+  //用户喜欢的记忆库下标
+  List<int> otherPeopleLikedMemoryBankIndex = [];
+  //用户收藏的记忆库下标
+  List<int> otherPeopleCollectedMemoryBankIndex = [];
+  //用户拉取的记忆库下标
+  List<int> otherPeoplePulledMemoryBankIndex = [];
+  //用户回复的记忆库下标
+  List<int> otherPeopleReplyMemoryBankIndex = [];
+  //用户创建的记忆库下标
+  List<int> otherPeopleCreatedMemoryBankIndex = [];
 
   String indexname = ' ';
   void suoying(int ind) {
@@ -161,7 +172,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
   final jiyikudianjipersonalController =
       Get.put(JiyikudianjipersonalController());
   final jiyukupersonalHeadcontroller = Get.put(JiyukupersonalHeadcontroller());
-  final jiyikudianjicontroller = Get.put(Jiyikudianjicontroller());
+
   ScrollController scrollController = ScrollController();
 
   @override
@@ -384,7 +395,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                         jiyikuBeicontroller.cizhi(
                                             jiyikudianjipersonalController
                                                 .zhi['beijing']);
-                                        handleClick(
+                                        switchPage(
                                             context, const JiyikuPersonalBei());
                                       },
                                       child: jiyikudianjipersonalController
@@ -452,7 +463,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     jiyukupersonalHeadcontroller.cizhi(
                                         jiyikudianjipersonalController
                                             .zhi['touxiang']);
-                                    handleClick(context,
+                                    switchPage(context,
                                         const Jiyikudianjipersonalhead());
                                   },
                                   child: CircleAvatar(
@@ -498,7 +509,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                       jiyukupersonalHeadcontroller.cizhi(
                                           jiyikudianjipersonalController
                                               .zhi['touxiang']);
-                                      handleClick(context,
+                                      switchPage(context,
                                           const Jiyikudianjipersonalhead());
                                     },
                                     child: Container(
@@ -549,11 +560,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   decoration: TextDecoration.none,
                                 ),
                               ),
-                              GetBuilder<Settingzhanghaoxiugaicontroller>(
-                                  init: settingzhanghaoxiugaicontroller,
-                                  builder: (settingcontroller) {
+                              GetBuilder<UserNameChangeManagement>(
+                                  init: userNameChangeManagement,
+                                  builder: (userNameChangeManagement) {
                                     return Text(
-                                      '@${settingcontroller.username}',
+                                      '@${userNameChangeManagement.userNameValue}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
@@ -822,10 +833,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  jiyikudianjicontroller.cizhi(
-                                                      personaljiyikudianjiController
-                                                          .wodezhi![index]);
-                                                  handleClick(context,
+                                                  viewPostDataManagementForMemoryBanks
+                                                      .initTheMemoryDataForThePost(
+                                                          personaljiyikudianjiController
+                                                              .wodezhi![index]);
+                                                  switchPage(context,
                                                       const jiyikudianji());
                                                 },
                                                 child: Padding(
@@ -1037,7 +1049,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinlaqu(
                                                                                 personaljiyikudianjiController.wodezhi?[index]['id'],
@@ -1136,7 +1148,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinshoucang(
                                                                                 personaljiyikudianjiController.wodezhi?[index]['id'],
@@ -1234,7 +1246,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         ),
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinxihuan(
                                                                                 personaljiyikudianjiController.wodezhi?[index]['id'],
@@ -1333,7 +1345,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxintiwen(
                                                                                 personaljiyikudianjiController.wodezhi?[index]['id'],
@@ -1437,10 +1449,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  jiyikudianjicontroller.cizhi(
-                                                      personaljiyikudianjiController
-                                                          .laquzhi![index]);
-                                                  handleClick(context,
+                                                  viewPostDataManagementForMemoryBanks
+                                                      .initTheMemoryDataForThePost(
+                                                          personaljiyikudianjiController
+                                                              .laquzhi![index]);
+                                                  switchPage(context,
                                                       const jiyikudianji());
                                                 },
                                                 child: Padding(
@@ -1652,7 +1665,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinlaqu(
                                                                                 personaljiyikudianjiController.laquzhi?[index]['id'],
@@ -1750,7 +1763,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinshoucang(
                                                                                 personaljiyikudianjiController.laquzhi?[index]['id'],
@@ -1848,7 +1861,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         ),
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinxihuan(
                                                                                 personaljiyikudianjiController.laquzhi?[index]['id'],
@@ -1947,7 +1960,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxintiwen(
                                                                                 personaljiyikudianjiController.laquzhi?[index]['id'],
@@ -2058,10 +2071,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  jiyikudianjicontroller.cizhi(
-                                                      personaljiyikudianjiController
-                                                          .xihuanzhi![index]);
-                                                  handleClick(context,
+                                                  viewPostDataManagementForMemoryBanks
+                                                      .initTheMemoryDataForThePost(
+                                                          personaljiyikudianjiController
+                                                                  .xihuanzhi![
+                                                              index]);
+                                                  switchPage(context,
                                                       const jiyikudianji());
                                                 },
                                                 child: Padding(
@@ -2273,7 +2288,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinlaqu(
                                                                                 personaljiyikudianjiController.xihuanzhi?[index]['id'],
@@ -2371,7 +2386,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinshoucang(
                                                                                 personaljiyikudianjiController.xihuanzhi?[index]['id'],
@@ -2469,7 +2484,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         ),
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinxihuan(
                                                                                 personaljiyikudianjiController.xihuanzhi?[index]['id'],
@@ -2568,7 +2583,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (denglu ==
+                                                                          if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxintiwen(
                                                                                 personaljiyikudianjiController.xihuanzhi?[index]['id'],

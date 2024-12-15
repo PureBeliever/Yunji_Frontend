@@ -196,7 +196,7 @@ class _Jiyiku extends State<Jiyiku> {
                     } else {
                       FocusManager.instance.primaryFocus?.unfocus();
                       jiyikucontroller.cizhi(timu, huida, zhuti!);
-                      handleClick(context, const Yiwang());
+                      switchPage(context, const Yiwang());
                     }
                   }
                 },

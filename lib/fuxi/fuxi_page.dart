@@ -36,39 +36,66 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
   });
 }
 
-class FuxiController extends GetxController {
-  static FuxiController get to => Get.find();
-  Map<String, dynamic> zhi = {};
-  int length = 0;
-  List<int> lengthxiabiao = List.empty();
-  Map<String, dynamic> timu = {};
-  Map<String, dynamic> huida = {};
-  String zhuti = '';
-  List<dynamic> code = [];
-  Map<String, dynamic> cishu = {};
-  bool duanxin = false;
-  bool naozhong = false;
-  bool zhuangtai = false;
-  String fanganming = ' ';
+// 复习数据管理
+class ReviewTheDataManagementOfMemoryBank extends GetxController {
+  static ReviewTheDataManagementOfMemoryBank get to => Get.find();
+
+  // 记忆库数据
+  Map<String, dynamic> memoryBankDataValue = {};
+  
+  // 记忆库数量
+  int numberOfMemories = 0;
+  
+  // 记忆库下标
+  List<int> theIndexValueOfTheMemoryItem = List.empty();
+  
+  // 题目
+  Map<String, dynamic> theNumberOfProblems = {};
+
+  // 答案
+  Map<String, dynamic> theNumberOfAnswers = {};
+
+  // 记忆库标题
+  String theTitleOfTheMemory = '';
+
+  // 记忆库复习方案
+  List<dynamic> memoryScheme = [];
+
+  // 记忆库复习次数
+  Map<String, dynamic> numberOfReviews = {};
+
+  // 消息通知状态
+  bool messageNotificationStatus = false;
+
+  // 闹钟通知状态
+  bool alarmInformationStatus = false;
+
+  // 完成复习状态
+  bool completeReviewStatus = false;
+
+  // 记忆库复习方案名称
+  String memorySchemeName = ' ';
+
+  // 记忆库id
   int id = -1;
 
-  void cizhi(Map<String, dynamic> cizhi) {
-    id = cizhi['id'];
-    zhi = cizhi;
-    zhuti = cizhi['zhuti'];
-    length = cizhi['xiabiao'].length;
-    lengthxiabiao = cizhi['xiabiao'];
-    timu = jsonDecode(cizhi['timu']);
-    huida = jsonDecode(cizhi['huida']);
-    code = jsonDecode(cizhi['code']);
-    cishu = jsonDecode(cizhi['cishu']);
-    duanxin = cizhi['duanxin'] == 1 ? true : false;
-    naozhong = cizhi['naozhong'] == 1 ? true : false;
-    zhuangtai = cizhi['zhuangtai'] == 1 ? true : false;
-    fanganming = cizhi['fanganming'];
+  void initTheMemoryData(Map<String, dynamic> memoryBankData) {
+    id = memoryBankData['id'];
+    memoryBankDataValue = memoryBankData;
+    theTitleOfTheMemory = memoryBankData['zhuti'];
+    numberOfMemories = memoryBankData['xiabiao'].length;
+    theIndexValueOfTheMemoryItem = memoryBankData['xiabiao'];
+    theNumberOfProblems = jsonDecode(memoryBankData['timu']);
+    theNumberOfAnswers = jsonDecode(memoryBankData['huida']);
+    memoryScheme = jsonDecode(memoryBankData['code']);
+    numberOfReviews = jsonDecode(memoryBankData['cishu']);
+    messageNotificationStatus = memoryBankData['duanxin'] == 1 ? true : false;
+    alarmInformationStatus = memoryBankData['naozhong'] == 1 ? true : false;
+    completeReviewStatus = memoryBankData['zhuangtai'] == 1 ? true : false;
+    memorySchemeName = memoryBankData['fanganming'];
   }
 
-  void zhankai() {
+  void refreshExpansionTile() {
     update();
   }
 }
@@ -83,18 +110,20 @@ class FuxiPage extends StatefulWidget {
 class _FuxiPage extends State<FuxiPage> {
   final NotificationHelper _notificationHelper = NotificationHelper();
 
-
   final FocusNode _focusNode = FocusNode();
-  final List<Item> _data = generateItems(fuxiController.length,
-      fuxiController.lengthxiabiao, fuxiController.timu, fuxiController.huida);
-  final _controller = TextEditingController(text: fuxiController.zhuti);
-  String zhuti = fuxiController.zhuti;
-  bool message = fuxiController.duanxin;
-  bool alarm_information = fuxiController.naozhong;
+  final List<Item> _data = generateItems(
+      reviewTheDataManagementOfMemoryBank.numberOfMemories,
+      reviewTheDataManagementOfMemoryBank.theIndexValueOfTheMemoryItem,
+      reviewTheDataManagementOfMemoryBank.theNumberOfProblems,
+      reviewTheDataManagementOfMemoryBank.theNumberOfAnswers);
+  final _controller = TextEditingController(
+      text: reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory);
+  String zhuti = reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory;
+  bool message = reviewTheDataManagementOfMemoryBank.messageNotificationStatus;
+  bool alarm_information =
+      reviewTheDataManagementOfMemoryBank.alarmInformationStatus;
   final jiyikucontroller = Get.put(Jiyikucontroller());
 
-  final settingzhanghaoxiugaicontroller =
-      Get.put(Settingzhanghaoxiugaicontroller());
   @override
   void dispose() {
     _focusNode.dispose();
@@ -249,15 +278,16 @@ class _FuxiPage extends State<FuxiPage> {
                         dragToClose: true);
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
-                    
                     int zhi = 0;
                     Map<int, String> stringTimu = {};
                     Map<int, String> stringHuida = {};
                     DateTime dingshi = DateTime.now();
-                    List<int> code = List.from(fuxiController.code);
-                    code.removeAt(0);
-                    Map<String, String> cishu = fuxiController.cishu
-                        .map((key, value) => MapEntry(key.toString(), value));
+                    List<int> memoryScheme = List.from(
+                        reviewTheDataManagementOfMemoryBank.memoryScheme);
+                    memoryScheme.removeAt(0);
+                    Map<String, String> numberOfReviews =
+                        reviewTheDataManagementOfMemoryBank.numberOfReviews.map(
+                            (key, value) => MapEntry(key.toString(), value));
 
                     List<int> sortedList = [];
 
@@ -271,12 +301,13 @@ class _FuxiPage extends State<FuxiPage> {
                         .map((key, value) => MapEntry(key.toString(), value));
                     Map<String, String> stringhuida = stringHuida
                         .map((key, value) => MapEntry(key.toString(), value));
-            
-                    bool zhuangtai = fuxiController.zhuangtai;
 
-                    if (code.isNotEmpty) {
+                    bool zhuangtai = reviewTheDataManagementOfMemoryBank
+                        .completeReviewStatus;
+
+                    if (memoryScheme.isNotEmpty) {
                       // dingshi = dingshi.add(Duration(hours: code[0]));
-                      dingshi = dingshi.add(Duration(minutes: code[0]));
+                      dingshi = dingshi.add(Duration(minutes: memoryScheme[0]));
                       if (alarm_information == true) {
                         final alarmSettings = AlarmSettings(
                           id: 42,
@@ -306,10 +337,11 @@ class _FuxiPage extends State<FuxiPage> {
                       }
                     } else {
                       zhuangtai = true;
-                      String fanganming = fuxiController.fanganming;
+                      String memorySchemeName =
+                          reviewTheDataManagementOfMemoryBank.memorySchemeName;
                       String? stringci;
-                      for (final entry in cishu.entries) {
-                        if (entry.value == fanganming) {
+                      for (final entry in numberOfReviews.entries) {
+                        if (entry.value == memorySchemeName) {
                           stringci = entry.key;
                           break;
                         }
@@ -317,27 +349,26 @@ class _FuxiPage extends State<FuxiPage> {
                       if (stringci != null) {
                         int ci = int.parse(stringci);
                         int key = ci + 1;
-                        String value = cishu[stringci] ?? ' s';
+                        String value = numberOfReviews[stringci] ?? ' s';
                         Map<String, String> newEntries = {'${key}': value};
-                        cishu.remove(stringci);
-                        cishu.addEntries(newEntries.entries);
+                        numberOfReviews.remove(stringci);
+                        numberOfReviews.addEntries(newEntries.entries);
                       }
                     }
 
                     xiugaijiyiku(
                         stringtimu,
                         stringhuida,
-                        fuxiController.id,
+                        reviewTheDataManagementOfMemoryBank.id,
                         zhuti,
-                        settingzhanghaoxiugaicontroller.username,
-                        code,
+                        memoryScheme,
                         dingshi,
                         sortedList,
                         message,
                         alarm_information,
                         zhuangtai,
-                        cishu,
-                        fuxiController.fanganming);
+                        numberOfReviews,
+                        reviewTheDataManagementOfMemoryBank.memorySchemeName);
                     Navigator.of(context).pop();
                   }
                 },
@@ -349,9 +380,9 @@ class _FuxiPage extends State<FuxiPage> {
         surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: GetBuilder<FuxiController>(
-          init: fuxiController,
-          builder: (jiyikudianjicontroller) {
+      body: GetBuilder<ReviewTheDataManagementOfMemoryBank>(
+          init: reviewTheDataManagementOfMemoryBank,
+          builder: (reviewTheDataManagementOfMemoryBank) {
             return ListView(
               children: [
                 Column(
@@ -459,7 +490,7 @@ class _FuxiPage extends State<FuxiPage> {
                   dividerColor: Colors.white,
                   expansionCallback: (int index, bool isExpanded) {
                     _data[index].isExpanded = isExpanded;
-                    jiyikudianjicontroller.zhankai();
+                    reviewTheDataManagementOfMemoryBank.refreshExpansionTile();
                   },
                   children: _data.map<ExpansionPanel>((Item item) {
                     return ExpansionPanel(
