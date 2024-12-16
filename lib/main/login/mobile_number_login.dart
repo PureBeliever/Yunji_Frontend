@@ -27,7 +27,7 @@ Future<void> handleSuccessfulLogin(String? token, BuildContext context) async {
     shouji(token);
     showToast("右滑可查看个人资料", "右滑可查看个人资料", context);
     showToast("登录成功,欢迎您使用本应用！", "这是一款帮助学习和记忆的应用,希望对您产生帮助", context);
-    await shuaxin();
+    await refreshHomePageMemoryBank();
     _isFirstLoginAttempt = false;
   }
 }

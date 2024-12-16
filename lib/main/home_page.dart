@@ -89,43 +89,52 @@ final reviewTheDataManagementOfMemoryBank = Get.put(ReviewTheDataManagementOfMem
 // 继续学习数据管理
 final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
 
+// 信息列表滚动数据管理
 final informationListScrollDataManagement = Get.put(InformationListScrollDataManagement());
 
 
-
+// 登录状态
 bool loginStatus = false;
+
+// 上下文
 BuildContext? contexts;
 
 void main() async {
   runApp(const MyApp());
   WidgetsFlutterBinding.ensureInitialized();
+  // 请求权限
   await requestPermission();
+  // 初始化闹钟
   await Alarm.init();
+  // 初始化时区
   tz.initializeTimeZones();
+  // 初始化通知
   NotificationHelper notificationHelper = NotificationHelper();
   await notificationHelper.initialize();
+  // 初始化数据库
   await databaseManager.initDatabase();
+  // 初始化主页记忆库
+  List<Map<String, dynamic>>? homePageMemoryDatabaseData = await databaseManager.queryHomePageMemoryBank();
+  // 初始化个人资料
+  Map<String, dynamic>? personalData= await databaseManager.chapersonal();
 
-  List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
-  Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-
-  if (zhi != null) {
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    personaljiyikucontroller.shuaxin(zhi);
-    var shu = zhi;
+  if (homePageMemoryDatabaseData != null && personalData != null) {
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(homePageMemoryDatabaseData);
+    personaljiyikucontroller.shuaxin(personalData);
+    var personalDataValue = personalData;
     loginStatus = true;
-    backgroundImageChangeManagement.initBackgroundImage(shu['beijing']);
-    headPortraitChangeManagement.initHeadPortrait(shu['touxiang']);
+    backgroundImageChangeManagement.initBackgroundImage(personalDataValue['beijing']);
+    headPortraitChangeManagement.initHeadPortrait(personalDataValue['touxiang']);
     selectorResultsUpdateDisplay
-        .dateOfBirthSelectorResultValueChange(shu['year']);
+        .dateOfBirthSelectorResultValueChange(personalDataValue['year']);
     selectorResultsUpdateDisplay
-        .residentialAddressSelectorResultValueChange(shu['place']);
+        .residentialAddressSelectorResultValueChange(personalDataValue['place']);
     editPersonalDataValueManagement.changePersonalInformation(
-        shu['name'], shu['brief'], shu['place'], shu['year']);
-    editPersonalDataValueManagement.applicationDateChange(shu['jiaru']);
-    userNameChangeManagement.userNameChanged(shu['username']);
+        personalDataValue['name'], personalDataValue['brief'], personalDataValue['place'], personalDataValue['year']);
+    editPersonalDataValueManagement.applicationDateChange(personalDataValue['jiaru']);
+    userNameChangeManagement.userNameChanged(personalDataValue['username']);
     postpersonalapi(userNameChangeManagement.userNameValue);
-    await shuaxin();
+    await refreshHomePageMemoryBank();
   } else {
     soginDependencySettings(contexts!);
   }
@@ -156,7 +165,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-Future<void> shuaxin() async {
+// 刷新主页记忆库
+Future<void> refreshHomePageMemoryBank() async {
   await Future.delayed(const Duration(seconds: 1));
 
   Map<String, dynamic> nString = await databaseManager.chaint();
@@ -259,8 +269,8 @@ Future<void> shuaxin() async {
       }
     }
 
-    await databaseManager.insertjiyiku(result);
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
+    await databaseManager.insertHomePageMemoryBank(result);
+    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
 
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
   }
@@ -285,7 +295,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late TabController tabController;
 
   Future<void> _refresh() async {
-    await shuaxin();
+    await refreshHomePageMemoryBank();
   }
 
   String timuzhi(String? timu, var xiabiao) {

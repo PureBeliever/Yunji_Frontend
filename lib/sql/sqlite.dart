@@ -117,7 +117,7 @@ class DatabaseManager {
         await db.execute(
           'CREATE TABLE personaljiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,dingshi char(30),jindu int,shoucang int,laqu int,xihuan int ,tiwen int,duanxin bool,naozhong bool,zhuangtai bool ,cishu JSON,fanganming char(10));',
         );
-        //dingshi类型与后端不一样
+
         await db.execute(
           'CREATE TABLE personaljiyikudianji(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,shoucang int,laqu int,xihuan int ,tiwen int);',
         );
@@ -127,201 +127,218 @@ class DatabaseManager {
     return database;
   }
 
-  Future<void> insertjiyiku(var zhi) async {
+  // 插入记忆库
+  Future<void> insertHomePageMemoryBank(var memoryBankData) async {
     final db = database;
 
-    zhi.forEach((xhi) {
-      xhi['timu'] = jsonEncode(xhi['timu']);
-      xhi['huida'] = jsonEncode(xhi['huida']);
-      xhi['code'] = jsonEncode(xhi['code']);
+    memoryBankData.forEach((memoryBank) {
+      memoryBank['timu'] = jsonEncode(memoryBank['timu']);
+      memoryBank['huida'] = jsonEncode(memoryBank['huida']);
+      memoryBank['code'] = jsonEncode(memoryBank['code']);
 
       db?.insert(
         'jiyiku',
-        xhi,
+        memoryBank,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     });
   }
 
-  Future<void> insertpersonaljiyikudianji(var zhi) async {
+  // 插入其他人的个人记忆库
+  Future<void> insertOtherPeoplePersonalMemoryBank(var memoryBankData) async {
     final db = database;
 
-    zhi.forEach((xhi) {
-      xhi['timu'] = jsonEncode(xhi['timu']);
-      xhi['huida'] = jsonEncode(xhi['huida']);
-      xhi['code'] = jsonEncode(xhi['code']);
+    memoryBankData.forEach((memoryBank) {
+      memoryBank['timu'] = jsonEncode(memoryBank['timu']);
+      memoryBank['huida'] = jsonEncode(memoryBank['huida']);
+      memoryBank['code'] = jsonEncode(memoryBank['code']);
 
-      db?.insert('personaljiyikudianji', xhi,
+      db?.insert('personaljiyikudianji', memoryBank,
           conflictAlgorithm: ConflictAlgorithm.replace);
     });
   }
 
-  Future<void> insertpersonaljiyiku(var zhi) async {
+  // 插入用户个人记忆库
+  Future<void> insertUserPersonalMemoryBank(var memoryBankData) async {
     final db = database;
 
-    zhi.forEach((xhi) {
-      xhi['timu'] = jsonEncode(xhi['timu']);
-      xhi['huida'] = jsonEncode(xhi['huida']);
-      xhi['cishu'] = jsonEncode(xhi['cishu']);
-      xhi['code'] = jsonEncode(xhi['code']);
+    memoryBankData.forEach((memoryBank) {
+      memoryBank['timu'] = jsonEncode(memoryBank['timu']);
+      memoryBank['huida'] = jsonEncode(memoryBank['huida']);
+      memoryBank['cishu'] = jsonEncode(memoryBank['cishu']);
+      memoryBank['code'] = jsonEncode(memoryBank['code']);
 
-      db?.insert('personaljiyiku', xhi,
+      db?.insert('personaljiyiku', memoryBank,
           conflictAlgorithm: ConflictAlgorithm.replace);
     });
   }
 
-  Future<List<Map<String, dynamic>>> chaxundianji(List<int> ids) async {
+  // 查询其他人的个人记忆库
+  Future<List<Map<String, dynamic>>> queryOtherPeoplePersonalMemoryBank(
+      List<int> ids) async {
     final db = database;
+    //mysql查询语句
+    String mysqlQueryStatement = ' id IN (${ids.map((id) => '?').join(',')})';
 
-    String whereClause = ' id IN (${ids.map((id) => '?').join(',')})';
-
-    List<dynamic> whereArgs = ids.reversed.toList();
-    final List<Map<String, dynamic>> jiyiku = await db!.query(
+    List<dynamic> idList = ids.reversed.toList();
+    final List<Map<String, dynamic>> memoryBank = await db!.query(
       'personaljiyikudianji',
-      where: whereClause,
-      whereArgs: whereArgs,
+      where: mysqlQueryStatement,
+      whereArgs: idList,
     );
-    final List<Map<String, dynamic>> sortedResults =
-        whereArgs.map((id) => jiyiku.firstWhere((row) => row['id'] == id)).toList();
+    //根据id排序
+    final List<Map<String, dynamic>> sortedResults = idList
+        .map((id) => memoryBank.firstWhere((row) => row['id'] == id))
+        .toList();
 
     return sortedResults;
   }
 
-  Future<List<Map<String, dynamic>>> chaxun(List<int> ids) async {
+  // 查询用户个人记忆库
+  Future<List<Map<String, dynamic>>> queryUserPersonalMemoryBank(
+      List<int> ids) async {
     final db = database;
 
-    String whereClause = ' id IN (${ids.map((id) => '?').join(',')})';
+    String mysqlQueryStatement = ' id IN (${ids.map((id) => '?').join(',')})';
 
-    List<dynamic> whereArgs = ids.reversed.toList();
-    final List<Map<String, dynamic>> jiyiku = await db!.query(
+    List<dynamic> idList = ids.reversed.toList();
+    final List<Map<String, dynamic>> memoryBank = await db!.query(
       'personaljiyiku',
-      where: whereClause,
-      whereArgs: whereArgs,
+      where: mysqlQueryStatement,
+      whereArgs: idList,
     );
-    final List<Map<String, dynamic>> sortedResults =
-        whereArgs.map((id) => jiyiku.firstWhere((row) => row['id'] == id)).toList();
+    //根据id排序
+    final List<Map<String, dynamic>> sortedResults = idList
+        .map((id) => memoryBank.firstWhere((row) => row['id'] == id))
+        .toList();
 
     return sortedResults;
   }
 
-  Future<List<Map<String, dynamic>>> chajiyiku() async {
+  // 查询主页记忆库
+  Future<List<Map<String, dynamic>>> queryHomePageMemoryBank() async {
     final db = database;
 
-    final List<Map<String, dynamic>> jiyiku = await db!.query(
+    final List<Map<String, dynamic>> memoryBank = await db!.query(
       'jiyiku',
       orderBy: 'NULL',
     );
-    return jiyiku;
+    return memoryBank;
   }
 
-  Future<void> updatepersonalxihuan(String username, String xihuan, int id,
-      int xihuanlength, Map<String, dynamic> zhi) async {
+//更新记忆库被喜欢的数量
+  Future<void> updateMemoryBankLikes(String username, String likes, int id,
+      int likeslength, Map<String, dynamic> memoryBank) async {
     final db = database;
 
     await db?.execute(
       'UPDATE personal SET xihuan=? WHERE username= ?',
-      [xihuan, username],
+      [likes, username],
     );
     db?.insert(
       'personaljiyiku',
-      zhi,
+      memoryBank,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     await db?.execute(
       'UPDATE jiyiku SET xihuan=? WHERE id= ?',
-      [xihuanlength, id],
+      [likeslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyiku SET xihuan=? WHERE id= ?',
-      [xihuanlength, id],
+      [likeslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyikudianji SET xihuan=? WHERE id= ?',
-      [xihuanlength, id],
+      [likeslength, id],
     );
   }
 
-  Future<void> updatepersonalshoucang(String username, String shoucang, int id,
-      int shoucanglength, Map<String, dynamic> zhi) async {
+//更新记忆库被收藏的数量
+  Future<void> updateMemoryBankCollects(String username, String collects,
+      int id, int collectslength, Map<String, dynamic> memoryBank) async {
     final db = database;
 
     await db?.execute(
       'UPDATE personal SET shoucang=? WHERE username= ?',
-      [shoucang, username],
+      [collects, username],
     );
     db?.insert(
       'personaljiyiku',
-      zhi,
+      memoryBank,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     await db?.execute(
       'UPDATE jiyiku SET shoucang=? WHERE id= ?',
-      [shoucanglength, id],
+      [collectslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyiku SET shoucang=? WHERE id= ?',
-      [shoucanglength, id],
+      [collectslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyikudianji SET shoucang=? WHERE id= ?',
-      [shoucanglength, id],
+      [collectslength, id],
     );
   }
 
-  Future<void> updatepersonallaqu(String username, String laqu, int id,
-      int laqulength, Map<String, dynamic> zhi) async {
+//更新记忆库被拉取的数量
+  Future<void> updateMemoryBankLags(String username, String lags, int id,
+      int lagslength, Map<String, dynamic> memoryBank) async {
     final db = database;
 
     await db?.execute(
       'UPDATE personal SET laqu=? WHERE username= ?',
-      [laqu, username],
+      [lags, username],
     );
     db?.insert(
       'personaljiyiku',
-      zhi,
+      memoryBank,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     await db?.execute(
       'UPDATE jiyiku SET laqu=? WHERE id= ?',
-      [laqulength, id],
+      [lagslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyiku SET laqu=? WHERE id= ?',
-      [laqulength, id],
+      [lagslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyikudianji SET laqu=? WHERE id= ?',
-      [laqulength, id],
+      [lagslength, id],
     );
   }
 
-  Future<void> updatepersonaltiwen(String username, String tiwen, int id,
-      int tiwenlength, Map<String, dynamic> zhi) async {
+//更新记忆库被提问的数量
+  Future<void> updateMemoryBankQuestions(String username, String questions,
+      int id, int questionslength, Map<String, dynamic> memoryBank) async {
     final db = database;
 
     await db?.execute(
       'UPDATE personal SET tiwen=? WHERE username= ?',
-      [tiwen, username],
+      [questions, username],
     );
     db?.insert(
       'personaljiyiku',
-      zhi,
+      memoryBank,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     await db?.execute(
       'UPDATE jiyiku SET tiwen=? WHERE id= ?',
-      [tiwenlength, id],
+      [questionslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyiku SET tiwen=? WHERE id= ?',
-      [tiwenlength, id],
+      [questionslength, id],
     );
     await db?.execute(
       'UPDATE personaljiyikudianji SET tiwen=? WHERE id= ?',
-      [tiwenlength, id],
+      [questionslength, id],
     );
   }
 
+//查询已经显示记忆库的id和数量
   Future<Map<String, dynamic>> chaint() async {
     final db = database;
 
@@ -330,6 +347,7 @@ class DatabaseManager {
 
     return personalMaps[0];
   }
+
 
   Future<void> updateint(String zhi, int length) async {
     final db = database;
@@ -341,6 +359,7 @@ class DatabaseManager {
       whereArgs: [0],
     );
   }
+
 
   Future<void> insertPersonalzhi(Personaljie personal) async {
     final db = database;

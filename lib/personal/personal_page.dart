@@ -106,6 +106,7 @@ class MemoryBankCompletionStatus extends GetxController {
 
     int displaysTheNumberOfValues = theWidgetDisplaysTheValue.length;
     List<String> statusRecord = [];
+
     theWidgetDisplaysTheValue.forEach(
       (key, value) {
         if (key != '方案1') {
@@ -233,7 +234,7 @@ class PersonaljiyikuController extends GetxController {
     if (zhi['xihuan'] != null) {
       var xihuancast = zhi['xihuan'].cast<int>();
       xihuan = xihuancast;
-      xihuanzhi = await databaseManager.chaxun(xihuancast);
+      xihuanzhi = await databaseManager.queryUserPersonalMemoryBank(xihuancast);
     }
 
     if (zhi['shoucang'] != null) {
@@ -244,7 +245,7 @@ class PersonaljiyikuController extends GetxController {
     if (zhi['laqu'] != null) {
       var laqucast = zhi['laqu'].cast<int>();
       laqu = laqucast;
-      laquzhi = await databaseManager.chaxun(laqucast);
+      laquzhi = await databaseManager.queryUserPersonalMemoryBank(laqucast);
     }
 
     if (zhi['tiwen'] != null) {
@@ -256,7 +257,7 @@ class PersonaljiyikuController extends GetxController {
       var wodecast = zhi['wode'].cast<int>();
       indexname = '${wodecast.length}个';
       wo = wodecast;
-      wodezhi = await databaseManager.chaxun(wodecast);
+      wodezhi = await databaseManager.queryUserPersonalMemoryBank(wodecast);
     }
     update();
   }
@@ -272,7 +273,7 @@ class PersonaljiyikuController extends GetxController {
     if (xihuanjson != null) {
       var xihuancast = xihuanjson.cast<int>();
       xihuan = xihuancast;
-      xihuanzhi = await databaseManager.chaxun(xihuancast);
+      xihuanzhi = await databaseManager.queryUserPersonalMemoryBank(xihuancast);
     }
 
     if (shoucangjson != null) {
@@ -283,7 +284,7 @@ class PersonaljiyikuController extends GetxController {
     if (laqujson != null) {
       var laqucast = laqujson.cast<int>();
       laqu = laqucast;
-      laquzhi = await databaseManager.chaxun(laqucast);
+      laquzhi = await databaseManager.queryUserPersonalMemoryBank(laqucast);
     }
 
     if (tiwenjson != null) {
@@ -294,7 +295,7 @@ class PersonaljiyikuController extends GetxController {
     if (wodejson != null) {
       var wodecast = wodejson.cast<int>();
       wo = wodecast;
-      wodezhi = await databaseManager.chaxun(wodecast);
+      wodezhi = await databaseManager.queryUserPersonalMemoryBank(wodecast);
     }
     update();
   }
@@ -311,7 +312,7 @@ class PersonaljiyikuController extends GetxController {
     xihuanapi(userNameChangeManagement.userNameValue, jsonEncode(xihuan), id,
         shuzhi);
 
-    await databaseManager.updatepersonalxihuan(
+    await databaseManager.updateMemoryBankLikes(
         userNameChangeManagement.userNameValue,
         jsonEncode(xihuan),
         id,
@@ -319,7 +320,7 @@ class PersonaljiyikuController extends GetxController {
         xizhi);
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
+    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
@@ -337,7 +338,7 @@ class PersonaljiyikuController extends GetxController {
     shoucangapi(userNameChangeManagement.userNameValue, jsonEncode(shoucang),
         id, shuzhi);
 
-    await databaseManager.updatepersonalshoucang(
+    await databaseManager.updateMemoryBankCollects(
         userNameChangeManagement.userNameValue,
         jsonEncode(shoucang),
         id,
@@ -345,7 +346,7 @@ class PersonaljiyikuController extends GetxController {
         xizhi);
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
+    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
@@ -362,7 +363,7 @@ class PersonaljiyikuController extends GetxController {
     laquapi(
         userNameChangeManagement.userNameValue, jsonEncode(laqu), id, shuzhi);
 
-    await databaseManager.updatepersonallaqu(
+    await databaseManager.updateMemoryBankLags(
         userNameChangeManagement.userNameValue,
         jsonEncode(laqu),
         id,
@@ -370,7 +371,7 @@ class PersonaljiyikuController extends GetxController {
         xizhi);
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
+    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
@@ -388,7 +389,7 @@ class PersonaljiyikuController extends GetxController {
     tiwenapi(userNameChangeManagement.userNameValue, jsonEncode(tiwen), id,
         shuzhi);
 
-    await databaseManager.updatepersonaltiwen(
+    await databaseManager.updateMemoryBankQuestions(
         userNameChangeManagement.userNameValue,
         jsonEncode(tiwen),
         id,
@@ -396,7 +397,7 @@ class PersonaljiyikuController extends GetxController {
         xizhi);
 
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
+    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
     otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);

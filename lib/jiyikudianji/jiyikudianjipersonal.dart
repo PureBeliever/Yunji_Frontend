@@ -157,13 +157,13 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
 //读取用户数据库个人信息刷新数据
   void readDatabaseRefreshData() async {
     otherPeopleLikedMemoryBank =
-        await databaseManager.chaxundianji(otherPeopleLikedMemoryBankIndex);
+        await databaseManager.queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndex);
 
     otherPeoplePulledMemoryBank =
-        await databaseManager.chaxundianji(otherPeoplePulledMemoryBankIndex);
+        await databaseManager.queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndex);
 
     otherPeopleCreatedMemoryBank =
-        await databaseManager.chaxundianji(otherPeopleCreatedMemoryBankIndex);
+        await databaseManager.queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndex);
 
     update();
   }
@@ -176,7 +176,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
           otherPeoplePersonalInformationData['xihuan'].cast<int>();
       otherPeopleLikedMemoryBankIndex = otherPeopleLikedMemoryBankIndexint;
       otherPeopleLikedMemoryBank = await databaseManager
-          .chaxundianji(otherPeopleLikedMemoryBankIndexint);
+          .queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndexint);
     }
 
     if (otherPeoplePersonalInformationData['shoucang'] != null) {
@@ -191,7 +191,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
           otherPeoplePersonalInformationData['laqu'].cast<int>();
       otherPeoplePulledMemoryBankIndex = otherPeoplePulledMemoryBankIndexint;
       otherPeoplePulledMemoryBank = await databaseManager
-          .chaxundianji(otherPeoplePulledMemoryBankIndexint);
+            .queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndexint);
     }
 
     if (otherPeoplePersonalInformationData['tiwen'] != null) {
@@ -205,7 +205,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
           otherPeoplePersonalInformationData['wode'].cast<int>();
       otherPeopleCreatedMemoryBankIndex = otherPeopleCreatedMemoryBankIndexint;
       otherPeopleCreatedMemoryBank = await databaseManager
-          .chaxundianji(otherPeopleCreatedMemoryBankIndexint);
+            .queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndexint);
     }
     update();
   }

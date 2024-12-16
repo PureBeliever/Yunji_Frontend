@@ -423,7 +423,7 @@ void jiyikupostpersonalapi(String username) async {
       }
     }
 
-    await databaseManager.insertpersonaljiyikudianji(result);
+    await databaseManager.insertOtherPeoplePersonalMemoryBank(result);
 
     otherPeoplePersonalInformationManagement.requestOtherPeoplePersonalInformationDataOnTheBackEnd(personalzhi);
   }
@@ -522,7 +522,7 @@ void postpersonalapi(String username) async {
       }
     }
 
-    await databaseManager.insertpersonaljiyiku(result);
+    await databaseManager.insertUserPersonalMemoryBank(result);
     personaljiyikucontroller.apiqingqiu(personalzhi);
   }
 }
