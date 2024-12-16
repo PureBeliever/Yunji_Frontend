@@ -87,8 +87,8 @@ class _jiyikudianjiState extends State<jiyikudianji> {
       viewPostDataManagementForMemoryBanks.theNumberOfProblems,
       viewPostDataManagementForMemoryBanks.theNumberOfAnswers);
   final personaljiyikucontroller = Get.put(PersonaljiyikuController());
-  final jiyikudianjipersonalController =
-      Get.put(JiyikudianjipersonalController());
+  final informationListScrollDataManagement =
+      Get.put(InformationListScrollDataManagement());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,10 +112,10 @@ class _jiyikudianjiState extends State<jiyikudianji> {
           children: [
             InkWell(
               onTap: () {
-                jiyikudianjipersonalController
-                    .cizhi(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
+                informationListScrollDataManagement
+                    .initialScrollData(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
                 jiyikupostpersonalapi(
-                    jiyikudianjipersonalController.zhi['username']);
+                    informationListScrollDataManagement.scrollDataValue['username']);
                 switchPage(context, const Jiyikudianjipersonal());
               },
               child: Padding(

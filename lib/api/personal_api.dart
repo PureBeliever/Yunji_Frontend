@@ -25,8 +25,8 @@ final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement(
 final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
 final userNameChangeManagement = Get.put(UserNameChangeManagement());
 final personaljiyikucontroller = Get.put(PersonaljiyikuController());
-final personaljiyikudianjiController =
-    Get.put(PersonaljiyikudianjiController());
+final otherPeoplePersonalInformationManagement =
+    Get.put(OtherPeoplePersonalInformationManagement());
 
 void xiuzhanghao(String xinusername, String username) async {
   Map<String, String> header = {
@@ -425,7 +425,7 @@ void jiyikupostpersonalapi(String username) async {
 
     await databaseManager.insertpersonaljiyikudianji(result);
 
-    personaljiyikudianjiController.apiqingqiu(personalzhi);
+    otherPeoplePersonalInformationManagement.requestOtherPeoplePersonalInformationDataOnTheBackEnd(personalzhi);
   }
 }
 

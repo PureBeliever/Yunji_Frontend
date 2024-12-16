@@ -92,6 +92,7 @@ class MemoryBankCompletionStatus extends GetxController {
 
   Widget memoryLibraryStatusDisplayWidget(
       Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
+        
     var setTimeValueDynamic = widgetsDisplayValues['dingshi'];
     DateTime setTimeValueDateTime = DateTime.parse(setTimeValueDynamic);
     DateTime presentTimeDateTime = DateTime.now();
@@ -320,7 +321,7 @@ class PersonaljiyikuController extends GetxController {
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    personaljiyikudianjiController.shuaxin();
+    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
   }
 
@@ -346,7 +347,7 @@ class PersonaljiyikuController extends GetxController {
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    personaljiyikudianjiController.shuaxin();
+    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
   }
 
@@ -371,7 +372,7 @@ class PersonaljiyikuController extends GetxController {
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    personaljiyikudianjiController.shuaxin();
+    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
   }
 
@@ -397,7 +398,7 @@ class PersonaljiyikuController extends GetxController {
     Map<String, dynamic>? zhi = await databaseManager.chapersonal();
     List<Map<String, dynamic>>? mainzhi = await databaseManager.chajiyiku();
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    personaljiyikudianjiController.shuaxin();
+    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
     personaljiyikucontroller.shuaxin(zhi);
   }
 

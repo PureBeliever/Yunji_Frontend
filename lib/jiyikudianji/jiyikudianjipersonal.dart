@@ -27,54 +27,75 @@ class Jiyikudianjipersonal extends StatefulWidget {
   State<Jiyikudianjipersonal> createState() => _JiyikudianjipersonalPageState();
 }
 
-class JiyikudianjipersonalController extends GetxController {
-  static JiyikudianjipersonalController get to => Get.find();
-
-  bool beijing = false;
+//信息列表滚动数据管理
+class InformationListScrollDataManagement extends GetxController {
+  static InformationListScrollDataManagement get to => Get.find();
+//背景状态
+  bool backgroundState = false;
+  //模糊度
   double filter = 0.0;
-  double shadowtitle = 0.0;
-  String indexname = '记忆库';
-  Map<String, dynamic> zhi = {};
 
-  void cizhi(Map<String, dynamic> cizhi) {
-    zhi = cizhi;
+  //透明度
+  double opacity = 0.0;
+  //显示文本
+  String displayText = '记忆库';
+  //滚动数据
+  Map<String, dynamic> scrollDataValue = {};
+
+//初始化滚动数据
+  void initialScrollData(Map<String, dynamic> scrollData) {
+    scrollDataValue = scrollData;
   }
 
-  void suoying(int ind) {
-    String ji = ind == 0 ? '记忆库' : '';
-    String wen = ind == 1 ? '拉取' : '';
-    String hui = ind == 2 ? '回复' : '';
-    String xi = ind == 3 ? '喜欢' : '';
-    indexname = ji + wen + hui + xi;
+//计算显示的列表名
+  void calculateTheListName(int ind) {
+    //其他人创建的记忆库列表名
+    String createdMemoryBankListName = ind == 0 ? '记忆库' : '';
+    //其他人拉取的记忆库列表名
+    String pulledMemoryBankListName = ind == 1 ? '拉取' : '';
+    //其他人回复的记忆库列表名
+    String replyMemoryBankListName = ind == 2 ? '回复' : '';
+    //其他人喜欢的记忆库列表名
+    String likedMemoryBankListName = ind == 3 ? '喜欢' : '';
+    //计算显示的列表名
+    displayText = createdMemoryBankListName +
+        pulledMemoryBankListName +
+        replyMemoryBankListName +
+        likedMemoryBankListName;
     update();
   }
 
-  void kong() {
-    beijing = false;
+//退出页面时清空数据
+  void clearData() {
+    backgroundState = false;
     filter = 0.0;
-    shadowtitle = 0.0;
-    indexname = '记忆库';
+    opacity = 0.0;
+    displayText = '记忆库';
   }
 
-  void onebeijing() {
+//设置滚动变化时的背景颜色
+  void setBackgroundColortrue() {
     filter = 3;
-    beijing = true;
+    backgroundState = true;
     update();
   }
 
-  void onenobeijing() {
+//设置滚动变化时的背景颜色
+  void setBackgroundColorfalse() {
     filter = 0;
-    beijing = false;
+    backgroundState = false;
     update();
   }
 
-  void onetitle() {
-    shadowtitle = 1;
+//设置透明度显示文本
+  void setTransparencyToDisplayText() {
+    opacity = 1;
     update();
   }
 
-  void onenotitle() {
-    shadowtitle = 0;
+//设置透明度隐藏文本
+  void setTransparencyToHideText() {
+    opacity = 0;
     update();
   }
 }
@@ -86,8 +107,9 @@ final otherPeoplePersonalInformationManagement =
 // 其他人的个人信息管理
 class OtherPeoplePersonalInformationManagement extends GetxController {
   static OtherPeoplePersonalInformationManagement get to => Get.find();
+
   //其他人喜欢的记忆库
-  List<Map<String, dynamic>>? otherPeopleFavoriteMemoryBank = [];
+  List<Map<String, dynamic>>? otherPeopleLikedMemoryBank = [];
 
   //其他人拉取的记忆库
   List<Map<String, dynamic>>? otherPeoplePulledMemoryBank = [];
@@ -105,62 +127,92 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
   List<int> otherPeopleReplyMemoryBankIndex = [];
   //用户创建的记忆库下标
   List<int> otherPeopleCreatedMemoryBankIndex = [];
-
-  String indexname = ' ';
-  void suoying(int ind) {
-    String ji = ind == 0 ? '${wo.length}个' : '';
-    String wen = ind == 1 ? '${laqu.length}个' : '';
-    String hui = ind == 2 ? '' : '';
-    String xi = ind == 3 ? '${xihuan.length}个' : '';
-    indexname = ji + wen + hui + xi;
+//显示文本
+  String displayText = ' ';
+//计算每个页面的记忆库数量
+  void calculateTheNumberOfMemoryBanksPerPage(int currentPageSubscript) {
+    //创建的记忆库数量String类型
+    String otherPeopleCollectedMemoryBankIndexString = currentPageSubscript == 0
+        ? '${otherPeopleCreatedMemoryBankIndex!.length}个'
+        : '';
+    //拉取的记忆库数量String类型
+    String otherPeoplePulledMemoryBankIndexString = currentPageSubscript == 1
+        ? '${otherPeoplePulledMemoryBankIndex!.length}个'
+        : '';
+    //回复的记忆库数量String类型
+    String otherPeopleReplyMemoryBankIndexString = currentPageSubscript == 2
+        ? '${otherPeopleReplyMemoryBankIndex!.length}个'
+        : '';
+    //喜欢的记忆库数量String类型
+    String otherPeopleLikedMemoryBankIndexString = currentPageSubscript == 3
+        ? '${otherPeopleLikedMemoryBankIndex!.length}个'
+        : '';
+    displayText = otherPeopleCollectedMemoryBankIndexString +
+        otherPeoplePulledMemoryBankIndexString +
+        otherPeopleReplyMemoryBankIndexString +
+        otherPeopleLikedMemoryBankIndexString;
     update();
   }
 
-  void shuaxin() async {
-    xihuanzhi = await databaseManager.chaxundianji(xihuan);
+//读取用户数据库个人信息刷新数据
+  void readDatabaseRefreshData() async {
+    otherPeopleLikedMemoryBank =
+        await databaseManager.chaxundianji(otherPeopleLikedMemoryBankIndex);
 
-    laquzhi = await databaseManager.chaxundianji(laqu);
+    otherPeoplePulledMemoryBank =
+        await databaseManager.chaxundianji(otherPeoplePulledMemoryBankIndex);
 
-    wodezhi = await databaseManager.chaxundianji(wo);
+    otherPeopleCreatedMemoryBank =
+        await databaseManager.chaxundianji(otherPeopleCreatedMemoryBankIndex);
 
     update();
   }
 
-  void apiqingqiu(Map<String, dynamic> zhi) async {
-    if (zhi['xihuan'] != null) {
-      var xihuancast = zhi['xihuan'].cast<int>();
-      xihuan = xihuancast;
-      xihuanzhi = await databaseManager.chaxundianji(xihuancast);
+//请求后端其他人的个人信息数据
+  void requestOtherPeoplePersonalInformationDataOnTheBackEnd(
+      Map<String, dynamic> otherPeoplePersonalInformationData) async {
+    if (otherPeoplePersonalInformationData['xihuan'] != null) {
+      var otherPeopleLikedMemoryBankIndexint =
+          otherPeoplePersonalInformationData['xihuan'].cast<int>();
+      otherPeopleLikedMemoryBankIndex = otherPeopleLikedMemoryBankIndexint;
+      otherPeopleLikedMemoryBank = await databaseManager
+          .chaxundianji(otherPeopleLikedMemoryBankIndexint);
     }
 
-    if (zhi['shoucang'] != null) {
-      var shoucangcast = zhi['shoucang'].cast<int>();
-      shoucang = shoucangcast;
+    if (otherPeoplePersonalInformationData['shoucang'] != null) {
+      var otherPeopleCollectedMemoryBankIndexint =
+          otherPeoplePersonalInformationData['shoucang'].cast<int>();
+      otherPeopleCollectedMemoryBankIndex =
+          otherPeopleCollectedMemoryBankIndexint;
     }
 
-    if (zhi['laqu'] != null) {
-      var laqucast = zhi['laqu'].cast<int>();
-      laqu = laqucast;
-      laquzhi = await databaseManager.chaxundianji(laqucast);
+    if (otherPeoplePersonalInformationData['laqu'] != null) {
+      var otherPeoplePulledMemoryBankIndexint =
+          otherPeoplePersonalInformationData['laqu'].cast<int>();
+      otherPeoplePulledMemoryBankIndex = otherPeoplePulledMemoryBankIndexint;
+      otherPeoplePulledMemoryBank = await databaseManager
+          .chaxundianji(otherPeoplePulledMemoryBankIndexint);
     }
 
-    if (zhi['tiwen'] != null) {
-      var tiwencast = zhi['tiwen'].cast<int>();
-      tiwen = tiwencast;
+    if (otherPeoplePersonalInformationData['tiwen'] != null) {
+      var otherPeopleReplyMemoryBankIndexint =
+          otherPeoplePersonalInformationData['tiwen'].cast<int>();
+      otherPeopleReplyMemoryBankIndex = otherPeopleReplyMemoryBankIndexint;
     }
 
-    if (zhi['wode'] != null) {
-      var wodecast = zhi['wode'].cast<int>();
-      indexname = '${wodecast.length}个';
-      wo = wodecast;
-      wodezhi = await databaseManager.chaxundianji(wodecast);
+    if (otherPeoplePersonalInformationData['wode'] != null) {
+      var otherPeopleCreatedMemoryBankIndexint =
+          otherPeoplePersonalInformationData['wode'].cast<int>();
+      otherPeopleCreatedMemoryBankIndex = otherPeopleCreatedMemoryBankIndexint;
+      otherPeopleCreatedMemoryBank = await databaseManager
+          .chaxundianji(otherPeopleCreatedMemoryBankIndexint);
     }
     update();
   }
 
-  void shuxinjiemian() {
-    update();
-  }
+  // void shuxinjiemian() {
+  //   update();
+  // }
 }
 
 class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
@@ -169,15 +221,15 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
   final refreshofHomepageMemoryBankextends =
       Get.put(RefreshofHomepageMemoryBankextends());
   final jiyikuBeicontroller = Get.put(JiyikuBeicontroller());
-  final jiyikudianjipersonalController =
-      Get.put(JiyikudianjipersonalController());
+  final informationListScrollDataManagement =
+      Get.put(InformationListScrollDataManagement());
   final jiyukupersonalHeadcontroller = Get.put(JiyukupersonalHeadcontroller());
 
   ScrollController scrollController = ScrollController();
 
   @override
   void dispose() {
-    jiyikudianjipersonalController.kong();
+    informationListScrollDataManagement.clearData();
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
@@ -193,21 +245,22 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     )..addListener(() {
-        jiyikudianjipersonalController.suoying(tabController.index);
-        personaljiyikudianjiController.suoying(tabController.index);
+        informationListScrollDataManagement.calculateTheListName(tabController.index);
+        otherPeoplePersonalInformationManagement
+            .calculateTheNumberOfMemoryBanksPerPage(tabController.index);
       });
     tabController.animateTo(0);
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           scrollController.addListener(() {
             if (scrollController.offset >= 160) {
-              jiyikudianjipersonalController.onebeijing();
+              informationListScrollDataManagement.setBackgroundColortrue();
             } else if (scrollController.offset < 160) {
-              jiyikudianjipersonalController.onenobeijing();
+              informationListScrollDataManagement.setBackgroundColorfalse();
             }
             if (scrollController.offset >= 235) {
-              jiyikudianjipersonalController.onetitle();
+              informationListScrollDataManagement.setTransparencyToDisplayText();
             } else if (scrollController.offset < 235) {
-              jiyikudianjipersonalController.onenotitle();
+              informationListScrollDataManagement.setTransparencyToHideText();
             }
           });
         }));
@@ -215,7 +268,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-    jiyikupostpersonalapi(jiyikudianjipersonalController.zhi['username']);
+    jiyikupostpersonalapi(informationListScrollDataManagement.scrollDataValue['username']);
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -285,27 +338,31 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                   SliverAppBar(
                     title: Padding(
                       padding: const EdgeInsets.only(left: 48.0),
-                      child: GetBuilder<JiyikudianjipersonalController>(
-                          init: jiyikudianjipersonalController,
-                          builder: (controller) {
+                      child: GetBuilder<InformationListScrollDataManagement>(
+                          init: informationListScrollDataManagement,
+                          builder: (informationListScrollDataManagement) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  jiyikudianjipersonalController.zhi['name'],
+                                  informationListScrollDataManagement.scrollDataValue['name'],
                                   style: TextStyle(
-                                    color: Colors.white
-                                        .withOpacity(controller.shadowtitle),
+                                    color: Colors.white.withOpacity(
+                                        informationListScrollDataManagement
+                                            .opacity),
                                     fontSize: 21,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
                                 Text(
-                                  personaljiyikudianjiController.indexname +
-                                      controller.indexname,
+                                  otherPeoplePersonalInformationManagement
+                                          .displayText +
+                                      informationListScrollDataManagement
+                                          .displayText,
                                   style: TextStyle(
-                                    color: Colors.white
-                                        .withOpacity(controller.shadowtitle),
+                                    color: Colors.white.withOpacity(
+                                        informationListScrollDataManagement
+                                            .opacity),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -384,27 +441,31 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                           alignment: Alignment.center,
                           children: <Widget>[
                             Positioned.fill(
-                              child: GetBuilder<JiyikudianjipersonalController>(
-                                init: jiyikudianjipersonalController,
-                                builder: (controller) {
+                              child: GetBuilder<
+                                  InformationListScrollDataManagement>(
+                                init: informationListScrollDataManagement,
+                                builder: (informationListScrollDataManagement) {
                                   return ImageFiltered(
                                     imageFilter: ImageFilter.blur(
-                                        sigmaX: controller.filter, sigmaY: 0),
+                                        sigmaX:
+                                            informationListScrollDataManagement
+                                                .filter,
+                                        sigmaY: 0),
                                     child: GestureDetector(
                                       onTap: () {
                                         jiyikuBeicontroller.cizhi(
-                                            jiyikudianjipersonalController
-                                                .zhi['beijing']);
+                                            informationListScrollDataManagement
+                                                .scrollDataValue['beijing']);
                                         switchPage(
                                             context, const JiyikuPersonalBei());
                                       },
-                                      child: jiyikudianjipersonalController
-                                                  .zhi['beijing'] !=
+                                      child: informationListScrollDataManagement
+                                                  .scrollDataValue['beijing'] !=
                                               null
                                           ? Image.file(
                                               File(
-                                                  jiyikudianjipersonalController
-                                                      .zhi['beijing']),
+                                                  informationListScrollDataManagement
+                                                      .scrollDataValue['beijing']),
                                               fit: BoxFit.cover,
                                             )
                                           : Image.asset(
@@ -421,23 +482,25 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                               top: 0,
                               left: 0,
                               right: 0,
-                              child: GetBuilder<JiyikudianjipersonalController>(
-                                init: jiyikudianjipersonalController,
-                                builder: (controller) {
+                              child: GetBuilder<
+                                  InformationListScrollDataManagement>(
+                                init: informationListScrollDataManagement,
+                                builder: (informationListScrollDataManagement) {
                                   return AnimatedContainer(
                                     duration: Duration(
-                                        seconds: jiyikudianjipersonalController
-                                                .beijing
-                                            ? 1
-                                            : 0),
+                                        seconds:
+                                            informationListScrollDataManagement
+                                                    .backgroundState
+                                                ? 1
+                                                : 0),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         begin: Alignment.bottomCenter,
                                         end: Alignment.topCenter,
                                         colors: [
                                           Colors.black.withOpacity(
-                                              jiyikudianjipersonalController
-                                                      .beijing
+                                              informationListScrollDataManagement
+                                                      .backgroundState
                                                   ? 0.5
                                                   : 0),
                                           Colors.black.withOpacity(0.8)
@@ -461,8 +524,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 child: GestureDetector(
                                   onTap: () {
                                     jiyukupersonalHeadcontroller.cizhi(
-                                        jiyikudianjipersonalController
-                                            .zhi['touxiang']);
+                                        informationListScrollDataManagement
+                                            .scrollDataValue['touxiang']);
                                     switchPage(context,
                                         const Jiyikudianjipersonalhead());
                                   },
@@ -472,12 +535,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     child: CircleAvatar(
                                       backgroundColor: Colors.grey,
                                       backgroundImage:
-                                          jiyikudianjipersonalController
-                                                      .zhi['touxiang'] !=
+                                          informationListScrollDataManagement
+                                                      .scrollDataValue['touxiang'] !=
                                                   null
                                               ? FileImage(File(
-                                                  jiyikudianjipersonalController
-                                                      .zhi['touxiang']))
+                                                  informationListScrollDataManagement
+                                                      .scrollDataValue['touxiang']))
                                               : const AssetImage(
                                                   'assets/chuhui.png'),
                                       radius: 25,
@@ -507,8 +570,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   GestureDetector(
                                     onTap: () {
                                       jiyukupersonalHeadcontroller.cizhi(
-                                          jiyikudianjipersonalController
-                                              .zhi['touxiang']);
+                                          informationListScrollDataManagement
+                                              .scrollDataValue['touxiang']);
                                       switchPage(context,
                                           const Jiyikudianjipersonalhead());
                                     },
@@ -551,7 +614,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 ],
                               ),
                               Text(
-                                jiyikudianjipersonalController.zhi['name'],
+                                informationListScrollDataManagement.scrollDataValue['name'],
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 24,
@@ -576,13 +639,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   }),
                               Padding(
                                 padding: const EdgeInsets.only(top: 13.0),
-                                child: jiyikudianjipersonalController
-                                        .zhi['brief']
+                                child: informationListScrollDataManagement
+                                        .scrollDataValue['brief']
                                         .trim()
                                         .isNotEmpty
                                     ? Text(
-                                        jiyikudianjipersonalController
-                                            .zhi['brief'],
+                                        informationListScrollDataManagement
+                                            .scrollDataValue['brief'],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 17,
@@ -600,7 +663,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 direction: Axis.horizontal,
                                 textDirection: TextDirection.ltr,
                                 children: [
-                                  jiyikudianjipersonalController.zhi['year']
+                                  informationListScrollDataManagement
+                                          .scrollDataValue['year']
                                           .trim()
                                           .isNotEmpty
                                       ? Row(
@@ -617,8 +681,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             Expanded(
                                               child: Text(
                                                 '出生于 ' +
-                                                    jiyikudianjipersonalController
-                                                        .zhi['year'],
+                                                    informationListScrollDataManagement
+                                                        .scrollDataValue['year'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
@@ -634,7 +698,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                           ],
                                         )
                                       : const SizedBox(),
-                                  jiyikudianjipersonalController.zhi['place']
+                                  informationListScrollDataManagement
+                                          .scrollDataValue['place']
                                           .trim()
                                           .isNotEmpty
                                       ? Row(
@@ -650,8 +715,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             ),
                                             Expanded(
                                               child: Text(
-                                                jiyikudianjipersonalController
-                                                    .zhi['place'],
+                                                informationListScrollDataManagement
+                                                    .scrollDataValue['place'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
@@ -677,8 +742,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                       ),
                                       Expanded(
                                         child: Text(
-                                          jiyikudianjipersonalController
-                                              .zhi['jiaru'],
+                                          informationListScrollDataManagement
+                                              .scrollDataValue['jiaru'],
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
@@ -801,9 +866,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
               body: GetBuilder<PersonaljiyikuController>(
                   init: personaljiyikucontroller,
                   builder: (personaljiyikucontroller) {
-                    return GetBuilder<PersonaljiyikudianjiController>(
-                        init: personaljiyikudianjiController,
-                        builder: (personaljiyikudianjiController) {
+                    return GetBuilder<OtherPeoplePersonalInformationManagement>(
+                        init: otherPeoplePersonalInformationManagement,
+                        builder: (otherPeoplePersonalInformationManagement) {
                           return TabBarView(
                             controller: tabController,
                             children: [
@@ -815,13 +880,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     child: ListView.builder(
                                         cacheExtent: 500,
                                         physics: physics,
-                                        itemCount:
-                                            personaljiyikudianjiController
-                                                        .wodezhi ==
-                                                    null
-                                                ? 0
-                                                : personaljiyikudianjiController
-                                                    .wodezhi?.length,
+                                        itemCount: otherPeoplePersonalInformationManagement
+                                                    .otherPeopleCreatedMemoryBank ==
+                                                null
+                                            ? 0
+                                            : otherPeoplePersonalInformationManagement
+                                                .otherPeopleCreatedMemoryBank
+                                                ?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
@@ -835,8 +900,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 onTap: () {
                                                   viewPostDataManagementForMemoryBanks
                                                       .initTheMemoryDataForThePost(
-                                                          personaljiyikudianjiController
-                                                              .wodezhi![index]);
+                                                          otherPeoplePersonalInformationManagement
+                                                                  .otherPeopleCreatedMemoryBank![
+                                                              index]);
                                                   switchPage(context,
                                                       const jiyikudianji());
                                                 },
@@ -856,14 +922,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                           onPressed: () {},
                                                           icon: CircleAvatar(
                                                             radius: 21,
-                                                            backgroundImage: personaljiyikudianjiController
-                                                                            .wodezhi?[index]
+                                                            backgroundImage: otherPeoplePersonalInformationManagement
+                                                                            .otherPeopleCreatedMemoryBank?[index]
                                                                         [
                                                                         'touxiang'] !=
                                                                     null
                                                                 ? FileImage(File(
-                                                                    personaljiyikudianjiController
-                                                                            .wodezhi![index]
+                                                                    otherPeoplePersonalInformationManagement
+                                                                            .otherPeopleCreatedMemoryBank![index]
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
@@ -892,7 +958,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         children: [
                                                                           TextSpan(
                                                                             text:
-                                                                                personaljiyikudianjiController.wodezhi?[index]['name'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 17,
@@ -902,7 +968,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' @${personaljiyikudianjiController.wodezhi?[index]['username']}',
+                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 16,
@@ -931,7 +997,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               .w900),
                                                                 ),
                                                                 Text(
-                                                                  '${personaljiyikudianjiController.wodezhi?[index]['xiabiao'].length}个记忆项',
+                                                                  '${otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['xiabiao'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -950,7 +1016,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                               ],
                                                             ),
                                                             Text(
-                                                              '${personaljiyikudianjiController.wodezhi?[index]['zhuti']}',
+                                                              '${otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['zhuti']}',
                                                               style: const TextStyle(
                                                                   fontSize: 17,
                                                                   fontWeight:
@@ -963,12 +1029,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 height: 20),
                                                             Text(
                                                               timuzhi(
-                                                                  personaljiyikudianjiController
-                                                                              .wodezhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleCreatedMemoryBank?[
                                                                           index]
                                                                       ['timu'],
-                                                                  personaljiyikudianjiController
-                                                                              .wodezhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleCreatedMemoryBank?[
                                                                           index]
                                                                       [
                                                                       'xiabiao']),
@@ -988,12 +1054,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 height: 20),
                                                             Text(
                                                               timuzhi(
-                                                                  personaljiyikudianjiController
-                                                                              .wodezhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleCreatedMemoryBank?[
                                                                           index]
                                                                       ['huida'],
-                                                                  personaljiyikudianjiController
-                                                                              .wodezhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleCreatedMemoryBank?[
                                                                           index]
                                                                       [
                                                                       'xiabiao']),
@@ -1052,9 +1118,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinlaqu(
-                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                                personaljiyikudianjiController.wodezhi?[index]['laqu'],
-                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['laqu'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
 
                                                                             return !isLiked;
                                                                           } else {
@@ -1063,7 +1129,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushilaqu(personaljiyikudianjiController.wodezhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushilaqu(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1079,7 +1145,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]['laqu'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['laqu'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1151,9 +1217,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinshoucang(
-                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                                personaljiyikudianjiController.wodezhi?[index]['shoucang'],
-                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['shoucang'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -1161,7 +1227,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushishoucang(personaljiyikudianjiController.wodezhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushishoucang(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1177,7 +1243,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]['shoucang'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['shoucang'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1249,9 +1315,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinxihuan(
-                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                                personaljiyikudianjiController.wodezhi?[index]['xihuan'],
-                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['xihuan'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
 
                                                                             return !isLiked;
                                                                           } else {
@@ -1260,7 +1326,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushixihuan(personaljiyikudianjiController.wodezhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushixihuan(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1276,7 +1342,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]['xihuan'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['xihuan'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1348,9 +1414,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxintiwen(
-                                                                                personaljiyikudianjiController.wodezhi?[index]['id'],
-                                                                                personaljiyikudianjiController.wodezhi?[index]['tiwen'],
-                                                                                personaljiyikudianjiController.wodezhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['tiwen'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -1358,7 +1424,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushitiwen(personaljiyikudianjiController.wodezhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushitiwen(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1374,7 +1440,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.wodezhi?[index]['tiwen'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['tiwen'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1431,13 +1497,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     child: ListView.builder(
                                         cacheExtent: 500,
                                         physics: physics,
-                                        itemCount:
-                                            personaljiyikudianjiController
-                                                        .laquzhi ==
-                                                    null
-                                                ? 0
-                                                : personaljiyikudianjiController
-                                                    .laquzhi?.length,
+                                        itemCount: otherPeoplePersonalInformationManagement
+                                                    .otherPeoplePulledMemoryBank ==
+                                                null
+                                            ? 0
+                                            : otherPeoplePersonalInformationManagement
+                                                .otherPeoplePulledMemoryBank
+                                                ?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
@@ -1451,8 +1517,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 onTap: () {
                                                   viewPostDataManagementForMemoryBanks
                                                       .initTheMemoryDataForThePost(
-                                                          personaljiyikudianjiController
-                                                              .laquzhi![index]);
+                                                          otherPeoplePersonalInformationManagement
+                                                                  .otherPeoplePulledMemoryBank![
+                                                              index]);
                                                   switchPage(context,
                                                       const jiyikudianji());
                                                 },
@@ -1472,14 +1539,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                           onPressed: () {},
                                                           icon: CircleAvatar(
                                                             radius: 21,
-                                                            backgroundImage: personaljiyikudianjiController
-                                                                            .laquzhi?[index]
+                                                            backgroundImage: otherPeoplePersonalInformationManagement
+                                                                            .otherPeoplePulledMemoryBank?[index]
                                                                         [
                                                                         'touxiang'] !=
                                                                     null
                                                                 ? FileImage(File(
-                                                                    personaljiyikudianjiController
-                                                                            .laquzhi![index]
+                                                                    otherPeoplePersonalInformationManagement
+                                                                            .otherPeoplePulledMemoryBank![index]
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
@@ -1508,7 +1575,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         children: [
                                                                           TextSpan(
                                                                             text:
-                                                                                personaljiyikudianjiController.laquzhi?[index]['name'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 17,
@@ -1518,7 +1585,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' @${personaljiyikudianjiController.laquzhi?[index]['username']}',
+                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 16,
@@ -1547,7 +1614,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               .w900),
                                                                 ),
                                                                 Text(
-                                                                  '${personaljiyikudianjiController.laquzhi?[index]['xiabiao'].length}个记忆项',
+                                                                  '${otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['xiabiao'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -1566,7 +1633,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                               ],
                                                             ),
                                                             Text(
-                                                              '${personaljiyikudianjiController.laquzhi?[index]['zhuti']}',
+                                                              '${otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['zhuti']}',
                                                               style: const TextStyle(
                                                                   fontSize: 17,
                                                                   fontWeight:
@@ -1579,12 +1646,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 height: 20),
                                                             Text(
                                                               timuzhi(
-                                                                  personaljiyikudianjiController
-                                                                              .laquzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeoplePulledMemoryBank?[
                                                                           index]
                                                                       ['timu'],
-                                                                  personaljiyikudianjiController
-                                                                              .laquzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeoplePulledMemoryBank?[
                                                                           index]
                                                                       [
                                                                       'xiabiao']),
@@ -1604,12 +1671,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 height: 20),
                                                             Text(
                                                               timuzhi(
-                                                                  personaljiyikudianjiController
-                                                                              .laquzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeoplePulledMemoryBank?[
                                                                           index]
                                                                       ['huida'],
-                                                                  personaljiyikudianjiController
-                                                                              .laquzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeoplePulledMemoryBank?[
                                                                           index]
                                                                       [
                                                                       'xiabiao']),
@@ -1668,9 +1735,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinlaqu(
-                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.laquzhi?[index]['laqu'],
-                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['laqu'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -1678,7 +1745,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushilaqu(personaljiyikudianjiController.laquzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushilaqu(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1694,7 +1761,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]['laqu'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['laqu'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1766,9 +1833,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinshoucang(
-                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.laquzhi?[index]['shoucang'],
-                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['shoucang'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -1776,7 +1843,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushishoucang(personaljiyikudianjiController.laquzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushishoucang(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1792,7 +1859,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]['shoucang'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['shoucang'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1864,9 +1931,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinxihuan(
-                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.laquzhi?[index]['xihuan'],
-                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['xihuan'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
 
                                                                             return !isLiked;
                                                                           } else {
@@ -1875,7 +1942,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushixihuan(personaljiyikudianjiController.laquzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushixihuan(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1891,7 +1958,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]['xihuan'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['xihuan'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1963,9 +2030,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxintiwen(
-                                                                                personaljiyikudianjiController.laquzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.laquzhi?[index]['tiwen'],
-                                                                                personaljiyikudianjiController.laquzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['tiwen'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -1973,7 +2040,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushitiwen(personaljiyikudianjiController.laquzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushitiwen(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1989,7 +2056,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.laquzhi?[index]['tiwen'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['tiwen'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -2053,13 +2120,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     child: ListView.builder(
                                         cacheExtent: 500,
                                         physics: physics,
-                                        itemCount:
-                                            personaljiyikudianjiController
-                                                        .xihuanzhi ==
-                                                    null
-                                                ? 0
-                                                : personaljiyikudianjiController
-                                                    .xihuanzhi?.length,
+                                        itemCount: otherPeoplePersonalInformationManagement
+                                                    .otherPeopleLikedMemoryBank ==
+                                                null
+                                            ? 0
+                                            : otherPeoplePersonalInformationManagement
+                                                .otherPeopleLikedMemoryBank
+                                                ?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
                                             children: [
@@ -2073,8 +2140,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                 onTap: () {
                                                   viewPostDataManagementForMemoryBanks
                                                       .initTheMemoryDataForThePost(
-                                                          personaljiyikudianjiController
-                                                                  .xihuanzhi![
+                                                          otherPeoplePersonalInformationManagement
+                                                                  .otherPeopleLikedMemoryBank![
                                                               index]);
                                                   switchPage(context,
                                                       const jiyikudianji());
@@ -2095,14 +2162,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                           onPressed: () {},
                                                           icon: CircleAvatar(
                                                             radius: 21,
-                                                            backgroundImage: personaljiyikudianjiController
-                                                                            .xihuanzhi?[index]
+                                                            backgroundImage: otherPeoplePersonalInformationManagement
+                                                                            .otherPeopleLikedMemoryBank?[index]
                                                                         [
                                                                         'touxiang'] !=
                                                                     null
                                                                 ? FileImage(File(
-                                                                    personaljiyikudianjiController
-                                                                            .xihuanzhi![index]
+                                                                    otherPeoplePersonalInformationManagement
+                                                                            .otherPeopleLikedMemoryBank![index]
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
@@ -2131,7 +2198,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         children: [
                                                                           TextSpan(
                                                                             text:
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['name'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 17,
@@ -2141,7 +2208,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' @${personaljiyikudianjiController.xihuanzhi?[index]['username']}',
+                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 16,
@@ -2170,7 +2237,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               .w900),
                                                                 ),
                                                                 Text(
-                                                                  '${personaljiyikudianjiController.xihuanzhi?[index]['xiabiao'].length}个记忆项',
+                                                                  '${otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['xiabiao'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -2189,7 +2256,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                               ],
                                                             ),
                                                             Text(
-                                                              '${personaljiyikudianjiController.xihuanzhi?[index]['zhuti']}',
+                                                              '${otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['zhuti']}',
                                                               style: const TextStyle(
                                                                   fontSize: 17,
                                                                   fontWeight:
@@ -2202,12 +2269,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 height: 20),
                                                             Text(
                                                               timuzhi(
-                                                                  personaljiyikudianjiController
-                                                                              .xihuanzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleLikedMemoryBank?[
                                                                           index]
                                                                       ['timu'],
-                                                                  personaljiyikudianjiController
-                                                                              .xihuanzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleLikedMemoryBank?[
                                                                           index]
                                                                       [
                                                                       'xiabiao']),
@@ -2227,12 +2294,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                 height: 20),
                                                             Text(
                                                               timuzhi(
-                                                                  personaljiyikudianjiController
-                                                                              .xihuanzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleLikedMemoryBank?[
                                                                           index]
                                                                       ['huida'],
-                                                                  personaljiyikudianjiController
-                                                                              .xihuanzhi?[
+                                                                  otherPeoplePersonalInformationManagement
+                                                                              .otherPeopleLikedMemoryBank?[
                                                                           index]
                                                                       [
                                                                       'xiabiao']),
@@ -2291,9 +2358,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinlaqu(
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['laqu'],
-                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['laqu'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -2301,7 +2368,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushilaqu(personaljiyikudianjiController.xihuanzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushilaqu(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2317,7 +2384,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]['laqu'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['laqu'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -2389,9 +2456,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinshoucang(
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['shoucang'],
-                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['shoucang'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -2399,7 +2466,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushishoucang(personaljiyikudianjiController.xihuanzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushishoucang(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2415,7 +2482,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]['shoucang'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['shoucang'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -2487,9 +2554,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxinxihuan(
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['xihuan'],
-                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['xihuan'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
 
                                                                             return !isLiked;
                                                                           } else {
@@ -2498,7 +2565,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushixihuan(personaljiyikudianjiController.xihuanzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushixihuan(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2514,7 +2581,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]['xihuan'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['xihuan'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -2586,9 +2653,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           if (loginStatus ==
                                                                               true) {
                                                                             personaljiyikucontroller.shuaxintiwen(
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['id'],
-                                                                                personaljiyikudianjiController.xihuanzhi?[index]['tiwen'],
-                                                                                personaljiyikudianjiController.xihuanzhi![index]);
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['tiwen'],
+                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
                                                                             return !isLiked;
                                                                           } else {
                                                                             smsLogin(context);
@@ -2596,7 +2663,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           }
                                                                         },
                                                                         isLiked:
-                                                                            personaljiyikucontroller.chushitiwen(personaljiyikudianjiController.xihuanzhi?[index]['id']),
+                                                                            personaljiyikucontroller.chushitiwen(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2612,7 +2679,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            personaljiyikudianjiController.xihuanzhi?[index]['tiwen'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['tiwen'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,

@@ -89,8 +89,10 @@ final reviewTheDataManagementOfMemoryBank = Get.put(ReviewTheDataManagementOfMem
 // 继续学习数据管理
 final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
 
-final jiyikudianjipersonalController =
-    Get.put(JiyikudianjipersonalController());
+final informationListScrollDataManagement = Get.put(InformationListScrollDataManagement());
+
+
+
 bool loginStatus = false;
 BuildContext? contexts;
 
@@ -786,7 +788,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                             children: [
                                               IconButton(
                                                   onPressed: () {
-                                                    jiyikudianjipersonalController.cizhi(
+                                                    informationListScrollDataManagement.initialScrollData(
                                                         refreshofHomepageMemoryBankextends
                                                                 .memoryRefreshValue[
                                                             index]);
