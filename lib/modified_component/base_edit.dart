@@ -1,10 +1,13 @@
 import 'dart:async';
-
+// import 'package:city_pickers/city_pickers.dart';文件中export 'src/city_picker.dart';
+//中的引用被修改为import 'package:yunji/modified_component/base_edit.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:city_pickers/modal/base_citys.dart';
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:city_pickers/src/base/pickers.dart';
+
+
 
 class BaseView extends StatefulWidget {
   final double? progress;
@@ -36,7 +39,8 @@ class BaseView extends StatefulWidget {
   /// 是否开启全球化数据
   final bool? global;
 
-  const BaseView({super.key, 
+  const BaseView({
+    super.key,
     this.progress,
     required this.showType,
     required this.height,
@@ -64,10 +68,8 @@ class _BaseView extends State<BaseView> {
 
   FixedExtentScrollController provinceController =
       FixedExtentScrollController();
-  FixedExtentScrollController cityController =
-      FixedExtentScrollController();
-  FixedExtentScrollController areaController =
-      FixedExtentScrollController();
+  FixedExtentScrollController cityController = FixedExtentScrollController();
+  FixedExtentScrollController areaController = FixedExtentScrollController();
   FixedExtentScrollController villageController =
       FixedExtentScrollController(); // 增加第4级(村/镇)选择
 
@@ -85,17 +87,14 @@ class _BaseView extends State<BaseView> {
   void initState() {
     super.initState();
 
-    provinces =
-        Provinces(metaInfo: widget.provincesData, sort: widget.isSort)
-            .provinces;
+    provinces = Provinces(metaInfo: widget.provincesData, sort: widget.isSort)
+        .provinces;
 
     cityTree = CityTree(
         metaInfo: widget.citiesData, provincesInfo: widget.provincesData);
 
-    
-      _initLocation(widget.locationCode);
-      _initController();
-
+    _initLocation(widget.locationCode);
+    _initController();
   }
 
   @override
@@ -312,12 +311,11 @@ class _BaseView extends State<BaseView> {
     });
   }
 
-
-Result _kongResult(){
-  Result result =Result();
-  result.provinceId= 'kong';
-  return result;
-}
+  Result _kongResult() {
+    Result result = Result();
+    result.provinceId = 'kong';
+    return result;
+  }
 
   Result _buildResult() {
     Result result = Result();
@@ -438,41 +436,39 @@ Result _kongResult(){
               ),
             ),
             Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-
                 Row(
                   children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: widget.cancelWidget ??
-                      const Text(
-                        '取消',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.black),
-                      ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, _kongResult());
-                  },
-                  child: widget.cancelWidget ??
-                      const Text(
-                        '移除',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.red),
-                      ),
-                ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: widget.cancelWidget ??
+                          const Text(
+                            '取消',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.black),
+                          ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, _kongResult());
+                      },
+                      child: widget.cancelWidget ??
+                          const Text(
+                            '移除',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.red),
+                          ),
+                    ),
                   ],
                 ),
-
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context, _buildResult());
@@ -486,8 +482,6 @@ Result _kongResult(){
                             color: Colors.black),
                       ),
                 ),
-
-
               ],
             ),
           ],
@@ -504,6 +498,7 @@ Result _kongResult(){
     );
   }
 }
+
 // ignore: unused_element
 class _WrapLayout extends SingleChildLayoutDelegate {
   _WrapLayout({

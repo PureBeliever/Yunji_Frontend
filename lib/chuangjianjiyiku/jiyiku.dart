@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
-import 'package:yunji/cut/cut.dart';
-import 'package:yunji/modified_component/sizeExpansionTileState.dart';
+import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/chuangjianjiyiku/yiwang.dart';
 import 'package:toastification/toastification.dart' as toast;
 

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ali_auth/flutter_ali_auth.dart';
 import 'package:toastification/toastification.dart' as toast;
-import 'package:yunji/main/home_page.dart';
-import 'package:yunji/main/login/sms_login.dart';
+import 'package:yunji/home/home_page/home_page.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/api/personal_api.dart';
+import 'package:yunji/home/trial_recommendation_algorithm.dart';
 
 bool _isFirstLoginAttempt = true;
 
@@ -27,7 +28,7 @@ Future<void> handleSuccessfulLogin(String? token, BuildContext context) async {
     shouji(token);
     showToast("右滑可查看个人资料", "右滑可查看个人资料", context);
     showToast("登录成功,欢迎您使用本应用！", "这是一款帮助学习和记忆的应用,希望对您产生帮助", context);
-    await refreshHomePageMemoryBank();
+    await refreshHomePageMemoryBank(context);
     _isFirstLoginAttempt = false;
   }
 }

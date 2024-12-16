@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:yunji/modified_component/mydefaultcupertion.dart';
+import 'package:yunji/modified_component/default_cupertion.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/personal/personal_bei.dart';

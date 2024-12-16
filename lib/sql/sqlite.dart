@@ -98,33 +98,128 @@ class DatabaseManager {
     final database = openDatabase(
       join(await getDatabasesPath(), 'personal_database.db'),
       onCreate: (db, version) async {
-        await db.execute(
-          ' CREATE TABLE personal(  shouji  char(15)  ,username  char(20)   PRIMARY KEY , name  char(50), brief  char(170) ,place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15),xihuan JSON,shoucang JSON,laqu JSON,tiwen JSON,wode JSON);',
-        );
-        await db.execute(
-          ' CREATE TABLE intdatabase ( id INTEGER PRIMARY KEY, number LONGTEXT,length INT);',
-        );
-
-        List<int> number = [1, 2, 3];
-        await db.insert(
-          'intdatabase',
-          {'id': 0, 'number': number.toString(), 'length': 3},
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-        await db.execute(
-          'CREATE TABLE jiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,shoucang int,laqu int,xihuan int ,tiwen int);',
-        );
-        await db.execute(
-          'CREATE TABLE personaljiyiku(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,dingshi char(30),jindu int,shoucang int,laqu int,xihuan int ,tiwen int,duanxin bool,naozhong bool,zhuangtai bool ,cishu JSON,fanganming char(10));',
-        );
-
-        await db.execute(
-          'CREATE TABLE personaljiyikudianji(username  char(20),name char(50), brief  char(170) , place  char(40), year  char(15), beijing char(50), touxiang  char(50), jiaru  char(15) ,id INT  PRIMARY KEY,timu JSON,huida JSON, zhuti char(50),xiabiao JSON,code JSON,shoucang int,laqu int,xihuan int ,tiwen int);',
-        );
+        await db.transaction((txn) async {
+          await _createPersonalTable(db);
+          await _createIntDatabaseTable(db);
+          await _createJiyikuTable(db);
+          await _createPersonalJiyikuTable(db);
+          await _createPersonalJiyikudianjiTable(db);
+        });
       },
       version: 1,
     );
     return database;
+  }
+
+  Future<void> _createPersonalTable(Database txn) async {
+    await txn.execute(
+      'CREATE TABLE personal ('
+      'shouji CHAR(15), '
+      'username CHAR(20) PRIMARY KEY, '
+      'name CHAR(50), '
+      'brief CHAR(170), '
+      'place CHAR(40), '
+      'year CHAR(15), '
+      'beijing CHAR(50), '
+      'touxiang CHAR(50), '
+      'jiaru CHAR(15), '
+      'xihuan JSON, '
+      'shoucang JSON, '
+      'laqu JSON, '
+      'tiwen JSON, '
+      'wode JSON);',
+    );
+  }
+
+  Future<void> _createIntDatabaseTable(Database txn) async {
+    await txn.execute(
+      'CREATE TABLE intdatabase (id INTEGER PRIMARY KEY, number LONGTEXT, length INT);',
+    );
+    List<int> number = [1, 2, 3];
+    await txn.insert(
+      'intdatabase',
+      {'id': 0, 'number': number.toString(), 'length': 3},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> _createJiyikuTable(Database txn) async {
+    await txn.execute(
+      'CREATE TABLE jiyiku ('
+      'username CHAR(20), '
+      'name CHAR(50), '
+      'brief CHAR(170), '
+      'place CHAR(40), '
+      'year CHAR(15), '
+      'beijing CHAR(50), '
+      'touxiang CHAR(50), '
+      'jiaru CHAR(15), '
+      'id INT PRIMARY KEY, '
+      'timu JSON, '
+      'huida JSON, '
+      'zhuti CHAR(50), '
+      'xiabiao JSON, '
+      'code JSON, '
+      'shoucang INT, '
+      'laqu INT, '
+      'xihuan INT, '
+      'tiwen INT);',
+    );
+  }
+
+  Future<void> _createPersonalJiyikuTable(Database txn) async {
+    await txn.execute(
+      'CREATE TABLE personaljiyiku ('
+      'username CHAR(20), '
+      'name CHAR(50), '
+      'brief CHAR(170), '
+      'place CHAR(40), '
+      'year CHAR(15), '
+      'beijing CHAR(50), '
+      'touxiang CHAR(50), '
+      'jiaru CHAR(15), '
+      'id INT PRIMARY KEY, '
+      'timu JSON, '
+      'huida JSON, '
+      'zhuti CHAR(50), '
+      'xiabiao JSON, '
+      'code JSON, '
+      'dingshi CHAR(30), '
+      'jindu INT, '
+      'shoucang INT, '
+      'laqu INT, '
+      'xihuan INT, '
+      'tiwen INT, '
+      'duanxin BOOL, '
+      'naozhong BOOL, '
+      'zhuangtai BOOL, '
+      'cishu JSON, '
+      'fanganming CHAR(10));',
+    );
+  }
+
+  Future<void> _createPersonalJiyikudianjiTable(Database txn) async {
+    await txn.execute(
+      'CREATE TABLE personaljiyikudianji ('
+      'username CHAR(20), '
+      'name CHAR(50), '
+      'brief CHAR(170), '
+      'place CHAR(40), '
+      'year CHAR(15), '
+      'beijing CHAR(50), '
+      'touxiang CHAR(50), '
+      'jiaru CHAR(15), '
+      'id INT PRIMARY KEY, '
+      'timu JSON, '
+      'huida JSON, '
+      'zhuti CHAR(50), '
+      'xiabiao JSON, '
+      'code JSON, '
+      'shoucang INT, '
+      'laqu INT, '
+      'xihuan INT, '
+      'tiwen INT);',
+    );
   }
 
   // 插入记忆库
@@ -342,8 +437,15 @@ class DatabaseManager {
   Future<Map<String, dynamic>> chaint() async {
     final db = database;
 
-    final List<Map<String, dynamic>> personalMaps =
-        await db!.query('intdatabase');
+    if (db == null) {
+      throw Exception('Database is not initialized');
+    }
+
+    final List<Map<String, dynamic>> personalMaps = await db.query('intdatabase');
+
+    if (personalMaps.isEmpty) {
+      throw Exception('No data found in intdatabase');
+    }
 
     return personalMaps[0];
   }

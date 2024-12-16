@@ -1,6 +1,8 @@
 import 'package:flutter_ali_auth/flutter_ali_auth.dart';
-import 'package:yunji/main/login/mobile_number_login.dart';
+import 'package:yunji/home/login/mobile/mobile_number_login.dart';
 import 'package:flutter/material.dart';
+
+//flutter_ali_auth设置
 void soginDependencySettings(BuildContext context) async {
   await AliAuthClient.initSdk(
     authConfig: AuthConfig(

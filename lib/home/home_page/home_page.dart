@@ -1,44 +1,31 @@
 // dart包
-import 'dart:io';
-import 'dart:math';
-import 'dart:core';
 import 'dart:convert';
+import 'dart:core';
+import 'dart:io';
 
 //依赖包
-import 'package:alarm/alarm.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:keframe/keframe.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:like_button/like_button.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:toastification/toastification.dart' as toast;
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:timezone/data/latest.dart' as tz;
-
-//项目文件
-import 'package:yunji/fuxi/fuxi_page.dart';
-import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
-import 'package:yunji/modified_component/ball_indicator.dart';
+import 'package:keframe/keframe.dart';
+import 'package:like_button/like_button.dart';
+import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/home/home_page/home_drawer.dart';
+import 'package:yunji/modified_component/sliver_header_delegate.dart';
+import 'package:yunji/home/trial_recommendation_algorithm.dart';
+import 'package:yunji/home/home_module/ball_indicator.dart';
+import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/personal/bianpersonal_page.dart';
-import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/jiyikudianji/jiyikudianji.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
 import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/personal/personal_bei.dart';
 import 'package:yunji/personal/personal_head.dart';
-import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/setting/setting.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/sql/sqlite.dart';
-import 'package:yunji/cut/cut.dart';
-import 'package:yunji/modified_component/sizeExpansionTileState.dart';
-import 'package:yunji/main/notification_settings.dart';
-import 'package:yunji/main/login/sms_login.dart';
-import 'package:yunji/main/login/login_settings.dart';
+import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
+import 'package:toastification/toastification.dart' as toast;
 
 // 主页记忆板刷新
 class RefreshofHomepageMemoryBankextends extends GetxController {
@@ -47,274 +34,37 @@ class RefreshofHomepageMemoryBankextends extends GetxController {
 
   void updateMemoryRefreshValue(List<Map<String, dynamic>>? value) {
     if (value != null) {
-      // 将value反转并赋值给memoryRefreshValue
       memoryRefreshValue = value.reversed.toList();
-      // 更新状态
       update();
     }
   }
 }
 
-// 请求权限
-Future<void> requestPermission() async {
-  // 请求通知权限
-  await Permission.notification.request();
-  // 请求精确闹钟权限
-  await Permission.scheduleExactAlarm.request();
-}
-
-// 数据库管理
-final databaseManager = DatabaseManager();
-
-// 用户名管理
-final userNameChangeManagement = Get.put(UserNameChangeManagement());
-
-// 背景图管理
-final backgroundImageChangeManagement =
-    Get.put(BackgroundImageChangeManagement());
-
-// 头像管理
-final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
-
-// 主页记忆库刷新
-final refreshofHomepageMemoryBankextends =
-    Get.put(RefreshofHomepageMemoryBankextends());
-
-// 查看帖子记忆库数据管理
-final viewPostDataManagementForMemoryBanks = Get.put(ViewPostDataManagementForMemoryBanks());
-
-// 复习数据管理
-final reviewTheDataManagementOfMemoryBank = Get.put(ReviewTheDataManagementOfMemoryBank());
-
-// 继续学习数据管理
-final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
-
-// 信息列表滚动数据管理
-final informationListScrollDataManagement = Get.put(InformationListScrollDataManagement());
-
-
-// 登录状态
-bool loginStatus = false;
-
 // 上下文
 BuildContext? contexts;
 
-void main() async {
-  runApp(const MyApp());
-  WidgetsFlutterBinding.ensureInitialized();
-  // 请求权限
-  await requestPermission();
-  // 初始化闹钟
-  await Alarm.init();
-  // 初始化时区
-  tz.initializeTimeZones();
-  // 初始化通知
-  NotificationHelper notificationHelper = NotificationHelper();
-  await notificationHelper.initialize();
-  // 初始化数据库
-  await databaseManager.initDatabase();
-  // 初始化主页记忆库
-  List<Map<String, dynamic>>? homePageMemoryDatabaseData = await databaseManager.queryHomePageMemoryBank();
-  // 初始化个人资料
-  Map<String, dynamic>? personalData= await databaseManager.chapersonal();
-
-  if (homePageMemoryDatabaseData != null && personalData != null) {
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(homePageMemoryDatabaseData);
-    personaljiyikucontroller.shuaxin(personalData);
-    var personalDataValue = personalData;
-    loginStatus = true;
-    backgroundImageChangeManagement.initBackgroundImage(personalDataValue['beijing']);
-    headPortraitChangeManagement.initHeadPortrait(personalDataValue['touxiang']);
-    selectorResultsUpdateDisplay
-        .dateOfBirthSelectorResultValueChange(personalDataValue['year']);
-    selectorResultsUpdateDisplay
-        .residentialAddressSelectorResultValueChange(personalDataValue['place']);
-    editPersonalDataValueManagement.changePersonalInformation(
-        personalDataValue['name'], personalDataValue['brief'], personalDataValue['place'], personalDataValue['year']);
-    editPersonalDataValueManagement.applicationDateChange(personalDataValue['jiaru']);
-    userNameChangeManagement.userNameChanged(personalDataValue['username']);
-    postpersonalapi(userNameChangeManagement.userNameValue);
-    await refreshHomePageMemoryBank();
-  } else {
-    soginDependencySettings(contexts!);
-  }
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '云忆',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: '主页'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-// 刷新主页记忆库
-Future<void> refreshHomePageMemoryBank() async {
-  await Future.delayed(const Duration(seconds: 1));
-
-  Map<String, dynamic> nString = await databaseManager.chaint();
-
-  String numbersString = nString["number"];
-
-  if (numbersString == '[]') {
-    int length = nString["length"] + 1;
-    numbersString = "[$length]";
-  }
-
-  List<int> numberAsList = numbersString
-      .replaceAll('[', '')
-      .replaceAll(']', '')
-      .split(',')
-      .map((String num) => int.parse(num.trim()))
-      .toList();
-
-  Random random = Random();
-  Set<int> randomSelection = {};
-
-  while (randomSelection.length < 100 &&
-      randomSelection.length < numberAsList.length) {
-    int index = random.nextInt(numberAsList.length);
-    randomSelection.add(numberAsList[index]);
-  }
-
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
-  List<int> zhiList = randomSelection.toList();
-  final response = await dio.post('http://47.92.90.93:36233/getjiyiku',
-      data: jsonEncode(zhiList), options: Options(headers: header));
-
-  var data = response.data;
-  var result = data["results"];
-  var personal = data["personal"];
-
-  if (result.isEmpty) {
-    toast.toastification.show(
-        context: contexts,
-        type: toast.ToastificationType.success,
-        style: toast.ToastificationStyle.flatColored,
-        title: const Text("暂无更多记忆库",
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                fontSize: 17)),
-        description: const Text(
-          "让我们一起创建新的记忆库吧！",
-          style: TextStyle(
-              color: Color.fromARGB(255, 119, 118, 118),
-              fontSize: 15,
-              fontWeight: FontWeight.w600),
-        ),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 4),
-        primaryColor: const Color(0xff047aff),
-        backgroundColor: const Color(0xffedf7ff),
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: toast.lowModeShadow,
-        dragToClose: true);
-  } else {
-    String generateRandomFilename() {
-      const chars =
-          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      Random random = Random();
-      String randomFileName =
-          List.generate(10, (_) => chars[random.nextInt(chars.length)])
-              .join('');
-      return '$randomFileName.jpg';
-    }
-
-    for (int i = 0; i < personal.length; i++) {
-      if (personal[i]['beijing'] != null) {
-        final dir = await getApplicationDocumentsDirectory();
-        final ming = generateRandomFilename();
-        List<int> imageBytes = base64.decode(personal[i]['beijing']);
-        personal[i]['beijing'] = '${dir.path}/$ming';
-        await File(personal[i]['beijing']).writeAsBytes(imageBytes);
-      }
-      if (personal[i]['touxiang'] != null) {
-        final dir = await getApplicationDocumentsDirectory();
-        final ming = generateRandomFilename();
-        List<int> imageBytes = base64.decode(personal[i]['touxiang']);
-        personal[i]['touxiang'] = '${dir.path}/$ming';
-        await File(personal[i]['touxiang']).writeAsBytes(imageBytes);
-      }
-
-      for (int y = 0; y < result.length; y++) {
-        if (result[y]['username'] == personal[i]['username']) {
-          result[y]['name'] = personal[i]['name'];
-          result[y]['brief'] = personal[i]['brief'];
-          result[y]['place'] = personal[i]['place'];
-          result[y]['year'] = personal[i]['year'];
-          result[y]['beijing'] = personal[i]['beijing'];
-          result[y]['touxiang'] = personal[i]['touxiang'];
-          result[y]['jiaru'] = personal[i]['jiaru'];
-        }
-      }
-    }
-
-    await databaseManager.insertHomePageMemoryBank(result);
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
-
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-  }
-
-  var count = data["count"];
-  List<int> filterweizhi = numberAsList
-      .where((number) => !randomSelection.contains(number))
-      .toList();
-
-  int lengthjiyi = nString["length"];
-  final zuidazhi = count - nString["length"];
-  List<int> numbers = List.generate(zuidazhi, (i) => i + lengthjiyi + 1);
-  filterweizhi.addAll(numbers);
-
-  await databaseManager.updateint(filterweizhi.toString(), count);
-}
-
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final editPersonalDataValueManagement =
-      Get.put(EditPersonalDataValueManagement());
   late TabController tabController;
 
   Future<void> _refresh() async {
-    await refreshHomePageMemoryBank();
+    await refreshHomePageMemoryBank(contexts!);
   }
 
-  String timuzhi(String? timu, var xiabiao) {
-    if (timu != null) {
-      var zhi = jsonDecode(timu);
-      var index = xiabiao;
-
-      return zhi.containsKey('${index[0]}') ? zhi['${index[0]}'] : '';
-    } else {
-      return ' ';
-    }
-  }
-
-  String huida(String? huida, var xiabiao) {
-    if (huida != null) {
-      var zhi = jsonDecode(huida);
-      var index = xiabiao;
-
-      return zhi.containsKey('${index[0]}') ? zhi['${index[0]}'] : '';
+  String _typeConversion(String? data, var index) {
+    if (data != null) {
+      var decodedData = jsonDecode(data);
+      var indexValue = index;
+      return decodedData.containsKey('${indexValue[0]}') ? decodedData['${indexValue[0]}'] : '';
     } else {
       return ' ';
     }
@@ -338,291 +88,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       statusBarBrightness: Brightness.dark,
     ));
     contexts = context;
-    double chang = MediaQuery.of(context).size.height * 0.05;
+    double appBarHeight = MediaQuery.of(context).size.height * 0.05;
     return Scaffold(
       backgroundColor: Colors.white,
       key: _scaffoldKey,
-      drawer: Drawer(
-        width: 335,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
-        ),
-        child: Container(
-          color: Colors.white,
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 26, left: 28, top: 50),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, bottom: 5),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GetBuilder<HeadPortraitChangeManagement>(
-                                  init: headPortraitChangeManagement,
-                                  builder: (headPortraitChangeManagement) {
-                                    return IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          switchPage(
-                                              context, const PersonalPage());
-                                        },
-                                        padding: EdgeInsets.zero,
-                                        icon: CircleAvatar(
-                                          backgroundColor: Colors.grey,
-                                          radius: 23,
-                                          backgroundImage:
-                                              headPortraitChangeManagement
-                                                          .headPortraitValue !=
-                                                      null
-                                                  ? FileImage(
-                                                      headPortraitChangeManagement
-                                                          .headPortraitValue!)
-                                                  : const AssetImage(
-                                                      'assets/chuhui.png'),
-                                        ));
-                                  }),
-                              IconButton(
-                                splashColor:
-                                    const Color.fromRGBO(145, 145, 145, 1),
-                                icon: SvgPicture.asset(
-                                  'assets/sunny.svg',
-                                  width: 30,
-                                  height: 30,
-                                ),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      GetBuilder<EditPersonalDataValueManagement>(
-                        init: editPersonalDataValueManagement,
-                        builder: (biancontroller) {
-                          return Text(
-                            editPersonalDataValueManagement.nameValue,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 21,
-                            ),
-                          );
-                        },
-                      ),
-                      GetBuilder<UserNameChangeManagement>(
-                          init: userNameChangeManagement,
-                          builder: (userNameChangeManagement) {
-                            return Text(
-                              '@${userNameChangeManagement.userNameValue}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: Color.fromRGBO(84, 87, 105, 1),
-                                fontSize: 16,
-                              ),
-                            );
-                          }),
-                      const SizedBox(height: 11),
-                      const Row(
-                        children: [
-                          Text(
-                            '10 ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            '正在关注  ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            '0 ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            '关注者  ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-                      const SizedBox(
-                        height: 0.3,
-                        width: double.infinity,
-                        child: Divider(
-                          color: Color.fromRGBO(201, 201, 201, 1),
-                          thickness: 0.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SizedBox(
-                    height: double.infinity,
-                    child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                            switchPage(context, const PersonalPage());
-                          },
-                          child: ListTile(
-                            leading: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              child: SvgPicture.asset(
-                                'assets/gerenziliao.svg',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
-
-                            title: const Text(
-                              '个人资料',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 21,
-                              ),
-                            ),
-                            // 其他ListTile的属性...
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () async {},
-                          child: ListTile(
-                            leading: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              child: SvgPicture.asset(
-                                'assets/huiyuan.svg',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
-
-                            title: const Text(
-                              '会员',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 21,
-                              ),
-                            ),
-                            // 其他ListTile的属性...
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () async {},
-                          child: ListTile(
-                            leading: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              child: SvgPicture.asset(
-                                'assets/shuocang.svg',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
-
-                            title: const Text(
-                              '收藏',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 21,
-                              ),
-                            ),
-                            // 其他ListTile的属性...
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            zhuce();
-                          },
-                          child: ListTile(
-                            leading: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              child: SvgPicture.asset(
-                                'assets/fankui.svg',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
-
-                            title: const Text(
-                              '反馈',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 21,
-                              ),
-                            ),
-                            // 其他ListTile的属性...
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                            switchPage(context, const Setting());
-                          },
-                          child: ListTile(
-                            leading: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              child: SvgPicture.asset(
-                                'assets/settings.svg',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
-
-                            title: const Text(
-                              '设置',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 21,
-                              ),
-                            ),
-                            // 其他ListTile的属性...
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 28, right: 26),
-                          child: Divider(
-                            // 添加分割线
-                            color: Color.fromRGBO(201, 201, 201, 1), // 设置分割线颜色
-                            thickness: 0.3, // 设置分割线宽度
-                            height: 50,
-                          ),
-                        ),
-                        const Memory()
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      drawer: const HomeDrawer(),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -644,10 +114,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               pinned: false,
               snap: true,
               expandedHeight: 0,
-              collapsedHeight: chang,
+              collapsedHeight: appBarHeight,
               surfaceTintColor: Colors.white,
               backgroundColor: Colors.white,
-              toolbarHeight: chang,
+              toolbarHeight: appBarHeight,
               leading: GetBuilder<HeadPortraitChangeManagement>(
                 init: headPortraitChangeManagement,
                 builder: (headPortraitChangeManagement) {
@@ -756,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     Colors.cyan,
                     Colors.orange,
                     Colors.yellow,
-                  ],
+                  ],  
                   child: GetBuilder<RefreshofHomepageMemoryBankextends>(
                       init: refreshofHomepageMemoryBankextends,
                       builder: (refreshofHomepageMemoryBankextends) {
@@ -773,9 +243,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
-                                      viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
-                                          refreshofHomepageMemoryBankextends
-                                              .memoryRefreshValue[index]);
+                                      viewPostDataManagementForMemoryBanks
+                                          .initTheMemoryDataForThePost(
+                                              refreshofHomepageMemoryBankextends
+                                                  .memoryRefreshValue[index]);
                                       switchPage(context, const jiyikudianji());
                                     },
                                     child: Column(
@@ -798,10 +269,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                             children: [
                                               IconButton(
                                                   onPressed: () {
-                                                    informationListScrollDataManagement.initialScrollData(
-                                                        refreshofHomepageMemoryBankextends
-                                                                .memoryRefreshValue[
-                                                            index]);
+                                                    informationListScrollDataManagement
+                                                        .initialScrollData(
+                                                            refreshofHomepageMemoryBankextends
+                                                                    .memoryRefreshValue[
+                                                                index]);
                                                     jiyikupostpersonalapi(
                                                         refreshofHomepageMemoryBankextends
                                                                 .memoryRefreshValue[
@@ -918,7 +390,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                     ),
                                                     const SizedBox(height: 20),
                                                     Text(
-                                                      timuzhi(
+                                                      _typeConversion(
                                                           refreshofHomepageMemoryBankextends
                                                                   .memoryRefreshValue?[
                                                               index]['timu'],
@@ -936,7 +408,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                     ),
                                                     const SizedBox(height: 20),
                                                     Text(
-                                                      timuzhi(
+                                                      _typeConversion(
                                                           refreshofHomepageMemoryBankextends
                                                                   .memoryRefreshValue?[
                                                               index]['huida'],
@@ -1453,7 +925,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 shape: const CircleBorder(),
                 child: SvgPicture.asset(
                   'assets/jiyiku.svg',
-                  // ignore: deprecated_member_use
                   color: Colors.blue,
                   width: 25,
                   height: 25,
@@ -1499,154 +970,5 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 }
 
-class Memory extends StatefulWidget {
-  const Memory({super.key});
 
-  @override
-  State<Memory> createState() => _Memory();
-}
 
-class _Memory extends State<Memory> {
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: const sizeExpansionTile(
-            collapsedIconColor: Colors.black,
-            iconColor: Colors.blue,
-            trailing: null,
-            title: Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Text('记忆分析',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
-                  )),
-            ),
-            children: [
-              ListTile(title: Text('示例')),
-              ListTile(title: Text('示例')),
-              ListTile(title: Text('示例')),
-              ListTile(title: Text('示例')),
-              ListTile(title: Text('示例')),
-            ]));
-  }
-}
-
-typedef SliverHeaderBuilder = Widget Function(
-    BuildContext context, double shrinkOffset, bool overlapsContent);
-
-class SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  // child 为 header
-  SliverHeaderDelegate({
-    required this.maxHeight,
-    this.minHeight = 0,
-    required Widget child,
-  })  : builder = ((a, b, c) => child),
-        assert(minHeight <= maxHeight && minHeight >= 0);
-
-  //最大和最小高度相同
-  SliverHeaderDelegate.fixedHeight({
-    required double height,
-    required Widget child,
-  })  : builder = ((a, b, c) => child),
-        maxHeight = height,
-        minHeight = height;
-
-  //需要自定义builder时使用
-  SliverHeaderDelegate.builder({
-    required this.maxHeight,
-    this.minHeight = 0,
-    required this.builder,
-  });
-
-  final double maxHeight;
-  final double minHeight;
-  final SliverHeaderBuilder builder;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    Widget child = builder(context, shrinkOffset, overlapsContent);
-
-    return Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            //阴影
-
-            BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                offset: const Offset(0, 0.3),
-                blurRadius: 1.8),
-          ],
-        ),
-        child: SizedBox.expand(child: child));
-  }
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  bool shouldRebuild(SliverHeaderDelegate oldDelegate) {
-    return oldDelegate.maxExtent != maxExtent ||
-        oldDelegate.minExtent != minExtent;
-  }
-}
-
-class SliverHeaderDelegateshijian extends SliverPersistentHeaderDelegate {
-  // child 为 header
-  SliverHeaderDelegateshijian({
-    required this.maxHeight,
-    this.minHeight = 0,
-    required Widget child,
-  })  : builder = ((a, b, c) => child),
-        assert(minHeight <= maxHeight && minHeight >= 0);
-
-  //最大和最小高度相同
-  SliverHeaderDelegateshijian.fixedHeight({
-    required double height,
-    required Widget child,
-  })  : builder = ((a, b, c) => child),
-        maxHeight = height,
-        minHeight = height;
-
-  //需要自定义builder时使用
-  SliverHeaderDelegateshijian.builder({
-    required this.maxHeight,
-    this.minHeight = 0,
-    required this.builder,
-  });
-
-  final double maxHeight;
-  final double minHeight;
-  final SliverHeaderBuilder builder;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    Widget child = builder(context, shrinkOffset, overlapsContent);
-
-    return Container(child: SizedBox.expand(child: child));
-  }
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  bool shouldRebuild(SliverHeaderDelegateshijian oldDelegate) {
-    return oldDelegate.maxExtent != maxExtent ||
-        oldDelegate.minExtent != minExtent;
-  }
-}

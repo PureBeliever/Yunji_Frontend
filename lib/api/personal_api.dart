@@ -5,28 +5,14 @@ import 'dart:math';
 // ignore: unused_import
 import 'package:dio/dio.dart' as dios;
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:yunji/personal/bianpersonal_page.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
-import 'package:yunji/main/home_page.dart';
-import 'package:yunji/personal/personal_bei.dart';
-import 'package:yunji/personal/personal_head.dart';
 import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/sql/sqlite.dart';
 
 final dio = dios.Dio();
-
-final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
-final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
-final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement());
-final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
-final userNameChangeManagement = Get.put(UserNameChangeManagement());
-final personaljiyikucontroller = Get.put(PersonaljiyikuController());
-final otherPeoplePersonalInformationManagement =
-    Get.put(OtherPeoplePersonalInformationManagement());
 
 void xiuzhanghao(String xinusername, String username) async {
   Map<String, String> header = {
@@ -89,7 +75,6 @@ void xiugaijiyiku(
     Map<String, String> huida,
     int id,
     String zhuti,
-
     List<int> code,
     DateTime dingshi,
     List<int> xiabiao,
@@ -185,8 +170,10 @@ void shouji(String shouji) async {
       touxiang: tou,
       jiaru: serverData['jiaru']!);
   databaseManager.insertPersonalzhi(fido);
-  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(serverData['year']!);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(serverData['place']!);
+  selectorResultsUpdateDisplay
+      .dateOfBirthSelectorResultValueChange(serverData['year']!);
+  selectorResultsUpdateDisplay
+      .residentialAddressSelectorResultValueChange(serverData['place']!);
   backgroundImageChangeManagement.initBackgroundImage(bei);
   headPortraitChangeManagement.initHeadPortrait(tou);
   editPersonalDataValueManagement.changePersonalInformation(
@@ -245,8 +232,10 @@ void zhuce() async {
       touxiang: tou,
       jiaru: serverData['jiaru']!);
   databaseManager.insertPersonalzhi(fido);
-  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(serverData['year']!);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(serverData['place']!);
+  selectorResultsUpdateDisplay
+      .dateOfBirthSelectorResultValueChange(serverData['year']!);
+  selectorResultsUpdateDisplay
+      .residentialAddressSelectorResultValueChange(serverData['place']!);
   backgroundImageChangeManagement.initBackgroundImage(bei);
   headPortraitChangeManagement.initHeadPortrait(tou);
   editPersonalDataValueManagement.changePersonalInformation(
@@ -425,7 +414,8 @@ void jiyikupostpersonalapi(String username) async {
 
     await databaseManager.insertOtherPeoplePersonalMemoryBank(result);
 
-    otherPeoplePersonalInformationManagement.requestOtherPeoplePersonalInformationDataOnTheBackEnd(personalzhi);
+    otherPeoplePersonalInformationManagement
+        .requestOtherPeoplePersonalInformationDataOnTheBackEnd(personalzhi);
   }
 }
 
@@ -479,8 +469,10 @@ void postpersonalapi(String username) async {
       wode: jsonEncode(personalzhi['wode']));
 
   databaseManager.insertPersonalzhi(fido);
-  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(personalzhi['year']!);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(personalzhi['place']!);
+  selectorResultsUpdateDisplay
+      .dateOfBirthSelectorResultValueChange(personalzhi['year']!);
+  selectorResultsUpdateDisplay
+      .residentialAddressSelectorResultValueChange(personalzhi['place']!);
   backgroundImageChangeManagement.initBackgroundImage(bei);
   headPortraitChangeManagement.initHeadPortrait(tou);
   editPersonalDataValueManagement.changePersonalInformation(
@@ -622,8 +614,10 @@ Future<bool> yanzheng(String shoujiyan, String code) async {
         touxiang: tou,
         jiaru: serverData['jiaru']!);
     databaseManager.insertPersonalzhi(fido);
-    selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(serverData['year']!);
-    selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(serverData['place']!);
+    selectorResultsUpdateDisplay
+        .dateOfBirthSelectorResultValueChange(serverData['year']!);
+    selectorResultsUpdateDisplay
+        .residentialAddressSelectorResultValueChange(serverData['place']!);
     backgroundImageChangeManagement.initBackgroundImage(bei);
     headPortraitChangeManagement.initHeadPortrait(tou);
     editPersonalDataValueManagement.changePersonalInformation(

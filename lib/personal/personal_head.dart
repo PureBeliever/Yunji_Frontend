@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:yunji/main/home_page.dart';
+import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/home/home_page/home_page.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/personal/bianpersonal_page.dart';
-import 'package:yunji/cut/cut.dart';
-import 'package:yunji/main/login/login_settings.dart';
+import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/home/login/login_init.dart';
 
 class PersonalHead extends StatefulWidget {
   const PersonalHead({super.key});

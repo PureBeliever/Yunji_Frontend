@@ -8,10 +8,11 @@ import 'package:get/get.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/main/home_page.dart';
+import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/main/notification_settings.dart';
+import 'package:yunji/notification_init.dart';
 
 class Item {
   Item({

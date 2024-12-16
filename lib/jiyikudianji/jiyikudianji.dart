@@ -4,12 +4,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
-import 'package:yunji/cut/cut.dart';
+import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
-import 'package:yunji/main/home_page.dart';
+import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/main/login/login_settings.dart';
+import 'package:yunji/home/login/login_init.dart';
 
 // ignore: camel_case_types
 class jiyikudianji extends StatefulWidget {

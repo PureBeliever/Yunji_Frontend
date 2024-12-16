@@ -7,12 +7,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:yunji/cut/cut.dart';
+import 'package:yunji/switch/switch_page.dart';
 import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/main/notification_settings.dart';
+import 'package:yunji/notification_init.dart';
 
 
 class Yiwang extends StatefulWidget {

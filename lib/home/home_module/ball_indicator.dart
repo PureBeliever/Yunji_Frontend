@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-
+//主页面的刷新动画
 extension _GetRandomFromList<T> on List<T> {
   T get random {
     return this[math.Random().nextInt(length)];

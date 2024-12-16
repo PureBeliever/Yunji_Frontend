@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:yunji/main/notification_settings.dart';
+import 'package:yunji/notification_init.dart';
 import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';

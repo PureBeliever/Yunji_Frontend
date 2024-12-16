@@ -10,15 +10,18 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:keframe/keframe.dart';
 import 'package:like_button/like_button.dart';
-import 'package:yunji/cut/cut.dart';
+import 'package:yunji/switch/switch_page.dart';
 import 'package:yunji/jiyikudianji/jiyikudianji.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonalbei.dart';
 import 'package:yunji/jiyikudianji/jiyikudianjipersonalhead.dart';
-import 'package:yunji/main/home_page.dart';
+import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/api/personal_api.dart';
+import 'package:yunji/modified_component/sliver_header_delegate.dart';
 import 'package:yunji/personal/personal_page.dart';
 import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/main/login/sms_login.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
+import 'package:yunji/main/app_global_variable.dart';
+
 
 class Jiyikudianjipersonal extends StatefulWidget {
   const Jiyikudianjipersonal({super.key});
@@ -100,9 +103,6 @@ class InformationListScrollDataManagement extends GetxController {
   }
 }
 
-final userNameChangeManagement = Get.put(UserNameChangeManagement());
-final otherPeoplePersonalInformationManagement =
-    Get.put(OtherPeoplePersonalInformationManagement());
 
 // 其他人的个人信息管理
 class OtherPeoplePersonalInformationManagement extends GetxController {
@@ -2738,68 +2738,3 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
   }
 }
 
-typedef SliverHeaderBuilder = Widget Function(
-    BuildContext context, double shrinkOffset, bool overlapsContent);
-
-class SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  // child 为 header
-  SliverHeaderDelegate({
-    required this.maxHeight,
-    this.minHeight = 0,
-    required Widget child,
-  })  : builder = ((a, b, c) => child),
-        assert(minHeight <= maxHeight && minHeight >= 0);
-
-  //最大和最小高度相同
-  SliverHeaderDelegate.fixedHeight({
-    required double height,
-    required Widget child,
-  })  : builder = ((a, b, c) => child),
-        maxHeight = height,
-        minHeight = height;
-
-  //需要自定义builder时使用
-  SliverHeaderDelegate.builder({
-    required this.maxHeight,
-    this.minHeight = 0,
-    required this.builder,
-  });
-
-  final double maxHeight;
-  final double minHeight;
-  final SliverHeaderBuilder builder;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    Widget child = builder(context, shrinkOffset, overlapsContent);
-
-    return Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            //阴影
-
-            BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                offset: const Offset(0, 0.3),
-                blurRadius: 1.8),
-          ],
-        ),
-        child: SizedBox.expand(child: child));
-  }
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  bool shouldRebuild(SliverHeaderDelegate oldDelegate) {
-    return oldDelegate.maxExtent != maxExtent ||
-        oldDelegate.minExtent != minExtent;
-  }
-}
