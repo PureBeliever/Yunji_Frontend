@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/api/personal_api.dart';
+import 'package:yunji/setting/setting_api.dart';
+import 'package:yunji/main/app_global_variable.dart';
 
 // 用户名更改管理器
 class UserNameChangeManagement extends GetxController {
@@ -61,7 +62,7 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
       'username': username,
     };
 
-    final response = await dio.post('http://47.92.90.93:36233/zhanghao',
+    final response = await dio.post('http://47.92.90.93:36233/verifyUserName',
         data: jsonEncode(formdata), options: Options(headers: header));
     if (response.statusCode == 200) {
       cunzai = true;
@@ -126,7 +127,7 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
                           )
                         : GestureDetector(
                             onTap: () {
-                              xiuzhanghao(
+                              editUserName(
                                   username, userNameChangeManagement.userNameValue);
                               userNameChangeManagement
                                   .userNameChanged(username);

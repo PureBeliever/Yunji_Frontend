@@ -11,20 +11,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
 import 'package:like_button/like_button.dart';
+import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/switch/switch_page.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
 import 'package:yunji/modified_component/sliver_header_delegate.dart';
-import 'package:yunji/home/trial_recommendation_algorithm.dart';
+import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/ball_indicator.dart';
-import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/personal/bianpersonal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
-import 'package:yunji/jiyikudianji/jiyikudianji.dart';
-import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/personal/personal_head.dart';
-import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
+import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_head_portrait.dart';
+import 'package:yunji/review/creat_review/creat_review_page.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 // 主页记忆板刷新
@@ -269,12 +268,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             children: [
                                               IconButton(
                                                   onPressed: () {
-                                                    informationListScrollDataManagement
+                                                    otherPeopleInformationListScrollDataManagement
                                                         .initialScrollData(
                                                             refreshofHomepageMemoryBankextends
                                                                     .memoryRefreshValue[
                                                                 index]);
-                                                    jiyikupostpersonalapi(
+                                                    requestTheOtherPersonalData(
                                                         refreshofHomepageMemoryBankextends
                                                                 .memoryRefreshValue[
                                                             index]['username']);
@@ -426,11 +425,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     ),
                                                     const SizedBox(height: 20),
                                                     GetBuilder<
-                                                            PersonaljiyikuController>(
+                                                            UserPersonalInformationManagement>(
                                                         init:
-                                                            personaljiyikucontroller,
+                                                            userPersonalInformationManagement,
                                                         builder:
-                                                            (personaljiyikuController) {
+                                                            (userPersonalInformationDataManagement) {
                                                           return Row(
                                                             children: [
                                                               SizedBox(
@@ -470,10 +469,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                           (isLiked) async {
                                                                         if (loginStatus ==
                                                                             true) {
-                                                                          personaljiyikuController.shuaxinlaqu(
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['laqu'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
+                                                                     
                                                                           return !isLiked;
                                                                         } else {
                                                                           smsLogin(
@@ -481,10 +477,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                           return isLiked;
                                                                         }
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushilaqu(
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'id']),
+                                                                  
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -578,23 +571,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        if (loginStatus ==
-                                                                            true) {
-                                                                          personaljiyikuController.shuaxinshoucang(
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['shoucang'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          smsLogin(
-                                                                              context);
+                                                             
                                                                           return isLiked;
-                                                                        }
-                                                                      },
-                                                                      isLiked: personaljiyikuController.chushishoucang(
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'id']),
+                                                                        },
+                                                                      
+                                                                   
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -688,24 +669,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       ),
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        if (loginStatus ==
-                                                                            true) {
-                                                                          personaljiyikuController.shuaxinxihuan(
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['xihuan'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
-
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          smsLogin(
-                                                                              context);
-                                                                          return isLiked;
-                                                                        }
+                                                                      
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushixihuan(
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'id']),
+                                                                  
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -799,23 +765,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        if (loginStatus ==
-                                                                            true) {
-                                                                          personaljiyikuController.shuaxintiwen(
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['id'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['tiwen'],
-                                                                              refreshofHomepageMemoryBankextends.memoryRefreshValue![index]);
-                                                                          return !isLiked;
-                                                                        } else {
-                                                                          smsLogin(
-                                                                              context);
-                                                                          return isLiked;
-                                                                        }
+                                                                       
+                                                                      
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushitiwen(
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'id']),
+                                                                  
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {

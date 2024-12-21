@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/api/personal_api.dart';
+
+import 'package:yunji/home/login/sms/sms_api.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/home/home_page/home_page.dart';
+
 
 // 短信登录功能
 void smsLogin(BuildContext context) {
@@ -49,7 +50,7 @@ void smsLogin(BuildContext context) {
 
     if (sendingState.value) {
       phoneNumberStatus.value = true;
-      duanxin(phone); // 发送短信验证码
+      smsVerificationCode(phone); // 发送短信验证码
       _showToast(
         context,
         "验证码已发送",
@@ -89,7 +90,7 @@ void smsLogin(BuildContext context) {
     }
 
     verifyAttempt.value = false;
-    final verified = await yanzheng(phoneController.text, codeController.text);
+    final verified = await verification(phoneController.text, codeController.text);
 
     if (verified) {
       _onLoginSuccess(context);

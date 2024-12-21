@@ -2,19 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/switch/switch_page.dart';
-import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/jixv_fuxi/jixvfuxiyiwang.dart';
-import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
 import 'package:toastification/toastification.dart' as toast;
+
+import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/review/creat_review/creat_review_page.dart';
+import 'package:yunji/review/review/review_api.dart';
+import 'package:yunji/notification_init.dart';
 
 class Item {
   Item({
@@ -39,29 +35,24 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
   });
 }
 
-// 继续学习数据管理
-class ContinueLearningAboutDataManagement extends GetxController {
-  static ContinueLearningAboutDataManagement get to => Get.find();
-// 记忆库数据
-  Map<String, dynamic> memoryBankDataValue = {};
+// 复习数据管理
+class ReviewTheDataManagementOfMemoryBank extends GetxController {
+  static ReviewTheDataManagementOfMemoryBank get to => Get.find();
 
+  // 记忆库数据
+  Map<String, dynamic> memoryBankDataValue = {};
+  
   // 记忆库数量
   int numberOfMemories = 0;
-
+  
   // 记忆库下标
   List<int> theIndexValueOfTheMemoryItem = List.empty();
-
+  
   // 题目
   Map<String, dynamic> theNumberOfProblems = {};
 
   // 答案
   Map<String, dynamic> theNumberOfAnswers = {};
-
-  // String类型的题目
-  Map<int, String> theNumberOfProblemsString = {};
-
-  // String类型的答案
-  Map<int, String> theNumberOfAnswersString = {};
 
   // 记忆库标题
   String theTitleOfTheMemory = '';
@@ -87,22 +78,20 @@ class ContinueLearningAboutDataManagement extends GetxController {
   // 记忆库id
   int id = -1;
 
-  void initTheMemoryData(Map<String, dynamic> cizhi) {
-    id = cizhi['id'];
-    memoryBankDataValue = cizhi;
-    theTitleOfTheMemory = cizhi['zhuti'];
-    numberOfMemories = cizhi['xiabiao'].length;
-    theIndexValueOfTheMemoryItem = cizhi['xiabiao'];
-    theNumberOfProblems = jsonDecode(cizhi['timu']);
-    theNumberOfAnswers = jsonDecode(cizhi['huida']);
-    theNumberOfProblemsString = jsonDecode(cizhi['timu']);
-    theNumberOfAnswersString = jsonDecode(cizhi['huida']);
-    memoryScheme = jsonDecode(cizhi['code']);
-    numberOfReviews = jsonDecode(cizhi['cishu']);
-    messageNotificationStatus = cizhi['duanxin'] == 1 ? true : false;
-    alarmInformationStatus = cizhi['naozhong'] == 1 ? true : false;
-    completeReviewStatus = cizhi['zhuangtai'] == 1 ? true : false;
-    memorySchemeName = cizhi['fanganming'];
+  void initTheMemoryData(Map<String, dynamic> memoryBankData) {
+    id = memoryBankData['id'];
+    memoryBankDataValue = memoryBankData;
+    theTitleOfTheMemory = memoryBankData['zhuti'];
+    numberOfMemories = memoryBankData['xiabiao'].length;
+    theIndexValueOfTheMemoryItem = memoryBankData['xiabiao'];
+    theNumberOfProblems = jsonDecode(memoryBankData['timu']);
+    theNumberOfAnswers = jsonDecode(memoryBankData['huida']);
+    memoryScheme = jsonDecode(memoryBankData['code']);
+    numberOfReviews = jsonDecode(memoryBankData['cishu']);
+    messageNotificationStatus = memoryBankData['duanxin'] == 1 ? true : false;
+    alarmInformationStatus = memoryBankData['naozhong'] == 1 ? true : false;
+    completeReviewStatus = memoryBankData['zhuangtai'] == 1 ? true : false;
+    memorySchemeName = memoryBankData['fanganming'];
   }
 
   void refreshExpansionTile() {
@@ -110,21 +99,30 @@ class ContinueLearningAboutDataManagement extends GetxController {
   }
 }
 
-class JixvfuxiPage extends StatefulWidget {
-  const JixvfuxiPage({super.key});
+class FuxiPage extends StatefulWidget {
+  const FuxiPage({super.key});
 
   @override
-  State<JixvfuxiPage> createState() => _JixvfuxiPage();
+  State<FuxiPage> createState() => _FuxiPage();
 }
 
-class _JixvfuxiPage extends State<JixvfuxiPage> {
-  final List<Item> _data = generateItems(
-      continueLearningAboutDataManagement.numberOfMemories,
-      continueLearningAboutDataManagement.theIndexValueOfTheMemoryItem,
-      continueLearningAboutDataManagement.theNumberOfProblems,
-      continueLearningAboutDataManagement.theNumberOfAnswers);
-  final _controller = TextEditingController(text: continueLearningAboutDataManagement.theTitleOfTheMemory);
+class _FuxiPage extends State<FuxiPage> {
+  final NotificationHelper _notificationHelper = NotificationHelper();
+
   final FocusNode _focusNode = FocusNode();
+  final List<Item> _data = generateItems(
+      reviewTheDataManagementOfMemoryBank.numberOfMemories,
+      reviewTheDataManagementOfMemoryBank.theIndexValueOfTheMemoryItem,
+      reviewTheDataManagementOfMemoryBank.theNumberOfProblems,
+      reviewTheDataManagementOfMemoryBank.theNumberOfAnswers);
+  final _controller = TextEditingController(
+      text: reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory);
+  String zhuti = reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory;
+  bool message = reviewTheDataManagementOfMemoryBank.messageNotificationStatus;
+  bool alarm_information =
+      reviewTheDataManagementOfMemoryBank.alarmInformationStatus;
+  final jiyikucontroller = Get.put(Jiyikucontroller());
+
   @override
   void dispose() {
     _focusNode.dispose();
@@ -242,18 +240,18 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(
-                      left: 10, right: 10, top: 0, bottom: 0),
+                      left: 5, right: 5, top: 0, bottom: 0),
                   backgroundColor: Colors.blue,
                 ),
                 child: const Text(
-                  "下一步",
+                  "完成",
                   style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 ),
                 onPressed: () async {
-                  if (continueLearningAboutDataManagement.theTitleOfTheMemory.length == 0) {
+                  if (zhuti.length == 0) {
                     toast.toastification.show(
                         context: context,
                         type: toast.ToastificationType.success,
@@ -280,12 +278,98 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     int zhi = 0;
+                    Map<int, String> stringTimu = {};
+                    Map<int, String> stringHuida = {};
+                    DateTime dingshi = DateTime.now();
+                    List<int> memoryScheme = List.from(
+                        reviewTheDataManagementOfMemoryBank.memoryScheme);
+                    memoryScheme.removeAt(0);
+                    Map<String, String> numberOfReviews =
+                        reviewTheDataManagementOfMemoryBank.numberOfReviews.map(
+                            (key, value) => MapEntry(key.toString(), value));
+
+                    List<int> sortedList = [];
+
                     _data.forEach((uio) {
-                      continueLearningAboutDataManagement.theNumberOfProblemsString[zhi] = uio.tiwen;
-                      continueLearningAboutDataManagement.theNumberOfAnswersString[zhi] = uio.huida;
+                      sortedList.add(zhi);
+                      stringTimu[zhi] = uio.tiwen;
+                      stringHuida[zhi] = uio.huida;
                       zhi++;
                     });
-                    switchPage(context, Jixvfuxiyiwang());
+                    Map<String, String> stringtimu = stringTimu
+                        .map((key, value) => MapEntry(key.toString(), value));
+                    Map<String, String> stringhuida = stringHuida
+                        .map((key, value) => MapEntry(key.toString(), value));
+
+                    bool zhuangtai = reviewTheDataManagementOfMemoryBank
+                        .completeReviewStatus;
+
+                    if (memoryScheme.isNotEmpty) {
+                      // dingshi = dingshi.add(Duration(hours: code[0]));
+                      dingshi = dingshi.add(Duration(minutes: memoryScheme[0]));
+                      if (alarm_information == true) {
+                        final alarmSettings = AlarmSettings(
+                          id: 42,
+                          dateTime: dingshi,
+                          assetAudioPath: 'assets/alarm.mp3',
+                          loopAudio: true,
+                          vibrate: true,
+                          volume: 0.6,
+                          fadeDuration: 3.0,
+                          warningNotificationOnKill: Platform.isIOS,
+                          androidFullScreenIntent: true,
+                          notificationSettings: NotificationSettings(
+                            title: '开始复习 !',
+                            body: '记忆库${zhuti}到达预定的复习时间',
+                            stopButton: '停止闹钟',
+                            icon: 'notification_icon',
+                          ),
+                        );
+                        await Alarm.set(alarmSettings: alarmSettings);
+                      }
+                      if (message == true) {
+                        _notificationHelper.zonedScheduleNotification(
+                            id: 888,
+                            title: '开始复习 !',
+                            body: '记忆库${zhuti}到达预定的复习时间',
+                            scheduledDateTime: dingshi);
+                      }
+                    } else {
+                      zhuangtai = true;
+                      String memorySchemeName =
+                          reviewTheDataManagementOfMemoryBank.memorySchemeName;
+                      String? stringci;
+                      for (final entry in numberOfReviews.entries) {
+                        if (entry.value == memorySchemeName) {
+                          stringci = entry.key;
+                          break;
+                        }
+                      }
+                      if (stringci != null) {
+                        int ci = int.parse(stringci);
+                        int key = ci + 1;
+                        String value = numberOfReviews[stringci] ?? ' s';
+                        Map<String, String> newEntries = {'${key}': value};
+                        numberOfReviews.remove(stringci);
+                        numberOfReviews.addEntries(newEntries.entries);
+                      }
+                    }
+
+                    continueReview(
+                        stringtimu,
+                        stringhuida,
+                        reviewTheDataManagementOfMemoryBank.id,
+                        zhuti,
+                        memoryScheme,
+                        dingshi,
+                        sortedList,
+                        message,
+                        alarm_information,
+                        zhuangtai,
+                        numberOfReviews,
+                        reviewTheDataManagementOfMemoryBank.memorySchemeName,
+                        userNameChangeManagement.userNameValue);
+                    Navigator.of(context).pop();
                   }
                 },
               ),
@@ -296,11 +380,64 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
         surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: GetBuilder<ContinueLearningAboutDataManagement>(
-          init: continueLearningAboutDataManagement,
-          builder: (continueLearningAboutDataManagement) {
+      body: GetBuilder<ReviewTheDataManagementOfMemoryBank>(
+          init: reviewTheDataManagementOfMemoryBank,
+          builder: (reviewTheDataManagementOfMemoryBank) {
             return ListView(
               children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(width: 5),
+                        SizedBox(
+                          height: 30,
+                          child: Transform.scale(
+                            scale: 0.7,
+                            child: CupertinoSwitch(
+                              value: message,
+                              onChanged: (value) {
+                                setState(() {
+                                  message = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Text('信息通知',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(84, 87, 105, 1),
+                                fontSize: 17)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 5),
+                        SizedBox(
+                          height: 30,
+                          child: Transform.scale(
+                            scale: 0.7,
+                            child: CupertinoSwitch(
+                              value: alarm_information,
+                              onChanged: (value) {
+                                setState(() {
+                                  alarm_information = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Text('闹钟信息通知',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromRGBO(84, 87, 105, 1),
+                                fontSize: 17)),
+                      ],
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: Text(
@@ -317,11 +454,11 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       left: 5, right: 15, top: 50, bottom: 0),
                   child: TextField(
                     onChanged: (value) {
-                      continueLearningAboutDataManagement.theTitleOfTheMemory = value;
+                      zhuti = value;
                     },
+                    focusNode: _focusNode,
                     controller: _controller,
                     maxLength: 50,
-                    focusNode: _focusNode,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
@@ -353,7 +490,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                   dividerColor: Colors.white,
                   expansionCallback: (int index, bool isExpanded) {
                     _data[index].isExpanded = isExpanded;
-                    continueLearningAboutDataManagement.refreshExpansionTile();
+                    reviewTheDataManagementOfMemoryBank.refreshExpansionTile();
                   },
                   children: _data.map<ExpansionPanel>((Item item) {
                     return ExpansionPanel(

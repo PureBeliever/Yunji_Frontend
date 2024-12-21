@@ -6,12 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/review/creat_review/creat_review_api.dart';
 
 import 'package:yunji/switch/switch_page.dart';
-import 'package:yunji/chuangjianjiyiku/jiyiku.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:yunji/review/creat_review/creat_review_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page.dart';
 import 'package:yunji/notification_init.dart';
 
 
@@ -152,11 +152,10 @@ class _Yiwang extends State<Yiwang> {
                         scheduledDateTime: dingshi);
                   }
                 }
-                baocunjiyiku(
+                creatReview(
                     stringTimu,
                     stringhuida,
                     jiyikucontroller.zhutizhi!,
-
                     shijian[_valueChoice],
                     dingshi,
                     sortedList,
@@ -164,7 +163,8 @@ class _Yiwang extends State<Yiwang> {
                     alarm_information,
                     zhuangtai,
                     cishu,
-                    fanganming);
+                    fanganming,
+                    userNameChangeManagement.userNameValue);
 
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();

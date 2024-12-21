@@ -10,17 +10,16 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:keframe/keframe.dart';
 import 'package:like_button/like_button.dart';
+import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/switch/switch_page.dart';
-import 'package:yunji/jiyikudianji/jiyikudianji.dart';
-import 'package:yunji/jiyikudianji/jiyikudianjipersonalbei.dart';
-import 'package:yunji/jiyikudianji/jiyikudianjipersonalhead.dart';
-import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/api/personal_api.dart';
+import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_background_image.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
 import 'package:yunji/modified_component/sliver_header_delegate.dart';
-import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/home/login/sms/sms_login.dart';
+import 'package:yunji/personal/personal/personal/personal_page.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 
 
 class Jiyikudianjipersonal extends StatefulWidget {
@@ -31,8 +30,8 @@ class Jiyikudianjipersonal extends StatefulWidget {
 }
 
 //信息列表滚动数据管理
-class InformationListScrollDataManagement extends GetxController {
-  static InformationListScrollDataManagement get to => Get.find();
+class OtherPeopleInformationListScrollDataManagement extends GetxController {
+  static OtherPeopleInformationListScrollDataManagement get to => Get.find();
 //背景状态
   bool backgroundState = false;
   //模糊度
@@ -157,13 +156,13 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
 //读取用户数据库个人信息刷新数据
   void readDatabaseRefreshData() async {
     otherPeopleLikedMemoryBank =
-        await databaseManager.queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndex);
+        await queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndex);
 
     otherPeoplePulledMemoryBank =
-        await databaseManager.queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndex);
+        await queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndex);
 
     otherPeopleCreatedMemoryBank =
-        await databaseManager.queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndex);
+        await queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndex);
 
     update();
   }
@@ -175,8 +174,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       var otherPeopleLikedMemoryBankIndexint =
           otherPeoplePersonalInformationData['xihuan'].cast<int>();
       otherPeopleLikedMemoryBankIndex = otherPeopleLikedMemoryBankIndexint;
-      otherPeopleLikedMemoryBank = await databaseManager
-          .queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndexint);
+      otherPeopleLikedMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndexint);
     }
 
     if (otherPeoplePersonalInformationData['shoucang'] != null) {
@@ -190,8 +188,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       var otherPeoplePulledMemoryBankIndexint =
           otherPeoplePersonalInformationData['laqu'].cast<int>();
       otherPeoplePulledMemoryBankIndex = otherPeoplePulledMemoryBankIndexint;
-      otherPeoplePulledMemoryBank = await databaseManager
-            .queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndexint);
+      otherPeoplePulledMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndexint);
     }
 
     if (otherPeoplePersonalInformationData['tiwen'] != null) {
@@ -204,32 +201,24 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       var otherPeopleCreatedMemoryBankIndexint =
           otherPeoplePersonalInformationData['wode'].cast<int>();
       otherPeopleCreatedMemoryBankIndex = otherPeopleCreatedMemoryBankIndexint;
-      otherPeopleCreatedMemoryBank = await databaseManager
-            .queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndexint);
+      otherPeopleCreatedMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndexint);
     }
     update();
   }
 
-  // void shuxinjiemian() {
-  //   update();
-  // }
 }
 
 class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
     with TickerProviderStateMixin {
   late TabController tabController;
-  final refreshofHomepageMemoryBankextends =
-      Get.put(RefreshofHomepageMemoryBankextends());
-  final jiyikuBeicontroller = Get.put(JiyikuBeicontroller());
-  final informationListScrollDataManagement =
-      Get.put(InformationListScrollDataManagement());
-  final jiyukupersonalHeadcontroller = Get.put(JiyukupersonalHeadcontroller());
+  final otherPeopleBackgroundImageChangeManagement = Get.put(OtherPeopleBackgroundImageChangeManagement());
+  final otherPeopleHeadPortraitChangeManagement = Get.put(OtherPeopleHeadPortraitChangeManagement());
 
   ScrollController scrollController = ScrollController();
 
   @override
   void dispose() {
-    informationListScrollDataManagement.clearData();
+    otherPeopleInformationListScrollDataManagement.clearData();
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
@@ -245,7 +234,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     )..addListener(() {
-        informationListScrollDataManagement.calculateTheListName(tabController.index);
+        otherPeopleInformationListScrollDataManagement.calculateTheListName(tabController.index);
         otherPeoplePersonalInformationManagement
             .calculateTheNumberOfMemoryBanksPerPage(tabController.index);
       });
@@ -253,14 +242,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           scrollController.addListener(() {
             if (scrollController.offset >= 160) {
-              informationListScrollDataManagement.setBackgroundColortrue();
+                otherPeopleInformationListScrollDataManagement.setBackgroundColortrue();
             } else if (scrollController.offset < 160) {
-              informationListScrollDataManagement.setBackgroundColorfalse();
+              otherPeopleInformationListScrollDataManagement.setBackgroundColorfalse();
             }
             if (scrollController.offset >= 235) {
-              informationListScrollDataManagement.setTransparencyToDisplayText();
+                otherPeopleInformationListScrollDataManagement.setTransparencyToDisplayText();
             } else if (scrollController.offset < 235) {
-              informationListScrollDataManagement.setTransparencyToHideText();
+                otherPeopleInformationListScrollDataManagement.setTransparencyToHideText();
             }
           });
         }));
@@ -268,7 +257,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-    jiyikupostpersonalapi(informationListScrollDataManagement.scrollDataValue['username']);
+      requestTheOtherPersonalData(otherPeopleInformationListScrollDataManagement.scrollDataValue['username']);
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -338,17 +327,17 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                   SliverAppBar(
                     title: Padding(
                       padding: const EdgeInsets.only(left: 48.0),
-                      child: GetBuilder<InformationListScrollDataManagement>(
-                          init: informationListScrollDataManagement,
-                          builder: (informationListScrollDataManagement) {
+                      child: GetBuilder<OtherPeopleInformationListScrollDataManagement>(
+                          init: otherPeopleInformationListScrollDataManagement,
+                          builder: (otherPeopleInformationListScrollDataManagement) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  informationListScrollDataManagement.scrollDataValue['name'],
+                                  otherPeopleInformationListScrollDataManagement.scrollDataValue['name'],
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(
-                                        informationListScrollDataManagement
+                                        otherPeopleInformationListScrollDataManagement
                                             .opacity),
                                     fontSize: 21,
                                     fontWeight: FontWeight.w700,
@@ -357,11 +346,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 Text(
                                   otherPeoplePersonalInformationManagement
                                           .displayText +
-                                      informationListScrollDataManagement
+                                        otherPeopleInformationListScrollDataManagement
                                           .displayText,
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(
-                                        informationListScrollDataManagement
+                                        otherPeopleInformationListScrollDataManagement
                                             .opacity),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -442,29 +431,29 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                           children: <Widget>[
                             Positioned.fill(
                               child: GetBuilder<
-                                  InformationListScrollDataManagement>(
-                                init: informationListScrollDataManagement,
-                                builder: (informationListScrollDataManagement) {
+                                  OtherPeopleInformationListScrollDataManagement>(
+                                init: otherPeopleInformationListScrollDataManagement,
+                                builder: (otherPeopleInformationListScrollDataManagement) {
                                   return ImageFiltered(
                                     imageFilter: ImageFilter.blur(
                                         sigmaX:
-                                            informationListScrollDataManagement
+                                            otherPeopleInformationListScrollDataManagement
                                                 .filter,
                                         sigmaY: 0),
                                     child: GestureDetector(
                                       onTap: () {
-                                        jiyikuBeicontroller.cizhi(
-                                            informationListScrollDataManagement
+                                        otherPeopleBackgroundImageChangeManagement.initBackgroundImage(
+                                            otherPeopleInformationListScrollDataManagement
                                                 .scrollDataValue['beijing']);
                                         switchPage(
                                             context, const JiyikuPersonalBei());
                                       },
-                                      child: informationListScrollDataManagement
+                                      child: otherPeopleInformationListScrollDataManagement
                                                   .scrollDataValue['beijing'] !=
                                               null
                                           ? Image.file(
                                               File(
-                                                  informationListScrollDataManagement
+                                                  otherPeopleInformationListScrollDataManagement
                                                       .scrollDataValue['beijing']),
                                               fit: BoxFit.cover,
                                             )
@@ -483,13 +472,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                               left: 0,
                               right: 0,
                               child: GetBuilder<
-                                  InformationListScrollDataManagement>(
-                                init: informationListScrollDataManagement,
-                                builder: (informationListScrollDataManagement) {
+                                  OtherPeopleInformationListScrollDataManagement>(
+                                init: otherPeopleInformationListScrollDataManagement,
+                                builder: (otherPeopleInformationListScrollDataManagement) {
                                   return AnimatedContainer(
                                     duration: Duration(
                                         seconds:
-                                            informationListScrollDataManagement
+                                            otherPeopleInformationListScrollDataManagement
                                                     .backgroundState
                                                 ? 1
                                                 : 0),
@@ -499,7 +488,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                         end: Alignment.topCenter,
                                         colors: [
                                           Colors.black.withOpacity(
-                                              informationListScrollDataManagement
+                                              otherPeopleInformationListScrollDataManagement
                                                       .backgroundState
                                                   ? 0.5
                                                   : 0),
@@ -523,8 +512,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                           0.06 * kToolbarHeight),
                                 child: GestureDetector(
                                   onTap: () {
-                                    jiyukupersonalHeadcontroller.cizhi(
-                                        informationListScrollDataManagement
+                                    otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
+                                        otherPeopleInformationListScrollDataManagement
                                             .scrollDataValue['touxiang']);
                                     switchPage(context,
                                         const Jiyikudianjipersonalhead());
@@ -535,11 +524,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     child: CircleAvatar(
                                       backgroundColor: Colors.grey,
                                       backgroundImage:
-                                          informationListScrollDataManagement
+                                          otherPeopleInformationListScrollDataManagement
                                                       .scrollDataValue['touxiang'] !=
                                                   null
                                               ? FileImage(File(
-                                                  informationListScrollDataManagement
+                                                  otherPeopleInformationListScrollDataManagement
                                                       .scrollDataValue['touxiang']))
                                               : const AssetImage(
                                                   'assets/chuhui.png'),
@@ -569,8 +558,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      jiyukupersonalHeadcontroller.cizhi(
-                                          informationListScrollDataManagement
+                                      otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
+                                          otherPeopleInformationListScrollDataManagement
                                               .scrollDataValue['touxiang']);
                                       switchPage(context,
                                           const Jiyikudianjipersonalhead());
@@ -614,7 +603,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 ],
                               ),
                               Text(
-                                informationListScrollDataManagement.scrollDataValue['name'],
+                                otherPeopleInformationListScrollDataManagement.scrollDataValue['name'],
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 24,
@@ -639,12 +628,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   }),
                               Padding(
                                 padding: const EdgeInsets.only(top: 13.0),
-                                child: informationListScrollDataManagement
+                                  child: otherPeopleInformationListScrollDataManagement
                                         .scrollDataValue['brief']
                                         .trim()
                                         .isNotEmpty
                                     ? Text(
-                                        informationListScrollDataManagement
+                                          otherPeopleInformationListScrollDataManagement
                                             .scrollDataValue['brief'],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -663,7 +652,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 direction: Axis.horizontal,
                                 textDirection: TextDirection.ltr,
                                 children: [
-                                  informationListScrollDataManagement
+                                    otherPeopleInformationListScrollDataManagement
                                           .scrollDataValue['year']
                                           .trim()
                                           .isNotEmpty
@@ -681,7 +670,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             Expanded(
                                               child: Text(
                                                 '出生于 ' +
-                                                    informationListScrollDataManagement
+                                                    otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue['year'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
@@ -698,7 +687,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                           ],
                                         )
                                       : const SizedBox(),
-                                  informationListScrollDataManagement
+                                    otherPeopleInformationListScrollDataManagement
                                           .scrollDataValue['place']
                                           .trim()
                                           .isNotEmpty
@@ -715,7 +704,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             ),
                                             Expanded(
                                               child: Text(
-                                                informationListScrollDataManagement
+                                                otherPeopleInformationListScrollDataManagement
                                                     .scrollDataValue['place'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
@@ -742,7 +731,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                       ),
                                       Expanded(
                                         child: Text(
-                                          informationListScrollDataManagement
+                                          otherPeopleInformationListScrollDataManagement
                                               .scrollDataValue['jiaru'],
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
@@ -863,9 +852,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                   ),
                 ];
               },
-              body: GetBuilder<PersonaljiyikuController>(
-                  init: personaljiyikucontroller,
-                  builder: (personaljiyikucontroller) {
+              body: GetBuilder<UserPersonalInformationManagement>(
+                  init: userPersonalInformationManagement,
+                  builder: (userPersonalInformationManagement) {
                     return GetBuilder<OtherPeoplePersonalInformationManagement>(
                         init: otherPeoplePersonalInformationManagement,
                         builder: (otherPeoplePersonalInformationManagement) {
@@ -1115,21 +1104,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinlaqu(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['laqu'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
-
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                               
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushilaqu(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
+                                                                 
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1214,20 +1191,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinshoucang(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['shoucang'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                     
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushishoucang(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
+                                                                      
+                                                                 
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1312,21 +1279,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         ),
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinxihuan(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['xihuan'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
-
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                       
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushixihuan(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
+                                                                       
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1411,20 +1366,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxintiwen(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['tiwen'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                     
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushitiwen(otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['id']),
+                                                          
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1732,20 +1676,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinlaqu(
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['laqu'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                          
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushilaqu(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
+                                                                     
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1830,20 +1763,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinshoucang(
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['shoucang'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                        
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushishoucang(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
+                                                                     
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -1928,21 +1850,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         ),
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinxihuan(
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['xihuan'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
-
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                       
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushixihuan(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
+                                                                    
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2027,20 +1937,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxintiwen(
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['tiwen'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                        
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushitiwen(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['id']),
+                                                            
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2355,20 +2254,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinlaqu(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['laqu'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushilaqu(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
+                                                                     
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2453,20 +2341,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinshoucang(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['shoucang'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                      
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushishoucang(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
+                                                                        
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2551,21 +2428,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         ),
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxinxihuan(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['xihuan'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
-
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                      
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushixihuan(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
+                                                                      
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {
@@ -2650,20 +2515,9 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                             20,
                                                                         onTap:
                                                                             (isLiked) async {
-                                                                          if (loginStatus ==
-                                                                              true) {
-                                                                            personaljiyikucontroller.shuaxintiwen(
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['tiwen'],
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank![index]);
-                                                                            return !isLiked;
-                                                                          } else {
-                                                                            smsLogin(context);
-                                                                            return isLiked;
-                                                                          }
+                                                                     
                                                                         },
-                                                                        isLiked:
-                                                                            personaljiyikucontroller.chushitiwen(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['id']),
+                                                               
                                                                         likeBuilder:
                                                                             (bool
                                                                                 isLiked) {

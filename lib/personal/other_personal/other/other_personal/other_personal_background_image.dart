@@ -12,18 +12,18 @@ class JiyikuPersonalBei extends StatefulWidget {
   State<JiyikuPersonalBei> createState() => _JiyikuPersonalBeiState();
 }
 
-class JiyikuBeicontroller extends GetxController {
-  static JiyikuBeicontroller get to => Get.find();
-  File? beiimage;
+class OtherPeopleBackgroundImageChangeManagement  extends GetxController {
+  static OtherPeopleBackgroundImageChangeManagement get to => Get.find();
+  File? backgroundImageValue;
 
-  void cizhi(String ?zhi) {
-    beiimage = zhi!=null?File(zhi):null;
+  void initBackgroundImage(String ?backgroundImage) {
+    backgroundImageValue = backgroundImage!=null?File(backgroundImage):null;
   }
 }
 
 class _JiyikuPersonalBeiState extends State<JiyikuPersonalBei> {
-  final jiyikuBeicontroller = Get.put(JiyikuBeicontroller());
 
+  final otherPeopleBackgroundImageChangeManagement = Get.put(OtherPeopleBackgroundImageChangeManagement());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +45,12 @@ class _JiyikuPersonalBeiState extends State<JiyikuPersonalBei> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: GetBuilder<JiyikuBeicontroller>(
-              init: jiyikuBeicontroller,
+            child: GetBuilder<OtherPeopleBackgroundImageChangeManagement>(
+              init: otherPeopleBackgroundImageChangeManagement,
               builder: (controller) {
-                return controller.beiimage != null
+                return controller.backgroundImageValue != null
                     ? PhotoView(
-                        imageProvider: FileImage(controller.beiimage!),
+                          imageProvider: FileImage(controller.backgroundImageValue!),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       )

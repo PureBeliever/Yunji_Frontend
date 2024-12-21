@@ -4,8 +4,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:keframe/keframe.dart';
-import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,23 +11,19 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
+import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/modified_component/sliver_header_delegate.dart';
-import 'package:yunji/personal/bianpersonal_page.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page.dart';
+import 'package:yunji/personal/personal/personal_api.dart';
 import 'package:yunji/switch/switch_page.dart';
-import 'package:yunji/jiyikudianji/jiyikudianji.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/fuxi/fuxi_page.dart';
-import 'package:yunji/personal/personal_bei.dart';
-import 'package:yunji/personal/personal_head.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
-import 'package:yunji/home/home_page/home_page.dart';
+import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
+import 'package:yunji/review/review/review.dart';
+import 'package:yunji/personal/personal/personal/personal_background_image.dart';
+import 'package:yunji/personal/personal/personal/personal_head_portrait.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
-import 'package:yunji/sql/sqlite.dart';
-
-
-
+import 'package:yunji/personal/personal/personal_sqlite.dart';
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
@@ -38,52 +32,72 @@ class PersonalPage extends StatefulWidget {
   State<PersonalPage> createState() => _PersonalPageState();
 }
 
-class RollingeffectController extends GetxController {
-  static RollingeffectController get to => Get.find();
+class UserInformationListScrollDataManagement extends GetxController {
+  static UserInformationListScrollDataManagement get to => Get.find();
 
-  bool beijing = false;
+//背景状态
+  bool backgroundState = false;
+  //模糊度
   double filter = 0.0;
-  double shadowtitle = 0.0;
-  String indexname = '记忆库';
 
-  void suoying(int ind) {
-    String ji = ind == 0 ? '记忆库' : '';
-    String wen = ind == 1 ? '拉取' : '';
-    String hui = ind == 2 ? '回复' : '';
-    String xi = ind == 3 ? '喜欢' : '';
-    indexname = ji + wen + hui + xi;
+  //透明度
+  double opacity = 0.0;
+  //显示文本
+  String displayText = '记忆库';
+
+//计算显示的列表名
+  void calculateTheListName(int ind) {
+    //其他人创建的记忆库列表名
+    String createdMemoryBankListName = ind == 0 ? '记忆库' : '';
+    //其他人拉取的记忆库列表名
+    String pulledMemoryBankListName = ind == 1 ? '拉取' : '';
+    //其他人回复的记忆库列表名
+    String replyMemoryBankListName = ind == 2 ? '回复' : '';
+    //其他人喜欢的记忆库列表名
+    String likedMemoryBankListName = ind == 3 ? '喜欢' : '';
+    //计算显示的列表名
+    displayText = createdMemoryBankListName +
+        pulledMemoryBankListName +
+        replyMemoryBankListName +
+        likedMemoryBankListName;
     update();
   }
 
-  void kong() {
-    beijing = false;
+  //退出页面时清空数据
+  void clearData() {
+    backgroundState = false;
     filter = 0.0;
-    shadowtitle = 0.0;
-    indexname = '记忆库';
+    opacity = 0.0;
+    displayText = '记忆库';
   }
 
-  void onebeijing() {
+//设置滚动变化时的背景颜色
+  void setBackgroundColortrue() {
     filter = 3;
-    beijing = true;
+    backgroundState = true;
     update();
   }
 
-  void onenobeijing() {
+//设置滚动变化时的背景颜色
+  void setBackgroundColorfalse() {
     filter = 0;
-    beijing = false;
+    backgroundState = false;
     update();
   }
 
-  void onetitle() {
-    shadowtitle = 1;
+//设置透明度显示文本
+  void setTransparencyToDisplayText() {
+    opacity = 1;
     update();
   }
 
-  void onenotitle() {
-    shadowtitle = 0;
+//设置透明度隐藏文本
+  void setTransparencyToHideText() {
+    opacity = 0;
     update();
   }
 }
+
 // 记忆库完成状态
 class MemoryBankCompletionStatus extends GetxController {
   static MemoryBankCompletionStatus get to => Get.find();
@@ -95,17 +109,18 @@ class MemoryBankCompletionStatus extends GetxController {
 
   Widget memoryLibraryStatusDisplayWidget(
       Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
-        
     var setTimeValueDynamic = widgetsDisplayValues['dingshi'];
     DateTime setTimeValueDateTime = DateTime.parse(setTimeValueDynamic);
     DateTime presentTimeDateTime = DateTime.now();
 
-    Duration setTimeValueDuration = setTimeValueDateTime.difference(presentTimeDateTime);
+    Duration setTimeValueDuration =
+        setTimeValueDateTime.difference(presentTimeDateTime);
     final int numberOfDays = setTimeValueDuration.inDays;
     final int numberOfHours = setTimeValueDuration.inHours % 24;
     final int numberOfMinutes = setTimeValueDuration.inMinutes % 60;
 
-    Map<String, dynamic> theWidgetDisplaysTheValue = jsonDecode(widgetsDisplayValues['cishu']);
+    Map<String, dynamic> theWidgetDisplaysTheValue =
+        jsonDecode(widgetsDisplayValues['cishu']);
 
     int displaysTheNumberOfValues = theWidgetDisplaysTheValue.length;
     List<String> statusRecord = [];
@@ -126,7 +141,8 @@ class MemoryBankCompletionStatus extends GetxController {
         }
       },
     );
-    String displayStatusRecord = "距离下一次复习还剩${numberOfDays}天${numberOfHours}小时${numberOfMinutes}分钟";
+    String displayStatusRecord =
+        "距离下一次复习还剩${numberOfDays}天${numberOfHours}小时${numberOfMinutes}分钟";
 
     double height = displaysTheNumberOfValues * 23;
 
@@ -141,7 +157,7 @@ class MemoryBankCompletionStatus extends GetxController {
             child: ListView.builder(
                 cacheExtent: 500,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: displaysTheNumberOfValues,   
+                itemCount: displaysTheNumberOfValues,
                 itemBuilder: (context, index) {
                   return Text(
                     statusRecord[index],
@@ -155,7 +171,8 @@ class MemoryBankCompletionStatus extends GetxController {
           ),
           GestureDetector(
             onTap: () {
-              continueLearningAboutDataManagement.initTheMemoryData(widgetsDisplayValues);
+              continueLearningAboutDataManagement
+                  .initTheMemoryData(widgetsDisplayValues);
               switchPage(context, JixvfuxiPage());
             },
             child: Text(
@@ -174,10 +191,12 @@ class MemoryBankCompletionStatus extends GetxController {
       ),
     );
 
-    if (setTimeValueDuration.inMinutes <= 0 && widgetsDisplayValues['zhuangtai'] == 0) {
+    if (setTimeValueDuration.inMinutes <= 0 &&
+        widgetsDisplayValues['zhuangtai'] == 0) {
       statusDisplayWidget = GestureDetector(
         onTap: () {
-          reviewTheDataManagementOfMemoryBank.initTheMemoryData(widgetsDisplayValues);
+          reviewTheDataManagementOfMemoryBank
+              .initTheMemoryData(widgetsDisplayValues);
           switchPage(context, FuxiPage());
         },
         child: Text(
@@ -193,7 +212,8 @@ class MemoryBankCompletionStatus extends GetxController {
         ),
       );
     }
-    if (setTimeValueDuration.inMinutes > 0 && widgetsDisplayValues['zhuangtai'] == 0) {
+    if (setTimeValueDuration.inMinutes > 0 &&
+        widgetsDisplayValues['zhuangtai'] == 0) {
       statusDisplayWidget = Text(
         displayStatusRecord,
         style: TextStyle(
@@ -212,262 +232,83 @@ class MemoryBankCompletionStatus extends GetxController {
   }
 }
 
-class PersonaljiyikuController extends GetxController {
-  static PersonaljiyikuController get to => Get.find();
-  List<Map<String, dynamic>>? xihuanzhi = [];
-  List<Map<String, dynamic>>? laquzhi = [];
-  List<Map<String, dynamic>>? wodezhi = [];
-  List<int> xihuan = [];
-  List<int> shoucang = [];
-  List<int> laqu = [];
-  List<int> tiwen = [];
-  List<int> wo = [];
-  String indexname = ' ';
+class UserPersonalInformationManagement extends GetxController {
+  static UserPersonalInformationManagement get to => Get.find();
 
-  void suoying(int ind) {
-    String ji = ind == 0 ? '${wo.length}个' : '';
-    String wen = ind == 1 ? '${laqu.length}个' : '';
-    String hui = ind == 2 ? '' : '';
-    String xi = ind == 3 ? '${xihuan.length}个' : '';
-    indexname = ji + wen + hui + xi;
+  //其他人喜欢的记忆库
+  List<Map<String, dynamic>>? userLikedMemoryBank = [];
+
+  //其他人拉取的记忆库
+  List<Map<String, dynamic>>? userPulledMemoryBank = [];
+
+  //其他人创建的记忆库
+  List<Map<String, dynamic>>? userCreatedMemoryBank = [];
+
+  //用户喜欢的记忆库下标
+  List<int> userLikedMemoryBankIndex = [];
+  //用户收藏的记忆库下标
+  List<int> userCollectedMemoryBankIndex = [];
+  //用户拉取的记忆库下标
+  List<int> userPulledMemoryBankIndex = [];
+  //用户回复的记忆库下标
+  List<int> userReplyMemoryBankIndex = [];
+  //用户创建的记忆库下标
+  List<int> userCreatedMemoryBankIndex = [];
+//显示文本
+  String displayText = ' ';
+//计算每个页面的记忆库数量
+  void calculateTheNumberOfMemoryBanksPerPage(int currentPageSubscript) {
+    //创建的记忆库数量String类型
+    String userCollectedMemoryBankIndexString = currentPageSubscript == 0
+        ? '${userCreatedMemoryBankIndex!.length}个'
+        : '';
+    //拉取的记忆库数量String类型
+    String userPulledMemoryBankIndexString = currentPageSubscript == 1
+        ? '${userPulledMemoryBankIndex!.length}个'
+        : '';
+    //回复的记忆库数量String类型
+    String userReplyMemoryBankIndexString =
+        currentPageSubscript == 2 ? '${userReplyMemoryBankIndex!.length}个' : '';
+    //喜欢的记忆库数量String类型
+    String userLikedMemoryBankIndexString =
+        currentPageSubscript == 3 ? '${userLikedMemoryBankIndex!.length}个' : '';
+    displayText = userCollectedMemoryBankIndexString +
+        userPulledMemoryBankIndexString +
+        userReplyMemoryBankIndexString +
+        userLikedMemoryBankIndexString;
     update();
   }
 
-  void apiqingqiu(Map<String, dynamic> zhi) async {
-    if (zhi['xihuan'] != null) {
-      var xihuancast = zhi['xihuan'].cast<int>();
-      xihuan = xihuancast;
-      xihuanzhi = await databaseManager.queryUserPersonalMemoryBank(xihuancast);
+//请求用户个人资料
+  void requestUserPersonalInformationDataOnTheBackEnd(
+      Map<String, dynamic> userPersonalInformationData) async {
+    if (userPersonalInformationData['like_list'] != null) {
+      var userLikedMemoryBankIndexint =
+          userPersonalInformationData['like_list'].cast<int>();
+      userLikedMemoryBankIndex = userLikedMemoryBankIndexint;
+      userLikedMemoryBank = await queryUserPersonalMemoryBank(userLikedMemoryBankIndexint);
     }
 
-    if (zhi['shoucang'] != null) {
-      var shoucangcast = zhi['shoucang'].cast<int>();
-      shoucang = shoucangcast;
+    if (userPersonalInformationData['collect_list'] != null) {
+      var userCollectedMemoryBankIndexint =
+          userPersonalInformationData['collect_list'].cast<int>();
+      userCollectedMemoryBankIndex = userCollectedMemoryBankIndexint;
     }
 
-    if (zhi['laqu'] != null) {
-      var laqucast = zhi['laqu'].cast<int>();
-      laqu = laqucast;
-      laquzhi = await databaseManager.queryUserPersonalMemoryBank(laqucast);
+    if (userPersonalInformationData['pull_list'] != null) {
+      var userPulledMemoryBankIndexint =
+          userPersonalInformationData['pull_list'].cast<int>();
+      userPulledMemoryBankIndex = userPulledMemoryBankIndexint;
+      userPulledMemoryBank = await queryUserPersonalMemoryBank(userPulledMemoryBankIndexint);
     }
 
-    if (zhi['tiwen'] != null) {
-      var tiwencast = zhi['tiwen'].cast<int>();
-      tiwen = tiwencast;
+    if (userPersonalInformationData['review_list'] != null) {
+      var userReplyMemoryBankIndexint =
+          userPersonalInformationData['review_list'].cast<int>();
+      userReplyMemoryBankIndex = userReplyMemoryBankIndexint;
     }
 
-    if (zhi['wode'] != null) {
-      var wodecast = zhi['wode'].cast<int>();
-      indexname = '${wodecast.length}个';
-      wo = wodecast;
-      wodezhi = await databaseManager.queryUserPersonalMemoryBank(wodecast);
-    }
     update();
-  }
-
-  void shuaxin(Map<String, dynamic>? zhi) async {
-    var laqujson = zhi?['laqu'] == null ? null : jsonDecode(zhi?['laqu']);
-    var tiwenjson = zhi?['tiwen'] == null ? null : jsonDecode(zhi?['tiwen']);
-    var wodejson = zhi?['wode'] == null ? null : jsonDecode(zhi?['wode']);
-    var shoucangjson =
-        zhi?['shoucang'] == null ? null : jsonDecode(zhi?['shoucang']);
-    var xihuanjson = zhi?['xihuan'] == null ? null : jsonDecode(zhi?['xihuan']);
-
-    if (xihuanjson != null) {
-      var xihuancast = xihuanjson.cast<int>();
-      xihuan = xihuancast;
-      xihuanzhi = await databaseManager.queryUserPersonalMemoryBank(xihuancast);
-    }
-
-    if (shoucangjson != null) {
-      var shoucangcast = shoucangjson.cast<int>();
-      shoucang = shoucangcast;
-    }
-
-    if (laqujson != null) {
-      var laqucast = laqujson.cast<int>();
-      laqu = laqucast;
-      laquzhi = await databaseManager.queryUserPersonalMemoryBank(laqucast);
-    }
-
-    if (tiwenjson != null) {
-      var tiwencast = tiwenjson.cast<int>();
-      tiwen = tiwencast;
-    }
-
-    if (wodejson != null) {
-      var wodecast = wodejson.cast<int>();
-      wo = wodecast;
-      wodezhi = await databaseManager.queryUserPersonalMemoryBank(wodecast);
-    }
-    update();
-  }
-
-  void shuaxinxihuan(int id, int shuzhi, Map<String, dynamic> xizhi) async {
-    if (xihuan.contains(id)) {
-      xihuan.remove(id);
-      shuzhi -= 1;
-    } else {
-      xihuan.add(id);
-      shuzhi += 1;
-    }
-
-    xihuanapi(userNameChangeManagement.userNameValue, jsonEncode(xihuan), id,
-        shuzhi);
-
-    await databaseManager.updateMemoryBankLikes(
-        userNameChangeManagement.userNameValue,
-        jsonEncode(xihuan),
-        id,
-        shuzhi,
-        xizhi);
-
-    Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
-    personaljiyikucontroller.shuaxin(zhi);
-  }
-
-  void shuaxinshoucang(int id, int shuzhi, Map<String, dynamic> xizhi) async {
-    if (shoucang.contains(id)) {
-      shoucang.remove(id);
-      shuzhi -= 1;
-    } else {
-      shoucang.add(id);
-      shuzhi += 1;
-    }
-
-    shoucangapi(userNameChangeManagement.userNameValue, jsonEncode(shoucang),
-        id, shuzhi);
-
-    await databaseManager.updateMemoryBankCollects(
-        userNameChangeManagement.userNameValue,
-        jsonEncode(shoucang),
-        id,
-        shuzhi,
-        xizhi);
-
-    Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
-    personaljiyikucontroller.shuaxin(zhi);
-  }
-
-  void shuaxinlaqu(int id, int shuzhi, Map<String, dynamic> xizhi) async {
-    if (laqu.contains(id)) {
-      laqu.remove(id);
-      shuzhi -= 1;
-    } else {
-      laqu.add(id);
-      shuzhi += 1;
-    }
-    laquapi(
-        userNameChangeManagement.userNameValue, jsonEncode(laqu), id, shuzhi);
-
-    await databaseManager.updateMemoryBankLags(
-        userNameChangeManagement.userNameValue,
-        jsonEncode(laqu),
-        id,
-        shuzhi,
-        xizhi);
-
-    Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
-    personaljiyikucontroller.shuaxin(zhi);
-  }
-
-  void shuaxintiwen(int id, int shuzhi, Map<String, dynamic> xizhi) async {
-    if (tiwen.contains(id)) {
-      shuzhi -= 1;
-      tiwen.remove(id);
-    } else {
-      tiwen.add(id);
-      shuzhi += 1;
-    }
-
-    tiwenapi(userNameChangeManagement.userNameValue, jsonEncode(tiwen), id,
-        shuzhi);
-
-    await databaseManager.updateMemoryBankQuestions(
-        userNameChangeManagement.userNameValue,
-        jsonEncode(tiwen),
-        id,
-        shuzhi,
-        xizhi);
-
-    Map<String, dynamic>? zhi = await databaseManager.chapersonal();
-    List<Map<String, dynamic>>? mainzhi = await databaseManager.queryHomePageMemoryBank();
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
-    otherPeoplePersonalInformationManagement.readDatabaseRefreshData();
-    personaljiyikucontroller.shuaxin(zhi);
-  }
-
-  bool chushilaqu(int id) {
-    if (laqu.contains(id)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  int chushilaquint(int id) {
-    if (laqu.contains(id)) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  bool chushitiwen(int id) {
-    if (tiwen.contains(id)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  int chushitiwenint(int id) {
-    if (tiwen.contains(id)) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  bool chushixihuan(int id) {
-    if (xihuan.contains(id)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  int chushixihuanint(int id) {
-    if (xihuan.contains(id)) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  bool chushishoucang(int id) {
-    if (shoucang.contains(id)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  int chushishoucangint(int id) {
-    if (shoucang.contains(id)) {
-      return 1;
-    } else {
-      return 0;
-    }
   }
 }
 
@@ -476,16 +317,20 @@ class _PersonalPageState extends State<PersonalPage>
   late TabController tabController;
   // 记忆板完成状态
   final memoryBankCompletionStatus = Get.put(MemoryBankCompletionStatus());
-  final personaljiyikucontroller = Get.put(PersonaljiyikuController());
-  final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
-  final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement());
+  final userPersonalInformationManagement =
+      Get.put(UserPersonalInformationManagement());
+  final editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
+  final backgroundImageChangeManagement =
+      Get.put(BackgroundImageChangeManagement());
   final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
-  final rollingeffectController = Get.put(RollingeffectController());
+  final userInformationListScrollDataManagement =
+      Get.put(UserInformationListScrollDataManagement());
 
   ScrollController scrollController = ScrollController();
   @override
   void dispose() {
-    rollingeffectController.kong();
+    userInformationListScrollDataManagement.clearData();
     scrollController.dispose();
     tabController.dispose();
 
@@ -505,21 +350,25 @@ class _PersonalPageState extends State<PersonalPage>
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     )..addListener(() {
-        rollingeffectController.suoying(tabController.index);
-        personaljiyikucontroller.suoying(tabController.index);
+        userInformationListScrollDataManagement
+            .calculateTheListName(tabController.index);
+        userPersonalInformationManagement
+            .calculateTheNumberOfMemoryBanksPerPage(tabController.index);
       });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           scrollController.addListener(() {
             if (scrollController.offset >= 160) {
-              rollingeffectController.onebeijing();
+              userInformationListScrollDataManagement.setBackgroundColortrue();
             } else if (scrollController.offset < 160) {
-              rollingeffectController.onenobeijing();
+              userInformationListScrollDataManagement.setBackgroundColorfalse();
             }
             if (scrollController.offset >= 235) {
-              rollingeffectController.onetitle();
+              userInformationListScrollDataManagement
+                  .setTransparencyToDisplayText();
             } else if (scrollController.offset < 235) {
-              rollingeffectController.onenotitle();
+              userInformationListScrollDataManagement
+                  .setTransparencyToHideText();
             }
           });
         }));
@@ -527,7 +376,7 @@ class _PersonalPageState extends State<PersonalPage>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-    postpersonalapi(userNameChangeManagement.userNameValue);
+    requestTheUsersPersonalData(userNameChangeManagement.userNameValue);
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -600,8 +449,9 @@ class _PersonalPageState extends State<PersonalPage>
                       SliverAppBar(
                         title: Padding(
                           padding: const EdgeInsets.only(left: 48.0),
-                          child: GetBuilder<RollingeffectController>(
-                              init: rollingeffectController,
+                          child: GetBuilder<
+                                  UserInformationListScrollDataManagement>(
+                              init: userInformationListScrollDataManagement,
                               builder: (controller) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,17 +460,21 @@ class _PersonalPageState extends State<PersonalPage>
                                       editPersonalDataValueManagement.nameValue,
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(
-                                            controller.shadowtitle),
+                                            userInformationListScrollDataManagement
+                                                .opacity),
                                         fontSize: 21,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                     Text(
-                                      personaljiyikucontroller.indexname +
-                                          controller.indexname,
+                                      userPersonalInformationManagement
+                                              .displayText +
+                                          userInformationListScrollDataManagement
+                                              .displayText,
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(
-                                            controller.shadowtitle),
+                                            userInformationListScrollDataManagement
+                                                .opacity),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -700,25 +554,35 @@ class _PersonalPageState extends State<PersonalPage>
                               alignment: Alignment.center,
                               children: <Widget>[
                                 Positioned.fill(
-                                  child: GetBuilder<RollingeffectController>(
-                                    init: rollingeffectController,
-                                    builder: (controller) {
+                                  child: GetBuilder<
+                                      UserInformationListScrollDataManagement>(
+                                    init:
+                                        userInformationListScrollDataManagement,
+                                    builder:
+                                        (userInformationListScrollDataManagement) {
                                       return ImageFiltered(
                                         imageFilter: ImageFilter.blur(
-                                            sigmaX: controller.filter,
+                                            sigmaX:
+                                                userInformationListScrollDataManagement
+                                                    .filter,
                                             sigmaY: 0),
                                         child: GestureDetector(
                                           onTap: () {
                                             switchPage(
                                                 context, const PersonalBei());
                                           },
-                                          child: GetBuilder<BackgroundImageChangeManagement>(
-                                            init: backgroundImageChangeManagement,
-                                            builder: (backgroundImageChangeManagement) {
-                                              return backgroundImageChangeManagement.backgroundImageValue !=
+                                          child: GetBuilder<
+                                              BackgroundImageChangeManagement>(
+                                            init:
+                                                backgroundImageChangeManagement,
+                                            builder:
+                                                (backgroundImageChangeManagement) {
+                                              return backgroundImageChangeManagement
+                                                          .backgroundImageValue !=
                                                       null
                                                   ? Image.file(
-                                                      backgroundImageChangeManagement.backgroundImageValue!,
+                                                      backgroundImageChangeManagement
+                                                          .backgroundImageValue!,
                                                       fit: BoxFit.cover,
                                                     )
                                                   : Image.asset(
@@ -737,13 +601,17 @@ class _PersonalPageState extends State<PersonalPage>
                                   top: 0,
                                   left: 0,
                                   right: 0,
-                                  child: GetBuilder<RollingeffectController>(
-                                    init: rollingeffectController,
-                                    builder: (controller) {
+                                  child: GetBuilder<
+                                      UserInformationListScrollDataManagement>(
+                                    init:
+                                        userInformationListScrollDataManagement,
+                                    builder:
+                                        (userInformationListScrollDataManagement) {
                                       return AnimatedContainer(
                                         duration: Duration(
                                             seconds:
-                                                rollingeffectController.beijing
+                                                userInformationListScrollDataManagement
+                                                        .backgroundState
                                                     ? 1
                                                     : 0),
                                         decoration: BoxDecoration(
@@ -752,8 +620,8 @@ class _PersonalPageState extends State<PersonalPage>
                                             end: Alignment.topCenter,
                                             colors: [
                                               Colors.black.withOpacity(
-                                                  rollingeffectController
-                                                          .beijing
+                                                  userInformationListScrollDataManagement
+                                                          .backgroundState
                                                       ? 0.5
                                                       : 0),
                                               Colors.black.withOpacity(0.8)
@@ -782,16 +650,20 @@ class _PersonalPageState extends State<PersonalPage>
                                       child: CircleAvatar(
                                           radius: 27,
                                           backgroundColor: Colors.white,
-                                          child: GetBuilder<HeadPortraitChangeManagement>(
-                                              init: headPortraitChangeManagement,
-                                              builder: (headPortraitChangeManagement) {
+                                          child: GetBuilder<
+                                                  HeadPortraitChangeManagement>(
+                                              init:
+                                                  headPortraitChangeManagement,
+                                              builder:
+                                                  (headPortraitChangeManagement) {
                                                 return CircleAvatar(
                                                   backgroundColor: Colors.grey,
                                                   backgroundImage: headPortraitChangeManagement
                                                               .headPortraitValue !=
                                                           null
-                                                      ? FileImage(headPortraitChangeManagement
-                                                          .headPortraitValue!)
+                                                      ? FileImage(
+                                                          headPortraitChangeManagement
+                                                              .headPortraitValue!)
                                                       : const AssetImage(
                                                           'assets/chuhui.png'),
                                                   radius: 25,
@@ -889,7 +761,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                 dragToClose: true);
                                           } else {
                                             switchPage(context,
-                                                const BianpersonalPage());
+                                                const EditPersonalPage());
                                           }
                                         },
                                       ),
@@ -922,11 +794,13 @@ class _PersonalPageState extends State<PersonalPage>
                                       }),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 13.0),
-                                    child: editPersonalDataValueManagement.profileValue
+                                    child: editPersonalDataValueManagement
+                                            .profileValue
                                             .trim()
                                             .isNotEmpty
                                         ? Text(
-                                                editPersonalDataValueManagement.profileValue,
+                                            editPersonalDataValueManagement
+                                                .profileValue,
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 17,
@@ -944,7 +818,10 @@ class _PersonalPageState extends State<PersonalPage>
                                     direction: Axis.horizontal,
                                     textDirection: TextDirection.ltr,
                                     children: [
-                                      editPersonalDataValueManagement.dateOfBirthValue.trim().isNotEmpty
+                                      editPersonalDataValueManagement
+                                              .dateOfBirthValue
+                                              .trim()
+                                              .isNotEmpty
                                           ? Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -975,7 +852,10 @@ class _PersonalPageState extends State<PersonalPage>
                                               ],
                                             )
                                           : const SizedBox(),
-                                      editPersonalDataValueManagement.residentialAddressValue.trim().isNotEmpty
+                                      editPersonalDataValueManagement
+                                              .residentialAddressValue
+                                              .trim()
+                                              .isNotEmpty
                                           ? Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -989,7 +869,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                 ),
                                                 Expanded(
                                                   child: Text(
-                                                    editPersonalDataValueManagement.residentialAddressValue,
+                                                    editPersonalDataValueManagement
+                                                        .residentialAddressValue,
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w400,
@@ -1018,7 +899,8 @@ class _PersonalPageState extends State<PersonalPage>
                                           ),
                                           Expanded(
                                             child: Text(
-                                                editPersonalDataValueManagement.dateOfBirthValue,
+                                              editPersonalDataValueManagement
+                                                  .applicationDateValue,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 16,
@@ -1140,9 +1022,9 @@ class _PersonalPageState extends State<PersonalPage>
                       ),
                     ];
                   },
-                  body: GetBuilder<PersonaljiyikuController>(
-                      init: personaljiyikucontroller,
-                      builder: (personaljiyikuController) {
+                  body: GetBuilder<UserPersonalInformationManagement>(
+                      init: userPersonalInformationManagement,
+                      builder: (userPersonalInformationManagement) {
                         return TabBarView(
                           controller: tabController,
                           children: [
@@ -1155,11 +1037,13 @@ class _PersonalPageState extends State<PersonalPage>
                                       cacheExtent: 500,
                                       physics: physics,
                                       itemCount:
-                                          personaljiyikucontroller.wodezhi ==
+                                          userPersonalInformationManagement
+                                                      .userCreatedMemoryBank ==
                                                   null
                                               ? 0
-                                              : personaljiyikucontroller
-                                                  .wodezhi?.length,
+                                              : userPersonalInformationManagement
+                                                  .userCreatedMemoryBank!
+                                                  .length,
                                       itemBuilder: (context, index) {
                                         return Column(
                                           crossAxisAlignment:
@@ -1176,9 +1060,11 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
-                                                    personaljiyikuController
-                                                        .wodezhi![index]);
+                                                viewPostDataManagementForMemoryBanks
+                                                    .initTheMemoryDataForThePost(
+                                                        userPersonalInformationManagement
+                                                                .userCreatedMemoryBank![
+                                                            index]);
                                                 switchPage(context,
                                                     const jiyikudianji());
                                               },
@@ -1198,7 +1084,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                             (memoryBankCompletionStatus) {
                                                           return Row(children: [
                                                             memoryBankCompletionStatus!.displayIconStatus(
-                                                                        personaljiyikucontroller.wodezhi?[index]
+                                                                        userPersonalInformationManagement.userCreatedMemoryBank![index]
                                                                             [
                                                                             'zhuangtai']) ==
                                                                     false
@@ -1230,8 +1116,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                             Expanded(
                                                               child: memoryBankCompletionStatus
                                                                   .memoryLibraryStatusDisplayWidget(
-                                                                      personaljiyikucontroller
-                                                                              .wodezhi![
+                                                                      userPersonalInformationManagement
+                                                                              .userCreatedMemoryBank![
                                                                           index],
                                                                       context),
                                                             ),
@@ -1250,12 +1136,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                                 icon:
                                                                     CircleAvatar(
                                                                   radius: 21,
-                                                                  backgroundImage: personaljiyikucontroller.wodezhi?[index]
+                                                                  backgroundImage: userPersonalInformationManagement.userCreatedMemoryBank![index]
                                                                               [
                                                                               'touxiang'] !=
                                                                           null
                                                                       ? FileImage(
-                                                                          File(personaljiyikucontroller.wodezhi![index]
+                                                                          File(userPersonalInformationManagement.userCreatedMemoryBank![index]
                                                                               [
                                                                               'touxiang']))
                                                                       : const AssetImage(
@@ -1284,7 +1170,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         children: [
                                                                           TextSpan(
                                                                             text:
-                                                                                personaljiyikucontroller.wodezhi?[index]['name'],
+                                                                                userPersonalInformationManagement.userCreatedMemoryBank![index]['name'],
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 17,
@@ -1294,7 +1180,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' @${personaljiyikucontroller.wodezhi?[index]['username']}',
+                                                                                ' @${userPersonalInformationManagement.userCreatedMemoryBank![index]['username']}',
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 16,
@@ -1320,7 +1206,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             FontWeight.w900),
                                                                   ),
                                                                   Text(
-                                                                    '${personaljiyikucontroller.wodezhi?[index]['xiabiao'].length}个记忆项',
+                                                                    '${userPersonalInformationManagement.userCreatedMemoryBank![index]['xiabiao'].length}个记忆项',
                                                                     style:
                                                                         const TextStyle(
                                                                       fontSize:
@@ -1339,7 +1225,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                 ],
                                                               ),
                                                               Text(
-                                                                '${personaljiyikucontroller.wodezhi?[index]['zhuti']}',
+                                                                '${userPersonalInformationManagement.userCreatedMemoryBank![index]['zhuti']}',
                                                                 style: const TextStyle(
                                                                     fontSize:
                                                                         17,
@@ -1353,12 +1239,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   height: 20),
                                                               Text(
                                                                 timuzhi(
-                                                                    personaljiyikucontroller
-                                                                            .wodezhi?[index]
+                                                                    userPersonalInformationManagement
+                                                                            .userCreatedMemoryBank![index]
                                                                         [
                                                                         'timu'],
-                                                                    personaljiyikucontroller
-                                                                            .wodezhi?[index]
+                                                                    userPersonalInformationManagement
+                                                                            .userCreatedMemoryBank![index]
                                                                         [
                                                                         'xiabiao']),
                                                                 style: const TextStyle(
@@ -1378,12 +1264,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                                   height: 20),
                                                               Text(
                                                                 timuzhi(
-                                                                    personaljiyikucontroller
-                                                                            .wodezhi?[index]
+                                                                    userPersonalInformationManagement
+                                                                            .userCreatedMemoryBank![index]
                                                                         [
                                                                         'huida'],
-                                                                    personaljiyikucontroller
-                                                                            .wodezhi?[index]
+                                                                    userPersonalInformationManagement
+                                                                            .userCreatedMemoryBank![index]
                                                                         [
                                                                         'xiabiao']),
                                                                 style: const TextStyle(
@@ -1433,14 +1319,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               20,
                                                                           onTap:
                                                                               (isLiked) async {
-                                                                            personaljiyikuController.shuaxinlaqu(
-                                                                                personaljiyikucontroller.wodezhi?[index]['id'],
-                                                                                personaljiyikucontroller.wodezhi?[index]['laqu'],
-                                                                                personaljiyikuController.wodezhi![index]);
                                                                             return !isLiked;
                                                                           },
-                                                                          isLiked:
-                                                                              personaljiyikuController.chushilaqu(personaljiyikucontroller.wodezhi?[index]['id']),
                                                                           likeBuilder:
                                                                               (bool isLiked) {
                                                                             return Icon(
@@ -1450,7 +1330,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             );
                                                                           },
                                                                           likeCount:
-                                                                              personaljiyikucontroller.wodezhi?[index]['laqu'],
+                                                                              userPersonalInformationManagement.userCreatedMemoryBank![index]['laqu'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1506,15 +1386,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                           size:
                                                                               20,
                                                                           onTap:
-                                                                              (isLiked) async {
-                                                                            personaljiyikuController.shuaxinshoucang(
-                                                                                personaljiyikucontroller.wodezhi?[index]['id'],
-                                                                                personaljiyikucontroller.wodezhi?[index]['shoucang'],
-                                                                                personaljiyikuController.wodezhi![index]);
-                                                                            return !isLiked;
-                                                                          },
-                                                                          isLiked:
-                                                                              personaljiyikuController.chushishoucang(personaljiyikucontroller.wodezhi?[index]['id']),
+                                                                              (isLiked) async {},
                                                                           likeBuilder:
                                                                               (bool isLiked) {
                                                                             return Icon(
@@ -1524,7 +1396,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             );
                                                                           },
                                                                           likeCount:
-                                                                              personaljiyikucontroller.wodezhi?[index]['shoucang'],
+                                                                              userPersonalInformationManagement.userCreatedMemoryBank![index]['shoucang'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1581,15 +1453,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                           ),
                                                                           onTap:
                                                                               (isLiked) async {
-                                                                            personaljiyikucontroller.shuaxinxihuan(
-                                                                                personaljiyikucontroller.wodezhi?[index]['id'],
-                                                                                personaljiyikucontroller.wodezhi?[index]['xihuan'],
-                                                                                personaljiyikuController.wodezhi![index]);
-
                                                                             return !isLiked;
                                                                           },
-                                                                          isLiked:
-                                                                              personaljiyikuController.chushixihuan(personaljiyikucontroller.wodezhi?[index]['id']),
                                                                           likeBuilder:
                                                                               (bool isLiked) {
                                                                             return Icon(
@@ -1599,7 +1464,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             );
                                                                           },
                                                                           likeCount:
-                                                                              personaljiyikucontroller.wodezhi?[index]['xihuan'],
+                                                                              userPersonalInformationManagement.userCreatedMemoryBank![index]['xihuan'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1656,14 +1521,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               20,
                                                                           onTap:
                                                                               (isLiked) async {
-                                                                            personaljiyikuController.shuaxintiwen(
-                                                                                personaljiyikuController.wodezhi?[index]['id'],
-                                                                                personaljiyikuController.wodezhi?[index]['tiwen'],
-                                                                                personaljiyikuController.wodezhi![index]);
                                                                             return !isLiked;
                                                                           },
-                                                                          isLiked:
-                                                                              personaljiyikuController.chushitiwen(personaljiyikuController.wodezhi?[index]['id']),
                                                                           likeBuilder:
                                                                               (bool isLiked) {
                                                                             return Icon(
@@ -1672,8 +1531,6 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               size: 20,
                                                                             );
                                                                           },
-                                                                          likeCount:
-                                                                              personaljiyikuController.wodezhi?[index]['tiwen'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1729,11 +1586,12 @@ class _PersonalPageState extends State<PersonalPage>
                                       cacheExtent: 500,
                                       physics: physics,
                                       itemCount:
-                                          personaljiyikucontroller.laquzhi ==
+                                          userPersonalInformationManagement
+                                                      .userPulledMemoryBank ==
                                                   null
                                               ? 0
-                                              : personaljiyikucontroller
-                                                  .laquzhi?.length,
+                                              : userPersonalInformationManagement
+                                                  .userPulledMemoryBank!.length,
                                       itemBuilder: (context, index) {
                                         return Column(
                                           children: [
@@ -1745,9 +1603,11 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
-                                                    personaljiyikuController
-                                                        .laquzhi![index]);
+                                                viewPostDataManagementForMemoryBanks
+                                                    .initTheMemoryDataForThePost(
+                                                        userPersonalInformationManagement
+                                                                .userPulledMemoryBank![
+                                                            index]);
                                                 switchPage(context,
                                                     const jiyikudianji());
                                               },
@@ -1765,15 +1625,15 @@ class _PersonalPageState extends State<PersonalPage>
                                                         onPressed: () {},
                                                         icon: CircleAvatar(
                                                           radius: 21,
-                                                          backgroundImage: personaljiyikucontroller
-                                                                              .laquzhi?[
+                                                          backgroundImage: userPersonalInformationManagement
+                                                                              .userPulledMemoryBank![
                                                                           index]
                                                                       [
                                                                       'touxiang'] !=
                                                                   null
                                                               ? FileImage(File(
-                                                                  personaljiyikucontroller
-                                                                              .laquzhi![
+                                                                  userPersonalInformationManagement
+                                                                              .userPulledMemoryBank![
                                                                           index]
                                                                       [
                                                                       'touxiang']))
@@ -1799,7 +1659,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       TextSpan(
                                                                     children: [
                                                                       TextSpan(
-                                                                        text: personaljiyikucontroller.laquzhi?[index]
+                                                                        text: userPersonalInformationManagement.userPulledMemoryBank![index]
                                                                             [
                                                                             'name'],
                                                                         style:
@@ -1814,7 +1674,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       ),
                                                                       TextSpan(
                                                                         text:
-                                                                            ' @${personaljiyikucontroller.laquzhi?[index]['username']}',
+                                                                            ' @${userPersonalInformationManagement.userPulledMemoryBank![index]['username']}',
                                                                         style:
                                                                             const TextStyle(
                                                                           fontSize:
@@ -1848,7 +1708,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             .w900),
                                                               ),
                                                               Text(
-                                                                '${personaljiyikucontroller.laquzhi?[index]['xiabiao'].length}个记忆项',
+                                                                '${userPersonalInformationManagement.userPulledMemoryBank![index]['xiabiao'].length}个记忆项',
                                                                 style:
                                                                     const TextStyle(
                                                                   fontSize: 16,
@@ -1866,7 +1726,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                             ],
                                                           ),
                                                           Text(
-                                                            '${personaljiyikucontroller.laquzhi?[index]['zhuti']}',
+                                                            '${userPersonalInformationManagement.userPulledMemoryBank![index]['zhuti']}',
                                                             style: const TextStyle(
                                                                 fontSize: 17,
                                                                 fontWeight:
@@ -1879,12 +1739,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                               height: 20),
                                                           Text(
                                                             timuzhi(
-                                                                personaljiyikucontroller
-                                                                            .laquzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userPulledMemoryBank![
                                                                         index]
                                                                     ['timu'],
-                                                                personaljiyikucontroller
-                                                                            .laquzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userPulledMemoryBank![
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
@@ -1903,12 +1763,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                               height: 20),
                                                           Text(
                                                             timuzhi(
-                                                                personaljiyikucontroller
-                                                                            .laquzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userPulledMemoryBank![
                                                                         index]
                                                                     ['huida'],
-                                                                personaljiyikucontroller
-                                                                            .laquzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userPulledMemoryBank![
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
@@ -1962,16 +1822,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxinlaqu(
-                                                                            personaljiyikucontroller.laquzhi?[index]['id'],
-                                                                            personaljiyikucontroller.laquzhi?[index]['laqu'],
-                                                                            personaljiyikuController.laquzhi![index]);
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushilaqu(
-                                                                          personaljiyikucontroller.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -1987,7 +1839,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                          userPersonalInformationManagement.userPulledMemoryBank![index]
                                                                               [
                                                                               'laqu'],
                                                                       countBuilder: (int?
@@ -2065,16 +1917,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxinshoucang(
-                                                                            personaljiyikucontroller.laquzhi?[index]['id'],
-                                                                            personaljiyikucontroller.laquzhi?[index]['shoucang'],
-                                                                            personaljiyikuController.laquzhi![index]);
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushishoucang(
-                                                                          personaljiyikucontroller.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2090,7 +1934,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                          userPersonalInformationManagement.userPulledMemoryBank![index]
                                                                               [
                                                                               'shoucang'],
                                                                       countBuilder: (int?
@@ -2168,17 +2012,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       ),
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxinxihuan(
-                                                                            personaljiyikucontroller.laquzhi?[index]['id'],
-                                                                            personaljiyikucontroller.laquzhi?[index]['xihuan'],
-                                                                            personaljiyikuController.laquzhi![index]);
-
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushixihuan(
-                                                                          personaljiyikucontroller.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2194,7 +2029,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                          userPersonalInformationManagement.userPulledMemoryBank![index]
                                                                               [
                                                                               'xihuan'],
                                                                       countBuilder: (int?
@@ -2272,16 +2107,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxintiwen(
-                                                                            personaljiyikucontroller.laquzhi?[index]['id'],
-                                                                            personaljiyikucontroller.laquzhi?[index]['tiwen'],
-                                                                            personaljiyikuController.laquzhi![index]);
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushitiwen(
-                                                                          personaljiyikucontroller.laquzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2297,7 +2124,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.laquzhi?[index]
+                                                                          userPersonalInformationManagement.userPulledMemoryBank![index]
                                                                               [
                                                                               'tiwen'],
                                                                       countBuilder: (int?
@@ -2372,11 +2199,12 @@ class _PersonalPageState extends State<PersonalPage>
                                       cacheExtent: 500,
                                       physics: physics,
                                       itemCount:
-                                          personaljiyikucontroller.xihuanzhi ==
+                                          userPersonalInformationManagement
+                                                      .userLikedMemoryBank ==
                                                   null
                                               ? 0
-                                              : personaljiyikucontroller
-                                                  .xihuanzhi?.length,
+                                              : userPersonalInformationManagement
+                                                  .userLikedMemoryBank!.length,
                                       itemBuilder: (context, index) {
                                         return Column(
                                           children: [
@@ -2388,9 +2216,11 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
-                                                    personaljiyikuController
-                                                        .xihuanzhi![index]);
+                                                viewPostDataManagementForMemoryBanks
+                                                    .initTheMemoryDataForThePost(
+                                                        userPersonalInformationManagement
+                                                                .userLikedMemoryBank![
+                                                            index]);
                                                 switchPage(context,
                                                     const jiyikudianji());
                                               },
@@ -2408,15 +2238,15 @@ class _PersonalPageState extends State<PersonalPage>
                                                         onPressed: () {},
                                                         icon: CircleAvatar(
                                                           radius: 21,
-                                                          backgroundImage: personaljiyikucontroller
-                                                                              .xihuanzhi?[
+                                                          backgroundImage: userPersonalInformationManagement
+                                                                              .userLikedMemoryBank![
                                                                           index]
                                                                       [
                                                                       'touxiang'] !=
                                                                   null
                                                               ? FileImage(File(
-                                                                  personaljiyikucontroller
-                                                                              .xihuanzhi![
+                                                                  userPersonalInformationManagement
+                                                                              .userLikedMemoryBank![
                                                                           index]
                                                                       [
                                                                       'touxiang']))
@@ -2442,7 +2272,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       TextSpan(
                                                                     children: [
                                                                       TextSpan(
-                                                                        text: personaljiyikucontroller.xihuanzhi?[index]
+                                                                        text: userPersonalInformationManagement.userLikedMemoryBank![index]
                                                                             [
                                                                             'name'],
                                                                         style:
@@ -2457,7 +2287,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       ),
                                                                       TextSpan(
                                                                         text:
-                                                                            ' @${personaljiyikucontroller.xihuanzhi?[index]['username']}',
+                                                                            ' @${userPersonalInformationManagement.userLikedMemoryBank![index]['username']}',
                                                                         style:
                                                                             const TextStyle(
                                                                           fontSize:
@@ -2491,7 +2321,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             .w900),
                                                               ),
                                                               Text(
-                                                                '${personaljiyikucontroller.xihuanzhi?[index]['xiabiao'].length}个记忆项',
+                                                                '${userPersonalInformationManagement.userLikedMemoryBank![index]['xiabiao'].length}个记忆项',
                                                                 style:
                                                                     const TextStyle(
                                                                   fontSize: 16,
@@ -2509,7 +2339,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                             ],
                                                           ),
                                                           Text(
-                                                            '${personaljiyikucontroller.xihuanzhi?[index]['zhuti']}',
+                                                            '${userPersonalInformationManagement.userLikedMemoryBank![index]['zhuti']}',
                                                             style: const TextStyle(
                                                                 fontSize: 17,
                                                                 fontWeight:
@@ -2522,12 +2352,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                               height: 20),
                                                           Text(
                                                             timuzhi(
-                                                                personaljiyikucontroller
-                                                                            .xihuanzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userLikedMemoryBank![
                                                                         index]
                                                                     ['timu'],
-                                                                personaljiyikucontroller
-                                                                            .xihuanzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userLikedMemoryBank![
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
@@ -2546,12 +2376,12 @@ class _PersonalPageState extends State<PersonalPage>
                                                               height: 20),
                                                           Text(
                                                             timuzhi(
-                                                                personaljiyikucontroller
-                                                                            .xihuanzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userLikedMemoryBank![
                                                                         index]
                                                                     ['huida'],
-                                                                personaljiyikucontroller
-                                                                            .xihuanzhi?[
+                                                                userPersonalInformationManagement
+                                                                            .userLikedMemoryBank![
                                                                         index][
                                                                     'xiabiao']),
                                                             style: const TextStyle(
@@ -2605,16 +2435,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxinlaqu(
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['id'],
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['laqu'],
-                                                                            personaljiyikuController.xihuanzhi![index]);
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushilaqu(
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2630,7 +2452,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                          userPersonalInformationManagement.userLikedMemoryBank![index]
                                                                               [
                                                                               'laqu'],
                                                                       countBuilder: (int?
@@ -2707,17 +2529,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       ),
                                                                       size: 20,
                                                                       onTap:
-                                                                          (isLiked) async {
-                                                                        personaljiyikuController.shuaxinshoucang(
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['id'],
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['shoucang'],
-                                                                            personaljiyikuController.xihuanzhi![index]);
-                                                                        return !isLiked;
-                                                                      },
-                                                                      isLiked: personaljiyikuController.chushishoucang(
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
+                                                                          (isLiked) async {},
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2733,7 +2545,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                          userPersonalInformationManagement.userLikedMemoryBank![index]
                                                                               [
                                                                               'shoucang'],
                                                                       countBuilder: (int?
@@ -2811,17 +2623,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       ),
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxinxihuan(
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['id'],
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['xihuan'],
-                                                                            personaljiyikuController.xihuanzhi![index]);
-
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushixihuan(
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2837,7 +2640,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                          userPersonalInformationManagement.userLikedMemoryBank![index]
                                                                               [
                                                                               'xihuan'],
                                                                       countBuilder: (int?
@@ -2915,16 +2718,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       size: 20,
                                                                       onTap:
                                                                           (isLiked) async {
-                                                                        personaljiyikuController.shuaxintiwen(
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['id'],
-                                                                            personaljiyikucontroller.xihuanzhi?[index]['tiwen'],
-                                                                            personaljiyikuController.xihuanzhi![index]);
                                                                         return !isLiked;
                                                                       },
-                                                                      isLiked: personaljiyikuController.chushitiwen(
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
-                                                                              [
-                                                                              'id']),
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -2940,7 +2735,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         );
                                                                       },
                                                                       likeCount:
-                                                                          personaljiyikucontroller.xihuanzhi?[index]
+                                                                          userPersonalInformationManagement.userLikedMemoryBank![index]
                                                                               [
                                                                               'tiwen'],
                                                                       countBuilder: (int?

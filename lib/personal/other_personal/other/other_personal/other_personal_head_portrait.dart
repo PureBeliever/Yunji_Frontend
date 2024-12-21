@@ -12,17 +12,17 @@ class Jiyikudianjipersonalhead extends StatefulWidget {
   State<Jiyikudianjipersonalhead> createState() => _JiyikudianjipersonalPageState();
 }
 
-class JiyukupersonalHeadcontroller extends GetxController {
-  static JiyukupersonalHeadcontroller get to => Get.find();
-  File? headimage;
+class OtherPeopleHeadPortraitChangeManagement extends GetxController {
+  static OtherPeopleHeadPortraitChangeManagement get to => Get.find();
+  File? headPortraitValue;
 
-  void cizhi(String? zhi) {
-    headimage =zhi!=null? File(zhi):null;
+  void initHeadPortrait(String? headPortrait) {
+    headPortraitValue = headPortrait!=null? File(headPortrait):null;
   }
 }
 
 class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonalhead> {
-  final jiyukupersonalHeadcontroller = Get.put(JiyukupersonalHeadcontroller());
+  final otherPeopleHeadPortraitChangeManagement = Get.put(OtherPeopleHeadPortraitChangeManagement());
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +45,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonalhead> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: GetBuilder<JiyukupersonalHeadcontroller>(
-              init: jiyukupersonalHeadcontroller,
-              builder: (controller) {
-                return controller.headimage != null
+            child: GetBuilder<OtherPeopleHeadPortraitChangeManagement>(
+              init: otherPeopleHeadPortraitChangeManagement,
+              builder: (otherPeopleHeadPortraitChangeManagement) {
+                return otherPeopleHeadPortraitChangeManagement.headPortraitValue != null
                     ? PhotoView(
-                        imageProvider: FileImage(controller.headimage!),
+                          imageProvider: FileImage(otherPeopleHeadPortraitChangeManagement.headPortraitValue!),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       )

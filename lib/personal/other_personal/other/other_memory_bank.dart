@@ -4,13 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/switch/switch_page.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/jiyikudianji/jiyikudianjipersonal.dart';
-import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/personal/personal_page.dart';
-import 'package:yunji/home/login/login_init.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page.dart';
+
 
 // ignore: camel_case_types
 class jiyikudianji extends StatefulWidget {
@@ -87,9 +86,8 @@ class _jiyikudianjiState extends State<jiyikudianji> {
       viewPostDataManagementForMemoryBanks.theIndexValueOfTheMemoryItem,
       viewPostDataManagementForMemoryBanks.theNumberOfProblems,
       viewPostDataManagementForMemoryBanks.theNumberOfAnswers);
-  final personaljiyikucontroller = Get.put(PersonaljiyikuController());
-  final informationListScrollDataManagement =
-      Get.put(InformationListScrollDataManagement());
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,10 +111,10 @@ class _jiyikudianjiState extends State<jiyikudianji> {
           children: [
             InkWell(
               onTap: () {
-                informationListScrollDataManagement
+                otherPeopleInformationListScrollDataManagement
                     .initialScrollData(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
-                jiyikupostpersonalapi(
-                    informationListScrollDataManagement.scrollDataValue['username']);
+                requestTheOtherPersonalData(
+                    otherPeopleInformationListScrollDataManagement.scrollDataValue['username']);
                 switchPage(context, const Jiyikudianjipersonal());
               },
               child: Padding(
@@ -288,9 +286,9 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                     thickness: 0.9,
                     height: 25,
                   ),
-                  GetBuilder<PersonaljiyikuController>(
-                      init: personaljiyikucontroller,
-                      builder: (personaljiyikuController) {
+                  GetBuilder<UserPersonalInformationManagement>(
+                      init: userPersonalInformationManagement,
+                      builder: (userPersonalInformationManagement) {
                         return Row(
                           children: [
                             const SizedBox(
@@ -308,22 +306,9 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                               size: 25,
                               onTap: (isLiked) async {
-                                if (loginStatus == true) {
-                                  personaljiyikucontroller.shuaxinlaqu(
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['laqu'] +
-                                          personaljiyikuController
-                                              .chushilaquint(
-                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
-                                  return !isLiked;
-                                } else {
-                                  soginDependencySettings(context);
-                                  return isLiked;
-                                }
+                              
                               },
-                              isLiked: personaljiyikucontroller
-                                  .chushilaqu(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                           
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked ? Icons.swap_calls : Icons.swap_calls,
@@ -367,22 +352,9 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                               size: 25,
                               onTap: (isLiked) async {
-                                if (loginStatus == true) {
-                                  personaljiyikucontroller.shuaxinshoucang(
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['shoucang'] +
-                                          personaljiyikuController
-                                              .chushishoucangint(
-                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
-                                  return !isLiked;
-                                } else {
-                                  soginDependencySettings(context);
-                                  return isLiked;
-                                }
+                            
                               },
-                              isLiked: personaljiyikucontroller.chushishoucang(
-                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                 
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked ? Icons.folder : Icons.folder_open,
@@ -425,23 +397,9 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                                     Color.fromARGB(255, 255, 186, 186),
                               ),
                               onTap: (isLiked) async {
-                                if (loginStatus == true) {
-                                  personaljiyikucontroller.shuaxinxihuan(
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['xihuan'] +
-                                          personaljiyikuController
-                                              .chushixihuanint(
-                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
-
-                                  return !isLiked;
-                                } else {
-                                  soginDependencySettings(context);
-                                  return isLiked;
-                                }
+                              
                               },
-                              isLiked: personaljiyikucontroller.chushixihuan(
-                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                         
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked
@@ -487,22 +445,9 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ),
                               size: 25,
                               onTap: (isLiked) async {
-                                if (loginStatus == true) {
-                                  personaljiyikucontroller.shuaxintiwen(
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id'],
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['tiwen'] +
-                                          personaljiyikuController
-                                              .chushitiwenint(
-                                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
-                                      viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
-                                  return !isLiked;
-                                } else {
-                                  soginDependencySettings(context);
-                                  return isLiked;
-                                }
+                                
                               },
-                              isLiked: personaljiyikucontroller.chushitiwen(
-                                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['id']),
+                            
                               likeBuilder: (bool isLiked) {
                                 return Icon(
                                   isLiked

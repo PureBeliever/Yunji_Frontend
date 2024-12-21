@@ -9,11 +9,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toastification/toastification.dart' as toast;
-import 'package:yunji/api/personal_api.dart';
+
 import 'package:yunji/main/app_global_variable.dart';
-
-
-
+import 'package:yunji/home/home_sqlite.dart';
 
 // 刷新主页记忆库
 Future<void> refreshHomePageMemoryBank(BuildContext context) async {
@@ -21,7 +19,7 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
   await Future.delayed(const Duration(seconds: 1));
 //获取存储记忆库id的数据库值
   Map<String, dynamic> theIdOfTheMemoryBankThatWasObtained =
-      await databaseManager.chaint();
+      await queryIdAndLength();
 //上一次请求的记忆库中的最后一个记忆库的id值
   String lastId = theIdOfTheMemoryBankThatWasObtained["number"];
 //这次请求记忆库的id值
@@ -48,15 +46,15 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
   Map<String, String> header = {
     'Content-Type': 'application/json',
   };
-  List<int> zhiList = randomSelection.toList();
-  final response = await dio.post('http://47.92.90.93:36233/getjiyiku',
-      data: jsonEncode(zhiList), options: Options(headers: header));
+  List<int> idList = randomSelection.toList();
+  final response = await dio.post('http://47.92.90.93:36233/getTheHomePageMemoryLibrary',
+      data: jsonEncode(idList), options: Options(headers: header));
 
   var data = response.data;
-  var result = data["results"];
-  var personal = data["personal"];
+  var memoryBankResults = data["memoryBankResults"];
+  var personalValue = data["personalValue"];
 
-  if (result.isEmpty) {
+  if (memoryBankResults.isEmpty) {
     toast.toastification.show(
         context: context,
         type: toast.ToastificationType.success,
@@ -81,61 +79,53 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
         boxShadow: toast.lowModeShadow,
         dragToClose: true);
   } else {
-    String generateRandomFilename() {
-      const chars =
-          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      Random random = Random();
-      String randomFileName =
-          List.generate(10, (_) => chars[random.nextInt(chars.length)])
-              .join('');
-      return '$randomFileName.jpg';
-    }
 
-    for (int i = 0; i < personal.length; i++) {
-      if (personal[i]['beijing'] != null) {
+
+    for (int i = 0; i < personalValue.length; i++) {
+      if (personalValue[i]['background_image'] != null) {
         final dir = await getApplicationDocumentsDirectory();
-        final ming = generateRandomFilename();
-        List<int> imageBytes = base64.decode(personal[i]['beijing']);
-        personal[i]['beijing'] = '${dir.path}/$ming';
-        await File(personal[i]['beijing']).writeAsBytes(imageBytes);
+        final filename = generateRandomFilename();
+        List<int> imageBytes = base64.decode(personalValue[i]['background_image']);
+        personalValue[i]['background_image'] = '${dir.path}/$filename';
+        await File(personalValue[i]['background_image']).writeAsBytes(imageBytes);
       }
-      if (personal[i]['touxiang'] != null) {
+      if (personalValue[i]['head_portrait'] != null) {
         final dir = await getApplicationDocumentsDirectory();
-        final ming = generateRandomFilename();
-        List<int> imageBytes = base64.decode(personal[i]['touxiang']);
-        personal[i]['touxiang'] = '${dir.path}/$ming';
-        await File(personal[i]['touxiang']).writeAsBytes(imageBytes);
+        final filename = generateRandomFilename();
+        List<int> imageBytes = base64.decode(personalValue[i]['head_portrait']);
+        personalValue[i]['head_portrait'] = '${dir.path}/$filename';
+        await File(personalValue[i]['head_portrait']).writeAsBytes(imageBytes);
       }
 
-      for (int y = 0; y < result.length; y++) {
-        if (result[y]['username'] == personal[i]['username']) {
-          result[y]['name'] = personal[i]['name'];
-          result[y]['brief'] = personal[i]['brief'];
-          result[y]['place'] = personal[i]['place'];
-          result[y]['year'] = personal[i]['year'];
-          result[y]['beijing'] = personal[i]['beijing'];
-          result[y]['touxiang'] = personal[i]['touxiang'];
-          result[y]['jiaru'] = personal[i]['jiaru'];
+      for (int y = 0; y < memoryBankResults.length; y++) {
+        if (memoryBankResults[y]['username'] == personalValue[i]['username']) {
+          memoryBankResults[y]['name'] = personalValue[i]['name'];
+          memoryBankResults[y]['brief'] = personalValue[i]['brief'];
+          memoryBankResults[y]['place'] = personalValue[i]['place'];
+          memoryBankResults[y]['year'] = personalValue[i]['year'];
+          memoryBankResults[y]['beijing'] = personalValue[i]['beijing'];
+          memoryBankResults[y]['touxiang'] = personalValue[i]['touxiang'];
+          memoryBankResults[y]['jiaru'] = personalValue[i]['jiaru'];
         }
       }
     }
 
-    await databaseManager.insertHomePageMemoryBank(result);
-    List<Map<String, dynamic>>? mainzhi =
-        await databaseManager.queryHomePageMemoryBank();
+    await insertHomePageMemoryBank(memoryBankResults);
+    List<Map<String, dynamic>>? memoryBankData =
+        await queryHomePageMemoryBank();
 
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(mainzhi);
+    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(memoryBankData);
   }
 
   var count = data["count"];
-  List<int> filterweizhi = numberAsList
+  List<int> filterIdList = numberAsList
       .where((number) => !randomSelection.contains(number))
       .toList();
 
-  int lengthjiyi = theIdOfTheMemoryBankThatWasObtained["length"];
-  final zuidazhi = count - theIdOfTheMemoryBankThatWasObtained["length"];
-  List<int> numbers = List.generate(zuidazhi, (i) => i + lengthjiyi + 1);
-  filterweizhi.addAll(numbers);
+  int memoryBankLength = theIdOfTheMemoryBankThatWasObtained["length"];
+  final maxValue = count - theIdOfTheMemoryBankThatWasObtained["length"];
+  List<int> numbers = List.generate(maxValue, (i) => i + memoryBankLength + 1);
+  filterIdList.addAll(numbers);
 
-  await databaseManager.updateint(filterweizhi.toString(), count);
+  await updateint(filterIdList.toString(), count);
 }

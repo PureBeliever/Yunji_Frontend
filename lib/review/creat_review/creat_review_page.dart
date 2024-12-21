@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
 import 'package:yunji/switch/switch_page.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
-import 'package:yunji/chuangjianjiyiku/yiwang.dart';
+import 'package:yunji/review/creat_review/creat_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 class Jiyikucontroller extends GetxController {
@@ -143,7 +143,7 @@ class _Jiyiku extends State<Jiyiku> {
                       color: Colors.white),
                 ),
                 onPressed: () {
-                  if (timu.isEmpty && huida.isEmpty) {
+                  if (timu.length==0 && huida.length==0) {
                     toast.toastification.show(
                         context: context,
                         type: toast.ToastificationType.success,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/switch/switch_page.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
 
 class Settingzhanghao extends StatefulWidget {
   const Settingzhanghao({super.key});

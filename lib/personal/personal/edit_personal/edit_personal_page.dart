@@ -7,13 +7,13 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:yunji/modified_component/default_cupertion.dart';
 import 'package:city_pickers/city_pickers.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/personal/personal_bei.dart';
-import 'package:yunji/personal/personal_head.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
+import 'package:yunji/personal/personal/personal/personal_background_image.dart';
+import 'package:yunji/personal/personal/personal/personal_head_portrait.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 class EditPersonalDataValueManagement extends GetxController {
@@ -82,14 +82,14 @@ class SelectorResultsUpdateDisplay extends GetxController {
   }
 }
 
-class BianpersonalPage extends StatefulWidget {
-  const BianpersonalPage({super.key});
+class EditPersonalPage extends StatefulWidget {
+  const EditPersonalPage({super.key});
 
   @override
-  State<BianpersonalPage> createState() => _BiannpersonalPage();
+  State<EditPersonalPage> createState() => _EditPersonalPageState();
 }
 
-class _BiannpersonalPage extends State<BianpersonalPage> {
+  class _EditPersonalPageState extends State<EditPersonalPage> {
   static String name = EditPersonalDataValueManagement.to.nameValue;
   static String brief = EditPersonalDataValueManagement.to.profileValue;
   static String formatteplace = EditPersonalDataValueManagement.to.residentialAddressValue;
@@ -439,8 +439,8 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
 
                                   Navigator.pop(context);
 
-                                  PostHttp(
-                                      username,
+                                    editPersonal(
+                                        username,
                                       name,
                                       brief,
                                       formatteplace,

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:yunji/api/personal_api.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
-import 'package:yunji/personal/bianpersonal_page.dart';
-import 'package:yunji/personal/personal_head.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_head_portrait.dart';
 
-import 'package:yunji/personal/personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page.dart';
 import 'package:yunji/setting/setting.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:yunji/switch/switch_page.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -196,8 +195,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 const PersonalPage()),
             _buildMenuItem(context, '会员', 'assets/huiyuan.svg', null),
             _buildMenuItem(context, '收藏', 'assets/shuocang.svg', null),
-            _buildMenuItem(context, '反馈', 'assets/fankui.svg', null,
-                onTap: zhuce),
+            _buildMenuItem(
+              context,
+              '反馈',
+              'assets/fankui.svg',
+              null,
+            ),
             _buildMenuItem(
                 context, '设置', 'assets/settings.svg', const Setting()),
             const Padding(

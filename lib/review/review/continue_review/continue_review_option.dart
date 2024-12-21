@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:yunji/notification_init.dart';
-import 'package:yunji/api/personal_api.dart';
-import 'package:yunji/jixv_fuxi/jixvfuxi_page.dart';
-import 'package:yunji/setting/setting_zhanghao_xiugai.dart';
+import 'package:yunji/review/review/continue_review/continue_review.dart';
+import 'package:yunji/review/review/review_api.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
 
 class Jixvfuxiyiwang extends StatefulWidget {
   const Jixvfuxiyiwang({super.key});
@@ -169,7 +169,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                           scheduledDateTime: dingshi);
                     }
                   }
-                  xiugaijiyiku(
+                  continueReview(
                       stringTimu,
                       stringhuida,
                       continueLearningAboutDataManagement.id,
@@ -181,7 +181,8 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       alarm_information,
                       zhuangtai,
                       cishu,
-                      fanganming);
+                      fanganming,
+                      userNameChangeManagement.userNameValue);
 
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
