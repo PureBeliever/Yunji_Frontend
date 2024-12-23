@@ -9,7 +9,7 @@ import 'package:yunji/main/app_global_variable.dart';
 // 用户名更改管理器
 class UserNameChangeManagement extends GetxController {
   static UserNameChangeManagement get to => Get.find();
-  String userNameValue = ' ';
+  String? userNameValue;
   bool theUserNameChangedStatus = false;
   void userNameChangedStatusTrue() {
     theUserNameChangedStatus = true;
@@ -21,7 +21,7 @@ class UserNameChangeManagement extends GetxController {
     update();
   }
 
-  void userNameChanged(String userNameValueChanged) {
+  void userNameChanged(String? userNameValueChanged) {
     userNameValue = userNameValueChanged;
     update();
   }
@@ -35,7 +35,7 @@ class Settingzhanghaoxiugai extends StatefulWidget {
 
 class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
   final userNameChangeManagement = Get.put(UserNameChangeManagement());
-  static String username = UserNameChangeManagement.to.userNameValue;
+  static String? username = UserNameChangeManagement.to.userNameValue;
 
   bool cunzai = false;
 
@@ -43,8 +43,8 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
   final _yonghucontroller = TextEditingController();
   @override
   void initState() {
-    _controller.text = username;
-    _yonghucontroller.text = username;
+    _controller.text = username??'';
+    _yonghucontroller.text = username??'';
     super.initState();
   }
 
@@ -54,23 +54,23 @@ class _Settingzhanghaoxiugai extends State<Settingzhanghaoxiugai> {
     super.dispose();
   }
 
-  void chazhanghao(String username) async {
+  void chazhanghao(String? username) async {
     Map<String, String> header = {
       'Content-Type': 'application/json',
     };
     Map<String, dynamic> formdata = {
-      'username': username,
+      'username': username??'',
     };
 
     final response = await dio.post('http://47.92.90.93:36233/verifyUserName',
         data: jsonEncode(formdata), options: Options(headers: header));
     if (response.statusCode == 200) {
       cunzai = true;
-      _controller.text = username;
+      _controller.text = username??'';
       userNameChangeManagement.userNameChangedStatusTrue();
     } else {
       cunzai = false;
-      _controller.text = username;
+      _controller.text = username??'';
       userNameChangeManagement.userNameChangedStatusFalse();
     }
   }

@@ -6,7 +6,7 @@ Future<void> updatePersonal(EditPersonalData personalData) async {
     final db = databaseManager.database;
 
     await db?.execute(
-      'UPDATE personal SET name = ?, introduction= ?, residential_address = ?, birth_time = ?, background_image = ?, head_portrait = ? WHERE user_name = ?',
+      'UPDATE personal_data SET name = ?, introduction= ?, residential_address = ?, birth_time = ?, background_image = ?, head_portrait = ? WHERE user_name = ?',
       [
         personalData.name,
         personalData.introduction,

@@ -95,7 +95,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             radius: 23,
             backgroundImage: controller.headPortraitValue != null
                 ? FileImage(controller.headPortraitValue!)
-                : const AssetImage('assets/chuhui.png'),
+                : const AssetImage('assets/personal/gray_back_head.png'),
           ),
         );
       },
@@ -106,7 +106,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     return IconButton(
       splashColor: const Color.fromRGBO(145, 145, 145, 1),
       icon: SvgPicture.asset(
-        'assets/sunny.svg',
+        'assets/home/sunny.svg',
         width: 30,
         height: 30,
       ),
@@ -117,9 +117,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget _buildName() {
     return GetBuilder<EditPersonalDataValueManagement>(
       init: editPersonalDataValueManagement,
-      builder: (controller) {
+      builder: (editPersonalDataValueManagement) {
         return Text(
-          controller!.nameValue,
+          '${editPersonalDataValueManagement.nameValue}',
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 21,
@@ -191,18 +191,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
-            _buildMenuItem(context, '个人资料', 'assets/gerenziliao.svg',
+            _buildMenuItem(context, '个人资料', 'assets/home/personal_data.svg',
                 const PersonalPage()),
-            _buildMenuItem(context, '会员', 'assets/huiyuan.svg', null),
-            _buildMenuItem(context, '收藏', 'assets/shuocang.svg', null),
+            _buildMenuItem(context, '会员', 'assets/home/member.svg', null),
+            _buildMenuItem(context, '收藏', 'assets/home/collect.svg', null),
             _buildMenuItem(
               context,
               '反馈',
-              'assets/fankui.svg',
+              'assets/home/feedback.svg',
               null,
             ),
             _buildMenuItem(
-                context, '设置', 'assets/settings.svg', const Setting()),
+                context, '设置', 'assets/home/setting.svg', const Setting()),
             const Padding(
               padding: EdgeInsets.only(left: 28, right: 26),
               child: Divider(

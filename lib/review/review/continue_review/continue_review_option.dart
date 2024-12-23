@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import 'package:yunji/notification_init.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
-import 'package:yunji/review/review/review_api.dart';
+import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/setting/setting_account_user_name.dart';
 
 class Jixvfuxiyiwang extends StatefulWidget {
@@ -145,7 +145,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       final alarmSettings = AlarmSettings(
                         id: 42,
                         dateTime: dingshi,
-                        assetAudioPath: 'assets/alarm.mp3',
+                        assetAudioPath: 'assets/review/alarm.mp3',
                         loopAudio: true,
                         vibrate: true,
                         volume: 0.6,
@@ -182,7 +182,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       zhuangtai,
                       cishu,
                       fanganming,
-                      userNameChangeManagement.userNameValue);
+                      userNameChangeManagement.userNameValue??'');
 
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();

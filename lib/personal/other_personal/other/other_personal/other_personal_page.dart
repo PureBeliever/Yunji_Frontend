@@ -47,6 +47,7 @@ class OtherPeopleInformationListScrollDataManagement extends GetxController {
 //初始化滚动数据
   void initialScrollData(Map<String, dynamic> scrollData) {
     scrollDataValue = scrollData;
+    update();
   }
 
 //计算显示的列表名
@@ -114,7 +115,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
   List<Map<String, dynamic>>? otherPeoplePulledMemoryBank = [];
 
   //其他人创建的记忆库
-  List<Map<String, dynamic>>? otherPeopleCreatedMemoryBank = [];
+  List<Map<String, dynamic>>? otherPeopleReviewMemoryBank = [];
 
   //用户喜欢的记忆库下标
   List<int> otherPeopleLikedMemoryBankIndex = [];
@@ -125,14 +126,14 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
   //用户回复的记忆库下标
   List<int> otherPeopleReplyMemoryBankIndex = [];
   //用户创建的记忆库下标
-  List<int> otherPeopleCreatedMemoryBankIndex = [];
+  List<int> otherPeopleReviewMemoryBankIndex = [];
 //显示文本
   String displayText = ' ';
 //计算每个页面的记忆库数量
   void calculateTheNumberOfMemoryBanksPerPage(int currentPageSubscript) {
     //创建的记忆库数量String类型
     String otherPeopleCollectedMemoryBankIndexString = currentPageSubscript == 0
-        ? '${otherPeopleCreatedMemoryBankIndex!.length}个'
+        ? '${otherPeopleReviewMemoryBankIndex!.length}个'
         : '';
     //拉取的记忆库数量String类型
     String otherPeoplePulledMemoryBankIndexString = currentPageSubscript == 1
@@ -161,8 +162,8 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
     otherPeoplePulledMemoryBank =
         await queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndex);
 
-    otherPeopleCreatedMemoryBank =
-        await queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndex);
+    otherPeopleReviewMemoryBank =
+        await queryOtherPeoplePersonalMemoryBank(otherPeopleReviewMemoryBankIndex);
 
     update();
   }
@@ -170,39 +171,35 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
 //请求后端其他人的个人信息数据
   void requestOtherPeoplePersonalInformationDataOnTheBackEnd(
       Map<String, dynamic> otherPeoplePersonalInformationData) async {
-    if (otherPeoplePersonalInformationData['xihuan'] != null) {
+    if (otherPeoplePersonalInformationData['like_list'] != null) {
       var otherPeopleLikedMemoryBankIndexint =
-          otherPeoplePersonalInformationData['xihuan'].cast<int>();
+          otherPeoplePersonalInformationData['like_list'].cast<int>();
       otherPeopleLikedMemoryBankIndex = otherPeopleLikedMemoryBankIndexint;
       otherPeopleLikedMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndexint);
     }
 
-    if (otherPeoplePersonalInformationData['shoucang'] != null) {
+    if (otherPeoplePersonalInformationData['collect_list'] != null) {
       var otherPeopleCollectedMemoryBankIndexint =
-          otherPeoplePersonalInformationData['shoucang'].cast<int>();
+          otherPeoplePersonalInformationData['collect_list'].cast<int>();
       otherPeopleCollectedMemoryBankIndex =
           otherPeopleCollectedMemoryBankIndexint;
     }
 
-    if (otherPeoplePersonalInformationData['laqu'] != null) {
+    if (otherPeoplePersonalInformationData['pull_list'] != null) {
       var otherPeoplePulledMemoryBankIndexint =
-          otherPeoplePersonalInformationData['laqu'].cast<int>();
+          otherPeoplePersonalInformationData['pull_list'].cast<int>();
       otherPeoplePulledMemoryBankIndex = otherPeoplePulledMemoryBankIndexint;
       otherPeoplePulledMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndexint);
     }
 
-    if (otherPeoplePersonalInformationData['tiwen'] != null) {
-      var otherPeopleReplyMemoryBankIndexint =
-          otherPeoplePersonalInformationData['tiwen'].cast<int>();
-      otherPeopleReplyMemoryBankIndex = otherPeopleReplyMemoryBankIndexint;
+    if (otherPeoplePersonalInformationData['review_list'] != null) {
+      var otherPeopleReviewMemoryBankIndexint =
+          otherPeoplePersonalInformationData['review_list'].cast<int>();
+      otherPeopleReviewMemoryBankIndex = otherPeopleReviewMemoryBankIndexint;
+      otherPeopleReviewMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleReviewMemoryBankIndexint);
     }
 
-    if (otherPeoplePersonalInformationData['wode'] != null) {
-      var otherPeopleCreatedMemoryBankIndexint =
-          otherPeoplePersonalInformationData['wode'].cast<int>();
-      otherPeopleCreatedMemoryBankIndex = otherPeopleCreatedMemoryBankIndexint;
-      otherPeopleCreatedMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleCreatedMemoryBankIndexint);
-    }
+
     update();
   }
 
@@ -257,7 +254,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-      requestTheOtherPersonalData(otherPeopleInformationListScrollDataManagement.scrollDataValue['username']);
+      requestTheOtherPersonalData(otherPeopleInformationListScrollDataManagement.scrollDataValue['user_name']);
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -334,7 +331,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  otherPeopleInformationListScrollDataManagement.scrollDataValue['name'],
+                                  '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(
                                         otherPeopleInformationListScrollDataManagement
@@ -390,7 +387,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                               Colors.black.withOpacity(0.5), // 设置Container的背景颜色
                         ),
                         child: SvgPicture.asset(
-                          'assets/sousuo.svg',
+                          'assets/search.svg',
                           width: 25,
                           height: 25,
                           // ignore: deprecated_member_use
@@ -444,21 +441,21 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                       onTap: () {
                                         otherPeopleBackgroundImageChangeManagement.initBackgroundImage(
                                             otherPeopleInformationListScrollDataManagement
-                                                .scrollDataValue['beijing']);
+                                                .scrollDataValue['background_image']);
                                         switchPage(
                                             context, const JiyikuPersonalBei());
                                       },
                                       child: otherPeopleInformationListScrollDataManagement
-                                                  .scrollDataValue['beijing'] !=
+                                                  .scrollDataValue['background_image'] !=
                                               null
                                           ? Image.file(
                                               File(
                                                   otherPeopleInformationListScrollDataManagement
-                                                      .scrollDataValue['beijing']),
+                                                      .scrollDataValue['background_image']),
                                               fit: BoxFit.cover,
                                             )
                                           : Image.asset(
-                                              'assets/chuhui.png',
+                                              'assets/personal/gray_back_head.png',
                                               fit: BoxFit.cover,
                                             ),
                                     ),
@@ -514,7 +511,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   onTap: () {
                                     otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
                                         otherPeopleInformationListScrollDataManagement
-                                            .scrollDataValue['touxiang']);
+                                            .scrollDataValue['head_portrait']);
                                     switchPage(context,
                                         const Jiyikudianjipersonalhead());
                                   },
@@ -525,13 +522,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                       backgroundColor: Colors.grey,
                                       backgroundImage:
                                           otherPeopleInformationListScrollDataManagement
-                                                      .scrollDataValue['touxiang'] !=
+                                                      .scrollDataValue['head_portrait'] !=
                                                   null
                                               ? FileImage(File(
                                                   otherPeopleInformationListScrollDataManagement
-                                                      .scrollDataValue['touxiang']))
+                                                      .scrollDataValue['head_portrait']))
                                               : const AssetImage(
-                                                  'assets/chuhui.png'),
+                                                  'assets/personal/gray_back_head.png'),
                                       radius: 25,
                                     ),
                                   ),
@@ -560,7 +557,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                     onTap: () {
                                       otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
                                           otherPeopleInformationListScrollDataManagement
-                                              .scrollDataValue['touxiang']);
+                                              .scrollDataValue['head_portrait']);
                                       switchPage(context,
                                           const Jiyikudianjipersonalhead());
                                     },
@@ -603,7 +600,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 ],
                               ),
                               Text(
-                                otherPeopleInformationListScrollDataManagement.scrollDataValue['name'],
+                               '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 24,
@@ -629,12 +626,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                               Padding(
                                 padding: const EdgeInsets.only(top: 13.0),
                                   child: otherPeopleInformationListScrollDataManagement
-                                        .scrollDataValue['brief']
-                                        .trim()
-                                        .isNotEmpty
+                                        .scrollDataValue['introduction']
+                                  
+                                        ?.isNotEmpty??false
                                     ? Text(
                                           otherPeopleInformationListScrollDataManagement
-                                            .scrollDataValue['brief'],
+                                            .scrollDataValue['introduction'],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 17,
@@ -653,14 +650,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 textDirection: TextDirection.ltr,
                                 children: [
                                     otherPeopleInformationListScrollDataManagement
-                                          .scrollDataValue['year']
-                                          .trim()
-                                          .isNotEmpty
+                                          .scrollDataValue['birth_time']
+                                          ?.isNotEmpty??false
                                       ? Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             SvgPicture.asset(
-                                              'assets/chusheng.svg',
+                                              'assets/personal/birth_time.svg',
                                               width: 20,
                                               height: 20,
                                             ),
@@ -669,9 +665,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             ),
                                             Expanded(
                                               child: Text(
-                                                '出生于 ' +
-                                                    otherPeopleInformationListScrollDataManagement
-                                                        .scrollDataValue['year'],
+                                                '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',
+                                              
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
@@ -688,14 +683,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                         )
                                       : const SizedBox(),
                                     otherPeopleInformationListScrollDataManagement
-                                          .scrollDataValue['place']
-                                          .trim()
-                                          .isNotEmpty
+                                          .scrollDataValue['residential_address']
+                                          ?.isNotEmpty??false
                                       ? Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             SvgPicture.asset(
-                                              'assets/place.svg',
+                                              'assets/personal/residential_address.svg',
                                               width: 20,
                                               height: 20,
                                             ),
@@ -705,7 +699,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             Expanded(
                                               child: Text(
                                                 otherPeopleInformationListScrollDataManagement
-                                                    .scrollDataValue['place'],
+                                                    .scrollDataValue['residential_address'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
@@ -724,15 +718,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      SvgPicture.asset('assets/jiaruriqi.svg',
+                                      SvgPicture.asset('assets/personal/join_date.svg',
                                           width: 20, height: 20),
                                       const SizedBox(
                                         width: 7,
                                       ),
                                       Expanded(
                                         child: Text(
-                                          otherPeopleInformationListScrollDataManagement
-                                              .scrollDataValue['jiaru'],
+                                          '加入于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
@@ -870,11 +863,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                         cacheExtent: 500,
                                         physics: physics,
                                         itemCount: otherPeoplePersonalInformationManagement
-                                                    .otherPeopleCreatedMemoryBank ==
+                                                    .otherPeopleReviewMemoryBank ==
                                                 null
                                             ? 0
                                             : otherPeoplePersonalInformationManagement
-                                                .otherPeopleCreatedMemoryBank
+                                                .otherPeopleReviewMemoryBank
                                                 ?.length,
                                         itemBuilder: (context, index) {
                                           return Column(
@@ -890,7 +883,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                   viewPostDataManagementForMemoryBanks
                                                       .initTheMemoryDataForThePost(
                                                           otherPeoplePersonalInformationManagement
-                                                                  .otherPeopleCreatedMemoryBank![
+                                                                  .otherPeopleReviewMemoryBank![
                                                               index]);
                                                   switchPage(context,
                                                       const jiyikudianji());
@@ -912,17 +905,17 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                           icon: CircleAvatar(
                                                             radius: 21,
                                                             backgroundImage: otherPeoplePersonalInformationManagement
-                                                                            .otherPeopleCreatedMemoryBank?[index]
+                                                                            .otherPeopleReviewMemoryBank?[index]
                                                                         [
-                                                                        'touxiang'] !=
+                                                                        'head_portrait'] !=
                                                                     null
                                                                 ? FileImage(File(
                                                                     otherPeoplePersonalInformationManagement
-                                                                            .otherPeopleCreatedMemoryBank![index]
+                                                                              .otherPeopleReviewMemoryBank![index]
                                                                         [
-                                                                        'touxiang']))
+                                                                        'head_portrait']))
                                                                 : const AssetImage(
-                                                                    'assets/chuhui.png'),
+                                                                    'assets/personal/gray_back_head.png'),
                                                           )),
                                                       Expanded(
                                                         child: Column(
@@ -947,7 +940,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         children: [
                                                                           TextSpan(
                                                                             text:
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['name'],
+                                                                                  otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['name'],
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 17,
@@ -957,7 +950,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['username']}',
+                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['user_name']}',
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 16,
@@ -986,7 +979,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                               .w900),
                                                                 ),
                                                                 Text(
-                                                                  '${otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['xiabiao'].length}个记忆项',
+                                                                  '${otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['subscript'].length}个记忆项',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -1005,7 +998,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                               ],
                                                             ),
                                                             Text(
-                                                              '${otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['zhuti']}',
+                                                              '${otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['theme']}',
                                                               style: const TextStyle(
                                                                   fontSize: 17,
                                                                   fontWeight:
@@ -1019,14 +1012,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                             Text(
                                                               timuzhi(
                                                                   otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleCreatedMemoryBank?[
+                                                                              .otherPeopleReviewMemoryBank?[
                                                                           index]
-                                                                      ['timu'],
+                                                                      ['question'],
                                                                   otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleCreatedMemoryBank?[
+                                                                              .otherPeopleReviewMemoryBank?[
                                                                           index]
                                                                       [
-                                                                      'xiabiao']),
+                                                                      'subscript']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
                                                                   fontWeight:
@@ -1044,14 +1037,14 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                             Text(
                                                               timuzhi(
                                                                   otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleCreatedMemoryBank?[
+                                                                                .otherPeopleReviewMemoryBank?[
                                                                           index]
-                                                                      ['huida'],
+                                                                      ['relpy'],
                                                                   otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleCreatedMemoryBank?[
+                                                                                .otherPeopleReviewMemoryBank?[
                                                                           index]
                                                                       [
-                                                                      'xiabiao']),
+                                                                      'subscript']),
                                                               style: const TextStyle(
                                                                   fontSize: 17,
                                                                   fontWeight:
@@ -1122,7 +1115,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['laqu'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['pull'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1210,7 +1203,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['shoucang'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['collect'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1297,7 +1290,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['xihuan'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['like'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1384,7 +1377,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                           );
                                                                         },
                                                                         likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleCreatedMemoryBank?[index]['tiwen'],
+                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['review'],
                                                                         countBuilder: (int? count,
                                                                             bool
                                                                                 isLiked,
@@ -1494,7 +1487,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
-                                                                    'assets/chuhui.png'),
+                                                                    'assets/personal/gray_back_head.png'),
                                                           )),
                                                       Expanded(
                                                         child: Column(
@@ -2072,7 +2065,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                                                         [
                                                                         'touxiang']))
                                                                 : const AssetImage(
-                                                                    'assets/chuhui.png'),
+                                                                    'assets/personal/gray_back_head.png'),
                                                           )),
                                                       Expanded(
                                                         child: Column(

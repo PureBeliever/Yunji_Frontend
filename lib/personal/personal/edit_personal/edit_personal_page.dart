@@ -20,24 +20,28 @@ class EditPersonalDataValueManagement extends GetxController {
   static EditPersonalDataValueManagement get to => Get.find();
 
   // 姓名
-  String nameValue = '';
+  String? nameValue;
   // 简介
-  String profileValue = ' ';
+  String? profileValue;
   // 出生日期
-  String dateOfBirthValue = ' ';
+  String? dateOfBirthValue;
   // 居住地址
-  String residentialAddressValue = ' ';
+  String? residentialAddressValue;
   // 加入日期
-  String applicationDateValue = ' ';
+  String? applicationDateValue;
 
   // 加入日期更改
-  void applicationDateChange(String applicationDateValueChange) {
+  void applicationDateChange(String? applicationDateValueChange) {
     applicationDateValue = applicationDateValueChange;
     update();
   }
 
   // 个人信息更改
-  void changePersonalInformation(String nameValueChange, String profileValueChange, String residentialAddressValueChange, String dateOfBirthValueChange) {
+  void changePersonalInformation(
+      String? nameValueChange,
+      String? profileValueChange,
+      String? residentialAddressValueChange,
+      String? dateOfBirthValueChange) {
     nameValue = nameValueChange;
     profileValue = profileValueChange;
     residentialAddressValue = residentialAddressValueChange;
@@ -46,38 +50,49 @@ class EditPersonalDataValueManagement extends GetxController {
   }
 
   // 个人信息回滚
-  int rollbackTheChangedValue(String nameValueChange, String profileValueChange, String residentialAddressValueChange, String dateOfBirthValueChange) {
+  int rollbackTheChangedValue(String? nameValueChange, String? profileValueChange,
+      String? residentialAddressValueChange, String? dateOfBirthValueChange) {
     int nameChangeStatus = nameValue != nameValueChange ? 1 : 0;
     int profileChangeStatus = profileValue != profileValueChange ? 1 : 0;
-    int residentialAddressChangeStatus = residentialAddressValue != residentialAddressValueChange ? 1 : 0;
-    int dateOfBirthChangeStatus = dateOfBirthValue != dateOfBirthValueChange ? 1 : 0;
-    return nameChangeStatus + profileChangeStatus + residentialAddressChangeStatus + dateOfBirthChangeStatus;
+    int residentialAddressChangeStatus =
+        residentialAddressValue != residentialAddressValueChange ? 1 : 0;
+    int dateOfBirthChangeStatus =
+        dateOfBirthValue != dateOfBirthValueChange ? 1 : 0;
+    return nameChangeStatus +
+        profileChangeStatus +
+        residentialAddressChangeStatus +
+        dateOfBirthChangeStatus;
   }
 }
 
 class Baocuncontroller extends GetxController {
   static Baocuncontroller get to => Get.find();
 
-  String name = ' ';
+  String? name;
 
-  void namess(String na) {
+  void namess(String? na) {
     name = na;
     update();
   }
 }
+
 //更新选择器结果显示
 class SelectorResultsUpdateDisplay extends GetxController {
   static SelectorResultsUpdateDisplay get to => Get.find();
-  String residentialAddressSelectorResultValue = ' ';
-  String dateOfBirthSelectorResultValue = ' ';
+  String? residentialAddressSelectorResultValue;
+  String? dateOfBirthSelectorResultValue;
 // 日期选择器结果值更改
-  void dateOfBirthSelectorResultValueChange(String dateOfBirthSelectorResultValueChange) {
+  void dateOfBirthSelectorResultValueChange(
+      String? dateOfBirthSelectorResultValueChange) {
     dateOfBirthSelectorResultValue = dateOfBirthSelectorResultValueChange;
     update();
   }
+
 // 地址选择器结果值更改
-  void residentialAddressSelectorResultValueChange(String residentialAddressSelectorResultValueChange) {
-    residentialAddressSelectorResultValue = residentialAddressSelectorResultValueChange;
+  void residentialAddressSelectorResultValueChange(
+      String? residentialAddressSelectorResultValueChange) {
+    residentialAddressSelectorResultValue =
+        residentialAddressSelectorResultValueChange;
     update();
   }
 }
@@ -89,19 +104,23 @@ class EditPersonalPage extends StatefulWidget {
   State<EditPersonalPage> createState() => _EditPersonalPageState();
 }
 
-  class _EditPersonalPageState extends State<EditPersonalPage> {
-  static String name = EditPersonalDataValueManagement.to.nameValue;
-  static String brief = EditPersonalDataValueManagement.to.profileValue;
-  static String formatteplace = EditPersonalDataValueManagement.to.residentialAddressValue;
-  static String formattedDate = EditPersonalDataValueManagement.to.dateOfBirthValue;
-final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+class _EditPersonalPageState extends State<EditPersonalPage> {
+  static String? name = EditPersonalDataValueManagement.to.nameValue;
+  static String? brief = EditPersonalDataValueManagement.to.profileValue;
+  static String? formatteplace =
+      EditPersonalDataValueManagement.to.residentialAddressValue;
+  static String? formattedDate =
+      EditPersonalDataValueManagement.to.dateOfBirthValue;
+  final editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
   final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
   final baocuncontroller = Get.put(Baocuncontroller());
-  final backgroundImageChangeManagement = Get.put(BackgroundImageChangeManagement());
+  final backgroundImageChangeManagement =
+      Get.put(BackgroundImageChangeManagement());
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
   final userNameChangeManagement = Get.put(UserNameChangeManagement());
-  static String username = UserNameChangeManagement.to.userNameValue;
+  static String? username = UserNameChangeManagement.to.userNameValue;
 
   selectImage() async {
     try {
@@ -131,9 +150,10 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                 title: '',
               ),
             ]);
-        headPortraitChangeManagement.selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File(croppedFile!.path));
+        headPortraitChangeManagement
+            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(
+                File(croppedFile!.path));
       }
-   
     } catch (err) {}
   }
 
@@ -165,7 +185,9 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                 title: '',
               ),
             ]);
-        headPortraitChangeManagement.selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File(croppedFile!.path));
+        headPortraitChangeManagement
+            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(
+                File(croppedFile!.path));
       }
       // ignore: empty_catches
     } catch (err) {}
@@ -194,7 +216,9 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
           title: '',
         ),
       ]);
-      backgroundImageChangeManagement.selectAndShootTheImageToGiveTheChangedBackgroundImage(File(croppedFile!.path));
+      backgroundImageChangeManagement
+          .selectAndShootTheImageToGiveTheChangedBackgroundImage(
+              File(croppedFile!.path));
     }
   }
 
@@ -222,7 +246,9 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
           title: '',
         ),
       ]);
-      backgroundImageChangeManagement.selectAndShootTheImageToGiveTheChangedBackgroundImage(File(croppedFile!.path));
+      backgroundImageChangeManagement
+          .selectAndShootTheImageToGiveTheChangedBackgroundImage(
+              File(croppedFile!.path));
     }
   }
 
@@ -234,8 +260,12 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
         if (editPersonalDataValueManagement.rollbackTheChangedValue(
                     name, brief, formatteplace, formattedDate) >
                 0 ||
-            backgroundImageChangeManagement.exitThePageToDetermineWhetherTheBackgroundImageHasChanged() == 1 ||
-            headPortraitChangeManagement.exitThePageToDetermineWhetherTheHeadPortraitHasChanged() == 1) {
+            backgroundImageChangeManagement
+                    .exitThePageToDetermineWhetherTheBackgroundImageHasChanged() ==
+                1 ||
+            headPortraitChangeManagement
+                    .exitThePageToDetermineWhetherTheHeadPortraitHasChanged() ==
+                1) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -281,14 +311,25 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                             TextButton(
                               onPressed: () {
                                 selectorResultsUpdateDisplay
-                                    .dateOfBirthSelectorResultValueChange(editPersonalDataValueManagement.dateOfBirthValue);
-                                selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(editPersonalDataValueManagement.residentialAddressValue);
-                                backgroundImageChangeManagement.restoreAnUnchangedBackgroundImage();
-                                headPortraitChangeManagement.restoreAnUnchangedHeadPortraitImage();
-                                name = editPersonalDataValueManagement.nameValue;
-                                brief = editPersonalDataValueManagement.profileValue;
-                                formatteplace = selectorResultsUpdateDisplay.residentialAddressSelectorResultValue;
-                                formattedDate = selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
+                                    .dateOfBirthSelectorResultValueChange(
+                                        editPersonalDataValueManagement
+                                            .dateOfBirthValue);
+                                selectorResultsUpdateDisplay
+                                    .residentialAddressSelectorResultValueChange(
+                                        editPersonalDataValueManagement
+                                            .residentialAddressValue);
+                                backgroundImageChangeManagement
+                                    .restoreAnUnchangedBackgroundImage();
+                                headPortraitChangeManagement
+                                    .restoreAnUnchangedHeadPortraitImage();
+                                name =
+                                    editPersonalDataValueManagement.nameValue;
+                                brief = editPersonalDataValueManagement
+                                    .profileValue;
+                                formatteplace = selectorResultsUpdateDisplay
+                                    .residentialAddressSelectorResultValue;
+                                formattedDate = selectorResultsUpdateDisplay
+                                    .dateOfBirthSelectorResultValue;
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                               },
@@ -327,8 +368,12 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                 if (editPersonalDataValueManagement.rollbackTheChangedValue(
                             name, brief, formatteplace, formattedDate) >
                         0 ||
-                      backgroundImageChangeManagement.exitThePageToDetermineWhetherTheBackgroundImageHasChanged() == 1 ||
-                    headPortraitChangeManagement.exitThePageToDetermineWhetherTheHeadPortraitHasChanged() == 1) {
+                    backgroundImageChangeManagement
+                            .exitThePageToDetermineWhetherTheBackgroundImageHasChanged() ==
+                        1 ||
+                    headPortraitChangeManagement
+                            .exitThePageToDetermineWhetherTheHeadPortraitHasChanged() ==
+                        1) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -377,17 +422,26 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                     TextButton(
                                       onPressed: () {
                                         selectorResultsUpdateDisplay
-                                            .dateOfBirthSelectorResultValueChange(editPersonalDataValueManagement.dateOfBirthValue);  
-                                        selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
-                                            editPersonalDataValueManagement.residentialAddressValue);
-                                        backgroundImageChangeManagement.restoreAnUnchangedBackgroundImage();
-                                        headPortraitChangeManagement.restoreAnUnchangedHeadPortraitImage();
-                                        name = editPersonalDataValueManagement.nameValue;
-                                        brief = editPersonalDataValueManagement.profileValue;
-                                        formatteplace =
-                                            selectorResultsUpdateDisplay.residentialAddressSelectorResultValue;
+                                            .dateOfBirthSelectorResultValueChange(
+                                                editPersonalDataValueManagement
+                                                    .dateOfBirthValue);
+                                        selectorResultsUpdateDisplay
+                                            .residentialAddressSelectorResultValueChange(
+                                                editPersonalDataValueManagement
+                                                    .residentialAddressValue);
+                                        backgroundImageChangeManagement
+                                            .restoreAnUnchangedBackgroundImage();
+                                        headPortraitChangeManagement
+                                            .restoreAnUnchangedHeadPortraitImage();
+                                        name = editPersonalDataValueManagement
+                                            .nameValue;
+                                        brief = editPersonalDataValueManagement
+                                            .profileValue;
+                                        formatteplace = selectorResultsUpdateDisplay
+                                            .residentialAddressSelectorResultValue;
                                         formattedDate =
-                                            selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
+                                            selectorResultsUpdateDisplay
+                                                .dateOfBirthSelectorResultValue;
                                         Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                       },
@@ -426,27 +480,38 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                 child: GetBuilder<Baocuncontroller>(
                     init: baocuncontroller,
                     builder: (dcontroller) {
-                      return dcontroller.name.isNotEmpty
+                      return dcontroller.name?.isNotEmpty ?? true
                           ? GestureDetector(
                               onTap: () {
-                                if (editPersonalDataValueManagement.rollbackTheChangedValue(name, brief,
-                                            formatteplace, formattedDate) >
+                                if (editPersonalDataValueManagement
+                                            .rollbackTheChangedValue(
+                                                name,
+                                                brief,
+                                                formatteplace,
+                                                formattedDate) >
                                         0 ||
-                                    backgroundImageChangeManagement.exitThePageToDetermineWhetherTheBackgroundImageHasChanged() == 1 ||
-                                    headPortraitChangeManagement.exitThePageToDetermineWhetherTheHeadPortraitHasChanged() == 1) {
-                                  editPersonalDataValueManagement.rollbackTheChangedValue(name, brief,          
-                                      formatteplace, formattedDate);
+                                    backgroundImageChangeManagement
+                                            .exitThePageToDetermineWhetherTheBackgroundImageHasChanged() ==
+                                        1 ||
+                                    headPortraitChangeManagement
+                                            .exitThePageToDetermineWhetherTheHeadPortraitHasChanged() ==
+                                        1) {
+                                  editPersonalDataValueManagement
+                                      .rollbackTheChangedValue(name, brief,
+                                          formatteplace, formattedDate);
 
                                   Navigator.pop(context);
 
-                                    editPersonal(
-                                        username,
+                                  editPersonal(
+                                      username,
                                       name,
                                       brief,
                                       formatteplace,
                                       formattedDate,
-                                      backgroundImageChangeManagement.returnsTheChangedBackgroundImageSynchronizationBackend(),
-                                      headPortraitChangeManagement.returnsTheChangedHeadPortraitImageSynchronizationBackend());
+                                      backgroundImageChangeManagement
+                                          .returnsTheChangedBackgroundImageSynchronizationBackend(),
+                                      headPortraitChangeManagement
+                                          .returnsTheChangedHeadPortraitImageSynchronizationBackend());
                                 } else {
                                   Navigator.pop(context);
                                 }
@@ -576,16 +641,20 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                           alignment: Alignment.center,
                           children: <Widget>[
                             Positioned.fill(
-                              child: GetBuilder<BackgroundImageChangeManagement>(
+                              child:
+                                  GetBuilder<BackgroundImageChangeManagement>(
                                 init: backgroundImageChangeManagement,
                                 builder: (backgroundImageChangeManagement) {
-                                  return backgroundImageChangeManagement.changedBackgroundImageValue != null
+                                  return backgroundImageChangeManagement
+                                              .changedBackgroundImageValue !=
+                                          null
                                       ? Image.file(
-                                          backgroundImageChangeManagement.changedBackgroundImageValue!,
+                                          backgroundImageChangeManagement
+                                              .changedBackgroundImageValue!,
                                           fit: BoxFit.cover,
                                         )
                                       : Image.asset(
-                                          'assets/chuhui.png',
+                                          'assets/personal/gray_back_head.png',
                                           fit: BoxFit.cover,
                                         );
                                 },
@@ -598,7 +667,7 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                             Positioned(
                                 height: 47,
                                 child: SvgPicture.asset(
-                                  'assets/xiangji.svg',
+                                  'assets/personal/camera.svg',
                                   height: 47,
                                   width: 47,
                                 )),
@@ -737,12 +806,15 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     backgroundColor: Colors.grey,
-                                    backgroundImage: headPortraitChangeManagement
-                                                .changedHeadPortraitValue !=
-                                            null
-                                        ? FileImage(
-                                            headPortraitChangeManagement.changedHeadPortraitValue!)
-                                        : const AssetImage('assets/chuhui.png'),
+                                    backgroundImage:
+                                        headPortraitChangeManagement
+                                                    .changedHeadPortraitValue !=
+                                                null
+                                            ? FileImage(
+                                                headPortraitChangeManagement
+                                                    .changedHeadPortraitValue!)
+                                            : const AssetImage(
+                                                'assets/personal/gray_back_head.png'),
                                     radius: 47.5,
                                     child: Stack(
                                       alignment: Alignment.center,
@@ -758,7 +830,7 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                         Positioned(
                                             height: 47,
                                             child: SvgPicture.asset(
-                                              'assets/xiangji.svg',
+                                              'assets/personal/camera.svg',
                                               height: 47,
                                               width: 47,
                                             )),
@@ -788,9 +860,7 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                               style:
                                   const TextStyle(fontWeight: FontWeight.w600),
                               controller: TextEditingController(
-                                  text: editPersonalDataValueManagement.nameValue == ' '
-                                      ? null
-                                      : editPersonalDataValueManagement.nameValue),
+                                 text: editPersonalDataValueManagement.nameValue??null),
                               onChanged: (value) {
                                 name = value.trim();
                                 baocuncontroller.namess(name);
@@ -824,9 +894,8 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                               style:
                                   const TextStyle(fontWeight: FontWeight.w600),
                               controller: TextEditingController(
-                                  text: editPersonalDataValueManagement.profileValue == ' '
-                                      ? null
-                                      : editPersonalDataValueManagement.profileValue),
+                                  text: editPersonalDataValueManagement
+                                              .profileValue??null),
                               onChanged: (value) {
                                 brief = value.replaceAll('\n', '');
                               },
@@ -874,17 +943,20 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                 if (result != null &&
                                     result.provinceId != 'kong') {
                                   formatteplace =
-                                      '${result.provinceName!}.${result.cityName!}.${result.areaName!}';
-                                  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(formatteplace);
+                                      '${result.provinceName}.${result.cityName}.${result.areaName}';
+                                  selectorResultsUpdateDisplay
+                                      .residentialAddressSelectorResultValueChange(
+                                          formatteplace);
                                 } else if (result?.provinceId == 'kong') {
                                   formatteplace = ' ';
-                                  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(formatteplace);
+                                  selectorResultsUpdateDisplay
+                                      .residentialAddressSelectorResultValueChange(
+                                          formatteplace);
                                 }
                               },
                               controller: TextEditingController(
-                                  text: selectorResultsUpdateDisplay.residentialAddressSelectorResultValue == ' '
-                                      ? null
-                                      : selectorResultsUpdateDisplay.residentialAddressSelectorResultValue),
+                                  text: selectorResultsUpdateDisplay
+                                              .residentialAddressSelectorResultValue??null),
                               maxLines: 1,
                               maxLength: 50,
                               readOnly: true,
@@ -980,7 +1052,8 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                                       onPressed: () {
                                                         Navigator.pop(context);
                                                         selectorResultsUpdateDisplay
-                                                            .dateOfBirthSelectorResultValueChange(' ');
+                                                            .dateOfBirthSelectorResultValueChange(
+                                                                ' ');
                                                       },
                                                       child: const Text(
                                                         '移除',
@@ -997,7 +1070,8 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                     selectorResultsUpdateDisplay
-                                                        .dateOfBirthSelectorResultValueChange(formattedDate);
+                                                        .dateOfBirthSelectorResultValueChange(
+                                                            formattedDate);
                                                   },
                                                   child: const Text(
                                                     '确定',
@@ -1018,9 +1092,10 @@ final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement(
                                 );
                               },
                               controller: TextEditingController(
-                                  text: selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue == ' '
-                                      ? null
-                                      : selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue),
+                                text: selectorResultsUpdateDisplay
+                                        .dateOfBirthSelectorResultValue ??
+                                    null,
+                              ),
                               maxLines: 1,
                               maxLength: 50,
                               readOnly: true,

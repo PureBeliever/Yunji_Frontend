@@ -1,7 +1,5 @@
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
 
 class DatabaseManager {
   Database? database;
@@ -37,40 +35,39 @@ class DatabaseManager {
     await txn.execute(
       'CREATE TABLE intdatabase (id INTEGER PRIMARY KEY, number LONGTEXT, length INT);',
     );
-    List<int> number = [1, 2, 3];
+    List<int> number = [0];
     await txn.insert(
       'intdatabase',
-      {'id': 0, 'number': number.toString(), 'length': 3},
+      {'id': 0, 'number': number.toString(), 'length': 1},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
   Future<void> _createJiyikuTable(Database txn) async {
     await txn.execute(
-               'CREATE TABLE  memory_bank ('
+      'CREATE TABLE  memory_bank ('
       'user_name CHAR(20), '
       'name CHAR(50), '
       'head_portrait CHAR(50), '
       'memory_bank_id INT PRIMARY KEY, '
-     'question JSON, '
+      'question JSON, '
       'reply JSON, '
       'theme CHAR(50), '
       'subscript  JSON, '
-     'collect  INT, '
+      'collect  INT, '
       'pull INT, '
       'like INT, '
       'review INT);',
-
     );
   }
 
   Future<void> _createPersonalJiyikuTable(Database txn) async {
     await txn.execute(
-        'CREATE TABLE personal_memory_bank ('
+      'CREATE TABLE personal_memory_bank ('
       'user_name CHAR(20), '
       'name CHAR(50), '
       'head_portrait CHAR(50), '
-           'memory_bank_id INT PRIMARY KEY, '
+      'memory_bank_id INT PRIMARY KEY, '
       'question JSON, '
       'reply JSON, '
       'theme CHAR(50), '
@@ -91,30 +88,19 @@ class DatabaseManager {
 
   Future<void> _createPersonalJiyikudianjiTable(Database txn) async {
     await txn.execute(
-       'CREATE TABLE  other_personal_memory_bank ('
+      'CREATE TABLE  other_personal_memory_bank ('
       'user_name CHAR(20), '
       'name CHAR(50), '
       'head_portrait CHAR(50), '
       'memory_bank_id INT PRIMARY KEY, '
-     'question JSON, '
+      'question JSON, '
       'reply JSON, '
       'theme CHAR(50), '
       'subscript  JSON, '
-     'collect  INT, '
+      'collect  INT, '
       'pull INT, '
       'like INT, '
       'review INT);',
     );
   }
-
 }
-
-
-
-
-
-
-
-
-
-

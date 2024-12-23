@@ -20,7 +20,7 @@ import 'package:sqflite/sqflite.dart';
       List<int> ids) async {
     final db = databaseManager.database;
     //mysql查询语句
-    String mysqlQueryStatement = ' id IN (${ids.map((id) => '?').join(',')})';
+    String mysqlQueryStatement = 'memory_bank_id IN (${ids.map((id) => '?').join(',')})';
 
     List<dynamic> idList = ids.reversed.toList();
     final List<Map<String, dynamic>> memoryBank = await db!.query(
@@ -30,7 +30,7 @@ import 'package:sqflite/sqflite.dart';
     );
     //根据id排序
     final List<Map<String, dynamic>> sortedResults = idList
-        .map((id) => memoryBank.firstWhere((row) => row['id'] == id))
+        .map((id) => memoryBank.firstWhere((row) => row['memory_bank_id'] == id))
         .toList();
 
     return sortedResults;

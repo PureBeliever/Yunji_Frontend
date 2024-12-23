@@ -9,6 +9,7 @@ void switchPage(BuildContext context, Widget page) {
     context,
     CupertinoPageRoute(
       builder: (context) => page,
+      // 设置滑动时间
     ),
   );
 }

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:get/get.dart';
-import 'package:yunji/review/review/review.dart';
+import 'package:yunji/review/review/start_review/review.dart';
 import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';

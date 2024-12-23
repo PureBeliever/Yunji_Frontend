@@ -18,7 +18,7 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal_api.dart';
 import 'package:yunji/switch/switch_page.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
-import 'package:yunji/review/review/review.dart';
+import 'package:yunji/review/review/start_review/review.dart';
 import 'package:yunji/personal/personal/personal/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_head_portrait.dart';
 import 'package:yunji/setting/setting_account_user_name.dart';
@@ -109,7 +109,7 @@ class MemoryBankCompletionStatus extends GetxController {
 
   Widget memoryLibraryStatusDisplayWidget(
       Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
-    var setTimeValueDynamic = widgetsDisplayValues['dingshi'];
+    var setTimeValueDynamic = widgetsDisplayValues['set_time'];
     DateTime setTimeValueDateTime = DateTime.parse(setTimeValueDynamic);
     DateTime presentTimeDateTime = DateTime.now();
 
@@ -120,24 +120,18 @@ class MemoryBankCompletionStatus extends GetxController {
     final int numberOfMinutes = setTimeValueDuration.inMinutes % 60;
 
     Map<String, dynamic> theWidgetDisplaysTheValue =
-        jsonDecode(widgetsDisplayValues['cishu']);
+        jsonDecode(widgetsDisplayValues['review_record']);
 
     int displaysTheNumberOfValues = theWidgetDisplaysTheValue.length;
     List<String> statusRecord = [];
 
     theWidgetDisplaysTheValue.forEach(
       (key, value) {
-        if (key != '方案1') {
+        if (value != '方案1') {
           statusRecord.add('已完成${key}次${value}的复习');
         } else {
-          Text(
-            '未选择复习',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-              color: Color.fromRGBO(84, 87, 105, 1),
-            ),
-          );
+          statusRecord.add('未选择复习');
+            
         }
       },
     );
@@ -192,7 +186,7 @@ class MemoryBankCompletionStatus extends GetxController {
     );
 
     if (setTimeValueDuration.inMinutes <= 0 &&
-        widgetsDisplayValues['zhuangtai'] == 0) {
+        widgetsDisplayValues['complete_state'] == 0) {
       statusDisplayWidget = GestureDetector(
         onTap: () {
           reviewTheDataManagementOfMemoryBank
@@ -213,7 +207,7 @@ class MemoryBankCompletionStatus extends GetxController {
       );
     }
     if (setTimeValueDuration.inMinutes > 0 &&
-        widgetsDisplayValues['zhuangtai'] == 0) {
+        widgetsDisplayValues['complete_state'] == 0) {
       statusDisplayWidget = Text(
         displayStatusRecord,
         style: TextStyle(
@@ -241,26 +235,25 @@ class UserPersonalInformationManagement extends GetxController {
   //其他人拉取的记忆库
   List<Map<String, dynamic>>? userPulledMemoryBank = [];
 
-  //其他人创建的记忆库
-  List<Map<String, dynamic>>? userCreatedMemoryBank = [];
+  //其他人复习的记忆库
+  List<Map<String, dynamic>>? userReviewMemoryBank = [];
 
   //用户喜欢的记忆库下标
   List<int> userLikedMemoryBankIndex = [];
-  //用户收藏的记忆库下标
-  List<int> userCollectedMemoryBankIndex = [];
-  //用户拉取的记忆库下标
-  List<int> userPulledMemoryBankIndex = [];
   //用户回复的记忆库下标
   List<int> userReplyMemoryBankIndex = [];
-  //用户创建的记忆库下标
-  List<int> userCreatedMemoryBankIndex = [];
+  //用户拉取的记忆库下标
+  List<int> userPulledMemoryBankIndex = [];
+  //用户复习的记忆库下标
+  List<int> userReviewMemoryBankIndex = [];
+
 //显示文本
   String displayText = ' ';
 //计算每个页面的记忆库数量
   void calculateTheNumberOfMemoryBanksPerPage(int currentPageSubscript) {
     //创建的记忆库数量String类型
-    String userCollectedMemoryBankIndexString = currentPageSubscript == 0
-        ? '${userCreatedMemoryBankIndex!.length}个'
+String userReviewMemoryBankIndexString = currentPageSubscript == 0
+        ? '${userReviewMemoryBankIndex!.length}个'
         : '';
     //拉取的记忆库数量String类型
     String userPulledMemoryBankIndexString = currentPageSubscript == 1
@@ -272,7 +265,7 @@ class UserPersonalInformationManagement extends GetxController {
     //喜欢的记忆库数量String类型
     String userLikedMemoryBankIndexString =
         currentPageSubscript == 3 ? '${userLikedMemoryBankIndex!.length}个' : '';
-    displayText = userCollectedMemoryBankIndexString +
+    displayText = userReviewMemoryBankIndexString +
         userPulledMemoryBankIndexString +
         userReplyMemoryBankIndexString +
         userLikedMemoryBankIndexString;
@@ -289,10 +282,10 @@ class UserPersonalInformationManagement extends GetxController {
       userLikedMemoryBank = await queryUserPersonalMemoryBank(userLikedMemoryBankIndexint);
     }
 
-    if (userPersonalInformationData['collect_list'] != null) {
-      var userCollectedMemoryBankIndexint =
-          userPersonalInformationData['collect_list'].cast<int>();
-      userCollectedMemoryBankIndex = userCollectedMemoryBankIndexint;
+    if (userPersonalInformationData['reply_list'] != null) {
+      var userReplyMemoryBankIndexint =
+          userPersonalInformationData['reply_list'].cast<int>();
+      userReplyMemoryBankIndex = userReplyMemoryBankIndexint;
     }
 
     if (userPersonalInformationData['pull_list'] != null) {
@@ -303,9 +296,10 @@ class UserPersonalInformationManagement extends GetxController {
     }
 
     if (userPersonalInformationData['review_list'] != null) {
-      var userReplyMemoryBankIndexint =
+      var userReviewMemoryBankIndexint =
           userPersonalInformationData['review_list'].cast<int>();
-      userReplyMemoryBankIndex = userReplyMemoryBankIndexint;
+      userReviewMemoryBankIndex = userReviewMemoryBankIndexint;
+      userReviewMemoryBank = await queryUserPersonalMemoryBank(userReviewMemoryBankIndexint);
     }
 
     update();
@@ -376,7 +370,7 @@ class _PersonalPageState extends State<PersonalPage>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-    requestTheUsersPersonalData(userNameChangeManagement.userNameValue);
+    requestTheUsersPersonalData(userNameChangeManagement.userNameValue??'');
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -457,7 +451,7 @@ class _PersonalPageState extends State<PersonalPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      editPersonalDataValueManagement.nameValue,
+                                      editPersonalDataValueManagement.nameValue??'',
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(
                                             userInformationListScrollDataManagement
@@ -513,7 +507,7 @@ class _PersonalPageState extends State<PersonalPage>
                                   .withOpacity(0.5), // 设置Container的背景颜色
                             ),
                             child: SvgPicture.asset(
-                              'assets/sousuo.svg',
+                              'assets/search.svg',
                               width: 25,
                               height: 25,
                               // ignore: deprecated_member_use
@@ -586,7 +580,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                       fit: BoxFit.cover,
                                                     )
                                                   : Image.asset(
-                                                      'assets/chuhui.png',
+                                                      'assets/personal/gray_back_head.png',
                                                       fit: BoxFit.cover,
                                                     );
                                             },
@@ -665,7 +659,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                           headPortraitChangeManagement
                                                               .headPortraitValue!)
                                                       : const AssetImage(
-                                                          'assets/chuhui.png'),
+                                                          'assets/personal/gray_back_head.png'),
                                                   radius: 25,
                                                 );
                                               })),
@@ -768,7 +762,7 @@ class _PersonalPageState extends State<PersonalPage>
                                     ],
                                   ),
                                   Text(
-                                    editPersonalDataValueManagement.nameValue,
+                                    '${editPersonalDataValueManagement.nameValue}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w900,
                                       fontSize: 24,
@@ -795,12 +789,9 @@ class _PersonalPageState extends State<PersonalPage>
                                   Padding(
                                     padding: const EdgeInsets.only(top: 13.0),
                                     child: editPersonalDataValueManagement
-                                            .profileValue
-                                            .trim()
-                                            .isNotEmpty
-                                        ? Text(
-                                            editPersonalDataValueManagement
-                                                .profileValue,
+                                            .profileValue?.isNotEmpty??true?
+                                             Text(
+                                            '${editPersonalDataValueManagement.profileValue}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 17,
@@ -819,14 +810,12 @@ class _PersonalPageState extends State<PersonalPage>
                                     textDirection: TextDirection.ltr,
                                     children: [
                                       editPersonalDataValueManagement
-                                              .dateOfBirthValue
-                                              .trim()
-                                              .isNotEmpty
+                                              .dateOfBirthValue?.isNotEmpty??true
                                           ? Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 SvgPicture.asset(
-                                                  'assets/chusheng.svg',
+                                                  'assets/personal/birth_time.svg',
                                                   width: 20,
                                                   height: 20,
                                                 ),
@@ -853,14 +842,12 @@ class _PersonalPageState extends State<PersonalPage>
                                             )
                                           : const SizedBox(),
                                       editPersonalDataValueManagement
-                                              .residentialAddressValue
-                                              .trim()
-                                              .isNotEmpty
+                                              .residentialAddressValue?.isNotEmpty??true
                                           ? Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 SvgPicture.asset(
-                                                  'assets/place.svg',
+                                                  'assets/personal/residential_address.svg',
                                                   width: 20,
                                                   height: 20,
                                                 ),
@@ -869,8 +856,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                 ),
                                                 Expanded(
                                                   child: Text(
-                                                    editPersonalDataValueManagement
-                                                        .residentialAddressValue,
+                                                    '${editPersonalDataValueManagement.residentialAddressValue}',
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.w400,
@@ -891,7 +877,7 @@ class _PersonalPageState extends State<PersonalPage>
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           SvgPicture.asset(
-                                              'assets/jiaruriqi.svg',
+                                              'assets/personal/join_date.svg',
                                               width: 20,
                                               height: 20),
                                           const SizedBox(
@@ -899,8 +885,7 @@ class _PersonalPageState extends State<PersonalPage>
                                           ),
                                           Expanded(
                                             child: Text(
-                                              editPersonalDataValueManagement
-                                                  .applicationDateValue,
+                                              '${editPersonalDataValueManagement.applicationDateValue}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 16,
@@ -1038,11 +1023,11 @@ class _PersonalPageState extends State<PersonalPage>
                                       physics: physics,
                                       itemCount:
                                           userPersonalInformationManagement
-                                                      .userCreatedMemoryBank ==
+                                                      .userReviewMemoryBank ==
                                                   null
                                               ? 0
                                               : userPersonalInformationManagement
-                                                  .userCreatedMemoryBank!
+                                                  .userReviewMemoryBank!
                                                   .length,
                                       itemBuilder: (context, index) {
                                         return Column(
@@ -1063,7 +1048,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                 viewPostDataManagementForMemoryBanks
                                                     .initTheMemoryDataForThePost(
                                                         userPersonalInformationManagement
-                                                                .userCreatedMemoryBank![
+                                                                .userReviewMemoryBank![
                                                             index]);
                                                 switchPage(context,
                                                     const jiyikudianji());
@@ -1084,9 +1069,9 @@ class _PersonalPageState extends State<PersonalPage>
                                                             (memoryBankCompletionStatus) {
                                                           return Row(children: [
                                                             memoryBankCompletionStatus!.displayIconStatus(
-                                                                        userPersonalInformationManagement.userCreatedMemoryBank![index]
+                                                                        userPersonalInformationManagement.userReviewMemoryBank![index]
                                                                             [
-                                                                            'zhuangtai']) ==
+                                                                            'complete_state']) ==
                                                                     false
                                                                 ? Padding(
                                                                     padding: EdgeInsets.only(
@@ -1096,7 +1081,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             10,
                                                                         top: 3),
                                                                     child: SvgPicture.asset(
-                                                                        'assets/shijian.svg',
+                                                                        'assets/personal/set_time.svg',
                                                                         width:
                                                                             20,
                                                                         height:
@@ -1109,7 +1094,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             10,
                                                                         top: 3),
                                                                     child: SvgPicture.asset(
-                                                                        'assets/jiangzhuang.svg',
+                                                                        'assets/personal/review_medal.svg',
                                                                         width:
                                                                             27,
                                                                         height: 27)),
@@ -1117,7 +1102,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                               child: memoryBankCompletionStatus
                                                                   .memoryLibraryStatusDisplayWidget(
                                                                       userPersonalInformationManagement
-                                                                              .userCreatedMemoryBank![
+                                                                              .userReviewMemoryBank![
                                                                           index],
                                                                       context),
                                                             ),
@@ -1136,16 +1121,16 @@ class _PersonalPageState extends State<PersonalPage>
                                                                 icon:
                                                                     CircleAvatar(
                                                                   radius: 21,
-                                                                  backgroundImage: userPersonalInformationManagement.userCreatedMemoryBank![index]
+                                                                  backgroundImage: userPersonalInformationManagement.userReviewMemoryBank![index]
                                                                               [
-                                                                              'touxiang'] !=
+                                                                              'head_portrait'] !=
                                                                           null
                                                                       ? FileImage(
-                                                                          File(userPersonalInformationManagement.userCreatedMemoryBank![index]
+                                                                          File(userPersonalInformationManagement.userReviewMemoryBank![index]
                                                                               [
-                                                                              'touxiang']))
+                                                                              'head_portrait']))
                                                                       : const AssetImage(
-                                                                          'assets/chuhui.png'),
+                                                                          'assets/personal/gray_back_head.png'),
                                                                 )),
                                                           ],
                                                         ),
@@ -1170,7 +1155,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                         children: [
                                                                           TextSpan(
                                                                             text:
-                                                                                userPersonalInformationManagement.userCreatedMemoryBank![index]['name'],
+                                                                                userPersonalInformationManagement.userReviewMemoryBank![index]['name'],
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 17,
@@ -1180,7 +1165,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' @${userPersonalInformationManagement.userCreatedMemoryBank![index]['username']}',
+                                                                                ' @${userPersonalInformationManagement.userReviewMemoryBank![index]['user_name']}',
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 16,
@@ -1206,7 +1191,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             FontWeight.w900),
                                                                   ),
                                                                   Text(
-                                                                    '${userPersonalInformationManagement.userCreatedMemoryBank![index]['xiabiao'].length}个记忆项',
+                                                                    '${userPersonalInformationManagement.userReviewMemoryBank![index]['subscript'].length}个记忆项',
                                                                     style:
                                                                         const TextStyle(
                                                                       fontSize:
@@ -1225,7 +1210,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                 ],
                                                               ),
                                                               Text(
-                                                                '${userPersonalInformationManagement.userCreatedMemoryBank![index]['zhuti']}',
+                                                                '${userPersonalInformationManagement.userReviewMemoryBank![index]['theme']}',
                                                                 style: const TextStyle(
                                                                     fontSize:
                                                                         17,
@@ -1240,13 +1225,13 @@ class _PersonalPageState extends State<PersonalPage>
                                                               Text(
                                                                 timuzhi(
                                                                     userPersonalInformationManagement
-                                                                            .userCreatedMemoryBank![index]
+                                                                            .userReviewMemoryBank![index]
                                                                         [
-                                                                        'timu'],
+                                                                        'question'],
                                                                     userPersonalInformationManagement
-                                                                            .userCreatedMemoryBank![index]
+                                                                            .userReviewMemoryBank![index]
                                                                         [
-                                                                        'xiabiao']),
+                                                                        'subscript']),
                                                                 style: const TextStyle(
                                                                     fontSize:
                                                                         17,
@@ -1265,13 +1250,13 @@ class _PersonalPageState extends State<PersonalPage>
                                                               Text(
                                                                 timuzhi(
                                                                     userPersonalInformationManagement
-                                                                            .userCreatedMemoryBank![index]
+                                                                            .userReviewMemoryBank![index]
                                                                         [
-                                                                        'huida'],
+                                                                        'reply'],
                                                                     userPersonalInformationManagement
-                                                                            .userCreatedMemoryBank![index]
+                                                                              .userReviewMemoryBank![index]
                                                                         [
-                                                                        'xiabiao']),
+                                                                        'subscript']),
                                                                 style: const TextStyle(
                                                                     fontSize:
                                                                         17,
@@ -1330,7 +1315,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             );
                                                                           },
                                                                           likeCount:
-                                                                              userPersonalInformationManagement.userCreatedMemoryBank![index]['laqu'],
+                                                                              userPersonalInformationManagement.userReviewMemoryBank![index]['pull'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1396,7 +1381,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             );
                                                                           },
                                                                           likeCount:
-                                                                              userPersonalInformationManagement.userCreatedMemoryBank![index]['shoucang'],
+                                                                              userPersonalInformationManagement.userReviewMemoryBank![index]['collect'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1464,7 +1449,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                             );
                                                                           },
                                                                           likeCount:
-                                                                              userPersonalInformationManagement.userCreatedMemoryBank![index]['xihuan'],
+                                                                              userPersonalInformationManagement.userReviewMemoryBank![index]['like'],
                                                                           countBuilder: (int? count,
                                                                               bool isLiked,
                                                                               String text) {
@@ -1523,6 +1508,8 @@ class _PersonalPageState extends State<PersonalPage>
                                                                               (isLiked) async {
                                                                             return !isLiked;
                                                                           },
+                                                                          likeCount:
+                                                                              userPersonalInformationManagement.userReviewMemoryBank![index]['review'],
                                                                           likeBuilder:
                                                                               (bool isLiked) {
                                                                             return Icon(
@@ -1638,7 +1625,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       [
                                                                       'touxiang']))
                                                               : const AssetImage(
-                                                                  'assets/chuhui.png'),
+                                                                  'assets/personal/gray_back_head.png'),
                                                         )),
                                                     Expanded(
                                                       child: Column(
@@ -2251,7 +2238,7 @@ class _PersonalPageState extends State<PersonalPage>
                                                                       [
                                                                       'touxiang']))
                                                               : const AssetImage(
-                                                                  'assets/chuhui.png'),
+                                                                  'assets/personal/gray_back_head.png'),
                                                         )),
                                                     Expanded(
                                                       child: Column(

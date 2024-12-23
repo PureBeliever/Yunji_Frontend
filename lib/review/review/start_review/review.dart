@@ -9,7 +9,7 @@ import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/review/creat_review/creat_review_page.dart';
-import 'package:yunji/review/review/review_api.dart';
+import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/notification_init.dart';
 
 class Item {
@@ -311,7 +311,7 @@ class _FuxiPage extends State<FuxiPage> {
                         final alarmSettings = AlarmSettings(
                           id: 42,
                           dateTime: dingshi,
-                          assetAudioPath: 'assets/alarm.mp3',
+                          assetAudioPath: 'assets/review/alarm.mp3',
                           loopAudio: true,
                           vibrate: true,
                           volume: 0.6,
@@ -368,7 +368,7 @@ class _FuxiPage extends State<FuxiPage> {
                         zhuangtai,
                         numberOfReviews,
                         reviewTheDataManagementOfMemoryBank.memorySchemeName,
-                        userNameChangeManagement.userNameValue);
+                        userNameChangeManagement.userNameValue??'');
                     Navigator.of(context).pop();
                   }
                 },

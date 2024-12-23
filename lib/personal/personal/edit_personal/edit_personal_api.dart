@@ -43,11 +43,11 @@ Future<String> imageFile(File imageFile) async {
 }
 
 void editPersonal(
-    String userName,
-    String name,
-    String introduction,
-    String residentialAddress,
-    String birthTime,
+    String? userName,
+    String? name,
+    String? introduction,
+    String? residentialAddress,
+    String? birthTime,
     File? backgroundImage,
     File? headPortrait) async {
   final dio = Dio();

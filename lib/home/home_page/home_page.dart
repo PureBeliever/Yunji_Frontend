@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         )
                       : IconButton(
                           icon: SvgPicture.asset(
-                            'assets/person.svg',
+                            'assets/home/personal_add.svg',
                             // 将此处的icon_name替换为您的SVG图标名称
                             width: 30,
                             height: 30,
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     requestTheOtherPersonalData(
                                                         refreshofHomepageMemoryBankextends
                                                                 .memoryRefreshValue[
-                                                            index]['username']);
+                                                            index]['user_name']);
                                                     switchPage(context,
                                                         const Jiyikudianjipersonal());
                                                   },
@@ -285,15 +285,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     backgroundImage: refreshofHomepageMemoryBankextends
                                                                         .memoryRefreshValue[
                                                                     index]
-                                                                ['touxiang'] !=
+                                                                ['head_portrait'] !=
                                                             null
                                                         ? FileImage(File(
                                                             refreshofHomepageMemoryBankextends
                                                                         .memoryRefreshValue[
                                                                     index]
-                                                                ['touxiang']))
+                                                                ['head_portrait']))
                                                         : const AssetImage(
-                                                            'assets/chuhui.png'),
+                                                            'assets/personal/gray_back_head.png'),
                                                   )),
                                               Expanded(
                                                 child: Column(
@@ -328,7 +328,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                 ),
                                                                 TextSpan(
                                                                   text:
-                                                                      ' @${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['username']}',
+                                                                      ' @${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['user_name']}',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -363,7 +363,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                       .w900),
                                                         ),
                                                         Text(
-                                                          '${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['xiabiao'].length}个记忆项',
+                                                          '${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['subscript'].length}个记忆项',
                                                           style:
                                                               const TextStyle(
                                                             fontSize: 16,
@@ -380,7 +380,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       ],
                                                     ),
                                                     Text(
-                                                      '${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['zhuti']}',
+                                                      '${refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]['theme']}',
                                                       style: const TextStyle(
                                                           fontSize: 17,
                                                           fontWeight:
@@ -392,10 +392,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       _typeConversion(
                                                           refreshofHomepageMemoryBankextends
                                                                   .memoryRefreshValue?[
-                                                              index]['timu'],
+                                                              index]['question'],
                                                           refreshofHomepageMemoryBankextends
                                                                   .memoryRefreshValue?[
-                                                              index]['xiabiao']),
+                                                              index]['subscript']),
                                                       style: const TextStyle(
                                                           fontSize: 17,
                                                           fontWeight:
@@ -410,10 +410,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       _typeConversion(
                                                           refreshofHomepageMemoryBankextends
                                                                   .memoryRefreshValue?[
-                                                              index]['huida'],
+                                                              index]['reply'],
                                                           refreshofHomepageMemoryBankextends
                                                                   .memoryRefreshValue?[
-                                                              index]['xiabiao']),
+                                                              index]['subscript']),
                                                       style: const TextStyle(
                                                           fontSize: 17,
                                                           fontWeight:
@@ -477,7 +477,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                           return isLiked;
                                                                         }
                                                                       },
-                                                                  
+                                                                
                                                                       likeBuilder:
                                                                           (bool
                                                                               isLiked) {
@@ -492,10 +492,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               20,
                                                                         );
                                                                       },
-                                                                      likeCount:
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'laqu'],
+                                                                
+                                                                              
                                                                       countBuilder: (int?
                                                                               count,
                                                                           bool
@@ -590,10 +588,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               20,
                                                                         );
                                                                       },
-                                                                      likeCount:
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'shoucang'],
+                                                                  
                                                                       countBuilder: (int?
                                                                               count,
                                                                           bool
@@ -686,10 +681,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               20,
                                                                         );
                                                                       },
-                                                                      likeCount:
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'xihuan'],
+                                                                   
                                                                       countBuilder: (int?
                                                                               count,
                                                                           bool
@@ -783,10 +775,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                               20,
                                                                         );
                                                                       },
-                                                                      likeCount:
-                                                                          refreshofHomepageMemoryBankextends.memoryRefreshValue?[index]
-                                                                              [
-                                                                              'tiwen'],
+                                                                     
                                                                       countBuilder: (int?
                                                                               count,
                                                                           bool
@@ -877,7 +866,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             SpeedDialChild(
                 shape: const CircleBorder(),
                 child: SvgPicture.asset(
-                  'assets/jiyiku.svg',
+                  'assets/home/create_memory_bank.svg',
                   color: Colors.blue,
                   width: 25,
                   height: 25,

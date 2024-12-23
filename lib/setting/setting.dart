@@ -38,7 +38,7 @@ class _Setting extends State<Setting> {
             leading: Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: SvgPicture.asset(
-                'assets/setting_personal.svg',
+                'assets/setting/personal_setting.svg',
                 width: 30,
                 height: 30,
               ),

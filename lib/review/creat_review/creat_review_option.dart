@@ -128,7 +128,7 @@ class _Yiwang extends State<Yiwang> {
                     final alarmSettings = AlarmSettings(
                       id: 42,
                       dateTime: dingshi,
-                      assetAudioPath: 'assets/alarm.mp3',
+                      assetAudioPath: 'assets/review/alarm.mp3',
                       loopAudio: true,
                       vibrate: true,
                       volume: 0.6,
@@ -164,7 +164,7 @@ class _Yiwang extends State<Yiwang> {
                     zhuangtai,
                     cishu,
                     fanganming,
-                    userNameChangeManagement.userNameValue);
+                    userNameChangeManagement.userNameValue??'');
 
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
@@ -280,7 +280,7 @@ class _Yiwang extends State<Yiwang> {
           ),
           Center(
             child: Image.asset(
-              "assets/yiwang.jpg",
+              "assets/review/forget_curve.jpg",
               width: double.infinity,
             ),
           ),

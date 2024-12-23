@@ -218,7 +218,7 @@ class _Jiyiku extends State<Jiyiku> {
               children: [
                 SizedBox(height: 10),
                 Image.asset(
-                  "assets/xuexi.jpg",
+                  "assets/review/feynman.jpg",
                   width: double.infinity,
                 ),
                 Theme(

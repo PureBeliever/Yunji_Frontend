@@ -1,4 +1,3 @@
-
 //试用的推荐算法，随机选择100个记忆库，请求过的记忆库的id，会被intdatabase减去，存储可以被请求的记忆库的id
 //请求服务器，获取记忆库信息，更新主页记忆库
 import 'dart:convert';
@@ -18,9 +17,11 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
   await databaseManager.initDatabase(); // 确保数据库初始化
   await Future.delayed(const Duration(seconds: 1));
 //获取存储记忆库id的数据库值
+
   Map<String, dynamic> theIdOfTheMemoryBankThatWasObtained =
       await queryIdAndLength();
 //上一次请求的记忆库中的最后一个记忆库的id值
+print(theIdOfTheMemoryBankThatWasObtained);
   String lastId = theIdOfTheMemoryBankThatWasObtained["number"];
 //这次请求记忆库的id值
   int thisTimeTheIdValueOfTheMemoryIsRequested =
@@ -47,14 +48,16 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
     'Content-Type': 'application/json',
   };
   List<int> idList = randomSelection.toList();
-  final response = await dio.post('http://47.92.90.93:36233/getTheHomePageMemoryLibrary',
-      data: jsonEncode(idList), options: Options(headers: header));
+  final response = await dio.post(
+      'http://47.92.90.93:36233/getTheHomePageMemoryLibrary',
+      data: jsonEncode(idList),
+      options: Options(headers: header));
 
   var data = response.data;
   var memoryBankResults = data["memoryBankResults"];
   var personalValue = data["personalValue"];
 
-  if (memoryBankResults.isEmpty) {
+  if (memoryBankResults == null) {
     toast.toastification.show(
         context: context,
         type: toast.ToastificationType.success,
@@ -79,16 +82,7 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
         boxShadow: toast.lowModeShadow,
         dragToClose: true);
   } else {
-
-
     for (int i = 0; i < personalValue.length; i++) {
-      if (personalValue[i]['background_image'] != null) {
-        final dir = await getApplicationDocumentsDirectory();
-        final filename = generateRandomFilename();
-        List<int> imageBytes = base64.decode(personalValue[i]['background_image']);
-        personalValue[i]['background_image'] = '${dir.path}/$filename';
-        await File(personalValue[i]['background_image']).writeAsBytes(imageBytes);
-      }
       if (personalValue[i]['head_portrait'] != null) {
         final dir = await getApplicationDocumentsDirectory();
         final filename = generateRandomFilename();
@@ -98,14 +92,11 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
       }
 
       for (int y = 0; y < memoryBankResults.length; y++) {
-        if (memoryBankResults[y]['username'] == personalValue[i]['username']) {
+        if (memoryBankResults[y]['user_name'] ==
+            personalValue[i]['user_name']) {
           memoryBankResults[y]['name'] = personalValue[i]['name'];
-          memoryBankResults[y]['brief'] = personalValue[i]['brief'];
-          memoryBankResults[y]['place'] = personalValue[i]['place'];
-          memoryBankResults[y]['year'] = personalValue[i]['year'];
-          memoryBankResults[y]['beijing'] = personalValue[i]['beijing'];
-          memoryBankResults[y]['touxiang'] = personalValue[i]['touxiang'];
-          memoryBankResults[y]['jiaru'] = personalValue[i]['jiaru'];
+          memoryBankResults[y]['head_portrait'] =
+              personalValue[i]['head_portrait'];
         }
       }
     }
@@ -115,17 +106,18 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
         await queryHomePageMemoryBank();
 
     refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(memoryBankData);
+
+    var count = data["length"];
+    List<int> filterIdList = numberAsList
+        .where((number) => !randomSelection.contains(number))
+        .toList();
+
+    int memoryBankLength = theIdOfTheMemoryBankThatWasObtained["length"];
+    final differenceValue = count - memoryBankLength;
+    List<int> numbers =
+        List.generate(differenceValue, (i) => i + memoryBankLength + 1);
+    filterIdList.addAll(numbers);
+
+    await updateint(filterIdList.toString(), count);
   }
-
-  var count = data["count"];
-  List<int> filterIdList = numberAsList
-      .where((number) => !randomSelection.contains(number))
-      .toList();
-
-  int memoryBankLength = theIdOfTheMemoryBankThatWasObtained["length"];
-  final maxValue = count - theIdOfTheMemoryBankThatWasObtained["length"];
-  List<int> numbers = List.generate(maxValue, (i) => i + memoryBankLength + 1);
-  filterIdList.addAll(numbers);
-
-  await updateint(filterIdList.toString(), count);
 }

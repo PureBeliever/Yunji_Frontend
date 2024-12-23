@@ -9,14 +9,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 //项目文件
-import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/home/home_sqlite.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/home/login/login_init.dart';
 import 'package:yunji/notification_init.dart';
 import 'package:yunji/personal/personal/personal_api.dart';
-
 
 
 Future<void> requestPermission() async {
@@ -29,7 +27,6 @@ Future<void> requestPermission() async {
     final db = databaseManager.database;
 
     final List<Map<String, dynamic>> personalMaps = await db!.query('personal_data');
-
     return personalMaps.isEmpty ? null : personalMaps[0];
   }
 void main() async {
@@ -49,7 +46,6 @@ void main() async {
   // 初始化主页记忆库
   List<Map<String, dynamic>>? homePageMemoryDatabaseData =
       await queryHomePageMemoryBank();
-
 
   // 初始化个人资料
 

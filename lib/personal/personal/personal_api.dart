@@ -54,16 +54,16 @@ class PersonalData {
 }
 
 //请求用户个人资料
-void requestTheUsersPersonalData(String userName) async {
+void requestTheUsersPersonalData(String? userName) async {
   final dio = Dio();
   Map<String, String> header = {
     'Content-Type': 'application/json',
   };
   Map<String, dynamic> formdata = {'userName': userName};
-
+  
 
     final response = await dio.post(
-        'http://47.92.90.93:36233/requestThePersonalData',
+        'http://47.92.90.93:36233/requestUserThePersonalData',
         data: jsonEncode(formdata),
         options: Options(headers: header));
     final beforeDir = await getApplicationDocumentsDirectory();
@@ -74,7 +74,9 @@ void requestTheUsersPersonalData(String userName) async {
     await dir.create(recursive: true);
 
   final Results = response.data;
+
   Map<String, dynamic> personalDataValue = Results['personalDataValue'];
+  
   String? backgroundImage;
   String? headPortrait;
 
@@ -109,22 +111,20 @@ void requestTheUsersPersonalData(String userName) async {
 
   await insertPersonalData(results);
   selectorResultsUpdateDisplay
-      .dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']!);
+      .dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']);
   selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
-      personalDataValue['residential_address']!);
+      personalDataValue['residential_address']);
   backgroundImageChangeManagement.initBackgroundImage(backgroundImage);
   headPortraitChangeManagement.initHeadPortrait(headPortrait);
   editPersonalDataValueManagement.changePersonalInformation(
-    personalDataValue['name']!,
-    personalDataValue['introduction']!,
-    personalDataValue['residential_address']!,
-    personalDataValue['birth_time']!,
+    personalDataValue['name'],
+    personalDataValue['introduction'],
+    personalDataValue['residential_address'],
+    personalDataValue['birth_time'],
   );
-  // 打印join_date
-  print(personalDataValue['join_date']);
-  userNameChangeManagement.userNameChanged(personalDataValue['user_name']!);
+  userNameChangeManagement.userNameChanged(personalDataValue['user_name']);
   editPersonalDataValueManagement
-      .applicationDateChange(personalDataValue['join_date']!);
+      .applicationDateChange(personalDataValue['join_date']);
 
   if (Results['memoryBankResults'] != null) {
     var memoryBankResults = Results["memoryBankResults"];

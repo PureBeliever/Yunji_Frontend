@@ -55,12 +55,13 @@ class ViewPostDataManagementForMemoryBanks extends GetxController {
 
   // 初始化记忆库数据
   void initTheMemoryDataForThePost(Map<String, dynamic> theMemoryDataForThePost) {
+    print(theMemoryDataForThePost);
     theMemoryBankValueOfThePost = theMemoryDataForThePost;
-    theTitleOfTheMemory = theMemoryDataForThePost['zhuti'];
-    numberOfMemories = theMemoryDataForThePost['xiabiao'].length;
-    theIndexValueOfTheMemoryItem = theMemoryDataForThePost['xiabiao'];
-    theNumberOfProblems = jsonDecode(theMemoryDataForThePost['timu']);
-    theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['huida']);
+    theTitleOfTheMemory = theMemoryDataForThePost['theme'];
+    numberOfMemories = theMemoryDataForThePost['subscript'].length;
+    theIndexValueOfTheMemoryItem = theMemoryDataForThePost['subscript'];
+    theNumberOfProblems = jsonDecode(theMemoryDataForThePost['question']);
+    theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['reply']);
   }
 
   // 刷新ExpansionTile
@@ -110,11 +111,11 @@ class _jiyikudianjiState extends State<jiyikudianji> {
         body: ListView(
           children: [
             InkWell(
-              onTap: () {
-                otherPeopleInformationListScrollDataManagement
-                    .initialScrollData(viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost);
-                requestTheOtherPersonalData(
-                    otherPeopleInformationListScrollDataManagement.scrollDataValue['username']);
+              onTap: ()async {
+               
+                await requestTheOtherPersonalData(
+                    viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['user_name']);
+                
                 switchPage(context, const Jiyikudianjipersonal());
               },
               child: Padding(
@@ -128,11 +129,11 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         CircleAvatar(
                           radius: 21,
                           backgroundImage: viewPostDataManagementForMemoryBanks
-                                      .theMemoryBankValueOfThePost['touxiang'] !=
+                                      .theMemoryBankValueOfThePost['head_portrait'] !=
                                   null
                               ? FileImage(
                                   File(viewPostDataManagementForMemoryBanks
-                                      .theMemoryBankValueOfThePost['touxiang']))
+                                      .theMemoryBankValueOfThePost['head_portrait']))
                               : const AssetImage('assets/chuhui.png'),
                         ),
                         const SizedBox(width: 11),
@@ -149,7 +150,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                             ),
                             Text(
                              
-                              '@' + viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['username'],
+                              '@${ viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['user_name']}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Color.fromRGBO(84, 87, 105, 1),
@@ -232,7 +233,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                   ),
                   Row(
                     children: [
-                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['laqu']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['pull']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -244,7 +245,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         ),
                       ),
                       const Spacer(flex: 2),
-                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['shoucang']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['collect']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -256,7 +257,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         ),
                       ),
                       const Spacer(flex: 2),
-                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['xihuan']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['like']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
@@ -268,7 +269,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                         ),
                       ),
                       const Spacer(flex: 2),
-                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['tiwen']} ',
+                      Text('${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['review']} ',
                           style: const TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w900)),
                       const Text(
