@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/personal/personal/personal_api.dart';
+import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 void mobileNumberLogin(String mobileNumber) async {
     final dio = Dio();
@@ -15,7 +15,7 @@ void mobileNumberLogin(String mobileNumber) async {
     'mobileNumber': mobileNumber,
   };
 
-  final response = await dio.post('http://47.92.90.93:36233/mobileNumberLogin',
+  final response = await dio.post('http://47.92.98.170:36233/mobileNumberLogin',
       data: jsonEncode(formdata), options: Options(headers: header));
   if (response.statusCode == 200) {
     requestTheUsersPersonalData(response.data['username']);

@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:yunji/notification_init.dart';
+import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/setting/setting_account_user_name.dart';
@@ -24,7 +24,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
   bool alarm_information = false;
-  List<List<int>> shijian = [
+  List<List<int>> reviewTime = [
     [0],
     [1440, 10080, 20160],
     [1440, 10080, 20160, 43200],
@@ -103,48 +103,46 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       color: Colors.white),
                 ),
                 onPressed: () async {
-                  bool zhuangtai = false;
-                  String fanganming = "方案${_valueChoice + 1}";
-                  Map<String, String> cishu = continueLearningAboutDataManagement
+                  bool state = false;
+                  String reviewSchemeName = "方案${_valueChoice + 1}";
+                  Map<String, String> reviewRecord = continueLearningAboutDataManagement
                       .numberOfReviews
                       .map((key, value) => MapEntry(key.toString(), value));
-                  String? stringci;
-                  print('循环');
-                  for (final entry in cishu.entries) {
-                    print(entry.value);
-                    if (entry.value == fanganming) {
-                      print('以完成');
-                      stringci = entry.key;
+                  String? reviewRecordKey;
+             
+                  for (final entry in reviewRecord.entries) {
+            
+                      if (entry.value == reviewSchemeName) {
+                      
+                      reviewRecordKey = entry.key;
                       break;
                     }
                   }
-                  print('stringci为${stringci}');
-                  if (stringci != null) {
-                    fanganming = cishu[stringci]!;
+
+                  if (reviewRecordKey != null) {
+                      reviewSchemeName = reviewRecord[reviewRecordKey]!;
                   } else {
-                    Map<String, String> cishu1 = {"0": "方案${_valueChoice + 1}"};
-                    cishu.addEntries(cishu1.entries);
+                    Map<String, String> reviewRecord1 = {"0": "方案${_valueChoice + 1}"};
+                    reviewRecord.addEntries(reviewRecord1.entries);
                   }
 
                   DateTime now = DateTime.now();
-                  // DateTime dingshi =
-                  //     now.add(Duration(hours: shijian[_valueChoice][0]));
-
-                  Map<String, String> stringTimu = continueLearningAboutDataManagement
+ 
+                  Map<String, String> stringQuestion = continueLearningAboutDataManagement
                       .theNumberOfProblemsString
                       .map((key, value) => MapEntry(key.toString(), value));
-                  Map<String, String> stringhuida = continueLearningAboutDataManagement
+                  Map<String, String> stringReply = continueLearningAboutDataManagement
                       .theNumberOfAnswersString
                       .map((key, value) => MapEntry(key.toString(), value));
-                  DateTime dingshi =
-                      now.add(Duration(minutes: shijian[_valueChoice][0]));
+                  DateTime setTime =
+                      now.add(Duration(minutes: reviewTime[_valueChoice][0]));
                   if (_valueChoice == 0) {
-                    zhuangtai = true;
+                    state = true;
                   } else {
                     if (alarm_information == true) {
                       final alarmSettings = AlarmSettings(
                         id: 42,
-                        dateTime: dingshi,
+                        dateTime: setTime,
                         assetAudioPath: 'assets/review/alarm.mp3',
                         loopAudio: true,
                         vibrate: true,
@@ -166,22 +164,22 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                           id: 2,
                           title: '开始复习 !',
                           body: '记忆库${continueLearningAboutDataManagement.theTitleOfTheMemory}到达预定的复习时间',
-                          scheduledDateTime: dingshi);
+                          scheduledDateTime: setTime);
                     }
                   }
                   continueReview(
-                      stringTimu,
-                      stringhuida,
+                      stringQuestion,
+                      stringReply,
                       continueLearningAboutDataManagement.id,
                       continueLearningAboutDataManagement.theTitleOfTheMemory,
-                      shijian[_valueChoice],
-                      dingshi,
+                      reviewTime[_valueChoice],
+                      setTime,
                       continueLearningAboutDataManagement.theIndexValueOfTheMemoryItem,
                       message,
                       alarm_information,
-                      zhuangtai,
-                      cishu,
-                      fanganming,
+                      state,
+                      reviewRecord,
+                      reviewSchemeName,
                       userNameChangeManagement.userNameValue??'');
 
                   Navigator.of(context).pop();

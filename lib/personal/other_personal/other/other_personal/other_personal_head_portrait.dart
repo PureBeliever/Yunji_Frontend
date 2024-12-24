@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
 
-class Jiyikudianjipersonalhead extends StatefulWidget {
-  const Jiyikudianjipersonalhead({super.key});
+class OtherPersonalHeadPortrait extends StatefulWidget {
+  const OtherPersonalHeadPortrait({super.key});
 
   @override
-  State<Jiyikudianjipersonalhead> createState() => _JiyikudianjipersonalPageState();
+  State<OtherPersonalHeadPortrait> createState() => _OtherPersonalHeadPortraitState();
 }
 
 class OtherPeopleHeadPortraitChangeManagement extends GetxController {
@@ -21,7 +21,7 @@ class OtherPeopleHeadPortraitChangeManagement extends GetxController {
   }
 }
 
-class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonalhead> {
+class _OtherPersonalHeadPortraitState extends State<OtherPersonalHeadPortrait> {
   final otherPeopleHeadPortraitChangeManagement = Get.put(OtherPeopleHeadPortraitChangeManagement());
 
   @override

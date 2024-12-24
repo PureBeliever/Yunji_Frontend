@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:yunji/personal/personal/personal_api.dart';
+import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 void continueReview(
     Map<String, String> question,
@@ -39,7 +39,7 @@ void continueReview(
 
   String jsonformdata = jsonEncode(formdata);
  await dio.post(
-    'http://47.92.90.93:36233/continueReview',
+    'http://47.92.98.170:36233/continueReview',
     data: jsonformdata,
     options: Options(headers: header),
   );

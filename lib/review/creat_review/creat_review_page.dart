@@ -1,65 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/review/creat_review/creat_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-class Jiyikucontroller extends GetxController {
-  static Jiyikucontroller get to => Get.find();
-  Map<int, String> timuzhi = {};
-  Map<int, String> huidazhi = {};
-  String? zhutizhi;
-  void cizhi(Map<int, String> timu, Map<int, String> huida, String zhuti) {
-    timuzhi = timu;
-    huidazhi = huida;
-    zhutizhi = zhuti;
+class CreatReviewController extends GetxController {
+  static CreatReviewController get to => Get.find();
+  Map<int, String> question = {};
+  Map<int, String> reply = {};
+  String? theme;
+  void initData(Map<int, String> question, Map<int, String> reply, String theme) {
+    this.question = question;
+    this.reply = reply;
+    this.theme = theme;
   }
 }
 
-class Jiyiku extends StatefulWidget {
-  const Jiyiku({super.key});
+class CreatReviewPage extends StatefulWidget {
+  const CreatReviewPage({super.key});
 
   @override
-  State<Jiyiku> createState() => _Jiyiku();
+    State<CreatReviewPage> createState() => _CreatReviewPage();
 }
 
 class Item {
   Item({
-    required this.wen,
-    required this.da,
-    required this.shu,
-    this.isdu = true,
+    required this.question,
+    required this.reply,
+    required this.subscript,
+    this.isReadOnly = true,
     this.isExpanded = true,
   });
-  int shu;
-  String wen;
-  String da;
-  bool isdu;
+  int subscript;
+  String question;
+  String reply;
+  bool isReadOnly;
   bool isExpanded;
 }
 
 List<Item> generateItems(int numberOfItems) {
   return List<Item>.generate(numberOfItems, (int index) {
     return Item(
-      isdu: false,
+      isReadOnly: false,
       isExpanded: false,
-      wen: 'e.g.示例：学习新知识后的遗忘曲线是什么?',
-      da: '遗忘曲线表示人在学习新知识后，最初一段时间遗忘的最快，然后慢慢减缓，能记住的知识会越来越少\n\n根据遗忘曲线，人们获得了更加有效的记忆方式\n例如：\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后',
-      shu: 0,
+      question: 'e.g.示例：学习新知识后的遗忘曲线是什么?',
+      reply: '遗忘曲线表示人在学习新知识后，最初一段时间遗忘的最快，然后慢慢减缓，能记住的知识会越来越少\n\n根据遗忘曲线，人们获得了更加有效的记忆方式\n例如：\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后',
+      subscript: 0,
     );
   });
 }
 
-class _Jiyiku extends State<Jiyiku> {
-  final jiyikucontroller = Get.put(Jiyikucontroller());
+class _CreatReviewPage extends State<CreatReviewPage> {
+  final creatReviewController = Get.put(CreatReviewController());
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   final List<Item> _data = generateItems(1);
 
-  int heng = 0;
-  String zhuti = '';
+  int subscript = 0;
+  String theme = '';
 
   @override
   void dispose() {
@@ -69,7 +69,7 @@ class _Jiyiku extends State<Jiyiku> {
 
   void initState() {
     setState(() {
-      _data.add(Item(shu: heng, wen: '您有什么疑惑或学习目标', da: '请输入讲解的内容'));
+      _data.add(Item(subscript: subscript, question: '您有什么疑惑或学习目标', reply: '请输入讲解的内容'));
     });
     super.initState();
     _focusNode.requestFocus();
@@ -92,7 +92,7 @@ class _Jiyiku extends State<Jiyiku> {
             padding: const EdgeInsets.only(right: 20.0),
             child: TextField(
               onChanged: (value) {
-                zhuti = value;
+                theme = value;
               },
               focusNode: _focusNode,
               maxLength: 50,
@@ -143,7 +143,7 @@ class _Jiyiku extends State<Jiyiku> {
                       color: Colors.white),
                 ),
                 onPressed: () {
-                  if (timu.length==0 && huida.length==0) {
+                    if (question.length==0 && reply.length==0) {
                     toast.toastification.show(
                         context: context,
                         type: toast.ToastificationType.success,
@@ -168,7 +168,7 @@ class _Jiyiku extends State<Jiyiku> {
                         boxShadow: toast.lowModeShadow,
                         dragToClose: true);
                   } else {
-                    if (zhuti.length == 0) {
+                    if (theme.length == 0) {
                       toast.toastification.show(
                           context: context,
                           type: toast.ToastificationType.success,
@@ -195,7 +195,7 @@ class _Jiyiku extends State<Jiyiku> {
                       FocusScope.of(context).requestFocus(_focusNode);
                     } else {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      jiyikucontroller.cizhi(timu, huida, zhuti!);
+                      creatReviewController.initData(question, reply, theme!);
                       switchPage(context, const Yiwang());
                     }
                   }
@@ -340,9 +340,9 @@ class _Jiyiku extends State<Jiyiku> {
                 if (_data.length < 100) {
                   setState(() {
                     _data.add(
-                        Item(shu: heng, wen: '您有什么疑惑或学习目标', da: '请输入讲解的内容'));
+                        Item(subscript: subscript, question: '您有什么疑惑或学习目标', reply: '请输入讲解的内容'));
                   });
-                  heng += 1;
+                  subscript += 1;
                   _scrollController.animateTo(
                       _scrollController.position.maxScrollExtent,
                       duration: const Duration(milliseconds: 300),
@@ -395,8 +395,8 @@ class _Jiyiku extends State<Jiyiku> {
     );
   }
 
-  Map<int, String> timu = {};
-  Map<int, String> huida = {};
+  Map<int, String> question = {};
+  Map<int, String> reply = {};
   Widget _buildPanel() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 230.0),
@@ -426,18 +426,18 @@ class _Jiyiku extends State<Jiyiku> {
                         padding: const EdgeInsets.only(left: 17.0),
                         child: TextFormField(
                           onChanged: (value) {
-                            timu[item.shu] = value;
+                            question[item.subscript] = value;
                           },
                           style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                               fontSize: 17),
-                          enabled: item.isExpanded == false ? false : item.isdu,
+                          enabled: item.isExpanded == false ? false : item.isReadOnly,
                           minLines: 1,
                           maxLines: 10,
                           maxLength: 150,
                           decoration: InputDecoration(
-                            hintText: item.wen,
+                            hintText: item.question,
                             hintStyle: const TextStyle(
                                 color: Color.fromRGBO(84, 87, 105, 1),
                                 fontSize: 17),
@@ -459,10 +459,10 @@ class _Jiyiku extends State<Jiyiku> {
                   maxLines: 30,
                   maxLength: 1500,
                   onChanged: (value) {
-                    huida[item.shu] = value;
+                    reply[item.subscript] = value;
                   },
                   decoration: InputDecoration(
-                    hintText: item.da,
+                      hintText: item.reply,
                     hintStyle: const TextStyle(
                         color: Color.fromRGBO(84, 87, 105, 1), fontSize: 17),
                     suffixIcon: GestureDetector(
@@ -522,8 +522,8 @@ class _Jiyiku extends State<Jiyiku> {
                                                       (Item currentItem) =>
                                                           item == currentItem);
                                                 });
-                                                timu.remove(item.shu);
-                                                huida.remove(item.shu);
+                                                question.remove(item.subscript);
+                                                reply.remove(item.subscript);
                                                 Navigator.of(context).pop();
                                               },
                                               child: const Text(

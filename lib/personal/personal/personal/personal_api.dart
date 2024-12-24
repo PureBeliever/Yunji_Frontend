@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/personal/personal/personal_sqlite.dart';
+import 'package:yunji/personal/personal/personal/personal_sqlite.dart';
 
 class PersonalData {
   final String? userName;
@@ -63,7 +63,7 @@ void requestTheUsersPersonalData(String? userName) async {
   
 
     final response = await dio.post(
-        'http://47.92.90.93:36233/requestUserThePersonalData',
+        'http://47.92.98.170:36233/requestUserThePersonalData',
         data: jsonEncode(formdata),
         options: Options(headers: header));
     final beforeDir = await getApplicationDocumentsDirectory();

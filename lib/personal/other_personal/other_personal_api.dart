@@ -54,7 +54,7 @@ Future<void> requestTheOtherPersonalData(String userName) async {
   Map<String, dynamic> formdata = {'userName': userName};
 
   final response = await dio.post(
-      'http://47.92.90.93:36233/requestOtherPersonalData',
+      'http://47.92.98.170:36233/requestOtherPersonalData',
       data: jsonEncode(formdata),
       options: Options(headers: header));
   final beforeDir = await getApplicationDocumentsDirectory();

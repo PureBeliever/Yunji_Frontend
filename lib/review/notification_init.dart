@@ -12,7 +12,6 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin();
 
 
-
   // 初始化函数
   Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =

@@ -10,23 +10,23 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:keframe/keframe.dart';
 import 'package:like_button/like_button.dart';
+import 'package:yunji/main/app_module/memory_bank_item.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_background_image.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
-import 'package:yunji/modified_component/sliver_header_delegate.dart';
-import 'package:yunji/personal/personal/personal/personal_page.dart';
+import 'package:yunji/main/app_module/sliver_header_delegate.dart';
+import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 
-
-class Jiyikudianjipersonal extends StatefulWidget {
-  const Jiyikudianjipersonal({super.key});
+class OtherPersonalPage extends StatefulWidget {
+  const OtherPersonalPage({super.key});
 
   @override
-  State<Jiyikudianjipersonal> createState() => _JiyikudianjipersonalPageState();
+  State<OtherPersonalPage> createState() => _OtherPersonalPageState();
 }
 
 //信息列表滚动数据管理
@@ -103,7 +103,6 @@ class OtherPeopleInformationListScrollDataManagement extends GetxController {
   }
 }
 
-
 // 其他人的个人信息管理
 class OtherPeoplePersonalInformationManagement extends GetxController {
   static OtherPeoplePersonalInformationManagement get to => Get.find();
@@ -156,14 +155,14 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
 
 //读取用户数据库个人信息刷新数据
   void readDatabaseRefreshData() async {
-    otherPeopleLikedMemoryBank =
-        await queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndex);
+    otherPeopleLikedMemoryBank = await queryOtherPeoplePersonalMemoryBank(
+        otherPeopleLikedMemoryBankIndex);
 
-    otherPeoplePulledMemoryBank =
-        await queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndex);
+    otherPeoplePulledMemoryBank = await queryOtherPeoplePersonalMemoryBank(
+        otherPeoplePulledMemoryBankIndex);
 
-    otherPeopleReviewMemoryBank =
-        await queryOtherPeoplePersonalMemoryBank(otherPeopleReviewMemoryBankIndex);
+    otherPeopleReviewMemoryBank = await queryOtherPeoplePersonalMemoryBank(
+        otherPeopleReviewMemoryBankIndex);
 
     update();
   }
@@ -175,7 +174,8 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       var otherPeopleLikedMemoryBankIndexint =
           otherPeoplePersonalInformationData['like_list'].cast<int>();
       otherPeopleLikedMemoryBankIndex = otherPeopleLikedMemoryBankIndexint;
-      otherPeopleLikedMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleLikedMemoryBankIndexint);
+      otherPeopleLikedMemoryBank = await queryOtherPeoplePersonalMemoryBank(
+          otherPeopleLikedMemoryBankIndexint);
     }
 
     if (otherPeoplePersonalInformationData['collect_list'] != null) {
@@ -189,27 +189,29 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       var otherPeoplePulledMemoryBankIndexint =
           otherPeoplePersonalInformationData['pull_list'].cast<int>();
       otherPeoplePulledMemoryBankIndex = otherPeoplePulledMemoryBankIndexint;
-      otherPeoplePulledMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeoplePulledMemoryBankIndexint);
+      otherPeoplePulledMemoryBank = await queryOtherPeoplePersonalMemoryBank(
+          otherPeoplePulledMemoryBankIndexint);
     }
 
     if (otherPeoplePersonalInformationData['review_list'] != null) {
       var otherPeopleReviewMemoryBankIndexint =
           otherPeoplePersonalInformationData['review_list'].cast<int>();
       otherPeopleReviewMemoryBankIndex = otherPeopleReviewMemoryBankIndexint;
-      otherPeopleReviewMemoryBank = await queryOtherPeoplePersonalMemoryBank(otherPeopleReviewMemoryBankIndexint);
+      otherPeopleReviewMemoryBank = await queryOtherPeoplePersonalMemoryBank(
+          otherPeopleReviewMemoryBankIndexint);
     }
-
 
     update();
   }
-
 }
 
-class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
+class _OtherPersonalPageState extends State<OtherPersonalPage>
     with TickerProviderStateMixin {
   late TabController tabController;
-  final otherPeopleBackgroundImageChangeManagement = Get.put(OtherPeopleBackgroundImageChangeManagement());
-  final otherPeopleHeadPortraitChangeManagement = Get.put(OtherPeopleHeadPortraitChangeManagement());
+  final otherPeopleBackgroundImageChangeManagement =
+      Get.put(OtherPeopleBackgroundImageChangeManagement());
+  final otherPeopleHeadPortraitChangeManagement =
+      Get.put(OtherPeopleHeadPortraitChangeManagement());
 
   ScrollController scrollController = ScrollController();
 
@@ -231,7 +233,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     )..addListener(() {
-        otherPeopleInformationListScrollDataManagement.calculateTheListName(tabController.index);
+        otherPeopleInformationListScrollDataManagement
+            .calculateTheListName(tabController.index);
         otherPeoplePersonalInformationManagement
             .calculateTheNumberOfMemoryBanksPerPage(tabController.index);
       });
@@ -239,14 +242,18 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           scrollController.addListener(() {
             if (scrollController.offset >= 160) {
-                otherPeopleInformationListScrollDataManagement.setBackgroundColortrue();
+              otherPeopleInformationListScrollDataManagement
+                  .setBackgroundColortrue();
             } else if (scrollController.offset < 160) {
-              otherPeopleInformationListScrollDataManagement.setBackgroundColorfalse();
+              otherPeopleInformationListScrollDataManagement
+                  .setBackgroundColorfalse();
             }
             if (scrollController.offset >= 235) {
-                otherPeopleInformationListScrollDataManagement.setTransparencyToDisplayText();
+              otherPeopleInformationListScrollDataManagement
+                  .setTransparencyToDisplayText();
             } else if (scrollController.offset < 235) {
-                otherPeopleInformationListScrollDataManagement.setTransparencyToHideText();
+              otherPeopleInformationListScrollDataManagement
+                  .setTransparencyToHideText();
             }
           });
         }));
@@ -254,7 +261,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
-      requestTheOtherPersonalData(otherPeopleInformationListScrollDataManagement.scrollDataValue['user_name']);
+    requestTheOtherPersonalData(otherPeopleInformationListScrollDataManagement
+        .scrollDataValue['user_name']);
   }
 
   String timuzhi(String? timu, var xiabiao) {
@@ -324,9 +332,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                   SliverAppBar(
                     title: Padding(
                       padding: const EdgeInsets.only(left: 48.0),
-                      child: GetBuilder<OtherPeopleInformationListScrollDataManagement>(
+                      child: GetBuilder<
+                              OtherPeopleInformationListScrollDataManagement>(
                           init: otherPeopleInformationListScrollDataManagement,
-                          builder: (otherPeopleInformationListScrollDataManagement) {
+                          builder:
+                              (otherPeopleInformationListScrollDataManagement) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -343,7 +353,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 Text(
                                   otherPeoplePersonalInformationManagement
                                           .displayText +
-                                        otherPeopleInformationListScrollDataManagement
+                                      otherPeopleInformationListScrollDataManagement
                                           .displayText,
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(
@@ -429,8 +439,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                             Positioned.fill(
                               child: GetBuilder<
                                   OtherPeopleInformationListScrollDataManagement>(
-                                init: otherPeopleInformationListScrollDataManagement,
-                                builder: (otherPeopleInformationListScrollDataManagement) {
+                                init:
+                                    otherPeopleInformationListScrollDataManagement,
+                                builder:
+                                    (otherPeopleInformationListScrollDataManagement) {
                                   return ImageFiltered(
                                     imageFilter: ImageFilter.blur(
                                         sigmaX:
@@ -439,25 +451,30 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                         sigmaY: 0),
                                     child: GestureDetector(
                                       onTap: () {
-                                        otherPeopleBackgroundImageChangeManagement.initBackgroundImage(
-                                            otherPeopleInformationListScrollDataManagement
-                                                .scrollDataValue['background_image']);
+                                        otherPeopleBackgroundImageChangeManagement
+                                            .initBackgroundImage(
+                                                otherPeopleInformationListScrollDataManagement
+                                                        .scrollDataValue[
+                                                    'background_image']);
                                         switchPage(
-                                            context, const JiyikuPersonalBei());
+                                            context, const OtherPersonalBackgroundImage());
                                       },
-                                      child: otherPeopleInformationListScrollDataManagement
-                                                  .scrollDataValue['background_image'] !=
-                                              null
-                                          ? Image.file(
-                                              File(
-                                                  otherPeopleInformationListScrollDataManagement
-                                                      .scrollDataValue['background_image']),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.asset(
-                                              'assets/personal/gray_back_head.png',
-                                              fit: BoxFit.cover,
-                                            ),
+                                      child:
+                                          otherPeopleInformationListScrollDataManagement
+                                                          .scrollDataValue[
+                                                      'background_image'] !=
+                                                  null
+                                              ? Image.file(
+                                                  File(
+                                                      otherPeopleInformationListScrollDataManagement
+                                                              .scrollDataValue[
+                                                          'background_image']),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.asset(
+                                                  'assets/personal/gray_back_head.png',
+                                                  fit: BoxFit.cover,
+                                                ),
                                     ),
                                   );
                                 },
@@ -470,8 +487,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                               right: 0,
                               child: GetBuilder<
                                   OtherPeopleInformationListScrollDataManagement>(
-                                init: otherPeopleInformationListScrollDataManagement,
-                                builder: (otherPeopleInformationListScrollDataManagement) {
+                                init:
+                                    otherPeopleInformationListScrollDataManagement,
+                                builder:
+                                    (otherPeopleInformationListScrollDataManagement) {
                                   return AnimatedContainer(
                                     duration: Duration(
                                         seconds:
@@ -509,11 +528,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                           0.06 * kToolbarHeight),
                                 child: GestureDetector(
                                   onTap: () {
-                                    otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
-                                        otherPeopleInformationListScrollDataManagement
-                                            .scrollDataValue['head_portrait']);
+                                    otherPeopleHeadPortraitChangeManagement
+                                        .initHeadPortrait(
+                                            otherPeopleInformationListScrollDataManagement
+                                                    .scrollDataValue[
+                                                'head_portrait']);
                                     switchPage(context,
-                                        const Jiyikudianjipersonalhead());
+                                        const OtherPersonalHeadPortrait());
                                   },
                                   child: CircleAvatar(
                                     radius: 27,
@@ -522,11 +543,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                       backgroundColor: Colors.grey,
                                       backgroundImage:
                                           otherPeopleInformationListScrollDataManagement
-                                                      .scrollDataValue['head_portrait'] !=
+                                                          .scrollDataValue[
+                                                      'head_portrait'] !=
                                                   null
                                               ? FileImage(File(
                                                   otherPeopleInformationListScrollDataManagement
-                                                      .scrollDataValue['head_portrait']))
+                                                          .scrollDataValue[
+                                                      'head_portrait']))
                                               : const AssetImage(
                                                   'assets/personal/gray_back_head.png'),
                                       radius: 25,
@@ -555,11 +578,13 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
-                                          otherPeopleInformationListScrollDataManagement
-                                              .scrollDataValue['head_portrait']);
+                                      otherPeopleHeadPortraitChangeManagement
+                                          .initHeadPortrait(
+                                              otherPeopleInformationListScrollDataManagement
+                                                      .scrollDataValue[
+                                                  'head_portrait']);
                                       switchPage(context,
-                                          const Jiyikudianjipersonalhead());
+                                          const OtherPersonalHeadPortrait());
                                     },
                                     child: Container(
                                       width: 90,
@@ -600,7 +625,7 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 ],
                               ),
                               Text(
-                               '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
+                                '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 24,
@@ -625,12 +650,12 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   }),
                               Padding(
                                 padding: const EdgeInsets.only(top: 13.0),
-                                  child: otherPeopleInformationListScrollDataManagement
-                                        .scrollDataValue['introduction']
-                                  
-                                        ?.isNotEmpty??false
+                                child: otherPeopleInformationListScrollDataManagement
+                                            .scrollDataValue['introduction']
+                                            ?.isNotEmpty ??
+                                        false
                                     ? Text(
-                                          otherPeopleInformationListScrollDataManagement
+                                        otherPeopleInformationListScrollDataManagement
                                             .scrollDataValue['introduction'],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -649,9 +674,10 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                 direction: Axis.horizontal,
                                 textDirection: TextDirection.ltr,
                                 children: [
-                                    otherPeopleInformationListScrollDataManagement
-                                          .scrollDataValue['birth_time']
-                                          ?.isNotEmpty??false
+                                  otherPeopleInformationListScrollDataManagement
+                                              .scrollDataValue['birth_time']
+                                              ?.isNotEmpty ??
+                                          false
                                       ? Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -666,7 +692,6 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             Expanded(
                                               child: Text(
                                                 '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',
-                                              
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
@@ -682,9 +707,11 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                           ],
                                         )
                                       : const SizedBox(),
-                                    otherPeopleInformationListScrollDataManagement
-                                          .scrollDataValue['residential_address']
-                                          ?.isNotEmpty??false
+                                  otherPeopleInformationListScrollDataManagement
+                                              .scrollDataValue[
+                                                  'residential_address']
+                                              ?.isNotEmpty ??
+                                          false
                                       ? Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -699,7 +726,8 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                             Expanded(
                                               child: Text(
                                                 otherPeopleInformationListScrollDataManagement
-                                                    .scrollDataValue['residential_address'],
+                                                        .scrollDataValue[
+                                                    'residential_address'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
@@ -718,14 +746,16 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      SvgPicture.asset('assets/personal/join_date.svg',
-                                          width: 20, height: 20),
+                                      SvgPicture.asset(
+                                          'assets/personal/join_date.svg',
+                                          width: 20,
+                                          height: 20),
                                       const SizedBox(
                                         width: 7,
                                       ),
                                       Expanded(
                                         child: Text(
-                                          '加入于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',
+                                          '${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
@@ -859,1143 +889,40 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   removeTop: true,
                                   removeBottom: true,
                                   child: SizeCacheWidget(
-                                    child: ListView.builder(
-                                        cacheExtent: 500,
-                                        physics: physics,
-                                        itemCount: otherPeoplePersonalInformationManagement
-                                                    .otherPeopleReviewMemoryBank ==
-                                                null
-                                            ? 0
-                                            : otherPeoplePersonalInformationManagement
-                                                .otherPeopleReviewMemoryBank
-                                                ?.length,
-                                        itemBuilder: (context, index) {
-                                          return Column(
-                                            children: [
-                                              const Divider(
-                                                color: Color.fromRGBO(
-                                                    223, 223, 223, 1),
-                                                thickness: 0.9,
-                                                height: 0.9,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  viewPostDataManagementForMemoryBanks
-                                                      .initTheMemoryDataForThePost(
-                                                          otherPeoplePersonalInformationManagement
-                                                                  .otherPeopleReviewMemoryBank![
-                                                              index]);
-                                                  switchPage(context,
-                                                      const jiyikudianji());
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3.0,
-                                                          bottom: 3.0,
-                                                          right: 15,
-                                                          left: 2),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {},
-                                                          icon: CircleAvatar(
-                                                            radius: 21,
-                                                            backgroundImage: otherPeoplePersonalInformationManagement
-                                                                            .otherPeopleReviewMemoryBank?[index]
-                                                                        [
-                                                                        'head_portrait'] !=
-                                                                    null
-                                                                ? FileImage(File(
-                                                                    otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleReviewMemoryBank![index]
-                                                                        [
-                                                                        'head_portrait']))
-                                                                : const AssetImage(
-                                                                    'assets/personal/gray_back_head.png'),
-                                                          )),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const SizedBox(
-                                                                height: 5),
-                                                            Row(
-                                                              children: [
-                                                                Flexible(
-                                                                  child:
-                                                                      Container(
-                                                                    child:
-                                                                        RichText(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      text:
-                                                                          TextSpan(
-                                                                        children: [
-                                                                          TextSpan(
-                                                                            text:
-                                                                                  otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['name'],
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 17,
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.w900,
-                                                                            ),
-                                                                          ),
-                                                                          TextSpan(
-                                                                            text:
-                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['user_name']}',
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.w400,
-                                                                              color: Color.fromRGBO(84, 87, 105, 1),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                const Text(
-                                                                  ' ·',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          17,
-                                                                      color: Color
-                                                                          .fromRGBO(
-                                                                              84,
-                                                                              87,
-                                                                              105,
-                                                                              1),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w900),
-                                                                ),
-                                                                Text(
-                                                                  '${otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['subscript'].length}个记忆项',
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                            84,
-                                                                            87,
-                                                                            105,
-                                                                            1),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                              '${otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['theme']}',
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Text(
-                                                              timuzhi(
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleReviewMemoryBank?[
-                                                                          index]
-                                                                      ['question'],
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleReviewMemoryBank?[
-                                                                          index]
-                                                                      [
-                                                                      'subscript']),
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                              maxLines: 4,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Text(
-                                                              timuzhi(
-                                                                  otherPeoplePersonalInformationManagement
-                                                                                .otherPeopleReviewMemoryBank?[
-                                                                          index]
-                                                                      ['relpy'],
-                                                                  otherPeoplePersonalInformationManagement
-                                                                                .otherPeopleReviewMemoryBank?[
-                                                                          index]
-                                                                      [
-                                                                      'subscript']),
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                              maxLines: 7,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                42,
-                                                                                91,
-                                                                                255),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                142,
-                                                                                204,
-                                                                                255)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              0,
-                                                                              153,
-                                                                              255),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              195,
-                                                                              238,
-                                                                              255),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                               
-                                                                        },
-                                                                 
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.swap_calls
-                                                                                : Icons.swap_calls,
-                                                                            color: isLiked
-                                                                                ? Colors.blue
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['pull'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.blue
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                253,
-                                                                                156,
-                                                                                46),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                174,
-                                                                                120)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              102,
-                                                                              0),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              212,
-                                                                              163),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                     
-                                                                        },
-                                                                      
-                                                                 
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.folder
-                                                                                : Icons.folder_open,
-                                                                            color: isLiked
-                                                                                ? Colors.orange
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['collect'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.orange
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        size:
-                                                                            20,
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                64,
-                                                                                64),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                206,
-                                                                                206)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              0,
-                                                                              0),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              186,
-                                                                              186),
-                                                                        ),
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                       
-                                                                        },
-                                                                       
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.favorite
-                                                                                : Icons.favorite_border,
-                                                                            color: isLiked
-                                                                                ? Colors.red
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['like'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.red
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                237,
-                                                                                42,
-                                                                                255),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                185,
-                                                                                142,
-                                                                                255)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              225,
-                                                                              0,
-                                                                              255),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              233,
-                                                                              195,
-                                                                              255),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                     
-                                                                        },
-                                                          
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.messenger
-                                                                                : Icons.messenger_outline,
-                                                                            color: isLiked
-                                                                                ? Colors.purpleAccent
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank?[index]['review'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.purple
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                            ],
-                                          );
-                                        }),
+                                    child: MemoryBankList(
+                                      refreshofMemoryBankextends:
+                                          otherPeoplePersonalInformationManagement
+                                              .otherPeopleReviewMemoryBank,
+                                      onItemTap: (index) {
+                                        viewPostDataManagementForMemoryBanks
+                                            .initTheMemoryDataForThePost(
+                                                otherPeoplePersonalInformationManagement
+                                                        .otherPeopleReviewMemoryBank![
+                                                    index]);
+                                        switchPage(
+                                            context, const OtherMemoryBank());
+                                      },
+                                    ),
                                   )),
                               MediaQuery.removePadding(
                                   context: context,
                                   removeTop: true,
                                   removeBottom: true,
                                   child: SizeCacheWidget(
-                                    child: ListView.builder(
-                                        cacheExtent: 500,
-                                        physics: physics,
-                                        itemCount: otherPeoplePersonalInformationManagement
-                                                    .otherPeoplePulledMemoryBank ==
-                                                null
-                                            ? 0
-                                            : otherPeoplePersonalInformationManagement
-                                                .otherPeoplePulledMemoryBank
-                                                ?.length,
-                                        itemBuilder: (context, index) {
-                                          return Column(
-                                            children: [
-                                              const Divider(
-                                                color: Color.fromRGBO(
-                                                    223, 223, 223, 1),
-                                                thickness: 0.9,
-                                                height: 0.9,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  viewPostDataManagementForMemoryBanks
-                                                      .initTheMemoryDataForThePost(
-                                                          otherPeoplePersonalInformationManagement
-                                                                  .otherPeoplePulledMemoryBank![
-                                                              index]);
-                                                  switchPage(context,
-                                                      const jiyikudianji());
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3.0,
-                                                          bottom: 3.0,
-                                                          right: 15,
-                                                          left: 2),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {},
-                                                          icon: CircleAvatar(
-                                                            radius: 21,
-                                                            backgroundImage: otherPeoplePersonalInformationManagement
-                                                                            .otherPeoplePulledMemoryBank?[index]
-                                                                        [
-                                                                        'touxiang'] !=
-                                                                    null
-                                                                ? FileImage(File(
-                                                                    otherPeoplePersonalInformationManagement
-                                                                            .otherPeoplePulledMemoryBank![index]
-                                                                        [
-                                                                        'touxiang']))
-                                                                : const AssetImage(
-                                                                    'assets/personal/gray_back_head.png'),
-                                                          )),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const SizedBox(
-                                                                height: 5),
-                                                            Row(
-                                                              children: [
-                                                                Flexible(
-                                                                  child:
-                                                                      Container(
-                                                                    child:
-                                                                        RichText(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      text:
-                                                                          TextSpan(
-                                                                        children: [
-                                                                          TextSpan(
-                                                                            text:
-                                                                                otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['name'],
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 17,
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.w900,
-                                                                            ),
-                                                                          ),
-                                                                          TextSpan(
-                                                                            text:
-                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['username']}',
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.w400,
-                                                                              color: Color.fromRGBO(84, 87, 105, 1),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                const Text(
-                                                                  ' ·',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          17,
-                                                                      color: Color
-                                                                          .fromRGBO(
-                                                                              84,
-                                                                              87,
-                                                                              105,
-                                                                              1),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w900),
-                                                                ),
-                                                                Text(
-                                                                  '${otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['xiabiao'].length}个记忆项',
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                            84,
-                                                                            87,
-                                                                            105,
-                                                                            1),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                              '${otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['zhuti']}',
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Text(
-                                                              timuzhi(
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeoplePulledMemoryBank?[
-                                                                          index]
-                                                                      ['timu'],
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeoplePulledMemoryBank?[
-                                                                          index]
-                                                                      [
-                                                                      'xiabiao']),
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                              maxLines: 4,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Text(
-                                                              timuzhi(
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeoplePulledMemoryBank?[
-                                                                          index]
-                                                                      ['huida'],
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeoplePulledMemoryBank?[
-                                                                          index]
-                                                                      [
-                                                                      'xiabiao']),
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                              maxLines: 7,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                42,
-                                                                                91,
-                                                                                255),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                142,
-                                                                                204,
-                                                                                255)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              0,
-                                                                              153,
-                                                                              255),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              195,
-                                                                              238,
-                                                                              255),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                          
-                                                                        },
-                                                                     
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.swap_calls
-                                                                                : Icons.swap_calls,
-                                                                            color: isLiked
-                                                                                ? Colors.blue
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['laqu'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.blue
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                253,
-                                                                                156,
-                                                                                46),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                174,
-                                                                                120)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              102,
-                                                                              0),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              212,
-                                                                              163),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                        
-                                                                        },
-                                                                     
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.folder
-                                                                                : Icons.folder_open,
-                                                                            color: isLiked
-                                                                                ? Colors.orange
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['shoucang'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.orange
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        size:
-                                                                            20,
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                64,
-                                                                                64),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                206,
-                                                                                206)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              0,
-                                                                              0),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              186,
-                                                                              186),
-                                                                        ),
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                       
-                                                                        },
-                                                                    
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.favorite
-                                                                                : Icons.favorite_border,
-                                                                            color: isLiked
-                                                                                ? Colors.red
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['xihuan'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.red
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                237,
-                                                                                42,
-                                                                                255),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                185,
-                                                                                142,
-                                                                                255)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              225,
-                                                                              0,
-                                                                              255),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              233,
-                                                                              195,
-                                                                              255),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                        
-                                                                        },
-                                                            
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.messenger
-                                                                                : Icons.messenger_outline,
-                                                                            color: isLiked
-                                                                                ? Colors.purpleAccent
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank?[index]['tiwen'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.purple
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                            ],
-                                          );
-                                        }),
+                                    child: MemoryBankList(
+                                      refreshofMemoryBankextends:
+                                          otherPeoplePersonalInformationManagement
+                                              .otherPeoplePulledMemoryBank,
+                                      onItemTap: (index) {
+                                        viewPostDataManagementForMemoryBanks
+                                            .initTheMemoryDataForThePost(
+                                                otherPeoplePersonalInformationManagement
+                                                        .otherPeoplePulledMemoryBank![
+                                                    index]);
+                                        switchPage(
+                                            context, const OtherMemoryBank());
+                                      },
+                                    ),
                                   )),
                               SizeCacheWidget(
                                 child: ListView.builder(
@@ -2009,572 +936,21 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
                                   removeTop: true,
                                   removeBottom: true,
                                   child: SizeCacheWidget(
-                                    child: ListView.builder(
-                                        cacheExtent: 500,
-                                        physics: physics,
-                                        itemCount: otherPeoplePersonalInformationManagement
-                                                    .otherPeopleLikedMemoryBank ==
-                                                null
-                                            ? 0
-                                            : otherPeoplePersonalInformationManagement
-                                                .otherPeopleLikedMemoryBank
-                                                ?.length,
-                                        itemBuilder: (context, index) {
-                                          return Column(
-                                            children: [
-                                              const Divider(
-                                                color: Color.fromRGBO(
-                                                    223, 223, 223, 1),
-                                                thickness: 0.9,
-                                                height: 0.9,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  viewPostDataManagementForMemoryBanks
-                                                      .initTheMemoryDataForThePost(
-                                                          otherPeoplePersonalInformationManagement
-                                                                  .otherPeopleLikedMemoryBank![
-                                                              index]);
-                                                  switchPage(context,
-                                                      const jiyikudianji());
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3.0,
-                                                          bottom: 3.0,
-                                                          right: 15,
-                                                          left: 2),
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {},
-                                                          icon: CircleAvatar(
-                                                            radius: 21,
-                                                            backgroundImage: otherPeoplePersonalInformationManagement
-                                                                            .otherPeopleLikedMemoryBank?[index]
-                                                                        [
-                                                                        'touxiang'] !=
-                                                                    null
-                                                                ? FileImage(File(
-                                                                    otherPeoplePersonalInformationManagement
-                                                                            .otherPeopleLikedMemoryBank![index]
-                                                                        [
-                                                                        'touxiang']))
-                                                                : const AssetImage(
-                                                                    'assets/personal/gray_back_head.png'),
-                                                          )),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const SizedBox(
-                                                                height: 5),
-                                                            Row(
-                                                              children: [
-                                                                Flexible(
-                                                                  child:
-                                                                      Container(
-                                                                    child:
-                                                                        RichText(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      text:
-                                                                          TextSpan(
-                                                                        children: [
-                                                                          TextSpan(
-                                                                            text:
-                                                                                otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['name'],
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 17,
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.w900,
-                                                                            ),
-                                                                          ),
-                                                                          TextSpan(
-                                                                            text:
-                                                                                ' @${otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['username']}',
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.w400,
-                                                                              color: Color.fromRGBO(84, 87, 105, 1),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                const Text(
-                                                                  ' ·',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          17,
-                                                                      color: Color
-                                                                          .fromRGBO(
-                                                                              84,
-                                                                              87,
-                                                                              105,
-                                                                              1),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w900),
-                                                                ),
-                                                                Text(
-                                                                  '${otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['xiabiao'].length}个记忆项',
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                            84,
-                                                                            87,
-                                                                            105,
-                                                                            1),
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                              '${otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['zhuti']}',
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Text(
-                                                              timuzhi(
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleLikedMemoryBank?[
-                                                                          index]
-                                                                      ['timu'],
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleLikedMemoryBank?[
-                                                                          index]
-                                                                      [
-                                                                      'xiabiao']),
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                              maxLines: 4,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Text(
-                                                              timuzhi(
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleLikedMemoryBank?[
-                                                                          index]
-                                                                      ['huida'],
-                                                                  otherPeoplePersonalInformationManagement
-                                                                              .otherPeopleLikedMemoryBank?[
-                                                                          index]
-                                                                      [
-                                                                      'xiabiao']),
-                                                              style: const TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black),
-                                                              maxLines: 7,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                42,
-                                                                                91,
-                                                                                255),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                142,
-                                                                                204,
-                                                                                255)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              0,
-                                                                              153,
-                                                                              255),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              195,
-                                                                              238,
-                                                                              255),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-
-                                                                        },
-                                                                     
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.swap_calls
-                                                                                : Icons.swap_calls,
-                                                                            color: isLiked
-                                                                                ? Colors.blue
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['laqu'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.blue
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                253,
-                                                                                156,
-                                                                                46),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                174,
-                                                                                120)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              102,
-                                                                              0),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              212,
-                                                                              163),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                      
-                                                                        },
-                                                                        
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.folder
-                                                                                : Icons.folder_open,
-                                                                            color: isLiked
-                                                                                ? Colors.orange
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['shoucang'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.orange
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        size:
-                                                                            20,
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                64,
-                                                                                64),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                255,
-                                                                                206,
-                                                                                206)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              0,
-                                                                              0),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              255,
-                                                                              186,
-                                                                              186),
-                                                                        ),
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                      
-                                                                        },
-                                                                      
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.favorite
-                                                                                : Icons.favorite_border,
-                                                                            color: isLiked
-                                                                                ? Colors.red
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['xihuan'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.red
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                SizedBox(
-                                                                  width: 70,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      LikeButton(
-                                                                        circleColor: const CircleColor(
-                                                                            start: Color.fromARGB(
-                                                                                255,
-                                                                                237,
-                                                                                42,
-                                                                                255),
-                                                                            end: Color.fromARGB(
-                                                                                255,
-                                                                                185,
-                                                                                142,
-                                                                                255)),
-                                                                        bubblesColor:
-                                                                            const BubblesColor(
-                                                                          dotPrimaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              225,
-                                                                              0,
-                                                                              255),
-                                                                          dotSecondaryColor: Color.fromARGB(
-                                                                              255,
-                                                                              233,
-                                                                              195,
-                                                                              255),
-                                                                        ),
-                                                                        size:
-                                                                            20,
-                                                                        onTap:
-                                                                            (isLiked) async {
-                                                                     
-                                                                        },
-                                                               
-                                                                        likeBuilder:
-                                                                            (bool
-                                                                                isLiked) {
-                                                                          return Icon(
-                                                                            isLiked
-                                                                                ? Icons.messenger
-                                                                                : Icons.messenger_outline,
-                                                                            color: isLiked
-                                                                                ? Colors.purpleAccent
-                                                                                : const Color.fromRGBO(84, 87, 105, 1),
-                                                                            size:
-                                                                                20,
-                                                                          );
-                                                                        },
-                                                                        likeCount:
-                                                                            otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank?[index]['tiwen'],
-                                                                        countBuilder: (int? count,
-                                                                            bool
-                                                                                isLiked,
-                                                                            String
-                                                                                text) {
-                                                                          var color = isLiked
-                                                                              ? Colors.purple
-                                                                              : const Color.fromRGBO(84, 87, 105, 1);
-                                                                          Widget
-                                                                              result;
-                                                                          if (count ==
-                                                                              0) {
-                                                                            result =
-                                                                                Text(
-                                                                              "love",
-                                                                              style: TextStyle(color: color),
-                                                                            );
-                                                                          }
-                                                                          result =
-                                                                              Text(
-                                                                            text,
-                                                                            style:
-                                                                                TextStyle(color: color, fontWeight: FontWeight.w700),
-                                                                          );
-                                                                          return result;
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                                const Spacer(
-                                                                    flex: 1),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                            ],
-                                          );
-                                        }),
-                                  )),
+                                      child: MemoryBankList(
+                                      refreshofMemoryBankextends:
+                                          otherPeoplePersonalInformationManagement
+                                              .otherPeopleLikedMemoryBank,
+                                      onItemTap: (index) {
+                                        viewPostDataManagementForMemoryBanks
+                                            .initTheMemoryDataForThePost(
+                                                otherPeoplePersonalInformationManagement
+                                                        .otherPeopleLikedMemoryBank![
+                                                    index]);
+                                        switchPage(
+                                            context, const OtherMemoryBank());
+                                      },
+                                    ),
+                           )),
                             ],
                           );
                         });
@@ -2584,4 +960,3 @@ class _JiyikudianjipersonalPageState extends State<Jiyikudianjipersonal>
     );
   }
 }
-

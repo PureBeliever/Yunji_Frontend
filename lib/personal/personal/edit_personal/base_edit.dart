@@ -1,5 +1,5 @@
 import 'dart:async';
-// import 'package:city_pickers/city_pickers.dart';文件中export 'src/city_picker.dart';
+//  import 'package:city_pickers/city_pickers.dart';文件中export 'src/city_picker.dart';
 //中的引用被修改为import 'package:yunji/modified_component/base_edit.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:city_pickers/modal/base_citys.dart';

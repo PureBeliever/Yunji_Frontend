@@ -11,7 +11,7 @@ void editUserName(String? editusername, String? username) async {
     'username': username,
   };
 
-  final response = await dio.put('http://47.92.90.93:36233/editUserName',
+  final response = await dio.put('http://47.92.98.170:36233/editUserName',
       data: jsonEncode(formdata), options: Options(headers: header));
   if (response.statusCode == 200) {
       updateUserName(editusername, username);

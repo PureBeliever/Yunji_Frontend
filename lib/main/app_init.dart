@@ -13,8 +13,8 @@ import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/home/home_sqlite.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/home/login/login_init.dart';
-import 'package:yunji/notification_init.dart';
-import 'package:yunji/personal/personal/personal_api.dart';
+import 'package:yunji/review/notification_init.dart';
+import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 
 Future<void> requestPermission() async {

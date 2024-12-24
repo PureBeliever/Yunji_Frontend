@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/review/review/continue_review/continue_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
@@ -80,22 +80,22 @@ class ContinueLearningAboutDataManagement extends GetxController {
   // 记忆库id
   int id = -1;
 
-  void initTheMemoryData(Map<String, dynamic> cizhi) {
-    id = cizhi['id'];
-    memoryBankDataValue = cizhi;
-    theTitleOfTheMemory = cizhi['zhuti'];
-    numberOfMemories = cizhi['xiabiao'].length;
-    theIndexValueOfTheMemoryItem = cizhi['xiabiao'];
-    theNumberOfProblems = jsonDecode(cizhi['timu']);
-    theNumberOfAnswers = jsonDecode(cizhi['huida']);
-    theNumberOfProblemsString = jsonDecode(cizhi['timu']);
-    theNumberOfAnswersString = jsonDecode(cizhi['huida']);
-    memoryScheme = jsonDecode(cizhi['code']);
-    numberOfReviews = jsonDecode(cizhi['cishu']);
-    messageNotificationStatus = cizhi['duanxin'] == 1 ? true : false;
-    alarmInformationStatus = cizhi['naozhong'] == 1 ? true : false;
-    completeReviewStatus = cizhi['zhuangtai'] == 1 ? true : false;
-    memorySchemeName = cizhi['fanganming'];
+  void initTheMemoryData(Map<String, dynamic> data) {
+    id = data['memory_bank_id'];
+    memoryBankDataValue = data;
+    theTitleOfTheMemory = data['theme'];
+    numberOfMemories = data['subscript'].length;
+    theIndexValueOfTheMemoryItem = data['subscript'];
+    theNumberOfProblems = jsonDecode(data['question']);
+    theNumberOfAnswers = jsonDecode(data['reply']);
+    theNumberOfProblemsString = jsonDecode(data['question']);
+    theNumberOfAnswersString = jsonDecode(data['reply']);
+    memoryScheme = jsonDecode(data['memory_time']);
+    numberOfReviews = jsonDecode(data['review_record']);
+    messageNotificationStatus = data['information_notification'] == 1 ? true : false;
+    alarmInformationStatus = data['alarm_notification'] == 1 ? true : false;
+    completeReviewStatus = data['complete_state'] == 1 ? true : false;
+    memorySchemeName = data['review_scheme_name'];
   }
 
   void refreshExpansionTile() {

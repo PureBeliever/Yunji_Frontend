@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_page.dart';
-import 'package:yunji/personal/personal/personal/personal_head_portrait.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 
-import 'package:yunji/personal/personal/personal/personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/setting/setting.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/setting/setting_account_user_name.dart';
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});

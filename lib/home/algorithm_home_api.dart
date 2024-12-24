@@ -49,7 +49,7 @@ print(theIdOfTheMemoryBankThatWasObtained);
   };
   List<int> idList = randomSelection.toList();
   final response = await dio.post(
-      'http://47.92.90.93:36233/getTheHomePageMemoryLibrary',
+      'http://47.92.98.170:36233/getTheHomePageMemoryLibrary',
       data: jsonEncode(idList),
       options: Options(headers: header));
 

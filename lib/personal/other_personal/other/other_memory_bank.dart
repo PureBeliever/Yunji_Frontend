@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
-import 'package:yunji/personal/personal/personal/personal_page.dart';
+import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 
 
 // ignore: camel_case_types
-class jiyikudianji extends StatefulWidget {
-  const jiyikudianji({super.key});
+class OtherMemoryBank extends StatefulWidget {
+  const OtherMemoryBank({super.key});
 
   @override
-  State<jiyikudianji> createState() => _jiyikudianjiState();
+  State<OtherMemoryBank> createState() => _OtherMemoryBankState();
 }
 
 class Item {
@@ -81,7 +81,7 @@ List<Item> generateItems(int numberOfItems, List<int> xiabiao,
 }
 
 // ignore: camel_case_types
-class _jiyikudianjiState extends State<jiyikudianji> {
+class _OtherMemoryBankState extends State<OtherMemoryBank> {
   final List<Item> _data = generateItems(
       viewPostDataManagementForMemoryBanks.numberOfMemories,
       viewPostDataManagementForMemoryBanks.theIndexValueOfTheMemoryItem,
@@ -116,7 +116,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                 await requestTheOtherPersonalData(
                     viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['user_name']);
                 
-                switchPage(context, const Jiyikudianjipersonal());
+                switchPage(context, const OtherPersonalPage());
               },
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -134,7 +134,7 @@ class _jiyikudianjiState extends State<jiyikudianji> {
                               ? FileImage(
                                   File(viewPostDataManagementForMemoryBanks
                                       .theMemoryBankValueOfThePost['head_portrait']))
-                              : const AssetImage('assets/chuhui.png'),
+                              : const AssetImage('assets/personal/gray_back_head.png'),
                         ),
                         const SizedBox(width: 11),
                         Column(

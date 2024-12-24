@@ -10,27 +10,27 @@ import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
-import 'package:yunji/notification_init.dart';
+import 'package:yunji/review/notification_init.dart';
 
 class Item {
   Item({
-    required this.huida,
-    required this.tiwen,
+    required this.reply,
+    required this.question,
     this.isExpanded = true,
   });
 
-  String huida;
-  String tiwen;
+  String reply;
+  String question;
 
   bool isExpanded;
 }
 
-List<Item> generateItems(int numberOfItems, List<int> xiabiao,
-    Map<String, dynamic> timu, Map<String, dynamic> huida) {
+List<Item> generateItems(int numberOfItems, List<int> subscript,
+    Map<String, dynamic> question, Map<String, dynamic> reply) {
   return List<Item>.generate(numberOfItems, (int index) {
     return Item(
-      tiwen: timu['${xiabiao[index]}'] ?? '',
-      huida: huida['${xiabiao[index]}'] ?? '',
+      question: question['${subscript[index]}'] ?? '',
+      reply: reply['${subscript[index]}'] ?? '',
     );
   });
 }
@@ -79,19 +79,19 @@ class ReviewTheDataManagementOfMemoryBank extends GetxController {
   int id = -1;
 
   void initTheMemoryData(Map<String, dynamic> memoryBankData) {
-    id = memoryBankData['id'];
+    id = memoryBankData['memory_bank_id'];
     memoryBankDataValue = memoryBankData;
-    theTitleOfTheMemory = memoryBankData['zhuti'];
-    numberOfMemories = memoryBankData['xiabiao'].length;
-    theIndexValueOfTheMemoryItem = memoryBankData['xiabiao'];
-    theNumberOfProblems = jsonDecode(memoryBankData['timu']);
-    theNumberOfAnswers = jsonDecode(memoryBankData['huida']);
-    memoryScheme = jsonDecode(memoryBankData['code']);
-    numberOfReviews = jsonDecode(memoryBankData['cishu']);
-    messageNotificationStatus = memoryBankData['duanxin'] == 1 ? true : false;
-    alarmInformationStatus = memoryBankData['naozhong'] == 1 ? true : false;
-    completeReviewStatus = memoryBankData['zhuangtai'] == 1 ? true : false;
-    memorySchemeName = memoryBankData['fanganming'];
+    theTitleOfTheMemory = memoryBankData['theme'];
+    numberOfMemories = memoryBankData['subscript'].length;
+    theIndexValueOfTheMemoryItem = memoryBankData['subscript'];
+    theNumberOfProblems = jsonDecode(memoryBankData['question']);
+    theNumberOfAnswers = jsonDecode(memoryBankData['reply']);
+    memoryScheme = jsonDecode(memoryBankData['memory_time']);
+    numberOfReviews = jsonDecode(memoryBankData['review_record']);
+    messageNotificationStatus = memoryBankData['information_notification'] == 1 ? true : false;
+    alarmInformationStatus = memoryBankData['alarm_notification'] == 1 ? true : false;
+    completeReviewStatus = memoryBankData['complete_state'] == 1 ? true : false;
+    memorySchemeName = memoryBankData['review_scheme_name'];
   }
 
   void refreshExpansionTile() {
@@ -99,14 +99,14 @@ class ReviewTheDataManagementOfMemoryBank extends GetxController {
   }
 }
 
-class FuxiPage extends StatefulWidget {
-  const FuxiPage({super.key});
+class ReviewPage extends StatefulWidget {
+  const ReviewPage({super.key});
 
   @override
-  State<FuxiPage> createState() => _FuxiPage();
+  State<ReviewPage> createState() => _ReviewPage();
 }
 
-class _FuxiPage extends State<FuxiPage> {
+class _ReviewPage extends State<ReviewPage> {
   final NotificationHelper _notificationHelper = NotificationHelper();
 
   final FocusNode _focusNode = FocusNode();
@@ -121,7 +121,7 @@ class _FuxiPage extends State<FuxiPage> {
   bool message = reviewTheDataManagementOfMemoryBank.messageNotificationStatus;
   bool alarm_information =
       reviewTheDataManagementOfMemoryBank.alarmInformationStatus;
-  final jiyikucontroller = Get.put(Jiyikucontroller());
+  final creatReviewController = Get.put(CreatReviewController());
 
   @override
   void dispose() {
@@ -207,7 +207,7 @@ class _FuxiPage extends State<FuxiPage> {
                                     onPressed: () {
                                       setState(() {
                                         _data.forEach((item) {
-                                          item.huida = ' ';
+                                          item.reply = ' ';
                                         });
                                       });
 
@@ -292,8 +292,8 @@ class _FuxiPage extends State<FuxiPage> {
 
                     _data.forEach((uio) {
                       sortedList.add(zhi);
-                      stringTimu[zhi] = uio.tiwen;
-                      stringHuida[zhi] = uio.huida;
+                      stringTimu[zhi] = uio.question;
+                      stringHuida[zhi] = uio.reply;
                       zhi++;
                     });
                     Map<String, String> stringtimu = stringTimu
@@ -499,9 +499,9 @@ class _FuxiPage extends State<FuxiPage> {
                         return ListTile(
                           title: TextField(
                             onChanged: (value) {
-                              item.tiwen = value;
+                              item.question = value;
                             },
-                            controller: TextEditingController(text: item.tiwen),
+                            controller: TextEditingController(text: item.question),
                             maxLength: 150,
                             maxLines: 10,
                             minLines: 1,
@@ -537,9 +537,9 @@ class _FuxiPage extends State<FuxiPage> {
                         contentPadding: EdgeInsets.only(left: 5, right: 10),
                         title: TextField(
                           onChanged: (value) {
-                            item.huida = value;
+                            item.reply = value;
                           },
-                          controller: TextEditingController(text: item.huida),
+                          controller: TextEditingController(text: item.reply),
                           maxLength: 1500,
                           maxLines: 30,
                           minLines: 1,
@@ -610,7 +610,7 @@ class _FuxiPage extends State<FuxiPage> {
                                                     TextButton(
                                                       onPressed: () {
                                                         setState(() {
-                                                          item.huida = '';
+                                                          item.reply = '';
                                                         });
 
                                                         Navigator.of(context)

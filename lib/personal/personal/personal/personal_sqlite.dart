@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'dart:convert';
-import 'package:yunji/personal/personal/personal_api.dart';
+import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 // 插入用户个人记忆库
 Future<void> insertUserPersonalMemoryBank(var memoryBankData) async {

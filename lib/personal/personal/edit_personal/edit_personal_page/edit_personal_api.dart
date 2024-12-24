@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_sqlite.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_sqlite.dart';
 
 class EditPersonalData {
   final String? userName;
@@ -66,7 +66,7 @@ void editPersonal(
     'headPortrait': headPortrait == null ? null : await imageFile(headPortrait)
   });
 
-  final response = await dio.post('http://47.92.90.93:36233/editTheUsersPersonalData',
+  final response = await dio.post('http://47.92.98.170:36233/editTheUsersPersonalData',
       data: requestData, options: Options(headers: header));
 
   if (response.statusCode == 200) {

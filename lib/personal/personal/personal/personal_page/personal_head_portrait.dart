@@ -4,67 +4,62 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_page.dart';
 import 'package:yunji/home/home_page/home_page.dart';
 import 'package:toastification/toastification.dart' as toast;
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/home/login/login_init.dart';
 
-// 背景图管理
-class BackgroundImageChangeManagement extends GetxController {
-  static BackgroundImageChangeManagement get to => Get.find();
-  File? backgroundImageValue;
-  File? changedBackgroundImageValue;
+class PersonalHead extends StatefulWidget {
+  const PersonalHead({super.key});
 
-  // 选择与拍摄图片赐予更改的背景图
-  void selectAndShootTheImageToGiveTheChangedBackgroundImage(
-      File selectedChangedBackgroundImage) {
-    changedBackgroundImageValue = selectedChangedBackgroundImage;
+  @override
+  State<PersonalHead> createState() => _PersonalHeadState();
+}
+
+class HeadPortraitChangeManagement extends GetxController {
+  static HeadPortraitChangeManagement get to => Get.find();
+  File? headPortraitValue;
+  File? changedHeadPortraitValue;
+
+  // 选择与拍摄图片赐予更改的头像
+  void selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File selectedChangedHeadPortrait) {
+    changedHeadPortraitValue = selectedChangedHeadPortrait;
     update();
   }
 
-  // 初始化背景图
-  void initBackgroundImage(String? backgroundDiagramInDatabase) {
-    if (backgroundDiagramInDatabase != null) {
-      changedBackgroundImageValue = File(backgroundDiagramInDatabase);
-      backgroundImageValue = File(backgroundDiagramInDatabase);
+  // 初始化头像
+  void initHeadPortrait(String? headPortraitInDatabase) {
+    if (headPortraitInDatabase != null) {
+      headPortraitValue = File(headPortraitInDatabase);
+      changedHeadPortraitValue = File(headPortraitInDatabase);
       update();
     }
   }
 
-  // 恢复未更改的背景图
-  void restoreAnUnchangedBackgroundImage() {
-    changedBackgroundImageValue = backgroundImageValue;
+  // 恢复未更改的头像
+  void restoreAnUnchangedHeadPortraitImage() {
+    changedHeadPortraitValue = headPortraitValue;
     update();
   }
 
-  // 返回更改的背景图同步后端
-  File? returnsTheChangedBackgroundImageSynchronizationBackend() {
-    var backgroundImageOfTheSynchronizationBackend =
-        backgroundImageValue == changedBackgroundImageValue
-            ? null
-            : changedBackgroundImageValue;
-    backgroundImageValue = changedBackgroundImageValue;
+  // 返回更改的头像同步后端
+  File? returnsTheChangedHeadPortraitImageSynchronizationBackend() {
+    var headPortraitOfTheSynchronizationBackend = headPortraitValue == changedHeadPortraitValue ? null : changedHeadPortraitValue;
+    headPortraitValue = changedHeadPortraitValue;
     update();
-    return backgroundImageOfTheSynchronizationBackend;
+    return headPortraitOfTheSynchronizationBackend;
   }
 
-  // 退出页面判断背景图是否已更改
-  int exitThePageToDetermineWhetherTheBackgroundImageHasChanged() {
-    return backgroundImageValue != changedBackgroundImageValue ? 1 : 0;
+  // 退出页面判断头像是否已更改
+  int exitThePageToDetermineWhetherTheHeadPortraitHasChanged() {
+    return headPortraitValue != changedHeadPortraitValue ? 1 : 0;
   }
+
 }
 
-class PersonalBei extends StatefulWidget {
-  const PersonalBei({super.key});
-
-  @override
-  State<PersonalBei> createState() => _PersonalBeiState();
-}
-
-class _PersonalBeiState extends State<PersonalBei> {
-  final backgroundImageChangeManagement =
-      Get.put(BackgroundImageChangeManagement());
+class _PersonalHeadState extends State<PersonalHead> {
+  final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +92,12 @@ class _PersonalBeiState extends State<PersonalBei> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: GetBuilder<BackgroundImageChangeManagement>(
-              init: backgroundImageChangeManagement,
-              builder: (backgroundImageChangeManagement) {
-                return backgroundImageChangeManagement.backgroundImageValue !=
-                        null
+            child: GetBuilder<HeadPortraitChangeManagement>(
+              init: headPortraitChangeManagement,
+              builder: (headPortraitChangeManagement) {
+                return headPortraitChangeManagement.headPortraitValue != null
                     ? PhotoView(
-                        imageProvider: FileImage(backgroundImageChangeManagement
-                            .backgroundImageValue!),
+                        imageProvider: FileImage(headPortraitChangeManagement.headPortraitValue!),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       )
@@ -115,7 +108,7 @@ class _PersonalBeiState extends State<PersonalBei> {
                       );
               },
             ),
-          ),
+          )
         ],
       ),
       bottomNavigationBar: SizedBox(
@@ -158,8 +151,7 @@ class _PersonalBeiState extends State<PersonalBei> {
                 borderRadius: BorderRadius.circular(18.0),
               ),
               side: const BorderSide(width: 0.5, color: Colors.white),
-              padding:
-                  const EdgeInsets.only(left: 13, right: 13, top: 3, bottom: 3),
+              padding: const EdgeInsets.only(left: 13, right: 13, top: 3, bottom: 3),
               minimumSize: Size.zero,
             ),
             child: const Text(

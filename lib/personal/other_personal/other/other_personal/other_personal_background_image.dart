@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
 
-class JiyikuPersonalBei extends StatefulWidget {
-  const JiyikuPersonalBei({super.key});
+class OtherPersonalBackgroundImage extends StatefulWidget {
+  const OtherPersonalBackgroundImage({super.key});
 
   @override
-  State<JiyikuPersonalBei> createState() => _JiyikuPersonalBeiState();
+  State<OtherPersonalBackgroundImage> createState() => _OtherPersonalBackgroundImageState();
 }
 
 class OtherPeopleBackgroundImageChangeManagement  extends GetxController {
@@ -21,7 +21,7 @@ class OtherPeopleBackgroundImageChangeManagement  extends GetxController {
   }
 }
 
-class _JiyikuPersonalBeiState extends State<JiyikuPersonalBei> {
+class _OtherPersonalBackgroundImageState extends State<OtherPersonalBackgroundImage> {
 
   final otherPeopleBackgroundImageChangeManagement = Get.put(OtherPeopleBackgroundImageChangeManagement());
   @override

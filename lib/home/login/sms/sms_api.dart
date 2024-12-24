@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
-import 'package:yunji/personal/personal/personal_api.dart';
+import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 final _dio = Dio();
 void smsVerificationCode(String mobileNumber) async {

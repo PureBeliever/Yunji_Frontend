@@ -9,11 +9,10 @@ import 'package:get/get.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/review/creat_review/creat_review_api.dart';
 
-import 'package:yunji/switch/switch_page.dart';
+import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/review/creat_review/creat_review_page.dart';
-import 'package:yunji/personal/personal/personal/personal_page.dart';
-import 'package:yunji/notification_init.dart';
-
+import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
+import 'package:yunji/review/notification_init.dart';
 
 class Yiwang extends StatefulWidget {
   const Yiwang({super.key});
@@ -23,11 +22,11 @@ class Yiwang extends StatefulWidget {
 }
 
 class _Yiwang extends State<Yiwang> {
-  final jiyikucontroller = Get.put(Jiyikucontroller());
+  final creatReviewController = Get.put(CreatReviewController());
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
   bool alarm_information = false;
-  List<List<int>> shijian = [
+  List<List<int>> memoryTime = [
     [0],
     [1440, 10080, 20160],
     [1440, 10080, 20160, 43200],
@@ -36,7 +35,8 @@ class _Yiwang extends State<Yiwang> {
     [60, 360, 1440, 4320, 10080, 20160, 43200, 129600, 259200]
   ];
   int _valueChoice = 2;
-  List<String> jiyi = [
+
+  List<String> reviewScheme = [
     '不复习',
     '第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n记忆时长超过3个月',
     '[推荐]\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n第4次复习:  第3次复习1个月后\n记忆时长超过6个月',
@@ -51,7 +51,7 @@ class _Yiwang extends State<Yiwang> {
       child: ChoiceChip(
         backgroundColor: Colors.white,
         label: Text(
-          jiyi[index],
+          reviewScheme[index],
           softWrap: true,
           maxLines: 20,
           style: TextStyle(
@@ -104,30 +104,37 @@ class _Yiwang extends State<Yiwang> {
                     color: Colors.white),
               ),
               onPressed: () async {
-                bool zhuangtai = false;
-                Map<String, String> cishu = {"0": "方案${_valueChoice + 1}"};
-                String fanganming = "方案${_valueChoice + 1}";
+                bool status = false;
+                Map<String, String> reviewRecord = {
+                  "0": "方案${_valueChoice + 1}"
+                };
+                String reviewSchemeName = "方案${_valueChoice + 1}";
                 DateTime now = DateTime.now();
-                // DateTime dingshi =
-                //     now.add(Duration(hours: shijian[_valueChoice][0]));
-                List<int> timukey = jiyikucontroller.timuzhi.keys.toList();
-                List<int> huidakey = jiyikucontroller.huidazhi.keys.toList();
-                Set<int> combinedSet = Set<int>.from(timukey)..addAll(huidakey);
+
+                List<int> questionKey =
+                    creatReviewController.question.keys.toList();
+                List<int> replyKey = creatReviewController.reply.keys.toList();
+//将两个列表合并为一个列表，并去重
+                Set<int> combinedSet = Set<int>.from(questionKey)
+                  ..addAll(replyKey);
+                //将集合转换为列表，并排序
                 List<int> sortedList = List<int>.from(combinedSet);
                 sortedList.sort();
-                Map<String, String> stringTimu = jiyikucontroller.timuzhi
+                //将列表转换为字符串
+                Map<String, String> stringQuestion = creatReviewController
+                    .question
                     .map((key, value) => MapEntry(key.toString(), value));
-                Map<String, String> stringhuida = jiyikucontroller.huidazhi
+                Map<String, String> stringReply = creatReviewController.reply
                     .map((key, value) => MapEntry(key.toString(), value));
-                DateTime dingshi =
-                    now.add(Duration(minutes: shijian[_valueChoice][0]));
+                DateTime setTime =
+                    now.add(Duration(minutes: memoryTime[_valueChoice][0]));
                 if (_valueChoice == 0) {
-                  zhuangtai = true;
+                  status = true;
                 } else {
                   if (alarm_information == true) {
                     final alarmSettings = AlarmSettings(
                       id: 42,
-                      dateTime: dingshi,
+                      dateTime: setTime,
                       assetAudioPath: 'assets/review/alarm.mp3',
                       loopAudio: true,
                       vibrate: true,
@@ -137,7 +144,7 @@ class _Yiwang extends State<Yiwang> {
                       androidFullScreenIntent: true,
                       notificationSettings: NotificationSettings(
                         title: '开始复习 !',
-                        body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
+                        body: '记忆库${creatReviewController.theme}到达预定的复习时间',
                         stopButton: '停止闹钟',
                         icon: 'notification_icon',
                       ),
@@ -148,23 +155,23 @@ class _Yiwang extends State<Yiwang> {
                     _notificationHelper.zonedScheduleNotification(
                         id: 2,
                         title: '开始复习 !',
-                        body: '记忆库${jiyikucontroller.zhutizhi}到达预定的复习时间',
-                        scheduledDateTime: dingshi);
+                        body: '记忆库${creatReviewController.theme}到达预定的复习时间',
+                        scheduledDateTime: setTime);
                   }
                 }
                 creatReview(
-                    stringTimu,
-                    stringhuida,
-                    jiyikucontroller.zhutizhi!,
-                    shijian[_valueChoice],
-                    dingshi,
+                    stringQuestion,
+                    stringReply,
+                    creatReviewController.theme!,
+                    memoryTime[_valueChoice],
+                    setTime,
                     sortedList,
                     message,
                     alarm_information,
-                    zhuangtai,
-                    cishu,
-                    fanganming,
-                    userNameChangeManagement.userNameValue??'');
+                    status,
+                    reviewRecord,
+                    reviewSchemeName,
+                    userNameChangeManagement.userNameValue ?? '');
 
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
