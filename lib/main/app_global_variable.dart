@@ -66,12 +66,8 @@ bool loginStatus = false;
 final dio = Dio();
 
 
-
 String generateRandomFilename() {
-  const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   Random random = Random();
-  String randomFileName =
-      List.generate(10, (_) => chars[random.nextInt(chars.length)]).join('');
-  return '$randomFileName.jpg';
+  return List.generate(10, (_) => chars[random.nextInt(chars.length)]).join('') + '.jpg';
 }

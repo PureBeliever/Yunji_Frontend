@@ -11,23 +11,23 @@ import 'package:toastification/toastification.dart' as toast;
 
 class Item {
   Item({
-    required this.huida,
-    required this.tiwen,
+    required this.question,
+    required this.reply,
     this.isExpanded = true,
   });
 
-  String huida;
-  String tiwen;
+  String question;
+  String reply;
 
   bool isExpanded;
 }
 
-List<Item> generateItems(int numberOfItems, List<int> xiabiao,
-    Map<String, dynamic> timu, Map<String, dynamic> huida) {
+List<Item> generateItems(int numberOfItems, List<int> subscript,
+    Map<String, dynamic> question, Map<String, dynamic> reply) {
   return List<Item>.generate(numberOfItems, (int index) {
     return Item(
-      tiwen: timu['${xiabiao[index]}'] ?? '',
-      huida: huida['${xiabiao[index]}'] ?? '',
+      question: question['${subscript[index]}'] ?? '',
+      reply: reply['${subscript[index]}'] ?? '',
     );
   });
 }
@@ -88,8 +88,6 @@ class ContinueLearningAboutDataManagement extends GetxController {
     theIndexValueOfTheMemoryItem = data['subscript'];
     theNumberOfProblems = jsonDecode(data['question']);
     theNumberOfAnswers = jsonDecode(data['reply']);
-    theNumberOfProblemsString = jsonDecode(data['question']);
-    theNumberOfAnswersString = jsonDecode(data['reply']);
     memoryScheme = jsonDecode(data['memory_time']);
     numberOfReviews = jsonDecode(data['review_record']);
     messageNotificationStatus = data['information_notification'] == 1 ? true : false;
@@ -202,7 +200,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                                     onPressed: () {
                                       setState(() {
                                         _data.forEach((item) {
-                                          item.huida = ' ';
+                                          item.reply = ' ';
                                         });
                                       });
 
@@ -272,11 +270,11 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                         dragToClose: true);
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
-                    int zhi = 0;
-                    _data.forEach((uio) {
-                      continueLearningAboutDataManagement.theNumberOfProblemsString[zhi] = uio.tiwen;
-                      continueLearningAboutDataManagement.theNumberOfAnswersString[zhi] = uio.huida;
-                      zhi++;
+                    int index = 0;
+                    _data.forEach((data) {
+                      continueLearningAboutDataManagement.theNumberOfProblemsString[index] = data.question;
+                      continueLearningAboutDataManagement.theNumberOfAnswersString[index] = data.reply;
+                      index++;
                     });
                     switchPage(context, Jixvfuxiyiwang());
                   }
@@ -355,9 +353,9 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                         return ListTile(
                           title: TextField(
                             onChanged: (value) {
-                              item.tiwen = value;
+                              item.question = value;
                             },
-                            controller: TextEditingController(text: item.tiwen),
+                            controller: TextEditingController(text: item.question),
                             maxLength: 150,
                             maxLines: 10,
                             minLines: 1,
@@ -393,9 +391,9 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                         contentPadding: EdgeInsets.only(left: 5, right: 10),
                         title: TextField(
                           onChanged: (value) {
-                            item.huida = value;
+                            item.reply = value;
                           },
-                          controller: TextEditingController(text: item.huida),
+                          controller: TextEditingController(text: item.reply),
                           maxLength: 1500,
                           maxLines: 30,
                           minLines: 1,
@@ -466,7 +464,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                                                     TextButton(
                                                       onPressed: () {
                                                         setState(() {
-                                                          item.huida = '';
+                                                          item.reply = '';
                                                         });
 
                                                         Navigator.of(context)

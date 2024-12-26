@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,73 +7,67 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:yunji/personal/personal/edit_personal/default_cupertion.dart';
 import 'package:city_pickers/city_pickers.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_api.dart';
-import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
-import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:toastification/toastification.dart' as toast;
+
+import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
+import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
+import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
+import 'package:yunji/setting/setting_account_user_name.dart';
+import 'package:yunji/main/app_global_variable.dart';
 
 class EditPersonalDataValueManagement extends GetxController {
   static EditPersonalDataValueManagement get to => Get.find();
 
-  // 姓名
   String? nameValue;
-  // 简介
   String? profileValue;
-  // 出生日期
   String? dateOfBirthValue;
-  // 居住地址
   String? residentialAddressValue;
-  // 加入日期
   String? applicationDateValue;
 
-  // 加入日期更改
-  void applicationDateChange(String? applicationDateValueChange) {
-    applicationDateValue = applicationDateValueChange;
+  void changePersonalInformation({
+    String? name,
+    String? profile,
+    String? residentialAddress,
+    String? dateOfBirth,
+    String? applicationDate,
+  }) {
+    nameValue = name;
+    profileValue = profile;
+    residentialAddressValue = residentialAddress;
+    dateOfBirthValue = dateOfBirth;
+    applicationDateValue = applicationDate;
     update();
   }
 
-  // 个人信息更改
-  void changePersonalInformation(
-      String? nameValueChange,
-      String? profileValueChange,
-      String? residentialAddressValueChange,
-      String? dateOfBirthValueChange) {
-    nameValue = nameValueChange;
-    profileValue = profileValueChange;
-    residentialAddressValue = residentialAddressValueChange;
-    dateOfBirthValue = dateOfBirthValueChange;
-    update();
-  }
-
-  // 个人信息回滚
-  int rollbackTheChangedValue(String? nameValueChange, String? profileValueChange,
-      String? residentialAddressValueChange, String? dateOfBirthValueChange) {
-    int nameChangeStatus = nameValue != nameValueChange ? 1 : 0;
-    int profileChangeStatus = profileValue != profileValueChange ? 1 : 0;
-    int residentialAddressChangeStatus =
-        residentialAddressValue != residentialAddressValueChange ? 1 : 0;
-    int dateOfBirthChangeStatus =
-        dateOfBirthValue != dateOfBirthValueChange ? 1 : 0;
-    return nameChangeStatus +
-        profileChangeStatus +
-        residentialAddressChangeStatus +
-        dateOfBirthChangeStatus;
+  int rollbackTheChangedValue({
+    String? name,
+    String? profile,
+    String? residentialAddress,
+    String? dateOfBirth,
+  }) {
+    int changes = 0;
+    if (nameValue != name) changes++;
+    if (profileValue != profile) changes++;
+    if (residentialAddressValue != residentialAddress) changes++;
+    if (dateOfBirthValue != dateOfBirth) changes++;
+    if (backgroundImageChangeManagement
+        .exitThePageToDetermineWhetherTheBackgroundImageHasChanged()) changes++;
+    if (headPortraitChangeManagement
+        .exitThePageToDetermineWhetherTheHeadPortraitHasChanged()) changes++;
+    return changes;
   }
 }
 
-class Baocuncontroller extends GetxController {
-  static Baocuncontroller get to => Get.find();
+class SaveBackSpace extends GetxController {
+  static SaveBackSpace get to => Get.find();
+  bool backspaceValue = true;
 
-  String? name;
-
-  void namess(String? na) {
-    name = na;
+  void backspaceValueChange(bool value) {
+    backspaceValue = value;
     update();
   }
 }
@@ -81,6 +77,7 @@ class SelectorResultsUpdateDisplay extends GetxController {
   static SelectorResultsUpdateDisplay get to => Get.find();
   String? residentialAddressSelectorResultValue;
   String? dateOfBirthSelectorResultValue;
+
 // 日期选择器结果值更改
   void dateOfBirthSelectorResultValueChange(
       String? dateOfBirthSelectorResultValueChange) {
@@ -105,171 +102,129 @@ class EditPersonalPage extends StatefulWidget {
 }
 
 class _EditPersonalPageState extends State<EditPersonalPage> {
-  static String? name = EditPersonalDataValueManagement.to.nameValue;
-  static String? brief = EditPersonalDataValueManagement.to.profileValue;
-  static String? formatteplace =
-      EditPersonalDataValueManagement.to.residentialAddressValue;
-  static String? formattedDate =
-      EditPersonalDataValueManagement.to.dateOfBirthValue;
-  final editPersonalDataValueManagement =
-      Get.put(EditPersonalDataValueManagement());
+  // 在构造函数中初始化
+  String? name;
+  String? profile;
+  String? selectResidentialAddress;
+  String? selectDateOfBirth;
+
+  @override
+  void initState() {
+    super.initState();
+    name = editPersonalDataValueManagement.nameValue;
+    profile = editPersonalDataValueManagement.profileValue;
+    selectResidentialAddress =
+        editPersonalDataValueManagement.residentialAddressValue;
+    selectDateOfBirth = editPersonalDataValueManagement.dateOfBirthValue;
+  }
+
+  final saveBackSpace = Get.put(SaveBackSpace());
   final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
-  final baocuncontroller = Get.put(Baocuncontroller());
   final backgroundImageChangeManagement =
       Get.put(BackgroundImageChangeManagement());
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
-  final userNameChangeManagement = Get.put(UserNameChangeManagement());
   static String? username = UserNameChangeManagement.to.userNameValue;
 
-  selectImage() async {
+  Future<void> _selectAndCropImage({
+    required ImageSource source,
+    required CropStyle cropStyle,
+    required List<CropAspectRatioPreset> aspectRatioPresets,
+    required Function(File) onImageCropped,
+  }) async {
     try {
-      XFile? image = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-      );
-
+      XFile? image = await _imagePicker.pickImage(source: source);
       if (image != null) {
         CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: image.path,
-            cropStyle: CropStyle.circle,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square,
-            ],
-            uiSettings: [
-              AndroidUiSettings(
-                  cropFrameColor: Colors.transparent,
-                  toolbarTitle: '',
-                  showCropGrid: false,
-                  toolbarColor: Colors.black,
-                  hideBottomControls: true,
-                  statusBarColor: Colors.black,
-                  toolbarWidgetColor: Colors.white,
-                  initAspectRatio: CropAspectRatioPreset.square,
-                  lockAspectRatio: true),
-              IOSUiSettings(
-                title: '',
-              ),
-            ]);
-        headPortraitChangeManagement
-            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(
-                File(croppedFile!.path));
+          sourcePath: image.path,
+          cropStyle: cropStyle,
+          aspectRatioPresets: aspectRatioPresets,
+          uiSettings: [
+            AndroidUiSettings(
+              cropFrameColor: Colors.transparent,
+              toolbarTitle: '',
+              showCropGrid: false,
+              toolbarColor: Colors.black,
+              hideBottomControls: true,
+              statusBarColor: Colors.black,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: aspectRatioPresets.first,
+              lockAspectRatio: true,
+            ),
+            IOSUiSettings(title: ''),
+          ],
+        );
+        if (croppedFile != null) {
+          onImageCropped(File(croppedFile.path));
+        }
       }
-    } catch (err) {}
+    } catch (err) {
+      // Handle error
+    }
   }
 
-  selectCamera() async {
-    try {
-      XFile? photo = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        preferredCameraDevice: CameraDevice.rear,
-      );
-      if (photo != null) {
-        CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: photo.path,
-            cropStyle: CropStyle.circle,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square,
-            ],
-            uiSettings: [
-              AndroidUiSettings(
-                  cropFrameColor: Colors.transparent,
-                  toolbarTitle: '',
-                  showCropGrid: false,
-                  toolbarColor: Colors.black,
-                  hideBottomControls: true,
-                  statusBarColor: Colors.black,
-                  toolbarWidgetColor: Colors.white,
-                  initAspectRatio: CropAspectRatioPreset.square,
-                  lockAspectRatio: true),
-              IOSUiSettings(
-                title: '',
-              ),
-            ]);
-        headPortraitChangeManagement
-            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(
-                File(croppedFile!.path));
-      }
-      // ignore: empty_catches
-    } catch (err) {}
-  }
-
-  beiselectImage() async {
-    XFile? image = await _imagePicker.pickImage(
+  Future<void> headPortraitSelectImage() async {
+    await _selectAndCropImage(
       source: ImageSource.gallery,
+      cropStyle: CropStyle.circle,
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+      onImageCropped: (file) {
+        headPortraitChangeManagement
+            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(file);
+      },
     );
-
-    if (image != null) {
-      CroppedFile? croppedFile = await ImageCropper()
-          .cropImage(sourcePath: image.path, aspectRatioPresets: [
-        CropAspectRatioPreset.ratio5x3,
-      ], uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: '',
-            showCropGrid: false,
-            toolbarColor: Colors.black,
-            hideBottomControls: true,
-            statusBarColor: Colors.black,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.ratio4x3,
-            lockAspectRatio: true),
-        IOSUiSettings(
-          title: '',
-        ),
-      ]);
-      backgroundImageChangeManagement
-          .selectAndShootTheImageToGiveTheChangedBackgroundImage(
-              File(croppedFile!.path));
-    }
   }
 
-  beiselectCamera() async {
-    XFile? photo = await _imagePicker.pickImage(
+  Future<void> headPortraitSelectCamera() async {
+    await _selectAndCropImage(
       source: ImageSource.camera,
-      preferredCameraDevice: CameraDevice.rear,
+      cropStyle: CropStyle.circle,
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+      onImageCropped: (file) {
+        headPortraitChangeManagement
+            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(file);
+      },
     );
+  }
 
-    if (photo != null) {
-      CroppedFile? croppedFile = await ImageCropper()
-          .cropImage(sourcePath: photo.path, aspectRatioPresets: [
-        CropAspectRatioPreset.ratio5x3,
-      ], uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: '',
-            showCropGrid: false,
-            toolbarColor: Colors.black,
-            hideBottomControls: true,
-            statusBarColor: Colors.black,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.ratio5x3,
-            lockAspectRatio: true),
-        IOSUiSettings(
-          title: '',
-        ),
-      ]);
-      backgroundImageChangeManagement
-          .selectAndShootTheImageToGiveTheChangedBackgroundImage(
-              File(croppedFile!.path));
-    }
+  Future<void> backgroundImageSelectImage() async {
+    await _selectAndCropImage(
+      source: ImageSource.gallery,
+      cropStyle: CropStyle.rectangle,
+      aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
+      onImageCropped: (file) {
+        backgroundImageChangeManagement
+            .selectAndShootTheImageToGiveTheChangedBackgroundImage(file);
+      },
+    );
+  }
+
+  Future<void> backgroundImageSelectCamera() async {
+    await _selectAndCropImage(
+      source: ImageSource.camera,
+      cropStyle: CropStyle.rectangle,
+      aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
+      onImageCropped: (file) {
+        backgroundImageChangeManagement
+            .selectAndShootTheImageToGiveTheChangedBackgroundImage(file);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         if (editPersonalDataValueManagement.rollbackTheChangedValue(
-                    name, brief, formatteplace, formattedDate) >
-                0 ||
-            backgroundImageChangeManagement
-                    .exitThePageToDetermineWhetherTheBackgroundImageHasChanged() ==
-                1 ||
-            headPortraitChangeManagement
-                    .exitThePageToDetermineWhetherTheHeadPortraitHasChanged() ==
-                1) {
+              name: name,
+              profile: profile,
+              residentialAddress: selectResidentialAddress,
+              dateOfBirth: selectDateOfBirth,
+            ) >
+            0) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              // 返回一个构建好的弹窗
               return Dialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -324,11 +279,12 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                     .restoreAnUnchangedHeadPortraitImage();
                                 name =
                                     editPersonalDataValueManagement.nameValue;
-                                brief = editPersonalDataValueManagement
+                                profile = editPersonalDataValueManagement
                                     .profileValue;
-                                formatteplace = selectorResultsUpdateDisplay
-                                    .residentialAddressSelectorResultValue;
-                                formattedDate = selectorResultsUpdateDisplay
+                                selectResidentialAddress =
+                                    selectorResultsUpdateDisplay
+                                        .residentialAddressSelectorResultValue;
+                                selectDateOfBirth = selectorResultsUpdateDisplay
                                     .dateOfBirthSelectorResultValue;
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
@@ -340,10 +296,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                     fontWeight: FontWeight.w900,
                                     color: Colors.black),
                               ),
-                            )
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -366,18 +322,15 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
             leading: GestureDetector(
               onTap: () {
                 if (editPersonalDataValueManagement.rollbackTheChangedValue(
-                            name, brief, formatteplace, formattedDate) >
-                        0 ||
-                    backgroundImageChangeManagement
-                            .exitThePageToDetermineWhetherTheBackgroundImageHasChanged() ==
-                        1 ||
-                    headPortraitChangeManagement
-                            .exitThePageToDetermineWhetherTheHeadPortraitHasChanged() ==
-                        1) {
+                      name: name,
+                      profile: profile,
+                      residentialAddress: selectResidentialAddress,
+                      dateOfBirth: selectDateOfBirth,
+                    ) >
+                    0) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      // 返回一个构建好的弹窗
                       return Dialog(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -435,11 +388,13 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                             .restoreAnUnchangedHeadPortraitImage();
                                         name = editPersonalDataValueManagement
                                             .nameValue;
-                                        brief = editPersonalDataValueManagement
-                                            .profileValue;
-                                        formatteplace = selectorResultsUpdateDisplay
-                                            .residentialAddressSelectorResultValue;
-                                        formattedDate =
+                                        profile =
+                                            editPersonalDataValueManagement
+                                                .profileValue;
+                                        selectResidentialAddress =
+                                            selectorResultsUpdateDisplay
+                                                .residentialAddressSelectorResultValue;
+                                        selectDateOfBirth =
                                             selectorResultsUpdateDisplay
                                                 .dateOfBirthSelectorResultValue;
                                         Navigator.of(context).pop();
@@ -452,10 +407,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                             fontWeight: FontWeight.w900,
                                             color: Colors.black),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -466,72 +421,74 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Icon(
-                Icons.arrow_back,
-              ),
+              child: const Icon(Icons.arrow_back),
             ),
             title: const Text(
               '编辑个人资料',
               style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
             ),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: GetBuilder<Baocuncontroller>(
-                    init: baocuncontroller,
-                    builder: (dcontroller) {
-                      return dcontroller.name?.isNotEmpty ?? true
-                          ? GestureDetector(
-                              onTap: () {
-                                if (editPersonalDataValueManagement
-                                            .rollbackTheChangedValue(
-                                                name,
-                                                brief,
-                                                formatteplace,
-                                                formattedDate) >
-                                        0 ||
-                                    backgroundImageChangeManagement
-                                            .exitThePageToDetermineWhetherTheBackgroundImageHasChanged() ==
-                                        1 ||
-                                    headPortraitChangeManagement
-                                            .exitThePageToDetermineWhetherTheHeadPortraitHasChanged() ==
-                                        1) {
-                                  editPersonalDataValueManagement
-                                      .rollbackTheChangedValue(name, brief,
-                                          formatteplace, formattedDate);
+              GetBuilder<SelectorResultsUpdateDisplay>(
+                init: selectorResultsUpdateDisplay,
+                builder: (pcontroller) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: saveBackSpace.backspaceValue
+                        ? GestureDetector(
+                            onTap: () {
+                              if (editPersonalDataValueManagement
+                                      .rollbackTheChangedValue(
+                                    name: name,
+                                    profile: profile,
+                                    residentialAddress:
+                                        selectResidentialAddress,
+                                    dateOfBirth: selectDateOfBirth,
+                                  ) >
+                                  0) {
+                                editPersonalDataValueManagement
+                                    .changePersonalInformation(
+                                  name: name,
+                                  profile: profile,
+                                  residentialAddress: selectResidentialAddress,
+                                  dateOfBirth: selectDateOfBirth,
+                                  applicationDate:
+                                      editPersonalDataValueManagement
+                                          .applicationDateValue,
+                                );
 
-                                  Navigator.pop(context);
+                                Navigator.pop(context);
 
-                                  editPersonal(
-                                      username,
-                                      name,
-                                      brief,
-                                      formatteplace,
-                                      formattedDate,
-                                      backgroundImageChangeManagement
-                                          .returnsTheChangedBackgroundImageSynchronizationBackend(),
-                                      headPortraitChangeManagement
-                                          .returnsTheChangedHeadPortraitImageSynchronizationBackend());
-                                } else {
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: const Text(
-                                '保存',
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w900),
-                              ),
-                            )
-                          : const Text(
+                                editPersonal(
+                                  username,
+                                  name,
+                                  profile,
+                                  selectResidentialAddress,
+                                  selectDateOfBirth,
+                                  backgroundImageChangeManagement
+                                      .returnsTheChangedBackgroundImageSynchronizationBackend(),
+                                  headPortraitChangeManagement
+                                      .returnsTheChangedHeadPortraitImageSynchronizationBackend(),
+                                );
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: const Text(
                               '保存',
                               style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w900),
+                            ),
+                          )
+                        : const Text(
+                            '保存',
+                            style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w900,
-                                color: Color.fromARGB(255, 119, 118, 118),
-                              ),
-                            );
-                    }),
-              )
+                                color: Color.fromARGB(255, 119, 118, 118)),
+                          ),
+                  );
+                },
+              ),
             ],
           ),
           body: ListView(
@@ -553,80 +510,83 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextButton(
-                                  onPressed: () async {
-                                    var status = await Permission.camera.status;
-
-                                    if (status.isGranted) {
-                                      beiselectCamera();
+                                onPressed: () async {
+                                  var status = await Permission.camera.status;
+                                  if (status.isGranted) {
+                                    backgroundImageSelectCamera();
+                                    Navigator.pop(context);
+                                  } else {
+                                    var permissionStatus =
+                                        await Permission.camera.request();
+                                    if (permissionStatus.isGranted) {
+                                      backgroundImageSelectCamera();
                                       Navigator.pop(context);
                                     } else {
-                                      var permissionStatus =
-                                          await Permission.camera.request();
-                                      if (permissionStatus.isGranted) {
-                                        beiselectCamera();
-                                        Navigator.pop(context);
-                                      } else {
-                                        toast.toastification.show(
-                                            context: context,
-                                            callbacks:
-                                                toast.ToastificationCallbacks(
-                                              onTap: (toastItem) =>
-                                                  AppSettings.openAppSettings(
-                                                      type: AppSettingsType
-                                                          .settings),
-                                            ),
-                                            type: toast
-                                                .ToastificationType.warning,
-                                            style: toast.ToastificationStyle
-                                                .flatColored,
-                                            title: const Text("未授权相机权限",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w800,
-                                                    fontSize: 17)),
-                                            description: const Text(
-                                              "无法开启相机，点击提示开启权限",
-                                              style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 119, 118, 118),
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                            alignment: Alignment.topLeft,
-                                            autoCloseDuration:
-                                                const Duration(seconds: 4),
-                                            borderRadius:
-                                                BorderRadius.circular(12.0),
-                                            boxShadow: toast.lowModeShadow,
-                                            dragToClose: true);
-                                      }
+                                      toast.toastification.show(
+                                        context: context,
+                                        callbacks:
+                                            toast.ToastificationCallbacks(
+                                          onTap: (toastItem) =>
+                                              AppSettings.openAppSettings(
+                                                  type:
+                                                      AppSettingsType.settings),
+                                        ),
+                                        type: toast.ToastificationType.warning,
+                                        style: toast
+                                            .ToastificationStyle.flatColored,
+                                        title: const Text(
+                                          "未授权相机权限",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 17),
+                                        ),
+                                        description: const Text(
+                                          "无法开启相机，点击提示开启权限",
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 119, 118, 118),
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        alignment: Alignment.topLeft,
+                                        autoCloseDuration:
+                                            const Duration(seconds: 4),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                        boxShadow: toast.lowModeShadow,
+                                        dragToClose: true,
+                                      );
                                     }
-                                  },
-                                  child: const SizedBox(
-                                    width: double.infinity,
-                                    child: Text(
-                                      '拍摄照片',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  )),
+                                  }
+                                },
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    '拍摄照片',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
                               TextButton(
-                                  onPressed: () {
-                                    beiselectImage();
-                                    Navigator.pop(context);
-                                  },
-                                  child: const SizedBox(
-                                    width: double.infinity,
-                                    child: Text(
-                                      '选择相册',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ))
+                                onPressed: () {
+                                  backgroundImageSelectImage();
+                                  Navigator.pop(context);
+                                },
+                                child: const SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    '选择相册',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -661,16 +621,18 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                               ),
                             ),
                             Positioned.fill(
-                                child: Container(
-                              color: Colors.black.withOpacity(0.5),
-                            )),
+                              child: Container(
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            ),
                             Positioned(
+                              height: 47,
+                              child: SvgPicture.asset(
+                                'assets/personal/camera.svg',
                                 height: 47,
-                                child: SvgPicture.asset(
-                                  'assets/personal/camera.svg',
-                                  height: 47,
-                                  width: 47,
-                                )),
+                                width: 47,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -678,313 +640,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                         top: 197,
                         left: 10,
                         child: GetBuilder<HeadPortraitChangeManagement>(
-                            init: headPortraitChangeManagement,
-                            builder: (headPortraitChangeManagement) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            TextButton(
-                                                onPressed: () async {
-                                                  var status = await Permission
-                                                      .camera.status;
-
-                                                  if (status.isGranted) {
-                                                    selectCamera();
-                                                    Navigator.pop(context);
-                                                  } else {
-                                                    var permissionStatus =
-                                                        await Permission.camera
-                                                            .request();
-                                                    if (permissionStatus
-                                                        .isGranted) {
-                                                      selectCamera();
-                                                      Navigator.pop(context);
-                                                    } else {
-                                                      toast.toastification.show(
-                                                          context: context,
-                                                          callbacks: toast
-                                                              .ToastificationCallbacks(
-                                                            onTap: (toastItem) =>
-                                                                AppSettings.openAppSettings(
-                                                                    type: AppSettingsType
-                                                                        .settings),
-                                                          ),
-                                                          type: toast
-                                                              .ToastificationType
-                                                              .warning,
-                                                          style: toast
-                                                              .ToastificationStyle
-                                                              .flatColored,
-                                                          title: const Text(
-                                                              "未授权相机权限",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w800,
-                                                                  fontSize:
-                                                                      17)),
-                                                          description:
-                                                              const Text(
-                                                            "无法开启相机",
-                                                            style: TextStyle(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        119,
-                                                                        118,
-                                                                        118),
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                          ),
-                                                          alignment:
-                                                              Alignment.topLeft,
-                                                          autoCloseDuration:
-                                                              const Duration(
-                                                                  seconds: 4),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                  12.0),
-                                                          boxShadow: toast
-                                                              .lowModeShadow,
-                                                          dragToClose: true);
-                                                    }
-                                                  }
-                                                },
-                                                child: const SizedBox(
-                                                  width: double.infinity,
-                                                  child: Text(
-                                                    '拍摄照片',
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                )),
-                                            TextButton(
-                                                onPressed: () {
-                                                  selectImage();
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const SizedBox(
-                                                  width: double.infinity,
-                                                  child: Text(
-                                                    '选择相册',
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                ))
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: CircleAvatar(
-                                  radius: 51,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    backgroundImage:
-                                        headPortraitChangeManagement
-                                                    .changedHeadPortraitValue !=
-                                                null
-                                            ? FileImage(
-                                                headPortraitChangeManagement
-                                                    .changedHeadPortraitValue!)
-                                            : const AssetImage(
-                                                'assets/personal/gray_back_head.png'),
-                                    radius: 47.5,
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Positioned.fill(
-                                            child: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                          ),
-                                        )),
-                                        Positioned(
-                                            height: 47,
-                                            child: SvgPicture.asset(
-                                              'assets/personal/camera.svg',
-                                              height: 47,
-                                              width: 47,
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 14.0, right: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    GetBuilder<EditPersonalDataValueManagement>(
-                      init: editPersonalDataValueManagement,
-                      builder: (editPersonalDataValueManagement) {
-                        return Column(
-                          children: [
-                            TextFormField(
-                              cursorColor: Colors.blue,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
-                              controller: TextEditingController(
-                                 text: editPersonalDataValueManagement.nameValue??null),
-                              onChanged: (value) {
-                                name = value.trim();
-                                baocuncontroller.namess(name);
-                              },
-                              maxLines: 1,
-                              maxLength: 45,
-                              decoration: InputDecoration(
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 2),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.blue, width: 2),
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                                border: const OutlineInputBorder(),
-                                labelText: '姓名',
-                                hintText: '姓名不能为空',
-                                labelStyle: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                ),
-                                counterText: "",
-                              ),
-                            ),
-                            const SizedBox(width: double.infinity, height: 20),
-                            TextFormField(
-                              cursorColor: Colors.blue,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
-                              controller: TextEditingController(
-                                  text: editPersonalDataValueManagement
-                                              .profileValue??null),
-                              onChanged: (value) {
-                                brief = value.replaceAll('\n', '');
-                              },
-                              maxLines: 10,
-                              minLines: 3,
-                              maxLength: 150,
-                              decoration: InputDecoration(
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 2),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.blue, width: 2),
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                                border: const OutlineInputBorder(),
-                                labelText: '简介',
-                                labelStyle: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                ),
-                                counterText: "",
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(width: double.infinity, height: 20),
-                    GetBuilder<SelectorResultsUpdateDisplay>(
-                      init: selectorResultsUpdateDisplay,
-                      builder: (pcontroller) {
-                        return Column(
-                          children: [
-                            TextFormField(
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
+                          init: headPortraitChangeManagement,
+                          builder: (headPortraitChangeManagement) {
+                            return GestureDetector(
                               onTap: () async {
-                                Result? result =
-                                    await CityPickers.showCityPicker(
-                                  context: context,
-                                );
-                                if (result != null &&
-                                    result.provinceId != 'kong') {
-                                  formatteplace =
-                                      '${result.provinceName}.${result.cityName}.${result.areaName}';
-                                  selectorResultsUpdateDisplay
-                                      .residentialAddressSelectorResultValueChange(
-                                          formatteplace);
-                                } else if (result?.provinceId == 'kong') {
-                                  formatteplace = ' ';
-                                  selectorResultsUpdateDisplay
-                                      .residentialAddressSelectorResultValueChange(
-                                          formatteplace);
-                                }
-                              },
-                              controller: TextEditingController(
-                                  text: selectorResultsUpdateDisplay
-                                              .residentialAddressSelectorResultValue??null),
-                              maxLines: 1,
-                              maxLength: 50,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 2),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.blue, width: 2),
-                                  borderRadius: BorderRadius.circular(25.0),
-                                ),
-                                border: const OutlineInputBorder(),
-                                labelText: '位置',
-                                labelStyle: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                ),
-                                counterText: "",
-                              ),
-                            ),
-                            const SizedBox(width: double.infinity, height: 20),
-                            TextFormField(
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
-                              onTap: () {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -993,139 +652,458 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
-                                      child: SizedBox(
-                                        height: 300,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              height: 250,
-                                              child: Localizations.override(
-                                                context: context,
-                                                locale: const Locale('en'),
-                                                delegates: const [
-                                                  MyDefaultCupertinoLocalizations
-                                                      .delegate,
-                                                ],
-                                                child: CupertinoDatePicker(
-                                                  mode: CupertinoDatePickerMode
-                                                      .date,
-                                                  minimumDate:
-                                                      DateTime(1900, 1, 1),
-                                                  maximumDate: DateTime.now(),
-                                                  initialDateTime:
-                                                      DateTime(2000, 1, 1),
-                                                  dateOrder:
-                                                      DatePickerDateOrder.ymd,
-                                                  onDateTimeChanged: (date) {
-                                                    formattedDate = DateFormat(
-                                                            'yyyy年MM月dd日')
-                                                        .format(date);
-                                                  },
-                                                ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              var status = await Permission
+                                                  .camera.status;
+                                              if (status.isGranted) {
+                                                headPortraitSelectCamera();
+                                                Navigator.pop(context);
+                                              } else {
+                                                var permissionStatus =
+                                                    await Permission.camera
+                                                        .request();
+                                                if (permissionStatus
+                                                    .isGranted) {
+                                                  headPortraitSelectCamera();
+                                                  Navigator.pop(context);
+                                                } else {
+                                                  toast.toastification.show(
+                                                    context: context,
+                                                    callbacks: toast
+                                                        .ToastificationCallbacks(
+                                                      onTap: (toastItem) =>
+                                                          AppSettings.openAppSettings(
+                                                              type:
+                                                                  AppSettingsType
+                                                                      .settings),
+                                                    ),
+                                                    type: toast
+                                                        .ToastificationType
+                                                        .warning,
+                                                    style: toast
+                                                        .ToastificationStyle
+                                                        .flatColored,
+                                                    title: const Text(
+                                                      "未授权相机权限",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          fontSize: 17),
+                                                    ),
+                                                    description: const Text(
+                                                      "无法开启相机",
+                                                      style: TextStyle(
+                                                          color: Color.fromARGB(
+                                                              255,
+                                                              119,
+                                                              118,
+                                                              118),
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    autoCloseDuration:
+                                                        const Duration(
+                                                            seconds: 4),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.0),
+                                                    boxShadow:
+                                                        toast.lowModeShadow,
+                                                    dragToClose: true,
+                                                  );
+                                                }
+                                              }
+                                            },
+                                            child: const SizedBox(
+                                              width: double.infinity,
+                                              child: Text(
+                                                '拍摄照片',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                        FontWeight.w700),
                                               ),
                                             ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text(
-                                                        '取消',
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                        selectorResultsUpdateDisplay
-                                                            .dateOfBirthSelectorResultValueChange(
-                                                                ' ');
-                                                      },
-                                                      child: const Text(
-                                                        '移除',
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            color: Colors.red),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                    selectorResultsUpdateDisplay
-                                                        .dateOfBirthSelectorResultValueChange(
-                                                            formattedDate);
-                                                  },
-                                                  child: const Text(
-                                                    '确定',
-                                                    style: TextStyle(
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                        color: Colors.black),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              headPortraitSelectImage();
+                                              Navigator.pop(context);
+                                            },
+                                            child: const SizedBox(
+                                              width: double.infinity,
+                                              child: Text(
+                                                '选择相册',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 17,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     );
                                   },
                                 );
                               },
-                              controller: TextEditingController(
-                                text: selectorResultsUpdateDisplay
-                                        .dateOfBirthSelectorResultValue ??
-                                    null,
+                              child: CircleAvatar(
+                                radius: 51,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: headPortraitChangeManagement
+                                              .changedHeadPortraitValue !=
+                                          null
+                                      ? FileImage(headPortraitChangeManagement
+                                          .changedHeadPortraitValue!)
+                                      : const AssetImage(
+                                              'assets/personal/gray_back_head.png')
+                                          as ImageProvider,
+                                  radius: 47.5,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        height: 47,
+                                        child: SvgPicture.asset(
+                                          'assets/personal/camera.svg',
+                                          height: 47,
+                                          width: 47,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              maxLines: 1,
-                              maxLength: 50,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.black, width: 2),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(left: 14.0, right: 10.0),
+                  child: GetBuilder<EditPersonalDataValueManagement>(
+                      init: editPersonalDataValueManagement,
+                      builder: (editPersonalDataValueManagement) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                TextFormField(
+                                  cursorColor: Colors.blue,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                  controller: TextEditingController(text: name),
+                                  onChanged: (value) {
+                                    name = value.trim();
+                                    saveBackSpace
+                                        .backspaceValueChange(value.isNotEmpty);
+                                  },
+                                  maxLines: 1,
+                                  maxLength: 45,
+                                  decoration: InputDecoration(
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 2),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.blue, width: 2),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                    labelText: '姓名',
+                                    hintText: '姓名不能为空',
+                                    labelStyle: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color.fromARGB(255, 119, 118, 118),
+                                    ),
+                                    counterText: "",
+                                  ),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.blue, width: 2),
-                                  borderRadius: BorderRadius.circular(25.0),
+                                const SizedBox(
+                                    width: double.infinity, height: 20),
+                                TextFormField(
+                                  cursorColor: Colors.blue,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                  controller:
+                                      TextEditingController(text: profile),
+                                  onChanged: (value) {
+                                    profile = value.replaceAll('\n', '');
+                                  },
+                                  maxLines: 10,
+                                  minLines: 3,
+                                  maxLength: 150,
+                                  decoration: InputDecoration(
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 2),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.blue, width: 2),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                    labelText: '简介',
+                                    labelStyle: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color.fromARGB(255, 119, 118, 118),
+                                    ),
+                                    counterText: "",
+                                  ),
                                 ),
-                                border: const OutlineInputBorder(),
-                                labelText: '出生日期',
-                                labelStyle: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                ),
-                                counterText: "",
-                              ),
+                              ],
+                            ),
+                            const SizedBox(width: double.infinity, height: 20),
+                            GetBuilder<SelectorResultsUpdateDisplay>(
+                              init: selectorResultsUpdateDisplay,
+                              builder: (pcontroller) {
+                                return Column(
+                                  children: [
+                                    TextFormField(
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                      onTap: () async {
+                                        Result? result =
+                                            await CityPickers.showCityPicker(
+                                                context: context);
+                                        selectResidentialAddress = (result !=
+                                                    null &&
+                                                result.provinceId != 'null')
+                                            ? '${result.provinceName}.${result.cityName}.${result.areaName}'
+                                            : ' ';
+                                        selectorResultsUpdateDisplay
+                                            .residentialAddressSelectorResultValueChange(
+                                                selectResidentialAddress);
+                                      },
+                                      controller: TextEditingController(
+                                          text: selectorResultsUpdateDisplay
+                                              .residentialAddressSelectorResultValue),
+                                      maxLines: 1,
+                                      maxLength: 50,
+                                      readOnly: true,
+                                      decoration: InputDecoration(
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 2),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.blue, width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                        ),
+                                        border: const OutlineInputBorder(),
+                                        labelText: '位置',
+                                        labelStyle: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color.fromARGB(
+                                              255, 119, 118, 118),
+                                        ),
+                                        counterText: "",
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        width: double.infinity, height: 20),
+                                    TextFormField(
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
+                                              child: SizedBox(
+                                                height: 300,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 250,
+                                                      child: Localizations
+                                                          .override(
+                                                        context: context,
+                                                        locale:
+                                                            const Locale('en'),
+                                                        delegates: const [
+                                                          MyDefaultCupertinoLocalizations
+                                                              .delegate
+                                                        ],
+                                                        child:
+                                                            CupertinoDatePicker(
+                                                          mode:
+                                                              CupertinoDatePickerMode
+                                                                  .date,
+                                                          minimumDate: DateTime(
+                                                              1900, 1, 1),
+                                                          maximumDate:
+                                                              DateTime.now(),
+                                                          initialDateTime:
+                                                              DateTime(
+                                                                  2000, 1, 1),
+                                                          dateOrder:
+                                                              DatePickerDateOrder
+                                                                  .ymd,
+                                                          onDateTimeChanged:
+                                                              (date) {
+                                                            selectDateOfBirth =
+                                                                DateFormat(
+                                                                        'yyyy年MM月dd日')
+                                                                    .format(
+                                                                        date);
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child: const Text(
+                                                                '取消',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        17,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w900,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                                selectorResultsUpdateDisplay
+                                                                    .dateOfBirthSelectorResultValueChange(
+                                                                        ' ');
+                                                              },
+                                                              child: const Text(
+                                                                '移除',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        17,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w900,
+                                                                    color: Colors
+                                                                        .red),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                            selectorResultsUpdateDisplay
+                                                                .dateOfBirthSelectorResultValueChange(
+                                                                    selectDateOfBirth);
+                                                          },
+                                                          child: const Text(
+                                                            '确定',
+                                                            style: TextStyle(
+                                                                fontSize: 17,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      controller: TextEditingController(
+                                          text: selectorResultsUpdateDisplay
+                                              .dateOfBirthSelectorResultValue),
+                                      maxLines: 1,
+                                      maxLength: 50,
+                                      readOnly: true,
+                                      decoration: InputDecoration(
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 2),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.blue, width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                        ),
+                                        border: const OutlineInputBorder(),
+                                        labelText: '出生日期',
+                                        labelStyle: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color.fromARGB(
+                                              255, 119, 118, 118),
+                                        ),
+                                        counterText: "",
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ],
                         );
-                      },
-                    ),
-                  ],
-                ),
-              )
+                      })),
             ],
           ),
         ),

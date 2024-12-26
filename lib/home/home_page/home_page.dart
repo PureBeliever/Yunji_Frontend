@@ -9,6 +9,7 @@ import 'package:keframe/keframe.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/main/app_module/memory_bank_item.dart';
+import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
@@ -26,7 +27,9 @@ class RefreshofHomepageMemoryBankextends extends GetxController {
   static RefreshofHomepageMemoryBankextends get to => Get.find();
   List<Map<String, dynamic>> memoryRefreshValue = [];
 
+
   void updateMemoryRefreshValue(List<Map<String, dynamic>>? value) {
+
     if (value != null) {
       memoryRefreshValue = value.reversed.toList();
       update();
@@ -64,6 +67,49 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       animationDuration: const Duration(milliseconds: 100),
     );
   }
+
+  Widget _buildSpeedDial() {
+    return SpeedDial(
+      backgroundColor: Colors.blue,
+      buttonSize: const Size(60, 60),
+      animatedIcon: AnimatedIcons.add_event,
+      animatedIconTheme: const IconThemeData(color: Colors.white, size: 28),
+      spacing: 12,
+      childrenButtonSize: const Size(53, 53),
+      shape: const CircleBorder(),
+      children: [_buildSpeedDialChild()],
+    );
+  }
+
+  SpeedDialChild _buildSpeedDialChild() {
+    return SpeedDialChild(
+      shape: const CircleBorder(),
+      child: SvgPicture.asset(
+        'assets/home/creat_memory_bank.svg',
+        color: Colors.blue,
+        width: 25,
+        height: 25,
+      ),
+      backgroundColor: Colors.white,
+      label: '创建记忆库',
+      labelShadow: List.empty(),
+      labelBackgroundColor: Colors.white,
+      labelStyle: const TextStyle(
+          fontSize: 20.0, fontWeight: FontWeight.w700),
+      onTap: _handleSpeedDialChildTap,
+    );
+  }
+
+  void _handleSpeedDialChildTap() {
+    if (loginStatus == false) {
+      smsLogin(context);
+      showToast(context, "未登录", "未登录", toast.ToastificationType.success, const Color(0xff047aff), const Color(0xFFEDF7FF));
+    } else {
+      switchPage(context, const CreatReviewPage());
+    }
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -252,60 +298,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: SpeedDial(
-          backgroundColor: Colors.blue,
-          buttonSize: const Size(60, 60),
-          animatedIcon: AnimatedIcons.add_event,
-          animatedIconTheme: const IconThemeData(color: Colors.white, size: 28),
-          spacing: 12,
-          childrenButtonSize: const Size(53, 53),
-          shape: const CircleBorder(),
-          children: [
-            SpeedDialChild(
-                shape: const CircleBorder(),
-                child: SvgPicture.asset(
-                  'assets/home/creat_memory_bank.svg',
-                  color: Colors.blue,
-                  width: 25,
-                  height: 25,
-                ),
-                backgroundColor: Colors.white,
-                label: '创建记忆库',
-                labelShadow: List.empty(),
-                labelBackgroundColor: Colors.white,
-                labelStyle: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.w700),
-                onTap: () {
-                  if (loginStatus == false) {
-                    smsLogin(context);
-                    toast.toastification.show(
-                        context: contexts,
-                        type: toast.ToastificationType.success,
-                        style: toast.ToastificationStyle.flatColored,
-                        title: const Text("未登录",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 17)),
-                        description: const Text(
-                          "未登录",
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 119, 118, 118),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        alignment: Alignment.topRight,
-                        autoCloseDuration: const Duration(seconds: 4),
-                        primaryColor: const Color(0xff047aff),
-                        backgroundColor: const Color(0xffedf7ff),
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: toast.lowModeShadow,
-                        dragToClose: true);
-                  } else {
-                    switchPage(context, const CreatReviewPage());
-                  }
-                }),
-          ]),
+      floatingActionButton: _buildSpeedDial(),
     );
   }
 }

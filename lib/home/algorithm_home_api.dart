@@ -11,113 +11,90 @@ import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/home/home_sqlite.dart';
+import 'package:yunji/main/app_module/show_toast.dart';
 
+/// Start of Selection
 // 刷新主页记忆库
 Future<void> refreshHomePageMemoryBank(BuildContext context) async {
   await databaseManager.initDatabase(); // 确保数据库初始化
   await Future.delayed(const Duration(seconds: 1));
-//获取存储记忆库id的数据库值
+// 获取存储记忆库id的数据库值
 
-  Map<String, dynamic> theIdOfTheMemoryBankThatWasObtained =
-      await queryIdAndLength();
-//上一次请求的记忆库中的最后一个记忆库的id值
-print(theIdOfTheMemoryBankThatWasObtained);
-  String lastId = theIdOfTheMemoryBankThatWasObtained["number"];
-//这次请求记忆库的id值
-  int thisTimeTheIdValueOfTheMemoryIsRequested =
-      theIdOfTheMemoryBankThatWasObtained["length"] + 1;
-  lastId = "[$thisTimeTheIdValueOfTheMemoryIsRequested]";
+  final memoryBankInfo = await queryIdAndLength();
+  List<int> number = List<int>.from(jsonDecode(memoryBankInfo["number"]));
 
-  List<int> numberAsList = lastId
-      .replaceAll('[', '')
-      .replaceAll(']', '')
-      .split(',')
-      .map((String num) => int.parse(num.trim()))
-      .toList();
-
-  Random random = Random();
-  Set<int> randomSelection = {};
-
-  while (randomSelection.length < 100 &&
-      randomSelection.length < numberAsList.length) {
-    int index = random.nextInt(numberAsList.length);
-    randomSelection.add(numberAsList[index]);
+  final randomSelection = <int>{};
+  final random = Random();
+  // 随机选择100个记忆库下标
+  while (randomSelection.length < 100 && randomSelection.length < number.length) {
+    randomSelection.add(number[random.nextInt(number.length)]);
   }
 
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
-  List<int> idList = randomSelection.toList();
+
   final response = await dio.post(
-      'http://47.92.98.170:36233/getTheHomePageMemoryLibrary',
-      data: jsonEncode(idList),
-      options: Options(headers: header));
+    'http://47.92.98.170:36233/getTheHomePageMemoryLibrary',
+    data: jsonEncode(randomSelection.toList()),
+    options: Options(headers: {'Content-Type': 'application/json'}),
+  );
 
-  var data = response.data;
-  var memoryBankResults = data["memoryBankResults"];
-  var personalValue = data["personalValue"];
+  final data = response.data;
 
-  if (memoryBankResults == null) {
-    toast.toastification.show(
-        context: context,
-        type: toast.ToastificationType.success,
-        style: toast.ToastificationStyle.flatColored,
-        title: const Text("暂无更多记忆库",
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                fontSize: 17)),
-        description: const Text(
-          "让我们一起创建新的记忆库吧！",
-          style: TextStyle(
-              color: Color.fromARGB(255, 119, 118, 118),
-              fontSize: 15,
-              fontWeight: FontWeight.w600),
-        ),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 4),
-        primaryColor: const Color(0xff047aff),
-        backgroundColor: const Color(0xffedf7ff),
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: toast.lowModeShadow,
-        dragToClose: true);
-  } else {
-    for (int i = 0; i < personalValue.length; i++) {
-      if (personalValue[i]['head_portrait'] != null) {
-        final dir = await getApplicationDocumentsDirectory();
-        final filename = generateRandomFilename();
-        List<int> imageBytes = base64.decode(personalValue[i]['head_portrait']);
-        personalValue[i]['head_portrait'] = '${dir.path}/$filename';
-        await File(personalValue[i]['head_portrait']).writeAsBytes(imageBytes);
-      }
+  final memoryBankResults = List<Map<String, dynamic>>.from(data["memoryBankResults"] ?? []);
+  final personalValue = List<Map<String, dynamic>>.from(data["personalValue"] ?? []);
+  print('主页情求的数据库');
+  print(memoryBankResults);
+final requestedValueId = List<int>.empty(growable: true);
+  if (memoryBankResults.isEmpty) {
+    showToast(
+      context,
+      "暂无更多记忆库",
+      "让我们一起创建新的记忆库吧！",
+      toast.ToastificationType.success,
+      const Color(0xff047aff),
+      const Color(0xFFEDF7FF),
+    );
+    return;
+  }
 
-      for (int y = 0; y < memoryBankResults.length; y++) {
-        if (memoryBankResults[y]['user_name'] ==
-            personalValue[i]['user_name']) {
-          memoryBankResults[y]['name'] = personalValue[i]['name'];
-          memoryBankResults[y]['head_portrait'] =
-              personalValue[i]['head_portrait'];
-        }
-      }
+  await _processPersonalValue(personalValue, memoryBankResults,requestedValueId);
+  await insertHomePageMemoryBank(memoryBankResults);
+
+  final memoryBankData = await queryHomePageMemoryBank();
+ 
+  refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(memoryBankData);
+
+  int max = data["length"]+2;
+  int min = memoryBankInfo["length"];
+  // 计算未请求的id列表
+
+  final filterIdList = number.where((number) => !requestedValueId.contains(number)).toList();
+  // 计算新的id列表
+
+  final numbers = List.generate(max - min, (i) => i + min ).cast<int>();
+ 
+  // 将未请求的id列表和新的id列表合并
+  filterIdList.addAll(numbers);
+  // 更新intdatabase表
+  await updateint(filterIdList.toString(), max);
+}
+
+Future<void> _processPersonalValue(List<dynamic> personalValue, List<dynamic> memoryBankResults,List<int> requestedValueId) async {
+  for (final person in personalValue) {
+    if (person['head_portrait'] != null) {
+      final dir = await getApplicationDocumentsDirectory();
+      final filename = generateRandomFilename();
+      final imageBytes = base64.decode(person['head_portrait']);
+      person['head_portrait'] = '${dir.path}/$filename';
+      await File(person['head_portrait']).writeAsBytes(imageBytes);
     }
 
-    await insertHomePageMemoryBank(memoryBankResults);
-    List<Map<String, dynamic>>? memoryBankData =
-        await queryHomePageMemoryBank();
-
-    refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(memoryBankData);
-
-    var count = data["length"];
-    List<int> filterIdList = numberAsList
-        .where((number) => !randomSelection.contains(number))
-        .toList();
-
-    int memoryBankLength = theIdOfTheMemoryBankThatWasObtained["length"];
-    final differenceValue = count - memoryBankLength;
-    List<int> numbers =
-        List.generate(differenceValue, (i) => i + memoryBankLength + 1);
-    filterIdList.addAll(numbers);
-
-    await updateint(filterIdList.toString(), count);
+    for (final memory in memoryBankResults) {
+      if (memory['user_name'] == person['user_name']) {
+        requestedValueId.add(memory['memory_bank_id']);
+        memory['name'] = person['name'];
+        memory['head_portrait'] = person['head_portrait'];
+      }
+    }
   }
 }
+/// End of Selection

@@ -52,8 +52,8 @@ class HeadPortraitChangeManagement extends GetxController {
   }
 
   // 退出页面判断头像是否已更改
-  int exitThePageToDetermineWhetherTheHeadPortraitHasChanged() {
-    return headPortraitValue != changedHeadPortraitValue ? 1 : 0;
+  bool exitThePageToDetermineWhetherTheHeadPortraitHasChanged() {
+    return headPortraitValue != changedHeadPortraitValue ? true : false;
   }
 
 }

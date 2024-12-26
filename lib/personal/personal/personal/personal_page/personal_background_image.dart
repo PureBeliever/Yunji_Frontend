@@ -50,8 +50,8 @@ class BackgroundImageChangeManagement extends GetxController {
   }
 
   // 退出页面判断背景图是否已更改
-  int exitThePageToDetermineWhetherTheBackgroundImageHasChanged() {
-    return backgroundImageValue != changedBackgroundImageValue ? 1 : 0;
+  bool exitThePageToDetermineWhetherTheBackgroundImageHasChanged() {
+    return backgroundImageValue != changedBackgroundImageValue ? true : false;
   }
 }
 

@@ -12,7 +12,7 @@ class UserNameChangeManagement extends GetxController {
   String? userNameValue;
   bool theUserNameChangedStatus = false;
   void userNameChangedStatusTrue() {
-    theUserNameChangedStatus = true;
+    theUserNameChangedStatus = true; 
     update();
   }
 

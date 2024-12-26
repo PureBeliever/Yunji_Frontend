@@ -5,65 +5,47 @@ import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
 
-class OtherPersonalBackgroundImage extends StatefulWidget {
+class OtherPersonalBackgroundImage extends StatelessWidget {
   const OtherPersonalBackgroundImage({super.key});
 
   @override
-  State<OtherPersonalBackgroundImage> createState() => _OtherPersonalBackgroundImageState();
-}
-
-class OtherPeopleBackgroundImageChangeManagement  extends GetxController {
-  static OtherPeopleBackgroundImageChangeManagement get to => Get.find();
-  File? backgroundImageValue;
-
-  void initBackgroundImage(String ?backgroundImage) {
-    backgroundImageValue = backgroundImage!=null?File(backgroundImage):null;
-  }
-}
-
-class _OtherPersonalBackgroundImageState extends State<OtherPersonalBackgroundImage> {
-
-  final otherPeopleBackgroundImageChangeManagement = Get.put(OtherPeopleBackgroundImageChangeManagement());
-  @override
   Widget build(BuildContext context) {
+    final otherPeopleBackgroundImageChangeManagement = Get.put(OtherPeopleBackgroundImageChangeManagement());
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            size: 25,
-            color: Colors.white,
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 25, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: GetBuilder<OtherPeopleBackgroundImageChangeManagement>(
-              init: otherPeopleBackgroundImageChangeManagement,
-              builder: (controller) {
-                return controller.backgroundImageValue != null
-                    ? PhotoView(
-                          imageProvider: FileImage(controller.backgroundImageValue!),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      )
-                    : PhotoView(
-                        imageProvider: const AssetImage('assets/chuhui.png'),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      );
-              },
+      body: GetBuilder<OtherPeopleBackgroundImageChangeManagement>(
+        init: otherPeopleBackgroundImageChangeManagement,
+        builder: (controller) {
+          return Center(
+            child: Expanded(
+              child: PhotoView(
+                imageProvider: controller.backgroundImageValue != null
+                    ? FileImage(controller.backgroundImageValue!)
+                    : const AssetImage('assets/personal/gray_back_head.png'),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 2,
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
+  }
+}
+
+class OtherPeopleBackgroundImageChangeManagement extends GetxController {
+  static OtherPeopleBackgroundImageChangeManagement get to => Get.find();
+  File? backgroundImageValue;
+
+  void initBackgroundImage(String? backgroundImage) {
+    backgroundImageValue = backgroundImage != null ? File(backgroundImage) : null;
   }
 }

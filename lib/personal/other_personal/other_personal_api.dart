@@ -48,42 +48,29 @@ class OtherPersonalMemoryBank {
 
 Future<void> requestTheOtherPersonalData(String userName) async {
   final dio = Dio();
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
-  Map<String, dynamic> formdata = {'userName': userName};
+  final header = {'Content-Type': 'application/json'};
+  final formdata = {'userName': userName};
 
   final response = await dio.post(
-      'http://47.92.98.170:36233/requestOtherPersonalData',
-      data: jsonEncode(formdata),
-      options: Options(headers: header));
-  final beforeDir = await getApplicationDocumentsDirectory();
-  final dir = Directory(join(beforeDir.path, 'otherPersonalImage'));
-  if (await dir.exists()) {
-    await dir.delete(recursive: true);
-  }
-  await dir.create(recursive: true);
+    'http://47.92.98.170:36233/requestOtherPersonalData',
+    data: jsonEncode(formdata),
+    options: Options(headers: header),
+  );
 
-  final Results = response.data;
+  final dir = await _prepareDirectory();
 
-  Map<String, dynamic> personalDataValue = Results['personalDataValue'];
+  final results = response.data;
+  final personalDataValue = results['personalDataValue'];
 
-    String? backgroundImage;
-  String? headPortrait;
+  final backgroundImage = await _processImage(
+    dir,
+    personalDataValue['background_image'],
+  );
+  final headPortrait = await _processImage(
+    dir,
+    personalDataValue['head_portrait'],
+  );
 
-  if (personalDataValue['background_image'] != null) {
-    final filename = generateRandomFilename();
-    List<int> imageBytes = base64.decode(personalDataValue['background_image']);
-    backgroundImage = '${dir.path}/$filename';
-    await File(backgroundImage).writeAsBytes(imageBytes);
-  }
-
-  if (personalDataValue['head_portrait'] != null) {
-    final filename = generateRandomFilename();
-    List<int> imageBytes = base64.decode(personalDataValue['head_portrait']);
-    headPortrait = '${dir.path}/$filename';
-    await File(headPortrait).writeAsBytes(imageBytes);
-  }
   final otherPersonalMemoryBank = OtherPersonalMemoryBank(
     userName: personalDataValue['user_name'],
     name: personalDataValue['name'],
@@ -94,36 +81,63 @@ Future<void> requestTheOtherPersonalData(String userName) async {
     birthTime: personalDataValue['birth_time'],
     joinDate: personalDataValue['join_date'],
   );
+
   otherPeopleInformationListScrollDataManagement
       .initialScrollData(otherPersonalMemoryBank.toMap());
-  if (Results['memoryBankResults'] != null) {
-    var memoryBankResults = Results["memoryBankResults"];
-    var memoryBankPersonalResults = Results["memoryBankPersonalResults"];
 
-    for (int i = 0; i < memoryBankPersonalResults.length; i++) {
-      if (memoryBankPersonalResults[i]['head_portrait'] != null) {
-        final filename = generateRandomFilename();
-        List<int> imageBytes =
-            base64.decode(memoryBankPersonalResults[i]['head_portrait']);
-        memoryBankPersonalResults[i]['head_portrait'] = '${dir.path}/$filename';
-        await File(memoryBankPersonalResults[i]['head_portrait'])
-            .writeAsBytes(imageBytes);
-      }
+  if (results['memoryBankResults'] != null) {
+    await _processMemoryBankResults(
+      dir,
+      List<Map<String, dynamic>>.from(results['memoryBankResults'] ?? []),
+      List<Map<String, dynamic>>.from(results['memoryBankPersonalResults'] ?? []),
+    );
 
-      for (int y = 0; y < memoryBankResults.length; y++) {
-        if (memoryBankResults[y]['user_name'] ==
-            memoryBankPersonalResults[i]['user_name']) {
-          memoryBankResults[y]['name'] = memoryBankPersonalResults[i]['name'];
-          memoryBankResults[y]['head_portrait'] =
-              memoryBankPersonalResults[i]['head_portrait'];
-        }
-      }
-    }
-
-    await insertOtherPeoplePersonalMemoryBank(memoryBankResults);
-
-        otherPeoplePersonalInformationManagement
+    await otherPeoplePersonalInformationManagement
         .requestOtherPeoplePersonalInformationDataOnTheBackEnd(
             personalDataValue);
+    otherPeoplePersonalInformationManagement.refreshDisplayText(0);
   }
+}
+
+Future<Directory> _prepareDirectory() async {
+  final beforeDir = await getApplicationDocumentsDirectory();
+  final dir = Directory(join(beforeDir.path, 'otherPersonalImage'));
+  if (await dir.exists()) {
+    await dir.delete(recursive: true);
+  }
+  await dir.create(recursive: true);
+  return dir;
+}
+
+Future<String?> _processImage(Directory dir, String? base64Image) async {
+  if (base64Image == null) return null;
+  final filename = generateRandomFilename();
+  final imageBytes = base64.decode(base64Image);
+  final imagePath = '${dir.path}/$filename';
+  await File(imagePath).writeAsBytes(imageBytes);
+  return imagePath;
+}
+
+Future<void> _processMemoryBankResults(
+  Directory dir,
+  List<Map<String, dynamic>> memoryBankResults,
+  List<Map<String, dynamic>> memoryBankPersonalResults,
+) async {
+  for (var personalResult in memoryBankPersonalResults) {
+    if (personalResult['head_portrait'] != null) {
+      personalResult['head_portrait'] = await _processImage(
+        dir,
+        personalResult['head_portrait'],
+      );
+    }
+
+    for (var memoryResult in memoryBankResults) {
+      if (memoryResult['user_name'] == personalResult['user_name']) {
+        memoryResult['name'] = personalResult['name'];
+        memoryResult['head_portrait'] = personalResult['head_portrait'];
+      }
+    }
+  }
+
+  await insertOtherPeoplePersonalMemoryBank(memoryBankResults);
 }

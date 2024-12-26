@@ -316,8 +316,6 @@ class _PersonalPageState extends State<PersonalPage>
   final memoryBankCompletionStatus = Get.put(MemoryBankCompletionStatus());
   final userPersonalInformationManagement =
       Get.put(UserPersonalInformationManagement());
-  final editPersonalDataValueManagement =
-      Get.put(EditPersonalDataValueManagement());
   final backgroundImageChangeManagement =
       Get.put(BackgroundImageChangeManagement());
   final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());

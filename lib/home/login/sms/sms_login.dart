@@ -6,6 +6,7 @@ import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/home/login/sms/sms_api.dart';
 import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app_module/show_toast.dart';
 
 
 // 短信登录功能
@@ -37,7 +38,7 @@ void smsLogin(BuildContext context) {
   void handleSendCode() {
     final phone = phoneController.text;
     if (!_isValidPhoneNumber(phone)) {
-      _showToast(
+      showToast(
         context,
         "手机号格式错误",
         "请输入正确的手机号码",
@@ -51,7 +52,7 @@ void smsLogin(BuildContext context) {
     if (sendingState.value) {
       phoneNumberStatus.value = true;
       smsVerificationCode(phone); // 发送短信验证码
-      _showToast(
+      showToast(
         context,
         "验证码已发送",
         "请注意查收验证码",
@@ -62,7 +63,7 @@ void smsLogin(BuildContext context) {
       sendingState.value = false;
       countdown();
     } else {
-      _showToast(
+      showToast(
         context,
         "请稍后重试",
         "需等待${seconds.value}秒",
@@ -78,7 +79,7 @@ void smsLogin(BuildContext context) {
     if (!phoneNumberStatus.value ||
         sendingState.value ||
         !verifyAttempt.value) {
-      _showToast(
+      showToast(
         context,
         "验证码已过期",
         "请重新获取验证码",
@@ -96,7 +97,7 @@ void smsLogin(BuildContext context) {
       _onLoginSuccess(context);
       Navigator.pop(context);
     } else {
-      _showToast(
+      showToast(
         context,
         "验证失败",
         "验证码错误",
@@ -322,50 +323,11 @@ bool _isValidPhoneNumber(String phone) {
   return phone.length == 11 && RegExp(r'^\d*$').hasMatch(phone);
 }
 
-// 显示提示信息
-void _showToast(
-  BuildContext context,
-  String title,
-  String message,
-  toast.ToastificationType type,
-  Color? primaryColor,
-  Color? backgroundColor,
-) {
-  toast.toastification.show(
-    context: context,
-    type: type,
-    style: toast.ToastificationStyle.flatColored,
-    title: Text(
-      title,
-      style: const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w800,
-        fontSize: 17,
-      ),
-    ),
-    description: Text(
-      message,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 119, 118, 118),
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-    alignment: Alignment.topRight,
-    autoCloseDuration: const Duration(seconds: 4),
-    borderRadius: BorderRadius.circular(12.0),
-    boxShadow: toast.lowModeShadow,
-    primaryColor: primaryColor,
-    backgroundColor: backgroundColor,
-    dragToClose: true,
-    
-  );
-}
 
 // 登录成功后的处理
 void _onLoginSuccess(BuildContext context) {
   loginStatus = true;
-  _showToast(
+  showToast(
     context,
     "登录成功",
     "欢迎使用本应用！",
@@ -373,7 +335,7 @@ void _onLoginSuccess(BuildContext context) {
     const Color(0xff047aff),
     const Color(0xFFEDF7FF),
   );
-  _showToast(
+  showToast(
     context,
     "右滑查看资料",
     "可以查看个人资料",

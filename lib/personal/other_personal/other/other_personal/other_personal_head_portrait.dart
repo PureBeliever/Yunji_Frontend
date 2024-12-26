@@ -17,7 +17,7 @@ class OtherPeopleHeadPortraitChangeManagement extends GetxController {
   File? headPortraitValue;
 
   void initHeadPortrait(String? headPortrait) {
-    headPortraitValue = headPortrait!=null? File(headPortrait):null;
+    headPortraitValue = headPortrait != null ? File(headPortrait) : null;
   }
 }
 
@@ -30,39 +30,26 @@ class _OtherPersonalHeadPortraitState extends State<OtherPersonalHeadPortrait> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            size: 25,
-            color: Colors.white,
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 25, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: GetBuilder<OtherPeopleHeadPortraitChangeManagement>(
-              init: otherPeopleHeadPortraitChangeManagement,
-              builder: (otherPeopleHeadPortraitChangeManagement) {
-                return otherPeopleHeadPortraitChangeManagement.headPortraitValue != null
-                    ? PhotoView(
-                          imageProvider: FileImage(otherPeopleHeadPortraitChangeManagement.headPortraitValue!),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      )
-                    : PhotoView(
-                        imageProvider: const AssetImage('assets/chuhui.png'),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      );
-              },
-            ),
-          )
-        ],
+      body: Center(
+        child: Expanded(
+          child: GetBuilder<OtherPeopleHeadPortraitChangeManagement>(
+            init: otherPeopleHeadPortraitChangeManagement,
+            builder: (controller) {
+              return PhotoView(
+                imageProvider: controller.headPortraitValue != null
+                    ? FileImage(controller.headPortraitValue!)
+                    : const AssetImage('assets/personal/gray_back_head.png'),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 2,
+              );
+            },
+          ),
+        ),
       ),
     );
   }

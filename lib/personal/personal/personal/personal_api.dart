@@ -117,14 +117,13 @@ void requestTheUsersPersonalData(String? userName) async {
   backgroundImageChangeManagement.initBackgroundImage(backgroundImage);
   headPortraitChangeManagement.initHeadPortrait(headPortrait);
   editPersonalDataValueManagement.changePersonalInformation(
-    personalDataValue['name'],
-    personalDataValue['introduction'],
-    personalDataValue['residential_address'],
-    personalDataValue['birth_time'],
+    name: personalDataValue['name'],
+    profile: personalDataValue['introduction'],
+    residentialAddress: personalDataValue['residential_address'],
+    dateOfBirth: personalDataValue['birth_time'],
+    applicationDate: personalDataValue['join_date'],
   );
   userNameChangeManagement.userNameChanged(personalDataValue['user_name']);
-  editPersonalDataValueManagement
-      .applicationDateChange(personalDataValue['join_date']);
 
   if (Results['memoryBankResults'] != null) {
     var memoryBankResults = Results["memoryBankResults"];

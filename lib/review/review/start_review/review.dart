@@ -117,7 +117,7 @@ class _ReviewPage extends State<ReviewPage> {
       reviewTheDataManagementOfMemoryBank.theNumberOfAnswers);
   final _controller = TextEditingController(
       text: reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory);
-  String zhuti = reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory;
+  String theme = reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory;
   bool message = reviewTheDataManagementOfMemoryBank.messageNotificationStatus;
   bool alarm_information =
       reviewTheDataManagementOfMemoryBank.alarmInformationStatus;
@@ -251,7 +251,7 @@ class _ReviewPage extends State<ReviewPage> {
                       color: Colors.white),
                 ),
                 onPressed: () async {
-                  if (zhuti.length == 0) {
+                  if (theme.length == 0) {
                     toast.toastification.show(
                         context: context,
                         type: toast.ToastificationType.success,
@@ -278,9 +278,9 @@ class _ReviewPage extends State<ReviewPage> {
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     int zhi = 0;
-                    Map<int, String> stringTimu = {};
-                    Map<int, String> stringHuida = {};
-                    DateTime dingshi = DateTime.now();
+                    Map<int, String> stringQuestion = {};
+                    Map<int, String> stringReply = {};
+                    DateTime setTime = DateTime.now();
                     List<int> memoryScheme = List.from(
                         reviewTheDataManagementOfMemoryBank.memoryScheme);
                     memoryScheme.removeAt(0);
@@ -292,25 +292,25 @@ class _ReviewPage extends State<ReviewPage> {
 
                     _data.forEach((uio) {
                       sortedList.add(zhi);
-                      stringTimu[zhi] = uio.question;
-                      stringHuida[zhi] = uio.reply;
+                      stringQuestion[zhi] = uio.question;
+                      stringReply[zhi] = uio.reply;
                       zhi++;
                     });
-                    Map<String, String> stringtimu = stringTimu
+                    Map<String, String> question = stringQuestion
                         .map((key, value) => MapEntry(key.toString(), value));
-                    Map<String, String> stringhuida = stringHuida
+                    Map<String, String> reply = stringReply
                         .map((key, value) => MapEntry(key.toString(), value));
 
-                    bool zhuangtai = reviewTheDataManagementOfMemoryBank
+                    bool completeReviewStatus = reviewTheDataManagementOfMemoryBank
                         .completeReviewStatus;
 
                     if (memoryScheme.isNotEmpty) {
                       // dingshi = dingshi.add(Duration(hours: code[0]));
-                      dingshi = dingshi.add(Duration(minutes: memoryScheme[0]));
+                      setTime = setTime.add(Duration(minutes: memoryScheme[0]));
                       if (alarm_information == true) {
                         final alarmSettings = AlarmSettings(
                           id: 42,
-                          dateTime: dingshi,
+                          dateTime: setTime,
                           assetAudioPath: 'assets/review/alarm.mp3',
                           loopAudio: true,
                           vibrate: true,
@@ -320,7 +320,7 @@ class _ReviewPage extends State<ReviewPage> {
                           androidFullScreenIntent: true,
                           notificationSettings: NotificationSettings(
                             title: '开始复习 !',
-                            body: '记忆库${zhuti}到达预定的复习时间',
+                            body: '记忆库${theme}到达预定的复习时间',
                             stopButton: '停止闹钟',
                             icon: 'notification_icon',
                           ),
@@ -331,11 +331,11 @@ class _ReviewPage extends State<ReviewPage> {
                         _notificationHelper.zonedScheduleNotification(
                             id: 888,
                             title: '开始复习 !',
-                            body: '记忆库${zhuti}到达预定的复习时间',
-                            scheduledDateTime: dingshi);
+                            body: '记忆库${theme}到达预定的复习时间',
+                            scheduledDateTime: setTime);
                       }
                     } else {
-                      zhuangtai = true;
+                      completeReviewStatus = true;
                       String memorySchemeName =
                           reviewTheDataManagementOfMemoryBank.memorySchemeName;
                       String? stringci;
@@ -356,16 +356,16 @@ class _ReviewPage extends State<ReviewPage> {
                     }
 
                     continueReview(
-                        stringtimu,
-                        stringhuida,
+                        question,
+                        reply,
                         reviewTheDataManagementOfMemoryBank.id,
-                        zhuti,
+                        theme,
                         memoryScheme,
-                        dingshi,
+                        setTime,
                         sortedList,
                         message,
                         alarm_information,
-                        zhuangtai,
+                        completeReviewStatus,
                         numberOfReviews,
                         reviewTheDataManagementOfMemoryBank.memorySchemeName,
                         userNameChangeManagement.userNameValue??'');
@@ -454,7 +454,7 @@ class _ReviewPage extends State<ReviewPage> {
                       left: 5, right: 15, top: 50, bottom: 0),
                   child: TextField(
                     onChanged: (value) {
-                      zhuti = value;
+                      theme = value;
                     },
                     focusNode: _focusNode,
                     controller: _controller,

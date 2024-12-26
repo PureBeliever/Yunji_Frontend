@@ -35,7 +35,7 @@ class DatabaseManager {
     await txn.execute(
       'CREATE TABLE intdatabase (id INTEGER PRIMARY KEY, number LONGTEXT, length INT);',
     );
-    List<int> number = [0];
+    List<int> number = [1];
     await txn.insert(
       'intdatabase',
       {'id': 0, 'number': number.toString(), 'length': 1},

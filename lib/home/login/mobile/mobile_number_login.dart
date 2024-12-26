@@ -5,6 +5,7 @@ import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/home/login/mobile/mobile_number_api.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/home/algorithm_home_api.dart';
+import 'package:yunji/main/app_module/show_toast.dart';
 
 bool _isFirstLoginAttempt = true;
 
@@ -26,44 +27,29 @@ Future<void> onEvent(AuthResponseModel event, BuildContext context) async {
 Future<void> handleSuccessfulLogin(String? token, BuildContext context) async {
   if (token != null) {
     mobileNumberLogin(token);
-    showToast("右滑可查看个人资料", "右滑可查看个人资料", context);
-    showToast("登录成功,欢迎您使用本应用！", "这是一款帮助学习和记忆的应用,希望对您产生帮助", context);
+     showToast(
+    context,
+    "登录成功",
+    "欢迎使用本应用！",
+    toast.ToastificationType.success,
+    const Color(0xff047aff),
+    const Color(0xFFEDF7FF),
+  );
+  showToast(
+    context,
+    "右滑查看资料",
+    "可以查看个人资料",
+    toast.ToastificationType.success,
+    const Color(0xff047aff),
+    const Color(0xFFEDF7FF),
+  );
     await refreshHomePageMemoryBank(context);
     _isFirstLoginAttempt = false;
   }
 }
 
 // 显示提示信息
-void showToast(String title, String description, BuildContext context) {
-  toast.toastification.show(
-    context: context,
-    type: toast.ToastificationType.success,
-    style: toast.ToastificationStyle.flatColored,
-    title: Text(
-      title,
-      style: const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w800,
-        fontSize: 17,
-      ),
-    ),
-    description: Text(
-      description,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 119, 118, 118),
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-    alignment: Alignment.topRight,
-    autoCloseDuration: const Duration(seconds: 10),
-    primaryColor: const Color(0xff047aff),
-    backgroundColor: const Color(0xffedf7ff),
-    borderRadius: BorderRadius.circular(12.0),
-    boxShadow: toast.lowModeShadow,
-    dragToClose: true,
-  );
-}
+
 
 // 检查是否为已知错误
 bool isKnownError(String resultCode) {

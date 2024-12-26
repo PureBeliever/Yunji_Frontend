@@ -130,9 +130,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Widget _buildUserName() {
-    return GetBuilder<UserNameChangeManagement>(
-      init: userNameChangeManagement,
-      builder: (controller) {
+
         return Text(
           '@${userNameChangeManagement.userNameValue}',
           style: const TextStyle(
@@ -141,8 +139,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             fontSize: 16,
           ),
         );
-      },
-    );
+   
   }
 
   Widget _buildFollowInfo() {
