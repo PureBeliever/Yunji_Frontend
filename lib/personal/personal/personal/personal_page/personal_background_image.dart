@@ -109,7 +109,7 @@ class _PersonalBeiState extends State<PersonalBei> {
                         maxScale: PhotoViewComputedScale.covered * 2,
                       )
                     : PhotoView(
-                        imageProvider: const AssetImage('assets/chuhui.png'),
+                        imageProvider: const AssetImage('assets/personal/gray_back_head.png'),
                         minScale: PhotoViewComputedScale.contained,
                         maxScale: PhotoViewComputedScale.covered * 2,
                       );

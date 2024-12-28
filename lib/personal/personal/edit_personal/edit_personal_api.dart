@@ -36,52 +36,44 @@ class EditPersonalData {
   }
 }
 
-Future<String> imageFile(File imageFile) async {
-  List<int> imageBytes = await imageFile.readAsBytes();
-  String base64Image = base64Encode(imageBytes);
-  return base64Image;
+Future<String> encodeImageToBase64(File imageFile) async {
+  final imageBytes = await imageFile.readAsBytes();
+  return base64Encode(imageBytes);
 }
 
-void editPersonal(
-    String? userName,
-    String? name,
-    String? introduction,
-    String? residentialAddress,
-    String? birthTime,
-    File? backgroundImage,
-    File? headPortrait) async {
+Future<void> editPersonal(
+  String? userName,
+  String? name,
+  String? introduction,
+  String? residentialAddress,
+  String? birthTime,
+  File? backgroundImage,
+  File? headPortrait,
+) async {
   final dio = Dio();
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
+  final headers = {'Content-Type': 'application/json'};
 
-  Map<String, dynamic> requestData = ({
+  final requestData = {
     'userName': userName,
     'name': name,
     'introduction': introduction,
     'residentialAddress': residentialAddress,
     'birthTime': birthTime,
-    'backgroundImage':
-        backgroundImage == null ? null : await imageFile(backgroundImage),
-    'headPortrait': headPortrait == null ? null : await imageFile(headPortrait)
-  });
+    'backgroundImage': backgroundImage != null ? await encodeImageToBase64(backgroundImage) : null,
+    'headPortrait': headPortrait != null ? await encodeImageToBase64(headPortrait) : null,
+  };
 
-  final response = await dio.post('http://47.92.98.170:36233/editTheUsersPersonalData',
-      data: requestData, options: Options(headers: header));
+  final response = await dio.post(
+    'http://47.92.98.170:36233/editTheUsersPersonalData',
+    data: requestData,
+    options: Options(headers: headers),
+  );
 
   if (response.statusCode == 200) {
-    String? backgroundImageValue =
-        backgroundImageChangeManagement.backgroundImageValue?.path;
-    String? headPortraitValue =
-        headPortraitChangeManagement.headPortraitValue?.path;
-    if (backgroundImage != null) {
-      backgroundImageValue = backgroundImage.path;
-    }
-    if (headPortrait != null) {
-      headPortraitValue = headPortrait.path;
-    }
+    final backgroundImageValue = backgroundImage?.path ?? backgroundImageChangeManagement.backgroundImageValue?.path;
+    final headPortraitValue = headPortrait?.path ?? headPortraitChangeManagement.headPortraitValue?.path;
 
-    var result = EditPersonalData(
+    final result = EditPersonalData(
       userName: userName,
       name: name,
       introduction: introduction,

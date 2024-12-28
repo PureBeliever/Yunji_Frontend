@@ -577,15 +577,20 @@ class _PersonalPageState extends State<PersonalPage>
                                               return backgroundImageChangeManagement
                                                           .backgroundImageValue !=
                                                       null
-                                                  ? Image.file(
-                                                      backgroundImageChangeManagement
-                                                          .backgroundImageValue!,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  : Image.asset(
-                                                      'assets/personal/gray_back_head.png',
-                                                      fit: BoxFit.cover,
-                                                    );
+                                                 ? Image.file(
+                                backgroundImageChangeManagement.changedBackgroundImageValue!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/personal/gray_back_head.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
+                            : Image.asset(
+                                'assets/personal/gray_back_head.png',
+                                fit: BoxFit.cover,
+                              );
                                             },
                                           ),
                                         ),
