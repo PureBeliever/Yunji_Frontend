@@ -35,8 +35,8 @@ final viewPostDataManagementForMemoryBanks =
     Get.put(ViewPostDataManagementForMemoryBanks());
 
 // 复习数据管理
-final reviewTheDataManagementOfMemoryBank =
-    Get.put(ReviewTheDataManagementOfMemoryBank());
+final reviewDataManagement =
+    Get.put(ReviewDataManagement());
 
 // 继续学习数据管理
 final continueLearningAboutDataManagement =
@@ -59,9 +59,14 @@ final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
 // 编辑个人信息数据管理
 final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
 
+// 用户信息列表滚动数据管理
+final userInformationListScrollDataManagement = Get.put(UserInformationListScrollDataManagement());
+
 // 登录状态
 bool loginStatus = false;
 
+// 通用字体大小
+const commonFontSize = 16.0;
 
 final dio = Dio();
 

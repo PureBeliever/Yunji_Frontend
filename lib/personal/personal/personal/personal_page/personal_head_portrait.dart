@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/home/home_page/home_page.dart';
 import 'package:toastification/toastification.dart' as toast;
+import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/home/login/login_init.dart';
 
-class PersonalHead extends StatefulWidget {
-  const PersonalHead({super.key});
+class PersonalHeadPortrait extends StatefulWidget {
+  const PersonalHeadPortrait({super.key});
 
   @override
-  State<PersonalHead> createState() => _PersonalHeadState();
+  State<PersonalHeadPortrait> createState() => _PersonalHeadPortrait();
 }
 
 class HeadPortraitChangeManagement extends GetxController {
@@ -22,125 +22,84 @@ class HeadPortraitChangeManagement extends GetxController {
   File? headPortraitValue;
   File? changedHeadPortraitValue;
 
-  // 选择与拍摄图片赐予更改的头像
-  void selectAndShootTheImageToGiveTheChangedHeadPortraitImage(File selectedChangedHeadPortrait) {
-    changedHeadPortraitValue = selectedChangedHeadPortrait;
+  // 选择与拍摄图片更改头像
+  void selectAndShootImage(File selectedImage) {
+    changedHeadPortraitValue = selectedImage;
     update();
   }
 
   // 初始化头像
-  void initHeadPortrait(String? headPortraitInDatabase) {
-    if (headPortraitInDatabase != null) {
-      headPortraitValue = File(headPortraitInDatabase);
-      changedHeadPortraitValue = File(headPortraitInDatabase);
+  void initHeadPortrait(String? databasePath) {
+    if (databasePath != null) {
+      headPortraitValue = File(databasePath);
+      changedHeadPortraitValue = headPortraitValue;
       update();
     }
   }
 
-  // 恢复未更改的头像
-  void restoreAnUnchangedHeadPortraitImage() {
+  // 恢复头像为未更改状态
+  void restoreHeadPortrait() {
     changedHeadPortraitValue = headPortraitValue;
     update();
   }
 
-  // 返回更改的头像同步后端
-  File? returnsTheChangedHeadPortraitImageSynchronizationBackend() {
-    var headPortraitOfTheSynchronizationBackend = headPortraitValue == changedHeadPortraitValue ? null : changedHeadPortraitValue;
+  // 同步更改的头像到后端
+  File? syncChangedHeadPortrait() {
     headPortraitValue = changedHeadPortraitValue;
     update();
-    return headPortraitOfTheSynchronizationBackend;
+    return headPortraitValue;
   }
-
-  // 退出页面判断头像是否已更改
-  bool exitThePageToDetermineWhetherTheHeadPortraitHasChanged() {
-    return headPortraitValue != changedHeadPortraitValue ? true : false;
-  }
-
 }
 
-class _PersonalHeadState extends State<PersonalHead> {
-  final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
-
+class _PersonalHeadPortrait extends State<PersonalHeadPortrait> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            size: 25,
-            color: Colors.white,
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 25, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.more_vert,
-              size: 25,
-              color: Colors.white,
-            ),
-          )
+            child: Icon(Icons.more_vert, size: 25, color: Colors.white),
+          ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: GetBuilder<HeadPortraitChangeManagement>(
-              init: headPortraitChangeManagement,
-              builder: (headPortraitChangeManagement) {
-                return headPortraitChangeManagement.headPortraitValue != null
-                    ? PhotoView(
-                        imageProvider: FileImage(headPortraitChangeManagement.headPortraitValue!),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      )
-                    : PhotoView(
-                        imageProvider: const AssetImage('assets/chuhui.png'),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      );
-              },
-            ),
-          )
-        ],
+      body: Center(
+        child: Expanded(
+          child: GetBuilder<HeadPortraitChangeManagement>(
+            init: headPortraitChangeManagement,
+            builder: (controller) {
+              final imageProvider = controller.headPortraitValue != null
+                  ? FileImage(controller.headPortraitValue!)
+                  : FileImage(File('assets/personal/gray_back_head.png'));
+              return PhotoView(
+                imageProvider: imageProvider,
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 2,
+              );
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: SizedBox(
         height: 100,
         child: Center(
           child: OutlinedButton(
             onPressed: () {
-              if (loginStatus == false) {
+              if (!loginStatus) {
                 soginDependencySettings(context);
-                toast.toastification.show(
-                    context: contexts,
-                    type: toast.ToastificationType.success,
-                    style: toast.ToastificationStyle.flatColored,
-                    title: const Text("未登录",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 17)),
-                    description: const Text(
-                      "未登录",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 119, 118, 118),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    alignment: Alignment.topRight,
-                    autoCloseDuration: const Duration(seconds: 4),
-                    primaryColor: const Color(0xff047aff),
-                    backgroundColor: const Color(0xffedf7ff),
-                    borderRadius: BorderRadius.circular(12.0),
-                    boxShadow: toast.lowModeShadow,
-                    dragToClose: true);
+                showToast(
+                    context,
+                    "未登录",
+                    "未登录",
+                    toast.ToastificationType.success,
+                    const Color(0xff047aff),
+                    const Color(0xFFEDF7FF));
               } else {
                 Navigator.pop(context);
                 switchPage(context, const EditPersonalPage());
@@ -151,7 +110,7 @@ class _PersonalHeadState extends State<PersonalHead> {
                 borderRadius: BorderRadius.circular(18.0),
               ),
               side: const BorderSide(width: 0.5, color: Colors.white),
-              padding: const EdgeInsets.only(left: 13, right: 13, top: 3, bottom: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 3),
               minimumSize: Size.zero,
             ),
             child: const Text(

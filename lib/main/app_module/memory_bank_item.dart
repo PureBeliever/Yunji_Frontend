@@ -34,16 +34,10 @@ class MemoryBankList extends StatelessWidget {
 class MemoryBankItem extends StatelessWidget {
   final dynamic data;
   final VoidCallback onTap;
-  String _typeConversion(String? data, var index) {
-    if (data != null) {
-      var decodedData = jsonDecode(data);
-      var indexValue = index;
-      return decodedData.containsKey('${indexValue[0]}')
-          ? decodedData['${indexValue[0]}']
-          : '';
-    } else {
-      return ' ';
-    }
+  String parseJson(String? jsonString, List<dynamic> subscript) {
+    if (jsonString == null) return ' ';
+    var value = jsonDecode(jsonString);
+    return value['${subscript[0]}'] ?? '';
   }
 
   MemoryBankItem({required this.data, required this.onTap});
@@ -139,7 +133,7 @@ class MemoryBankItem extends StatelessWidget {
                       const SizedBox(height: 20),
                       // 问题
                       Text(
-                        _typeConversion(data['question'], data['subscript']),
+                        parseJson(data['question'], data['subscript']),
                         style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
@@ -150,7 +144,7 @@ class MemoryBankItem extends StatelessWidget {
                       const SizedBox(height: 20),
                       // 回复
                       Text(
-                        _typeConversion(data['reply'], data['subscript']),
+                        parseJson(data['reply'], data['subscript']),
                         style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,

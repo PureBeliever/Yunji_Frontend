@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       labelShadow: List.empty(),
       labelBackgroundColor: Colors.white,
       labelStyle: const TextStyle(
-          fontSize: 20.0, fontWeight: FontWeight.w700),
+          fontSize: 17.0, fontWeight: FontWeight.w700),
       onTap: _handleSpeedDialChildTap,
     );
   }

@@ -10,21 +10,20 @@ import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/setting/setting_account_user_name.dart';
 
-class Jixvfuxiyiwang extends StatefulWidget {
-  const Jixvfuxiyiwang({super.key});
+class ContinueReviewOption extends StatefulWidget {
+  const ContinueReviewOption({super.key});
 
   @override
-  State<Jixvfuxiyiwang> createState() => _Jixvfuxiyiwang();
+  State<ContinueReviewOption> createState() => _ContinueReviewOption();
 }
-
-class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
+class _ContinueReviewOption extends State<ContinueReviewOption> {
   final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
   final userNameChangeManagement = Get.put(UserNameChangeManagement());
 
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
-  bool alarm_information = false;
-  List<List<int>> reviewTime = [
+  bool alarmInformation = false;
+  final List<List<int>> reviewTime = [
     [0],
     [1440, 10080, 20160],
     [1440, 10080, 20160, 43200],
@@ -33,7 +32,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
     [60, 360, 1440, 4320, 10080, 20160, 43200, 129600, 259200]
   ];
   int _valueChoice = 2;
-  List<String> jiyi = [
+  final List<String>reviewScheme = [
     '不复习',
     '第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n记忆时长超过3个月',
     '[推荐]\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n第4次复习:  第3次复习1个月后\n记忆时长超过6个月',
@@ -48,7 +47,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
       child: ChoiceChip(
         backgroundColor: Colors.white,
         label: Text(
-          jiyi[index],
+          reviewScheme[index],
           softWrap: true,
           maxLines: 20,
           style: TextStyle(
@@ -56,12 +55,10 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
             color: _valueChoice == index ? Colors.white : Colors.black54,
           ),
         ),
-
-        selectedColor: Colors.blue, //选中的颜色
-
+        selectedColor: Colors.blue,
         onSelected: (bool selected) {
           setState(() {
-            if (selected == true) {
+            if (selected) {
               _valueChoice = index;
             }
           });
@@ -70,6 +67,87 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
         selected: _valueChoice == index,
       ),
     );
+  }
+
+  Future<void> _handleCompleteButtonPress() async {
+    bool state = false;
+    String reviewSchemeName = "方案${_valueChoice + 1}";
+    Map<String, String> reviewRecord = continueLearningAboutDataManagement
+        .reviewRecords
+        .map((key, value) => MapEntry(key.toString(), value));
+    String? reviewRecordKey;
+
+    for (final entry in reviewRecord.entries) {
+      if (entry.value == reviewSchemeName) {
+        reviewRecordKey = entry.key;
+        break;
+      }
+    }
+
+    if (reviewRecordKey != null) {
+      reviewSchemeName = reviewRecord[reviewRecordKey]!;
+    } else {
+      reviewRecord["0"] = "方案${_valueChoice + 1}";
+    }
+
+    DateTime now = DateTime.now();
+    Map<String, String> stringQuestion = continueLearningAboutDataManagement
+        .problems
+        .map((key, value) => MapEntry(key.toString(), value));
+    Map<String, String> stringReply = continueLearningAboutDataManagement
+        .reply
+        .map((key, value) => MapEntry(key.toString(), value));
+    DateTime setTime = now.add(Duration(minutes: reviewTime[_valueChoice][0]));
+
+    if (_valueChoice == 0) {
+      state = true;
+    } else {
+      if (alarmInformation) {
+        final alarmSettings = AlarmSettings(
+          id: 42,
+          dateTime: setTime,
+          assetAudioPath: 'assets/review/alarm.mp3',
+          loopAudio: true,
+          vibrate: true,
+          volume: 0.6,
+          fadeDuration: 3.0,
+          warningNotificationOnKill: Platform.isIOS,
+          androidFullScreenIntent: true,
+          notificationSettings: NotificationSettings(
+            title: '开始复习 !',
+            body: '记忆库${continueLearningAboutDataManagement.memoryTheme}到达预定的复习时间',
+            stopButton: '停止闹钟',
+            icon: 'notification_icon',
+          ),
+        );
+        await Alarm.set(alarmSettings: alarmSettings);
+      }
+      if (message) {
+        _notificationHelper.zonedScheduleNotification(
+            id: 2,
+            title: '开始复习 !',
+            body: '记忆库${continueLearningAboutDataManagement.memoryTheme}到达预定的复习时间',
+            scheduledDateTime: setTime);
+      }
+    }
+
+    continueReview(
+        stringQuestion,
+        stringReply,
+        continueLearningAboutDataManagement.id,
+        continueLearningAboutDataManagement.memoryTheme,
+        reviewTime[_valueChoice],
+        setTime,
+        continueLearningAboutDataManagement.memoryItemIndices,
+        message,
+        alarmInformation,
+        state,
+        reviewRecord,
+        reviewSchemeName,
+        userNameChangeManagement.userNameValue ?? '');
+
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -102,89 +180,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 ),
-                onPressed: () async {
-                  bool state = false;
-                  String reviewSchemeName = "方案${_valueChoice + 1}";
-                  Map<String, String> reviewRecord = continueLearningAboutDataManagement
-                      .numberOfReviews
-                      .map((key, value) => MapEntry(key.toString(), value));
-                  String? reviewRecordKey;
-             
-                  for (final entry in reviewRecord.entries) {
-            
-                      if (entry.value == reviewSchemeName) {
-                      
-                      reviewRecordKey = entry.key;
-                      break;
-                    }
-                  }
-
-                  if (reviewRecordKey != null) {
-                      reviewSchemeName = reviewRecord[reviewRecordKey]!;
-                  } else {
-                    Map<String, String> reviewRecord1 = {"0": "方案${_valueChoice + 1}"};
-                    reviewRecord.addEntries(reviewRecord1.entries);
-                  }
-
-                  DateTime now = DateTime.now();
- 
-                  Map<String, String> stringQuestion = continueLearningAboutDataManagement
-                      .theNumberOfProblemsString
-                      .map((key, value) => MapEntry(key.toString(), value));
-                  Map<String, String> stringReply = continueLearningAboutDataManagement
-                      .theNumberOfAnswersString
-                      .map((key, value) => MapEntry(key.toString(), value));
-                  DateTime setTime =
-                      now.add(Duration(minutes: reviewTime[_valueChoice][0]));
-                  if (_valueChoice == 0) {
-                    state = true;
-                  } else {
-                    if (alarm_information == true) {
-                      final alarmSettings = AlarmSettings(
-                        id: 42,
-                        dateTime: setTime,
-                        assetAudioPath: 'assets/review/alarm.mp3',
-                        loopAudio: true,
-                        vibrate: true,
-                        volume: 0.6,
-                        fadeDuration: 3.0,
-                        warningNotificationOnKill: Platform.isIOS,
-                        androidFullScreenIntent: true,
-                        notificationSettings: NotificationSettings(
-                          title: '开始复习 !',
-                          body: '记忆库${continueLearningAboutDataManagement.theTitleOfTheMemory}到达预定的复习时间',
-                          stopButton: '停止闹钟',
-                          icon: 'notification_icon',
-                        ),
-                      );
-                      await Alarm.set(alarmSettings: alarmSettings);
-                    }
-                    if (message == true) {
-                      _notificationHelper.zonedScheduleNotification(
-                          id: 2,
-                          title: '开始复习 !',
-                          body: '记忆库${continueLearningAboutDataManagement.theTitleOfTheMemory}到达预定的复习时间',
-                          scheduledDateTime: setTime);
-                    }
-                  }
-                  continueReview(
-                      stringQuestion,
-                      stringReply,
-                      continueLearningAboutDataManagement.id,
-                      continueLearningAboutDataManagement.theTitleOfTheMemory,
-                      reviewTime[_valueChoice],
-                      setTime,
-                      continueLearningAboutDataManagement.theIndexValueOfTheMemoryItem,
-                      message,
-                      alarm_information,
-                      state,
-                      reviewRecord,
-                      reviewSchemeName,
-                      userNameChangeManagement.userNameValue??'');
-
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
+                onPressed: _handleCompleteButtonPress,
               ),
             ),
           ),
@@ -196,7 +192,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
         children: [
           Row(
             children: [
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               SizedBox(
                 height: 30,
                 child: Transform.scale(
@@ -211,7 +207,7 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
                   ),
                 ),
               ),
-              Text('信息通知',
+              const Text('信息通知',
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(84, 87, 105, 1),
@@ -220,22 +216,22 @@ class _Jixvfuxiyiwang extends State<Jixvfuxiyiwang> {
           ),
           Row(
             children: [
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               SizedBox(
                 height: 30,
                 child: Transform.scale(
                   scale: 0.7,
                   child: CupertinoSwitch(
-                    value: alarm_information,
+                    value: alarmInformation,
                     onChanged: (value) {
                       setState(() {
-                        alarm_information = value;
+                        alarmInformation = value;
                       });
                     },
                   ),
                 ),
               ),
-              Text('闹钟信息通知',
+              const Text('闹钟信息通知',
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Color.fromRGBO(84, 87, 105, 1),

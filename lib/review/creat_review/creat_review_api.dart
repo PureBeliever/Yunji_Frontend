@@ -41,6 +41,7 @@ void creatReview(
     data: jsonformdata,
     options: Options(headers: header),
   );
-  await Future.delayed(const Duration(milliseconds: 500));
+
   requestTheUsersPersonalData(userName);
+    Future.delayed(const Duration(milliseconds: 500));
 }

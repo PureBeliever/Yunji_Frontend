@@ -21,80 +21,51 @@ class Item {
 
   String reply;
   String question;
-
   bool isExpanded;
 }
 
 List<Item> generateItems(int numberOfItems, List<int> subscript,
     Map<String, dynamic> question, Map<String, dynamic> reply) {
-  return List<Item>.generate(numberOfItems, (int index) {
-    return Item(
-      question: question['${subscript[index]}'] ?? '',
-      reply: reply['${subscript[index]}'] ?? '',
-    );
-  });
+  return List<Item>.generate(numberOfItems, (index) => Item(
+        question: question[subscript[index].toString()] ?? '',
+        reply: reply[subscript[index].toString()] ?? '',
+      ));
 }
 
-// 复习数据管理
-class ReviewTheDataManagementOfMemoryBank extends GetxController {
-  static ReviewTheDataManagementOfMemoryBank get to => Get.find();
+class ReviewDataManagement extends GetxController {
+  static ReviewDataManagement get to => Get.find();
 
-  // 记忆库数据
-  Map<String, dynamic> memoryBankDataValue = {};
-  
-  // 记忆库数量
-  int numberOfMemories = 0;
-  
-  // 记忆库下标
-  List<int> theIndexValueOfTheMemoryItem = List.empty();
-  
-  // 题目
-  Map<String, dynamic> theNumberOfProblems = {};
+  Map<String, dynamic> memoryBankData = {};
+  int memoryCount = 0;
+  List<int> memoryIndices = [];
+  Map<String, dynamic> questions = {};
+  Map<String, dynamic> reply= {};
+  String memoryTheme = '';
+  List<dynamic> reviewScheme = [];
+  Map<String, dynamic> reviewCounts = {};
+  bool isMessageNotificationEnabled = false;
+  bool isAlarmNotificationEnabled = false;
+  bool isReviewComplete = false;
+  String reviewSchemeName = '';
+  int memoryBankId = -1;
 
-  // 答案
-  Map<String, dynamic> theNumberOfAnswers = {};
-
-  // 记忆库标题
-  String theTitleOfTheMemory = '';
-
-  // 记忆库复习方案
-  List<dynamic> memoryScheme = [];
-
-  // 记忆库复习次数
-  Map<String, dynamic> numberOfReviews = {};
-
-  // 消息通知状态
-  bool messageNotificationStatus = false;
-
-  // 闹钟通知状态
-  bool alarmInformationStatus = false;
-
-  // 完成复习状态
-  bool completeReviewStatus = false;
-
-  // 记忆库复习方案名称
-  String memorySchemeName = ' ';
-
-  // 记忆库id
-  int id = -1;
-
-  void initTheMemoryData(Map<String, dynamic> memoryBankData) {
-    id = memoryBankData['memory_bank_id'];
-    memoryBankDataValue = memoryBankData;
-    theTitleOfTheMemory = memoryBankData['theme'];
-    numberOfMemories = memoryBankData['subscript'].length;
-    theIndexValueOfTheMemoryItem = memoryBankData['subscript'];
-    theNumberOfProblems = jsonDecode(memoryBankData['question']);
-    theNumberOfAnswers = jsonDecode(memoryBankData['reply']);
-    memoryScheme = jsonDecode(memoryBankData['memory_time']);
-    numberOfReviews = jsonDecode(memoryBankData['review_record']);
-    messageNotificationStatus = memoryBankData['information_notification'] == 1 ? true : false;
-    alarmInformationStatus = memoryBankData['alarm_notification'] == 1 ? true : false;
-    completeReviewStatus = memoryBankData['complete_state'] == 1 ? true : false;
-    memorySchemeName = memoryBankData['review_scheme_name'];
+  void initMemoryData(Map<String, dynamic> data) {
+    memoryBankId = data['memory_bank_id'];
+    memoryBankData = data;
+    memoryTheme = data['theme'];
+    memoryCount = data['subscript'].length;
+    memoryIndices = data['subscript'];
+    questions = jsonDecode(data['question']);
+    reply = jsonDecode(data['reply']);
+    reviewScheme = jsonDecode(data['memory_time']);
+    reviewCounts = jsonDecode(data['review_record']);
+    isMessageNotificationEnabled = data['information_notification'] == 1;
+    isAlarmNotificationEnabled = data['alarm_notification'] == 1;
+    isReviewComplete = data['complete_state'] == 1;
+    reviewSchemeName = data['review_scheme_name'];
   }
 
-  void refreshExpansionTile() {
+  void refresh() {
     update();
   }
 }
@@ -111,16 +82,15 @@ class _ReviewPage extends State<ReviewPage> {
 
   final FocusNode _focusNode = FocusNode();
   final List<Item> _data = generateItems(
-      reviewTheDataManagementOfMemoryBank.numberOfMemories,
-      reviewTheDataManagementOfMemoryBank.theIndexValueOfTheMemoryItem,
-      reviewTheDataManagementOfMemoryBank.theNumberOfProblems,
-      reviewTheDataManagementOfMemoryBank.theNumberOfAnswers);
+      reviewDataManagement.memoryCount,
+      reviewDataManagement.memoryIndices,
+      reviewDataManagement.questions,
+      reviewDataManagement.reply);
   final _controller = TextEditingController(
-      text: reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory);
-  String theme = reviewTheDataManagementOfMemoryBank.theTitleOfTheMemory;
-  bool message = reviewTheDataManagementOfMemoryBank.messageNotificationStatus;
-  bool alarm_information =
-      reviewTheDataManagementOfMemoryBank.alarmInformationStatus;
+      text: reviewDataManagement.memoryTheme);
+  String theme = reviewDataManagement.memoryTheme;
+  bool message = reviewDataManagement.isMessageNotificationEnabled;
+  bool alarm_information = reviewDataManagement.isAlarmNotificationEnabled;
   final creatReviewController = Get.put(CreatReviewController());
 
   @override
@@ -282,10 +252,10 @@ class _ReviewPage extends State<ReviewPage> {
                     Map<int, String> stringReply = {};
                     DateTime setTime = DateTime.now();
                     List<int> memoryScheme = List.from(
-                        reviewTheDataManagementOfMemoryBank.memoryScheme);
+                        reviewDataManagement.reviewScheme);
                     memoryScheme.removeAt(0);
                     Map<String, String> numberOfReviews =
-                        reviewTheDataManagementOfMemoryBank.numberOfReviews.map(
+                        reviewDataManagement.reviewCounts.map(
                             (key, value) => MapEntry(key.toString(), value));
 
                     List<int> sortedList = [];
@@ -301,8 +271,8 @@ class _ReviewPage extends State<ReviewPage> {
                     Map<String, String> reply = stringReply
                         .map((key, value) => MapEntry(key.toString(), value));
 
-                    bool completeReviewStatus = reviewTheDataManagementOfMemoryBank
-                        .completeReviewStatus;
+                    bool completeReviewStatus = reviewDataManagement
+                        .isReviewComplete;
 
                     if (memoryScheme.isNotEmpty) {
                       // dingshi = dingshi.add(Duration(hours: code[0]));
@@ -337,7 +307,7 @@ class _ReviewPage extends State<ReviewPage> {
                     } else {
                       completeReviewStatus = true;
                       String memorySchemeName =
-                          reviewTheDataManagementOfMemoryBank.memorySchemeName;
+                          reviewDataManagement.reviewSchemeName;
                       String? stringci;
                       for (final entry in numberOfReviews.entries) {
                         if (entry.value == memorySchemeName) {
@@ -358,7 +328,7 @@ class _ReviewPage extends State<ReviewPage> {
                     continueReview(
                         question,
                         reply,
-                        reviewTheDataManagementOfMemoryBank.id,
+                        reviewDataManagement.memoryBankId,
                         theme,
                         memoryScheme,
                         setTime,
@@ -367,7 +337,7 @@ class _ReviewPage extends State<ReviewPage> {
                         alarm_information,
                         completeReviewStatus,
                         numberOfReviews,
-                        reviewTheDataManagementOfMemoryBank.memorySchemeName,
+                        reviewDataManagement.reviewSchemeName,
                         userNameChangeManagement.userNameValue??'');
                     Navigator.of(context).pop();
                   }
@@ -380,9 +350,9 @@ class _ReviewPage extends State<ReviewPage> {
         surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: GetBuilder<ReviewTheDataManagementOfMemoryBank>(
-          init: reviewTheDataManagementOfMemoryBank,
-          builder: (reviewTheDataManagementOfMemoryBank) {
+      body: GetBuilder<ReviewDataManagement>(
+          init: reviewDataManagement,
+          builder: (reviewDataManagement) {
             return ListView(
               children: [
                 Column(
@@ -490,7 +460,7 @@ class _ReviewPage extends State<ReviewPage> {
                   dividerColor: Colors.white,
                   expansionCallback: (int index, bool isExpanded) {
                     _data[index].isExpanded = isExpanded;
-                    reviewTheDataManagementOfMemoryBank.refreshExpansionTile();
+                    reviewDataManagement.refresh();
                   },
                   children: _data.map<ExpansionPanel>((Item item) {
                     return ExpansionPanel(

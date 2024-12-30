@@ -56,64 +56,71 @@ class PersonalData {
 //请求用户个人资料
 void requestTheUsersPersonalData(String? userName) async {
   final dio = Dio();
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
-  Map<String, dynamic> formdata = {'userName': userName};
-  
+  final header = {'Content-Type': 'application/json'};
+  final formdata = {'userName': userName};
 
-    final response = await dio.post(
-        'http://47.92.98.170:36233/requestUserThePersonalData',
-        data: jsonEncode(formdata),
-        options: Options(headers: header));
-    final beforeDir = await getApplicationDocumentsDirectory();
-    final dir = Directory(join(beforeDir.path, 'personalimage'));
-    if (await dir.exists()) {
-      await dir.delete(recursive: true);
-    }
-    await dir.create(recursive: true);
+  final response = await dio.post(
+    'http://47.92.98.170:36233/requestUserThePersonalData',
+    data: jsonEncode(formdata),
+    options: Options(headers: header),
+  );
 
-  final Results = response.data;
-
-  Map<String, dynamic> personalDataValue = Results['personalDataValue'];
-  
-  String? backgroundImage;
-  String? headPortrait;
-
-  if (personalDataValue['background_image'] != null) {
-    final filename = generateRandomFilename();
-    List<int> imageBytes = base64.decode(personalDataValue['background_image']);
-    backgroundImage = '${dir.path}/$filename';
-    await File(backgroundImage).writeAsBytes(imageBytes);
+  final beforeDir = await getApplicationDocumentsDirectory();
+  final dir = Directory(join(beforeDir.path, 'personalimage'));
+  if (await dir.exists()) {
+    await dir.delete(recursive: true);
   }
+  await dir.create(recursive: true);
 
-  if (personalDataValue['head_portrait'] != null) {
-    final filename = generateRandomFilename();
-    List<int> imageBytes = base64.decode(personalDataValue['head_portrait']);
-    headPortrait = '${dir.path}/$filename';
-    await File(headPortrait).writeAsBytes(imageBytes);
+  final results = response.data;
+  final personalDataValue = results['personalDataValue'];
+
+  String? backgroundImage = await _saveImageToFile(
+      personalDataValue['background_image'], dir);
+  String? headPortrait = await _saveImageToFile(
+      personalDataValue['head_portrait'], dir);
+
+  final personalData = PersonalData(
+    collectList: jsonEncode(personalDataValue['collect_list']),
+    pullList: jsonEncode(personalDataValue['pull_list']),
+    reviewList: jsonEncode(personalDataValue['review_list']),
+    likeList: jsonEncode(personalDataValue['like_list']),
+    userName: personalDataValue['user_name'],
+    name: personalDataValue['name'],
+    introduction: personalDataValue['introduction'],
+    residentialAddress: personalDataValue['residential_address'],
+    birthTime: personalDataValue['birth_time'],
+    backgroundImage: backgroundImage,
+    headPortrait: headPortrait,
+    joinDate: personalDataValue['join_date'],
+  );
+
+  await insertPersonalData(personalData);
+  _updateDisplay(personalDataValue, backgroundImage, headPortrait);
+
+  if (results['memoryBankResults'] != null) {
+    await _processMemoryBankResults(
+        results['memoryBankResults'], results['memoryBankPersonalResults'], dir);
+    userPersonalInformationManagement
+        .requestUserPersonalInformationDataOnTheBackEnd(personalDataValue);
+    userPersonalInformationManagement.refreshDisplayText(0);
   }
+}
 
-  final results = PersonalData(
-      collectList: jsonEncode(personalDataValue['collect_list']),
-      pullList: jsonEncode(personalDataValue['pull_list']),
-      reviewList: jsonEncode(personalDataValue['review_list']),
-      likeList: jsonEncode(personalDataValue['like_list']),
-      userName: personalDataValue['user_name'],
-      name: personalDataValue['name'],
-      introduction: personalDataValue['introduction'],
-      residentialAddress: personalDataValue['residential_address'],
-      birthTime: personalDataValue['birth_time'],
-      backgroundImage: backgroundImage,
-      headPortrait: headPortrait,
-      joinDate: personalDataValue['join_date'],
-     );
+Future<String?> _saveImageToFile(String? base64Image, Directory dir) async {
+  if (base64Image != null) {
+    final filename = generateRandomFilename();
+    final imageBytes = base64.decode(base64Image);
+    final filePath = '${dir.path}/$filename';
+    await File(filePath).writeAsBytes(imageBytes);
+    return filePath;
+  }
+  return null;
+}
 
-  await insertPersonalData(results);
-  selectorResultsUpdateDisplay
-      .dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
-      personalDataValue['residential_address']);
+void _updateDisplay(Map<String, dynamic> personalDataValue, String? backgroundImage, String? headPortrait) {
+  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(personalDataValue['residential_address']);
   backgroundImageChangeManagement.initBackgroundImage(backgroundImage);
   headPortraitChangeManagement.initHeadPortrait(headPortrait);
   editPersonalDataValueManagement.changePersonalInformation(
@@ -124,34 +131,22 @@ void requestTheUsersPersonalData(String? userName) async {
     applicationDate: personalDataValue['join_date'],
   );
   userNameChangeManagement.userNameChanged(personalDataValue['user_name']);
+}
 
-  if (Results['memoryBankResults'] != null) {
-    var memoryBankResults = Results["memoryBankResults"];
-    var memoryBankPersonalResults = Results["memoryBankPersonalResults"];
-    for (int i = 0; i < memoryBankPersonalResults.length; i++) {
-      if (memoryBankPersonalResults[i]['head_portrait'] != null) {
-        final filename = generateRandomFilename();
-        List<int> imageBytes =
-            base64.decode(memoryBankPersonalResults[i]['head_portrait']);
-        memoryBankPersonalResults[i]['head_portrait'] = '${dir.path}/$filename';
-        await File(memoryBankPersonalResults[i]['head_portrait'])
-            .writeAsBytes(imageBytes);
-      }
-      for (int y = 0; y < memoryBankResults.length; y++) {
-        if (memoryBankResults[y]['user_name'] ==
-            memoryBankPersonalResults[i]['user_name']) {
-          memoryBankResults[y]['name'] = memoryBankPersonalResults[i]['name'];
-          memoryBankResults[y]['head_portrait'] =
-              memoryBankPersonalResults[i]['head_portrait'];
-        }
+Future<void> _processMemoryBankResults(List<dynamic> memoryBankResults, List<dynamic> memoryBankPersonalResults, Directory dir) async {
+  for (var personalResult in memoryBankPersonalResults) {
+    if (personalResult['head_portrait'] != null) {
+      final filename = generateRandomFilename();
+      final imageBytes = base64.decode(personalResult['head_portrait']);
+      personalResult['head_portrait'] = '${dir.path}/$filename';
+      await File(personalResult['head_portrait']).writeAsBytes(imageBytes);
+    }
+    for (var memoryResult in memoryBankResults) {
+      if (memoryResult['user_name'] == personalResult['user_name']) {
+        memoryResult['name'] = personalResult['name'];
+        memoryResult['head_portrait'] = personalResult['head_portrait'];
       }
     }
-
-      await insertUserPersonalMemoryBank(memoryBankResults);
-      userPersonalInformationManagement
-          .requestUserPersonalInformationDataOnTheBackEnd(personalDataValue);
-    }
-
-
-
+  }
+  await insertUserPersonalMemoryBank(memoryBankResults);
 }

@@ -14,22 +14,21 @@ import 'package:yunji/review/creat_review/creat_review_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/notification_init.dart';
 
-class Yiwang extends StatefulWidget {
-  const Yiwang({super.key});
+class CreatReviewOption extends StatefulWidget {
+  const CreatReviewOption({super.key});
 
   @override
-  State<Yiwang> createState() => _Yiwang();
+  State<CreatReviewOption> createState() => _CreatReviewOption();
 }
 
-class _Yiwang extends State<Yiwang> {
+class _CreatReviewOption extends State<CreatReviewOption> {
   final creatReviewController = Get.put(CreatReviewController());
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
-  bool alarm_information = false;
-  List<List<int>> memoryTime = [
+  bool alarmInformation = false;
+  final List<List<int>> memoryTime = [
     [0],
-    [2,2],
-    // [1440, 10080, 20160],
+    [2, 2],
     [1440, 10080, 20160, 43200],
     [1440, 10080, 20160, 43200, 129600],
     [1440, 10080, 20160, 43200, 129600, 259200],
@@ -37,7 +36,7 @@ class _Yiwang extends State<Yiwang> {
   ];
   int _valueChoice = 2;
 
-  List<String> reviewScheme = [
+  final List<String> reviewScheme = [
     '不复习',
     '第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n记忆时长超过3个月',
     '[推荐]\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n第4次复习:  第3次复习1个月后\n记忆时长超过6个月',
@@ -48,7 +47,7 @@ class _Yiwang extends State<Yiwang> {
 
   Widget _buildChoiceItem(int index) {
     return Padding(
-      padding: const EdgeInsets.only(left: 17.0, top: 16),
+      padding: const EdgeInsets.only(left: 17.0, top: commonFontSize),
       child: ChoiceChip(
         backgroundColor: Colors.white,
         label: Text(
@@ -56,16 +55,14 @@ class _Yiwang extends State<Yiwang> {
           softWrap: true,
           maxLines: 20,
           style: TextStyle(
-            fontSize: 17.0,
+            fontSize: commonFontSize,
             color: _valueChoice == index ? Colors.white : Colors.black54,
           ),
         ),
-
-        selectedColor: Colors.blue, //选中的颜色
-
+        selectedColor: Colors.blue,
         onSelected: (bool selected) {
           setState(() {
-            if (selected == true) {
+            if (selected) {
               _valueChoice = index;
             }
           });
@@ -74,6 +71,74 @@ class _Yiwang extends State<Yiwang> {
         selected: _valueChoice == index,
       ),
     );
+  }
+
+  Future<void> _handleCompletion() async {
+    bool status = false;
+    Map<String, String> reviewRecord = {"0": "方案${_valueChoice + 1}"};
+    String reviewSchemeName = "方案${_valueChoice + 1}";
+    DateTime now = DateTime.now();
+
+    List<int> questionKey = creatReviewController.question.keys.toList();
+    List<int> replyKey = creatReviewController.reply.keys.toList();
+
+    Set<int> combinedSet = {...questionKey, ...replyKey};
+    List<int> sortedList = combinedSet.toList()..sort();
+
+    Map<String, String> stringQuestion = creatReviewController.question
+        .map((key, value) => MapEntry(key.toString(), value));
+    Map<String, String> stringReply = creatReviewController.reply
+        .map((key, value) => MapEntry(key.toString(), value));
+
+    DateTime setTime = now.add(Duration(minutes: memoryTime[_valueChoice][0]));
+    if (_valueChoice == 0) {
+      status = true;
+    } else {
+      if (alarmInformation) {
+        final alarmSettings = AlarmSettings(
+          id: 42,
+          dateTime: setTime,
+          assetAudioPath: 'assets/review/alarm.mp3',
+          loopAudio: true,
+          vibrate: true,
+          volume: 0.6,
+          fadeDuration: 3.0,
+          warningNotificationOnKill: Platform.isIOS,
+          androidFullScreenIntent: true,
+          notificationSettings: NotificationSettings(
+            title: '开始复习 !',
+            body: '记忆库${creatReviewController.theme}到达预定的复习时间',
+            stopButton: '停止闹钟',
+            icon: 'notification_icon',
+          ),
+        );
+        await Alarm.set(alarmSettings: alarmSettings);
+      }
+      if (message) {
+        _notificationHelper.zonedScheduleNotification(
+            id: 2,
+            title: '开始复习 !',
+            body: '记忆库${creatReviewController.theme}到达预定的复习时间',
+            scheduledDateTime: setTime);
+      }
+    }
+    creatReview(
+        stringQuestion,
+        stringReply,
+        creatReviewController.theme!,
+        memoryTime[_valueChoice],
+        setTime,
+        sortedList,
+        message,
+        alarmInformation,
+        status,
+        reviewRecord,
+        reviewSchemeName,
+        userNameChangeManagement.userNameValue ?? '');
+
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    switchPage(context, const PersonalPage());
   }
 
   @override
@@ -94,90 +159,17 @@ class _Yiwang extends State<Yiwang> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding:
-                    const EdgeInsets.only(left: 5, right: 5, top: 0, bottom: 0),
+                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                 backgroundColor: Colors.blue,
               ),
               child: const Text(
                 "完成",
                 style: TextStyle(
-                    fontSize: 17,
+                    fontSize: commonFontSize,
                     fontWeight: FontWeight.w900,
                     color: Colors.white),
               ),
-              onPressed: () async {
-                bool status = false;
-                Map<String, String> reviewRecord = {
-                  "0": "方案${_valueChoice + 1}"
-                };
-                String reviewSchemeName = "方案${_valueChoice + 1}";
-                DateTime now = DateTime.now();
-
-                List<int> questionKey =
-                    creatReviewController.question.keys.toList();
-                List<int> replyKey = creatReviewController.reply.keys.toList();
-//将两个列表合并为一个列表，并去重
-                Set<int> combinedSet = Set<int>.from(questionKey)
-                  ..addAll(replyKey);
-                //将集合转换为列表，并排序
-                List<int> sortedList = List<int>.from(combinedSet);
-                sortedList.sort();
-                //将列表转换为字符串
-                Map<String, String> stringQuestion = creatReviewController
-                    .question
-                    .map((key, value) => MapEntry(key.toString(), value));
-                Map<String, String> stringReply = creatReviewController.reply
-                    .map((key, value) => MapEntry(key.toString(), value));
-                DateTime setTime =
-                    now.add(Duration(minutes: memoryTime[_valueChoice][0]));
-                if (_valueChoice == 0) {
-                  status = true;
-                } else {
-                  if (alarm_information == true) {
-                    final alarmSettings = AlarmSettings(
-                      id: 42,
-                      dateTime: setTime,
-                      assetAudioPath: 'assets/review/alarm.mp3',
-                      loopAudio: true,
-                      vibrate: true,
-                      volume: 0.6,
-                      fadeDuration: 3.0,
-                      warningNotificationOnKill: Platform.isIOS,
-                      androidFullScreenIntent: true,
-                      notificationSettings: NotificationSettings(
-                        title: '开始复习 !',
-                        body: '记忆库${creatReviewController.theme}到达预定的复习时间',
-                        stopButton: '停止闹钟',
-                        icon: 'notification_icon',
-                      ),
-                    );
-                    await Alarm.set(alarmSettings: alarmSettings);
-                  }
-                  if (message == true) {
-                    _notificationHelper.zonedScheduleNotification(
-                        id: 2,
-                        title: '开始复习 !',
-                        body: '记忆库${creatReviewController.theme}到达预定的复习时间',
-                        scheduledDateTime: setTime);
-                  }
-                }
-                creatReview(
-                    stringQuestion,
-                    stringReply,
-                    creatReviewController.theme!,
-                    memoryTime[_valueChoice],
-                    setTime,
-                    sortedList,
-                    message,
-                    alarm_information,
-                    status,
-                    reviewRecord,
-                    reviewSchemeName,
-                    userNameChangeManagement.userNameValue ?? '');
-
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-                switchPage(context, const PersonalPage());
-              },
+              onPressed: _handleCompletion,
             ),
           ),
         ],
@@ -193,7 +185,7 @@ class _Yiwang extends State<Yiwang> {
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       SizedBox(
                         height: 30,
                         child: Transform.scale(
@@ -208,46 +200,43 @@ class _Yiwang extends State<Yiwang> {
                           ),
                         ),
                       ),
-                      Text('信息通知',
+                      const Text('信息通知',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 17)),
+                              fontSize: commonFontSize)),
                     ],
                   ),
                   Row(
                     children: [
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       SizedBox(
                         height: 30,
                         child: Transform.scale(
                           scale: 0.7,
                           child: CupertinoSwitch(
-                            value: alarm_information,
+                            value: alarmInformation,
                             onChanged: (value) {
                               setState(() {
-                                print(value);
-                                alarm_information = value;
+                                alarmInformation = value;
                               });
                             },
                           ),
                         ),
                       ),
-                      Text('闹钟信息通知',
+                      const Text('闹钟信息通知',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 17)),
+                              fontSize: commonFontSize)),
                     ],
                   ),
                 ],
               ),
-              SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               Expanded(
                 child: Card(
-                  color: Color.fromARGB(255, 232, 232, 232),
+                  color: const Color.fromARGB(255, 232, 232, 232),
                   elevation: 3,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
@@ -255,24 +244,24 @@ class _Yiwang extends State<Yiwang> {
                     padding: const EdgeInsets.all(8.0),
                     child: RichText(
                         text: TextSpan(children: <TextSpan>[
-                      TextSpan(
-                          text: '若需信息或闹钟提醒复习\n',
+                      const TextSpan(
+                            text: '若需信息或闹钟提醒复习\n',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 17)),
-                      TextSpan(
+                              fontSize: commonFontSize)),
+                      const TextSpan(
                           text: '需点击并打开：',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 17)),
+                              fontSize: commonFontSize)),
                       TextSpan(
                           text: '自启动权限',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             color: Colors.green,
-                            fontSize: 17,
+                            fontSize: commonFontSize,
                             decoration: TextDecoration.underline,
                           ),
                           recognizer: TapGestureRecognizer()
@@ -300,7 +289,7 @@ class _Yiwang extends State<Yiwang> {
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: Color.fromRGBO(84, 87, 105, 1),
-                    fontSize: 17)),
+                    fontSize: commonFontSize)),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

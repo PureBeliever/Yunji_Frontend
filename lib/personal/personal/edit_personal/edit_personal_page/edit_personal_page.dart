@@ -55,10 +55,12 @@ class EditPersonalDataValueManagement extends GetxController {
     if (profileValue != profile) changes++;
     if (residentialAddressValue != residentialAddress) changes++;
     if (dateOfBirthValue != dateOfBirth) changes++;
-    if (backgroundImageChangeManagement
-        .exitThePageToDetermineWhetherTheBackgroundImageHasChanged()) changes++;
-    if (headPortraitChangeManagement
-        .exitThePageToDetermineWhetherTheHeadPortraitHasChanged()) changes++;
+    if (backgroundImageChangeManagement.backgroundImageValue?.path !=
+        backgroundImageChangeManagement.changedBackgroundImageValue?.path)
+      changes++;
+    if (headPortraitChangeManagement.changedHeadPortraitValue?.path !=
+        headPortraitChangeManagement.headPortraitValue?.path) changes++;
+
     return changes;
   }
 }
@@ -110,7 +112,6 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-
   Future<void> _pickVideoAndConvertToGif() async {
     final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
 
@@ -145,8 +146,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   }) async {
     try {
       XFile? image = await _imagePicker.pickImage(source: source);
-      
-      if (image != null&&!image.path.endsWith('.gif')) {
+
+      if (image != null && !image.path.endsWith('.gif')) {
         CroppedFile? croppedFile = await ImageCropper().cropImage(
           sourcePath: image.path,
           cropStyle: cropStyle,
@@ -169,7 +170,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
         if (croppedFile != null) {
           onImageCropped(File(croppedFile.path));
         }
-      }else if(image!=null){
+      } else if (image != null) {
         onImageCropped(File(image.path));
       }
     } catch (err) {
@@ -197,8 +198,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       cropStyle: CropStyle.circle,
       aspectRatioPresets: [CropAspectRatioPreset.square],
       onImageCropped: (file) {
-        headPortraitChangeManagement
-            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(file);
+        headPortraitChangeManagement.selectAndShootImage(file);
       },
     );
   }
@@ -209,8 +209,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       cropStyle: CropStyle.circle,
       aspectRatioPresets: [CropAspectRatioPreset.square],
       onImageCropped: (file) {
-        headPortraitChangeManagement
-            .selectAndShootTheImageToGiveTheChangedHeadPortraitImage(file);
+        headPortraitChangeManagement.selectAndShootImage(file);
       },
     );
   }
@@ -221,8 +220,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       cropStyle: CropStyle.rectangle,
       aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
       onImageCropped: (file) {
-        backgroundImageChangeManagement
-            .selectAndShootTheImageToGiveTheChangedBackgroundImage(file);
+        backgroundImageChangeManagement.selectAndShootTheImage(file);
       },
     );
   }
@@ -233,8 +231,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       cropStyle: CropStyle.rectangle,
       aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
       onImageCropped: (file) {
-        backgroundImageChangeManagement
-            .selectAndShootTheImageToGiveTheChangedBackgroundImage(file);
+        backgroundImageChangeManagement.selectAndShootTheImage(file);
       },
     );
   }
@@ -342,8 +339,6 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                 .applicationDateValue,
                           );
 
-                          Navigator.pop(context);
-
                           editPersonal(
                             username,
                             name,
@@ -351,10 +346,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             selectResidentialAddress,
                             selectDateOfBirth,
                             backgroundImageChangeManagement
-                                .returnsTheChangedBackgroundImageSynchronizationBackend(),
+                                .syncChangedBackgroundImage(),
                             headPortraitChangeManagement
-                                .returnsTheChangedHeadPortraitImageSynchronizationBackend(),
+                                .syncChangedHeadPortrait(),
                           );
+                          Navigator.pop(context);
                         } else {
                           Navigator.pop(context);
                         }
@@ -426,10 +422,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                           .residentialAddressSelectorResultValueChange(
                               editPersonalDataValueManagement
                                   .residentialAddressValue);
-                      backgroundImageChangeManagement
-                          .restoreAnUnchangedBackgroundImage();
-                      headPortraitChangeManagement
-                          .restoreAnUnchangedHeadPortraitImage();
+                      backgroundImageChangeManagement.restoreBackgroundImage();
+                      headPortraitChangeManagement.restoreHeadPortrait();
                       name = editPersonalDataValueManagement.nameValue;
                       profile = editPersonalDataValueManagement.profileValue;
                       selectResidentialAddress = selectorResultsUpdateDisplay
@@ -735,7 +729,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
             child: const SizedBox(
               width: double.infinity,
               child: Text(
-                '选择相册(支持动图)',
+                // '选择相册(支持动图)',
+                '选择相册',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 17,
@@ -743,21 +738,21 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               ),
             ),
           ),
-          TextButton(
-            onPressed: () {
-              _pickVideoAndConvertToGif();
-            },
-            child: const SizedBox(
-              width: double.infinity,
-              child: Text(
-                '选择视频转动图',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     _pickVideoAndConvertToGif();
+          //   },
+          //   child: const SizedBox(
+          //     width: double.infinity,
+          //     child: Text(
+          //       '选择视频转动图',
+          //       style: TextStyle(
+          //           color: Colors.black,
+          //           fontSize: 17,
+          //           fontWeight: FontWeight.w700),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

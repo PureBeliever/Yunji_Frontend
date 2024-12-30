@@ -26,7 +26,7 @@ class _EditVideoEditorPageState extends State<EditVideoEditorPage> {
   late final _controller = VideoEditorController.file(
     widget.video,
     minDuration: const Duration(seconds: 1),
-    maxDuration: const Duration(seconds: 6),
+    maxDuration: const Duration(seconds: 5),
     trimStyle: const TrimSliderStyle(
       positionLineWidth: 2,
       onTrimmedColor: Colors.blue,
@@ -49,13 +49,8 @@ class _EditVideoEditorPageState extends State<EditVideoEditorPage> {
     final outputPath = '${appDocDir.path}/${_generateRandomFilename()}';
 
     final _flutterFFmpeg = FlutterFFmpeg();
-    final command = [
-      '-i', inputPath,
-      '-ss', start.inSeconds.toString(),
-      '-t', (end.inSeconds - start.inSeconds).toString(),
-      '-f', 'gif', outputPath
-    ];
-    await _flutterFFmpeg.execute(command.join(' '));
+    final command =  '-i $inputPath -ss ${start.inSeconds} -t ${end.inSeconds - start.inSeconds} -vf "fps=30,scale=320:-1:flags=lanczos" -f gif $outputPath';
+    await _flutterFFmpeg.execute(command);
 
     final previousFile = File(inputPath);
     if (await previousFile.exists()) {
@@ -159,9 +154,10 @@ class _EditVideoEditorPageState extends State<EditVideoEditorPage> {
           const Spacer(flex: 7),
           InkWell(
             onTap: () async {
+               Navigator.pop(context);
               final gifFile = await _exportGif();
-              headPortraitChangeManagement.selectAndShootTheImageToGiveTheChangedHeadPortraitImage(gifFile);
-              Navigator.pop(context);
+              headPortraitChangeManagement.selectAndShootImage(gifFile);
+             
             },
             child: const Text(
               '确定',

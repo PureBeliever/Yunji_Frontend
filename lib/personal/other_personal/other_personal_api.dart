@@ -17,7 +17,6 @@ class OtherPersonalMemoryBank {
   final String? headPortrait;
   final String? joinDate;
 
-
   OtherPersonalMemoryBank({
     required this.userName,
     required this.name,
@@ -29,22 +28,20 @@ class OtherPersonalMemoryBank {
     required this.joinDate,
   });
 
-
   // 转换为 Map
   Map<String, dynamic> toMap() {
     return {
-        'user_name': userName,
-        'name': name,
-        'introduction': introduction,
-        'residential_address': residentialAddress,
-        'birth_time': birthTime,
-        'background_image': backgroundImage,
-        'head_portrait': headPortrait,
-        'join_date': joinDate,
+      'user_name': userName,
+      'name': name,
+      'introduction': introduction,
+      'residential_address': residentialAddress,
+      'birth_time': birthTime,
+      'background_image': backgroundImage,
+      'head_portrait': headPortrait,
+      'join_date': joinDate,
     };
   }
 }
-
 
 Future<void> requestTheOtherPersonalData(String userName) async {
   final dio = Dio();
@@ -56,6 +53,7 @@ Future<void> requestTheOtherPersonalData(String userName) async {
     data: jsonEncode(formdata),
     options: Options(headers: header),
   );
+
 
   final dir = await _prepareDirectory();
 
@@ -89,7 +87,8 @@ Future<void> requestTheOtherPersonalData(String userName) async {
     await _processMemoryBankResults(
       dir,
       List<Map<String, dynamic>>.from(results['memoryBankResults'] ?? []),
-      List<Map<String, dynamic>>.from(results['memoryBankPersonalResults'] ?? []),
+      List<Map<String, dynamic>>.from(
+          results['memoryBankPersonalResults'] ?? []),
     );
 
     await otherPeoplePersonalInformationManagement

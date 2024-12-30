@@ -18,81 +18,49 @@ class Item {
 
   String question;
   String reply;
-
   bool isExpanded;
 }
 
 List<Item> generateItems(int numberOfItems, List<int> subscript,
     Map<String, dynamic> question, Map<String, dynamic> reply) {
-  return List<Item>.generate(numberOfItems, (int index) {
+  return List<Item>.generate(numberOfItems, (index) {
     return Item(
-      question: question['${subscript[index]}'] ?? '',
-      reply: reply['${subscript[index]}'] ?? '',
+      question: question[subscript[index].toString()] ?? '',
+      reply: reply[subscript[index].toString()] ?? '',
     );
   });
 }
 
-// 继续学习数据管理
 class ContinueLearningAboutDataManagement extends GetxController {
   static ContinueLearningAboutDataManagement get to => Get.find();
-// 记忆库数据
+
   Map<String, dynamic> memoryBankDataValue = {};
-
-  // 记忆库数量
   int numberOfMemories = 0;
-
-  // 记忆库下标
-  List<int> theIndexValueOfTheMemoryItem = List.empty();
-
-  // 题目
-  Map<String, dynamic> theNumberOfProblems = {};
-
-  // 答案
-  Map<String, dynamic> theNumberOfAnswers = {};
-
-  // String类型的题目
-  Map<int, String> theNumberOfProblemsString = {};
-
-  // String类型的答案
-  Map<int, String> theNumberOfAnswersString = {};
-
-  // 记忆库标题
-  String theTitleOfTheMemory = '';
-
-  // 记忆库复习方案
+  List<int> memoryItemIndices = [];
+  Map<String, dynamic> problems = {};
+  Map<String, dynamic> reply = {};
+  String memoryTheme = '';
   List<dynamic> memoryScheme = [];
-
-  // 记忆库复习次数
-  Map<String, dynamic> numberOfReviews = {};
-
-  // 消息通知状态
-  bool messageNotificationStatus = false;
-
-  // 闹钟通知状态
-  bool alarmInformationStatus = false;
-
-  // 完成复习状态
-  bool completeReviewStatus = false;
-
-  // 记忆库复习方案名称
-  String memorySchemeName = ' ';
-
-  // 记忆库id
+  Map<String, dynamic> reviewRecords = {};
+  bool isMessageNotificationEnabled = false;
+  bool isAlarmNotificationEnabled = false;
+  bool isReviewComplete = false;
+  String memorySchemeName = '';
   int id = -1;
 
-  void initTheMemoryData(Map<String, dynamic> data) {
+  void initMemoryData(Map<String, dynamic> data) {
     id = data['memory_bank_id'];
     memoryBankDataValue = data;
-    theTitleOfTheMemory = data['theme'];
+    memoryTheme = data['theme'];
     numberOfMemories = data['subscript'].length;
-    theIndexValueOfTheMemoryItem = data['subscript'];
-    theNumberOfProblems = jsonDecode(data['question']);
-    theNumberOfAnswers = jsonDecode(data['reply']);
+    memoryItemIndices = List<int>.from(data['subscript']);
+    problems = jsonDecode(data['question']);
+    reply = jsonDecode(data['reply']);
     memoryScheme = jsonDecode(data['memory_time']);
-    numberOfReviews = jsonDecode(data['review_record']);
-    messageNotificationStatus = data['information_notification'] == 1 ? true : false;
-    alarmInformationStatus = data['alarm_notification'] == 1 ? true : false;
-    completeReviewStatus = data['complete_state'] == 1 ? true : false;
+    reviewRecords = jsonDecode(data['review_record']);
+    isMessageNotificationEnabled = data['information_notification'] == 1;
+    isAlarmNotificationEnabled = data['alarm_notification'] == 1;
+    isReviewComplete = data['complete_state'] == 1;
     memorySchemeName = data['review_scheme_name'];
   }
 
@@ -101,30 +69,150 @@ class ContinueLearningAboutDataManagement extends GetxController {
   }
 }
 
-class JixvfuxiPage extends StatefulWidget {
-  const JixvfuxiPage({super.key});
+class ContinueReview extends StatefulWidget {
+  const ContinueReview({super.key});
 
   @override
-  State<JixvfuxiPage> createState() => _JixvfuxiPage();
+  State<ContinueReview> createState() => _ContinueReview();
 }
 
-class _JixvfuxiPage extends State<JixvfuxiPage> {
+class _ContinueReview extends State<ContinueReview> {
   final List<Item> _data = generateItems(
       continueLearningAboutDataManagement.numberOfMemories,
-      continueLearningAboutDataManagement.theIndexValueOfTheMemoryItem,
-      continueLearningAboutDataManagement.theNumberOfProblems,
-      continueLearningAboutDataManagement.theNumberOfAnswers);
-  final _controller = TextEditingController(text: continueLearningAboutDataManagement.theTitleOfTheMemory);
+      continueLearningAboutDataManagement.memoryItemIndices,
+      continueLearningAboutDataManagement.problems,
+      continueLearningAboutDataManagement.reply);
+  final _controller = TextEditingController(text: continueLearningAboutDataManagement.memoryTheme);
   final FocusNode _focusNode = FocusNode();
+
   @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
   }
 
+  @override
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+  }
+
+  void _showClearDialog(BuildContext context, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: SizedBox(
+            height: 150,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 20),
+                  child: Text(
+                    '复习',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                  child: Text('是否清空所有讲解?', style: TextStyle(fontSize: 16)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          '取消',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: onConfirm,
+                        child: const Text(
+                          '确定',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _clearAllExplanations() {
+    setState(() {
+      for (var item in _data) {
+        item.reply = ' ';
+      }
+    });
+  }
+
+  void _clearSpecificExplanation(Item item) {
+    setState(() {
+      item.reply = '';
+    });
+  }
+
+  void _showToast(BuildContext context, String title, String description) {
+    toast.toastification.show(
+      context: context,
+      type: toast.ToastificationType.success,
+      style: toast.ToastificationStyle.flatColored,
+      title: Text(
+        title,
+        style: const TextStyle(
+            color: Colors.black, fontWeight: FontWeight.w800, fontSize: 17),
+      ),
+      description: Text(
+        description,
+        style: const TextStyle(
+            color: Color.fromARGB(255, 119, 118, 118),
+            fontSize: 16,
+            fontWeight: FontWeight.w600),
+      ),
+      alignment: Alignment.topCenter,
+      autoCloseDuration: const Duration(seconds: 4),
+      primaryColor: const Color(0xff047aff),
+      backgroundColor: const Color(0xffedf7ff),
+      borderRadius: BorderRadius.circular(12.0),
+      boxShadow: toast.lowModeShadow,
+      dragToClose: true,
+    );
+  }
+
+  void _handleNextStep(BuildContext context) {
+    if (continueLearningAboutDataManagement.memoryTheme.isEmpty) {
+      _showToast(context, "请填写主题", "主题为空");
+      FocusScope.of(context).requestFocus(_focusNode);
+    } else {
+      int index = 0;
+      for (var data in _data) {
+        continueLearningAboutDataManagement.problems[index.toString()] = data.question;
+        continueLearningAboutDataManagement.reply[index.toString()] = data.reply;
+        index++;
+      }
+      switchPage(context, ContinueReviewOption());
+    }
   }
 
   @override
@@ -153,76 +241,10 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                     color: Colors.white),
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: SizedBox(
-                        height: 150,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 25, top: 20),
-                              child: Text(
-                                '复习',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w900),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                  left: 25, top: 10, bottom: 20),
-                              child: Text('是否清空所有讲解?',
-                                  style: TextStyle(fontSize: 16)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 7),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text(
-                                      '取消',
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w900,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _data.forEach((item) {
-                                          item.reply = ' ';
-                                        });
-                                      });
-
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text(
-                                      '确定',
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w900,
-                                          color: Colors.black),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                _showClearDialog(context, () {
+                  _clearAllExplanations();
+                  Navigator.of(context).pop();
+                });
               },
             ),
           ),
@@ -243,41 +265,8 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 ),
-                onPressed: () async {
-                  if (continueLearningAboutDataManagement.theTitleOfTheMemory.length == 0) {
-                    toast.toastification.show(
-                        context: context,
-                        type: toast.ToastificationType.success,
-                        style: toast.ToastificationStyle.flatColored,
-                        title: const Text("请填写主题",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 17)),
-                        description: const Text(
-                          "主题为空",
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 119, 118, 118),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        alignment: Alignment.topCenter,
-                        autoCloseDuration: const Duration(seconds: 4),
-                        primaryColor: const Color(0xff047aff),
-                        backgroundColor: const Color(0xffedf7ff),
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: toast.lowModeShadow,
-                        dragToClose: true);
-                    FocusScope.of(context).requestFocus(_focusNode);
-                  } else {
-                    int index = 0;
-                    _data.forEach((data) {
-                      continueLearningAboutDataManagement.theNumberOfProblemsString[index] = data.question;
-                      continueLearningAboutDataManagement.theNumberOfAnswersString[index] = data.reply;
-                      index++;
-                    });
-                    switchPage(context, Jixvfuxiyiwang());
-                  }
+                onPressed: () {
+                  _handleNextStep(context);
                 },
               ),
             ),
@@ -308,7 +297,7 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                       left: 5, right: 15, top: 50, bottom: 0),
                   child: TextField(
                     onChanged: (value) {
-                      continueLearningAboutDataManagement.theTitleOfTheMemory = value;
+                      continueLearningAboutDataManagement.memoryTheme = value;
                     },
                     controller: _controller,
                     maxLength: 50,
@@ -405,90 +394,10 @@ class _JixvfuxiPage extends State<JixvfuxiPage> {
                           decoration: InputDecoration(
                             suffixIcon: GestureDetector(
                                 onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: SizedBox(
-                                          height: 150,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 25, top: 20),
-                                                child: Text(
-                                                  '复习',
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.w900),
-                                                ),
-                                              ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 25,
-                                                    top: 10,
-                                                    bottom: 20),
-                                                child: Text('是否清空选择讲解?',
-                                                    style: TextStyle(
-                                                        fontSize: 16)),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 7),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: const Text(
-                                                        '取消',
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          item.reply = '';
-                                                        });
-
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: const Text(
-                                                        '确定',
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight.w900,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  _showClearDialog(context, () {
+                                    _clearSpecificExplanation(item);
+                                    Navigator.of(context).pop();
+                                  });
                                 },
                                 child: const Icon(
                                   color: Color.fromRGBO(134, 134, 134, 1),
