@@ -13,6 +13,7 @@ import 'package:yunji/personal/personal/personal/personal_page/personal_page.dar
 import 'package:yunji/setting/setting_account_user_name.dart';
 import 'package:yunji/main/sqlite_init.dart';
 import 'package:dio/dio.dart';
+
 // 数据库管理
 final databaseManager = DatabaseManager();
 
@@ -35,8 +36,7 @@ final viewPostDataManagementForMemoryBanks =
     Get.put(ViewPostDataManagementForMemoryBanks());
 
 // 复习数据管理
-final reviewDataManagement =
-    Get.put(ReviewDataManagement());
+final reviewDataManagement = Get.put(ReviewDataManagement());
 
 // 继续学习数据管理
 final continueLearningAboutDataManagement =
@@ -57,22 +57,27 @@ final userPersonalInformationManagement =
 final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
 
 // 编辑个人信息数据管理
-final editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+final editPersonalDataValueManagement =
+    Get.put(EditPersonalDataValueManagement());
 
 // 用户信息列表滚动数据管理
-final userInformationListScrollDataManagement = Get.put(UserInformationListScrollDataManagement());
+final userInformationListScrollDataManagement =
+    Get.put(UserInformationListScrollDataManagement());
 
 // 登录状态
 bool loginStatus = false;
 
-// 通用字体大小
-const commonFontSize = 16.0;
-
+  final header = {'Content-Type': 'application/json'};
+  
 final dio = Dio();
 
-
 String generateRandomFilename() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   Random random = Random();
-  return List.generate(10, (_) => chars[random.nextInt(chars.length)]).join('') + '.jpg';
+  return List.generate(10, (_) => chars[random.nextInt(chars.length)])
+          .join('') +
+      '.jpg';
 }
+
+

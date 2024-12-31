@@ -355,7 +355,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
         dividerColor: Colors.white,
         expansionCallback: (int index, bool isExpanded) {
           setState(() {
-            _data[index].isExpanded = !isExpanded;
+            _data[index].isExpanded = isExpanded;
           });
         },
         children: _data.map<ExpansionPanel>((Item item) {
@@ -368,7 +368,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        item.isExpanded = !isExpanded;
+                        item.isExpanded = isExpanded;
                       });
                     },
                     child: Padding(

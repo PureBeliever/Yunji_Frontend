@@ -18,6 +18,10 @@ void continueReview(
     String userName,
 ) async {
   final dio = Dio();
+    Map<String, String> header = {
+    'Content-Type': 'application/json',
+  };
+
   Map<String, dynamic> formdata = {
     'username': userName,
     'question': question,
@@ -32,9 +36,6 @@ void continueReview(
     'completeState': completeState,
     'reviewRecord': reviewRecord,
     'reviewSchemeName': reviewSchemeName
-  };
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
   };
 
   String jsonformdata = jsonEncode(formdata);

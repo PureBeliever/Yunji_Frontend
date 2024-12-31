@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/main/app_module/memory_bank_item.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app_global_variable.dart';
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       labelShadow: List.empty(),
       labelBackgroundColor: Colors.white,
       labelStyle: const TextStyle(
-          fontSize: 17.0, fontWeight: FontWeight.w700),
+          fontSize: 20.0, fontWeight: FontWeight.w700),
       onTap: _handleSpeedDialChildTap,
     );
   }

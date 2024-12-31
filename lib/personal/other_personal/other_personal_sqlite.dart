@@ -5,6 +5,9 @@ import 'package:sqflite/sqflite.dart';
 Future<void> insertOtherPeoplePersonalMemoryBank(List<Map<String, dynamic>> memoryBankData) async {
   final db = databaseManager.database;
 
+  // 清空数据库中的数据
+  await db?.delete('other_personal_memory_bank');
+
   for (var memoryBank in memoryBankData) {
     memoryBank['question'] = jsonEncode(memoryBank['question']);
     memoryBank['reply'] = jsonEncode(memoryBank['reply']);

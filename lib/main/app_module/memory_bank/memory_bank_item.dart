@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/home/home_page/home_page.dart';
+import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
+import 'package:yunji/personal/other_personal/other_personal_api.dart';
 
 // 记忆库帖子的页面设置
 
 class MemoryBankList extends StatelessWidget {
-  List<Map<String, dynamic>>?  refreshofMemoryBankextends;
+  List<Map<String, dynamic>>? refreshofMemoryBankextends;
   final Function(int) onItemTap;
 
   MemoryBankList({
@@ -19,8 +23,7 @@ class MemoryBankList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       cacheExtent: 500,
-      itemCount:
-          refreshofMemoryBankextends?.length ?? 0,
+      itemCount: refreshofMemoryBankextends?.length ?? 0,
       itemBuilder: (context, index) {
         return MemoryBankItem(
           data: refreshofMemoryBankextends?[index],
@@ -61,8 +64,11 @@ class MemoryBankItem extends StatelessWidget {
               children: [
                 // 头像按钮
                 IconButton(
-                  onPressed: () {
-                    // 处理头像按钮点击事件
+                  onPressed: () async {
+                    switchPage(context, const OtherPersonalPage());
+                    await requestTheOtherPersonalData(
+                        viewPostDataManagementForMemoryBanks
+                            .theMemoryBankValueOfThePost['user_name']);
                   },
                   icon: CircleAvatar(
                     radius: 21,
@@ -154,7 +160,7 @@ class MemoryBankItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       // 点赞按钮行
-                      LikeButtonRow(),
+                      LikeButtonRow(data: data),
                     ],
                   ),
                 )
@@ -170,7 +176,8 @@ class MemoryBankItem extends StatelessWidget {
 
 // LikeButtonRow.dart
 class LikeButtonRow extends StatelessWidget {
-
+  final dynamic data;
+  LikeButtonRow({required this.data});
   Widget buildLikeButton({
     required Color startColor,
     required Color endColor,
@@ -180,7 +187,9 @@ class LikeButtonRow extends StatelessWidget {
     required IconData unlikedIcon,
     required Color likedColor,
     required Color unlikedColor,
+    required int likeCount,
     required Future<bool> Function(bool) onTap,
+    required List<int> memoryBankIds,
   }) {
     return LikeButton(
       circleColor: CircleColor(start: startColor, end: endColor),
@@ -197,15 +206,11 @@ class LikeButtonRow extends StatelessWidget {
           size: 20,
         );
       },
+      isLiked: memoryBankIds.contains(data['memory_bank_id']),
+      likeCount: likeCount,
       countBuilder: (int? count, bool isLiked, String text) {
         var color = isLiked ? likedColor : unlikedColor;
         Widget result;
-        if (count == 0) {
-          result = Text(
-            "love",
-            style: TextStyle(color: color),
-          );
-        }
         result = Text(
           text,
           style: TextStyle(color: color, fontWeight: FontWeight.w700),
@@ -233,9 +238,12 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedIcon: Icons.swap_calls,
                 likedColor: Colors.blue,
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
+                likeCount: data['pull'],
                 onTap: (isLiked) async {
+
                   return !isLiked;
                 },
+                memoryBankIds: userPersonalInformationManagement.userPulledMemoryBankIndex,
               ),
             ],
           ),
@@ -255,9 +263,11 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedIcon: Icons.folder_open,
                 likedColor: Colors.orange,
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
+                likeCount: data['collect'],
                 onTap: (isLiked) async {
                   return !isLiked;
                 },
+                memoryBankIds: userPersonalInformationManagement.userCollectedMemoryBankIndex,
               ),
             ],
           ),
@@ -277,9 +287,11 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedIcon: Icons.favorite_border,
                 likedColor: Colors.red,
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
+                likeCount: data['like'],
                 onTap: (isLiked) async {
                   return !isLiked;
                 },
+                memoryBankIds: userPersonalInformationManagement.userLikedMemoryBankIndex,
               ),
             ],
           ),
@@ -299,15 +311,16 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedIcon: Icons.messenger_outline,
                 likedColor: Colors.purpleAccent,
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
+                likeCount: data['review'],
                 onTap: (isLiked) async {
                   return !isLiked;
                 },
+                memoryBankIds: userPersonalInformationManagement.userReplyMemoryBankIndex,
               ),
             ],
           ),
         ),
         const Spacer(flex: 2),
-
       ],
     );
   }

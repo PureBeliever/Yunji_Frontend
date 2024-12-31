@@ -55,8 +55,6 @@ class PersonalData {
 
 //请求用户个人资料
 void requestTheUsersPersonalData(String? userName) async {
-  final dio = Dio();
-  final header = {'Content-Type': 'application/json'};
   final formdata = {'userName': userName};
 
   final response = await dio.post(
@@ -103,7 +101,6 @@ void requestTheUsersPersonalData(String? userName) async {
         results['memoryBankResults'], results['memoryBankPersonalResults'], dir);
     userPersonalInformationManagement
         .requestUserPersonalInformationDataOnTheBackEnd(personalDataValue);
-    userPersonalInformationManagement.refreshDisplayText(0);
   }
 }
 

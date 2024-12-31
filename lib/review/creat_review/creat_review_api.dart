@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 void creatReview(
@@ -16,7 +17,6 @@ void creatReview(
   String reviewSchemeName,
   String userName,
 ) async {
-  final dio = Dio();
   Map<String, dynamic> formdata = {
     'userName': userName,
     'question': question,
@@ -31,9 +31,7 @@ void creatReview(
     'reviewRecord': reviewRecord,
     'reviewSchemeName': reviewSchemeName
   };
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
+
 
   String jsonformdata = jsonEncode(formdata);
   final response = await dio.post(

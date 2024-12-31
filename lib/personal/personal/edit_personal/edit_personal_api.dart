@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_sqlite.dart';
+import 'package:yunji/main/app_global_variable.dart';
 
 class EditPersonalData {
   final String? userName;
@@ -50,9 +51,7 @@ Future<void> editPersonal(
   File? backgroundImage,
   File? headPortrait,
 ) async {
-  final dio = Dio();
-  final headers = {'Content-Type': 'application/json'};
-
+  
   final requestData = {
     'userName': userName,
     'name': name,
@@ -66,7 +65,7 @@ Future<void> editPersonal(
   final response = await dio.post(
     'http://47.92.98.170:36233/editTheUsersPersonalData',
     data: requestData,
-    options: Options(headers: headers),
+    options: Options(headers: header),
   );
 
   if (response.statusCode == 200) {

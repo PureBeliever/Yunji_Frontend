@@ -44,8 +44,7 @@ class OtherPersonalMemoryBank {
 }
 
 Future<void> requestTheOtherPersonalData(String userName) async {
-  final dio = Dio();
-  final header = {'Content-Type': 'application/json'};
+
   final formdata = {'userName': userName};
 
   final response = await dio.post(
@@ -94,7 +93,7 @@ Future<void> requestTheOtherPersonalData(String userName) async {
     await otherPeoplePersonalInformationManagement
         .requestOtherPeoplePersonalInformationDataOnTheBackEnd(
             personalDataValue);
-    otherPeoplePersonalInformationManagement.refreshDisplayText(0);
+
   }
 }
 

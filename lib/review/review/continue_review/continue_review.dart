@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/review/review/continue_review/continue_review_option.dart';
@@ -97,7 +98,7 @@ class _ContinueReview extends State<ContinueReview> {
     _focusNode.requestFocus();
   }
 
-  void _showClearDialog(BuildContext context, VoidCallback onConfirm) {
+  void _showClearDialog(BuildContext context, VoidCallback onConfirm,bool isClearAll) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -117,9 +118,9 @@ class _ContinueReview extends State<ContinueReview> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-                  child: Text('是否清空所有讲解?', style: TextStyle(fontSize: 16)),
+                Padding(
+                  padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                  child: Text(isClearAll ? '是否清空所有讲解?' : '是否清空当前讲解?', style: const TextStyle(fontSize: 16)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 7),
@@ -173,36 +174,10 @@ class _ContinueReview extends State<ContinueReview> {
     });
   }
 
-  void _showToast(BuildContext context, String title, String description) {
-    toast.toastification.show(
-      context: context,
-      type: toast.ToastificationType.success,
-      style: toast.ToastificationStyle.flatColored,
-      title: Text(
-        title,
-        style: const TextStyle(
-            color: Colors.black, fontWeight: FontWeight.w800, fontSize: 17),
-      ),
-      description: Text(
-        description,
-        style: const TextStyle(
-            color: Color.fromARGB(255, 119, 118, 118),
-            fontSize: 16,
-            fontWeight: FontWeight.w600),
-      ),
-      alignment: Alignment.topCenter,
-      autoCloseDuration: const Duration(seconds: 4),
-      primaryColor: const Color(0xff047aff),
-      backgroundColor: const Color(0xffedf7ff),
-      borderRadius: BorderRadius.circular(12.0),
-      boxShadow: toast.lowModeShadow,
-      dragToClose: true,
-    );
-  }
 
   void _handleNextStep(BuildContext context) {
     if (continueLearningAboutDataManagement.memoryTheme.isEmpty) {
-      _showToast(context, "请填写主题", "主题为空");
+      showToast(context, "请填写主题", "主题为空", toast.ToastificationType.success, const Color(0xff047aff), const Color(0xFFEDF7FF));
       FocusScope.of(context).requestFocus(_focusNode);
     } else {
       int index = 0;
@@ -244,7 +219,7 @@ class _ContinueReview extends State<ContinueReview> {
                 _showClearDialog(context, () {
                   _clearAllExplanations();
                   Navigator.of(context).pop();
-                });
+                },true);
               },
             ),
           ),
@@ -276,10 +251,7 @@ class _ContinueReview extends State<ContinueReview> {
         surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: GetBuilder<ContinueLearningAboutDataManagement>(
-          init: continueLearningAboutDataManagement,
-          builder: (continueLearningAboutDataManagement) {
-            return ListView(
+      body:  ListView(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
@@ -332,8 +304,10 @@ class _ContinueReview extends State<ContinueReview> {
                   elevation: 0,
                   dividerColor: Colors.white,
                   expansionCallback: (int index, bool isExpanded) {
-                    _data[index].isExpanded = isExpanded;
-                    continueLearningAboutDataManagement.refreshExpansionTile();
+                    setState(() {
+                      _data[index].isExpanded = isExpanded;
+                    });
+                  
                   },
                   children: _data.map<ExpansionPanel>((Item item) {
                     return ExpansionPanel(
@@ -364,6 +338,7 @@ class _ContinueReview extends State<ContinueReview> {
                                   Radius.circular(100),
                                 ),
                               ),
+
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Color(0x00000000)),
@@ -397,7 +372,7 @@ class _ContinueReview extends State<ContinueReview> {
                                   _showClearDialog(context, () {
                                     _clearSpecificExplanation(item);
                                     Navigator.of(context).pop();
-                                  });
+                                  },false);
                                 },
                                 child: const Icon(
                                   color: Color.fromRGBO(134, 134, 134, 1),
@@ -428,8 +403,8 @@ class _ContinueReview extends State<ContinueReview> {
                   }).toList(),
                 ),
               ],
-            );
-          }),
+            ),
+          
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           FocusManager.instance.primaryFocus?.unfocus();

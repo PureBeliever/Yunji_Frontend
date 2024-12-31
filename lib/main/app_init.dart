@@ -40,6 +40,7 @@ void main() async {
   final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
   final personalData = await chapersonal(); 
   await refreshHomePageMemoryBank(contexts!);
+
   if (homePageMemoryDatabaseData != null && personalData != null) {
     _initializeUserData(homePageMemoryDatabaseData, personalData);
     requestTheUsersPersonalData(userNameChangeManagement.userNameValue);

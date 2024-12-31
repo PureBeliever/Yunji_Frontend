@@ -59,7 +59,6 @@ dependencies:
   keframe: ^3.0.0
   flutter_ffmpeg: ^0.4.2
   video_editor_2: ^3.1.1
-  # shared_preferences: ^2.3.3
 
   
 dev_dependencies:

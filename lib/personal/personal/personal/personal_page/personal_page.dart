@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/main/app_module/memory_bank_item.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/main/app_module/sliver_header_delegate.dart';
@@ -247,6 +247,7 @@ class UserPersonalInformationManagement extends GetxController {
         (indices) async =>
             userReviewMemoryBank = await queryUserPersonalMemoryBank(indices));
 
+    refreshDisplayText(0);
     update();
   }
 

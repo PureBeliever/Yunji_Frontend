@@ -10,7 +10,6 @@ import 'package:yunji/main/app_global_variable.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 
-
 // ignore: camel_case_types
 class OtherMemoryBank extends StatefulWidget {
   const OtherMemoryBank({super.key});
@@ -37,7 +36,7 @@ class ViewPostDataManagementForMemoryBanks extends GetxController {
 
   // 帖子的记忆库数据
   Map<String, dynamic> theMemoryBankValueOfThePost = {};
-  
+
   // 记忆库
   int numberOfMemories = 0;
 
@@ -49,22 +48,23 @@ class ViewPostDataManagementForMemoryBanks extends GetxController {
 
   // 答案
   Map<String, dynamic> theNumberOfAnswers = {};
-  
+
   // 记忆库标题
   String theTitleOfTheMemory = '';
 
   // 初始化记忆库数据
-  void initTheMemoryDataForThePost(Map<String, dynamic> theMemoryDataForThePost) {
+  void initTheMemoryDataForThePost(
+      Map<String, dynamic> theMemoryDataForThePost) {
     theMemoryBankValueOfThePost = theMemoryDataForThePost;
     theTitleOfTheMemory = theMemoryDataForThePost['theme'];
     numberOfMemories = (theMemoryDataForThePost['subscript'] as List).length;
-    theIndexValueOfTheMemoryItem = List<int>.from(theMemoryDataForThePost['subscript']);
+    theIndexValueOfTheMemoryItem =
+        List<int>.from(theMemoryDataForThePost['subscript']);
     theNumberOfProblems = jsonDecode(theMemoryDataForThePost['question']);
     theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['reply']);
   }
 
   // 刷新ExpansionTile
-  void refreshExpansionTile() => update();
 }
 
 List<Item> generateItems(int numberOfItems, List<int> subscript,
@@ -115,10 +115,11 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
         children: [
           InkWell(
             onTap: () async {
-                switchPage(context, const OtherPersonalPage());
+              switchPage(context, const OtherPersonalPage());
+              
               await requestTheOtherPersonalData(
-                  viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['user_name']);
-            
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name']);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
@@ -130,18 +131,23 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                       CircleAvatar(
                         radius: 21,
                         backgroundImage: viewPostDataManagementForMemoryBanks
-                                    .theMemoryBankValueOfThePost['head_portrait'] !=
+                                        .theMemoryBankValueOfThePost[
+                                    'head_portrait'] !=
                                 null
-                            ? FileImage(File(viewPostDataManagementForMemoryBanks
-                                .theMemoryBankValueOfThePost['head_portrait']))
-                            : const AssetImage('assets/personal/gray_back_head.png'),
+                            ? FileImage(File(
+                                viewPostDataManagementForMemoryBanks
+                                        .theMemoryBankValueOfThePost[
+                                    'head_portrait']))
+                            : const AssetImage(
+                                'assets/personal/gray_back_head.png'),
                       ),
                       const SizedBox(width: 11),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['name'],
+                            viewPostDataManagementForMemoryBanks
+                                .theMemoryBankValueOfThePost['name'],
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               color: Colors.black,
@@ -182,45 +188,42 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
               ),
             ),
           ),
-          GetBuilder<ViewPostDataManagementForMemoryBanks>(
-            init: ViewPostDataManagementForMemoryBanks(),
-            builder: (controller) {
-              return ExpansionPanelList(
-                materialGapSize: 15,
-                elevation: 0,
-                dividerColor: Colors.white,
-                expansionCallback: (int index, bool isExpanded) {
-                  _data[index].isExpanded = !isExpanded;
-                  controller.refreshExpansionTile();
-                },
-                children: _data.map<ExpansionPanel>((Item item) {
-                  return ExpansionPanel(
-                    backgroundColor: Colors.white,
-                    headerBuilder: (BuildContext context, bool isExpanded) {
-                      return GestureDetector(
-                        onTap: () {
-                          item.isExpanded = !isExpanded;
-                          controller.refreshExpansionTile();
-                        },
-                        child: ListTile(
-                          title: Text(
-                            item.headerValue,
-                            style: const TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      );
-                    },
-                    body: ListTile(
-                      title: Text(item.expandedValue,
-                          style: const TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w700)),
-                    ),
-                    isExpanded: item.isExpanded,
-                  );
-                }).toList(),
-              );
+          ExpansionPanelList(
+            materialGapSize: 15,
+            elevation: 0,
+            dividerColor: Colors.white,
+            expansionCallback: (int index, bool isExpanded) {
+              setState(() {
+                _data[index].isExpanded = isExpanded;
+              });
             },
+            children: _data.map<ExpansionPanel>((Item item) {
+              return ExpansionPanel(
+                backgroundColor: Colors.white,
+                headerBuilder: (BuildContext context, bool isExpanded) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        item.isExpanded = !isExpanded;
+                      });
+                    },
+                    child: ListTile(
+                      title: Text(
+                        item.headerValue,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  );
+                },
+                body: ListTile(
+                  title: Text(item.expandedValue,
+                      style: const TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w700)),
+                ),
+                isExpanded: item.isExpanded,
+              );
+            }).toList(),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -287,8 +290,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
       children: [
         Text(
           value,
-          style: const TextStyle(
-              fontSize: 17, fontWeight: FontWeight.w900),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
         ),
         Text(
           label,
@@ -381,7 +383,9 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
         var color = isLiked ? likedColor : unlikedColor;
         return Text(
           count == 0 ? "love" : text,
-          style: TextStyle(color: color, fontWeight: count == 0 ? FontWeight.normal : FontWeight.w700),
+          style: TextStyle(
+              color: color,
+              fontWeight: count == 0 ? FontWeight.normal : FontWeight.w700),
         );
       },
     );

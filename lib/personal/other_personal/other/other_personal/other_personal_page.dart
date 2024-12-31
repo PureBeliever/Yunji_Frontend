@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:keframe/keframe.dart';
-import 'package:yunji/main/app_module/memory_bank_item.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
@@ -131,7 +131,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       otherPeopleReviewMemoryBankIndex,
       (indices) async => otherPeopleReviewMemoryBank = await queryOtherPeoplePersonalMemoryBank(indices),
     );
-
+    refreshDisplayText(0);
     update();
   }
 // 更新记忆库下标

@@ -14,6 +14,8 @@ import 'package:yunji/review/creat_review/creat_review_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/notification_init.dart';
 
+// 通用字体大小
+const commonFontSize = 17.0;
 class CreatReviewOption extends StatefulWidget {
   const CreatReviewOption({super.key});
 
@@ -29,6 +31,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
   final List<List<int>> memoryTime = [
     [0],
     [2, 2],
+    // [1440,10080,20160],
     [1440, 10080, 20160, 43200],
     [1440, 10080, 20160, 43200, 129600],
     [1440, 10080, 20160, 43200, 129600, 259200],

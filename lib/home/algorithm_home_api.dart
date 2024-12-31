@@ -17,7 +17,6 @@ import 'package:yunji/main/app_module/show_toast.dart';
 // 刷新主页记忆库
 Future<void> refreshHomePageMemoryBank(BuildContext context) async {
   await databaseManager.initDatabase(); // 确保数据库初始化
-  await Future.delayed(const Duration(seconds: 1));
 // 获取存储记忆库id的数据库值
 
   final memoryBankInfo = await queryIdAndLength();
