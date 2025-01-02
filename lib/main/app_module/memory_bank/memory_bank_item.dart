@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
@@ -241,6 +242,7 @@ class LikeButtonRow extends StatelessWidget {
                 likeCount: data['pull'],
                 onTap: (isLiked) async {
 
+                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 1);
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userPulledMemoryBankIndex,
@@ -265,6 +267,7 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
                 likeCount: data['collect'],
                 onTap: (isLiked) async {
+                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 2);
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userCollectedMemoryBankIndex,
@@ -289,6 +292,7 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
                 likeCount: data['like'],
                 onTap: (isLiked) async {
+                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 3);
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userLikedMemoryBankIndex,
@@ -313,6 +317,7 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
                 likeCount: data['review'],
                 onTap: (isLiked) async {
+                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 4);
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userReplyMemoryBankIndex,

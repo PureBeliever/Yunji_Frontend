@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 
 Future<void> synchronizeMemoryBankData(
-    int memoryBankId, int type, String userName) async {
+    String userName, int memoryBankId, int type) async {
   final formdata = {'userName': userName, 'memoryBankId': memoryBankId, 'type': type};
 
   final response = await dio.post(

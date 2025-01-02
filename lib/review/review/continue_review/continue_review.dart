@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/review/review/continue_review/continue_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
 

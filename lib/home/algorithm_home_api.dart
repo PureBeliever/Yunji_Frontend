@@ -9,10 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/home/home_sqlite.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
-
+import 'package:yunji/main/app/app_sqlite.dart';
 /// Start of Selection
 // 刷新主页记忆库
 Future<void> refreshHomePageMemoryBank(BuildContext context) async {
@@ -25,10 +25,10 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
   final randomSelection = <int>{};
   final random = Random();
   // 随机选择100个记忆库下标
-  while (randomSelection.length < 100 && randomSelection.length < number.length) {
+  while (
+      randomSelection.length < 100 && randomSelection.length < number.length) {
     randomSelection.add(number[random.nextInt(number.length)]);
   }
-
 
   final response = await dio.post(
     'http://47.92.98.170:36233/getTheHomePageMemoryLibrary',
@@ -38,11 +38,12 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
 
   final data = response.data;
 
-  final memoryBankResults = List<Map<String, dynamic>>.from(data["memoryBankResults"] ?? []);
-  final personalValue = List<Map<String, dynamic>>.from(data["personalValue"] ?? []);
-  print('主页情求的数据库');
-  print(memoryBankResults);
-final requestedValueId = List<int>.empty(growable: true);
+  final memoryBankResults =
+      List<Map<String, dynamic>>.from(data["memoryBankResults"] ?? []);
+  final personalValue =
+      List<Map<String, dynamic>>.from(data["personalValue"] ?? []);
+
+  final requestedValueId = List<int>.empty(growable: true);
   if (memoryBankResults.isEmpty) {
     showToast(
       context,
@@ -55,29 +56,32 @@ final requestedValueId = List<int>.empty(growable: true);
     return;
   }
 
-  await _processPersonalValue(personalValue, memoryBankResults,requestedValueId);
+  await _processPersonalValue(
+      personalValue, memoryBankResults, requestedValueId);
   await insertHomePageMemoryBank(memoryBankResults);
 
   final memoryBankData = await queryHomePageMemoryBank();
- 
+
   refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(memoryBankData);
 
-  int max = data["length"]+2;
+  int max = data["length"] + 2;
   int min = memoryBankInfo["length"];
   // 计算未请求的id列表
 
-  final filterIdList = number.where((number) => !requestedValueId.contains(number)).toList();
+  final filterIdList =
+      number.where((number) => !requestedValueId.contains(number)).toList();
   // 计算新的id列表
 
-  final numbers = List.generate(max - min, (i) => i + min ).cast<int>();
- 
+  final numbers = List.generate(max - min, (i) => i + min).cast<int>();
+
   // 将未请求的id列表和新的id列表合并
   filterIdList.addAll(numbers);
   // 更新intdatabase表
   await updateint(filterIdList.toString(), max);
 }
 
-Future<void> _processPersonalValue(List<dynamic> personalValue, List<dynamic> memoryBankResults,List<int> requestedValueId) async {
+Future<void> _processPersonalValue(List<dynamic> personalValue,
+    List<dynamic> memoryBankResults, List<int> requestedValueId) async {
   for (final person in personalValue) {
     if (person['head_portrait'] != null) {
       final dir = await getApplicationDocumentsDirectory();

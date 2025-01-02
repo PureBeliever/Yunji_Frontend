@@ -11,7 +11,7 @@ import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
 import 'package:yunji/main/app_module/sliver_header_delegate.dart';
 import 'package:yunji/home/algorithm_home_api.dart';

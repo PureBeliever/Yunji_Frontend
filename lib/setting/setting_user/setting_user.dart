@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
+import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 
-class Settingzhanghao extends StatefulWidget {
-  const Settingzhanghao({super.key});
+class SettingUser extends StatefulWidget {
+  const SettingUser({super.key});
 
   @override
-  State<Settingzhanghao> createState() => _Settingzhanghao();
+  State<SettingUser> createState() => _SettingUser();
 }
 
-class _Settingzhanghao extends State<Settingzhanghao> {
-  final settingzhanghaoxiugaicontroller =
-      Get.put(UserNameChangeManagement());
+class UserNameChangeManagement extends GetxController {
+  static UserNameChangeManagement get to => Get.find();
+  String? userNameValue;
+
+  Future<void> userNameChanged(String? userNameValueChanged) async {
+    userNameValue = userNameValueChanged;
+  }
+}
+
+class _SettingUser extends State<SettingUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +42,7 @@ class _Settingzhanghao extends State<Settingzhanghao> {
       ),
       body: InkWell(
         onTap: () {
-          switchPage(context, const Settingzhanghaoxiugai());
+          switchPage(context, const SettingUserName());
         },
         child: ListTile(
             title: const Text(
@@ -45,14 +53,14 @@ class _Settingzhanghao extends State<Settingzhanghao> {
               ),
             ),
             subtitle: GetBuilder<UserNameChangeManagement>(
-                init: UserNameChangeManagement.to,
-                builder: (UserNameChangeManagement) {
+                init: userNameChangeManagement,
+                builder: (userNameChangeManagement) {
                   return Text(
-                    '@${UserNameChangeManagement.userNameValue}' ,
+                    '@${userNameChangeManagement.userNameValue}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Color.fromRGBO(84, 87, 105, 1),
-                      fontSize: 14,
+                      fontSize: 15,
                     ),
                   );
                 })),

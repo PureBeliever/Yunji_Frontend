@@ -11,11 +11,10 @@ import 'package:yunji/home/algorithm_home_api.dart';
 
 //项目文件
 import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/home/home_sqlite.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/home/login/login_init.dart';
 import 'package:yunji/review/notification_init.dart';
-import 'package:yunji/personal/personal/personal/personal_api.dart';
+import 'package:yunji/main/app/app_sqlite.dart';
 
 Future<void> requestPermission() async {
   // 请求通知权限
@@ -24,26 +23,21 @@ Future<void> requestPermission() async {
   await Permission.scheduleExactAlarm.request();
 }
 
-Future<Map<String, dynamic>?> chapersonal() async {
-  final db = databaseManager.database;
 
-  final List<Map<String, dynamic>> personalMaps =
-      await db!.query('personal_data');
-  return personalMaps.isEmpty ? null : personalMaps[0];
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
   await _initializeApp();
-  
+
   final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
-  final personalData = await chapersonal(); 
+  final personalData = await queryPersonalData();
   await refreshHomePageMemoryBank(contexts!);
+
 
   if (homePageMemoryDatabaseData != null && personalData != null) {
     _initializeUserData(homePageMemoryDatabaseData, personalData);
-    requestTheUsersPersonalData(userNameChangeManagement.userNameValue);
+
   } else {
     soginDependencySettings(contexts!);
   }
@@ -63,15 +57,21 @@ Future<void> _initializeNotification() async {
   final notificationHelper = NotificationHelper();
   await notificationHelper.initialize();
 }
-
-void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData, Map<String, dynamic> personalData) {
+void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
+    Map<String, dynamic> personalData) async {
   refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(homePageMemoryDatabaseData);
-
+  
   loginStatus = true;
+
+  // 初始化背景图和头像
   backgroundImageChangeManagement.initBackgroundImage(personalData['background_image']);
   headPortraitChangeManagement.initHeadPortrait(personalData['head_portrait']);
+
+  // 更新选择器结果
   selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(personalData['birth_time']);
   selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(personalData['residential_address']);
+
+  // 更新个人信息
   editPersonalDataValueManagement.changePersonalInformation(
     name: personalData['name'],
     profile: personalData['introduction'],
@@ -80,8 +80,13 @@ void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData, 
     applicationDate: personalData['join_date'],
   );
 
-  userNameChangeManagement.userNameChanged(personalData['user_name']);
+  // 查询用户的记忆库
+  userPersonalInformationManagement.userPulledMemoryBank = await queryPersonalMemoryBank(personalData['pull_list']);
+  userPersonalInformationManagement.userLikedMemoryBank = await queryPersonalMemoryBank(personalData['like_list']);
+  userPersonalInformationManagement.userReviewMemoryBank = await queryPersonalMemoryBank(personalData['review_list']);
 
+  // 更新用户名
+  userNameChangeManagement.userNameChanged(personalData['user_name']);
 }
 
 class MyApp extends StatelessWidget {

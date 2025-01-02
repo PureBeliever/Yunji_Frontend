@@ -6,9 +6,9 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_pe
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/setting/setting.dart';
-import 'package:yunji/main/app_global_variable.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
+import 'package:yunji/setting/setting_page.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/main/app_module/switch.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -199,7 +199,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               null,
             ),
             _buildMenuItem(
-                context, '设置', 'assets/home/setting.svg', const Setting()),
+                context, '设置', 'assets/home/setting.svg', const SettingPage()),
             const Padding(
               padding: EdgeInsets.only(left: 28, right: 26),
               child: Divider(

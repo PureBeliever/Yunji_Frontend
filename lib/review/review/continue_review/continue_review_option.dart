@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 
 class ContinueReviewOption extends StatefulWidget {
   const ContinueReviewOption({super.key});
@@ -18,7 +18,7 @@ class ContinueReviewOption extends StatefulWidget {
 }
 class _ContinueReviewOption extends State<ContinueReviewOption> {
   final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
-  final userNameChangeManagement = Get.put(UserNameChangeManagement());
+ 
 
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;

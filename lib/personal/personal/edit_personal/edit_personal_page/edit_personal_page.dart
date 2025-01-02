@@ -17,8 +17,8 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_video_editor_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 
 class EditPersonalDataValueManagement extends GetxController {
   static EditPersonalDataValueManagement get to => Get.find();
@@ -110,15 +110,15 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   String? selectResidentialAddress;
   String? selectDateOfBirth;
 
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
 
-  Future<void> _pickVideoAndConvertToGif() async {
-    final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
+  // Future<void> _pickVideoAndConvertToGif() async {
+  //   final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
 
-    if (video != null) {
-      switchPage(context, EditVideoEditorPage(video: video));
-    }
-  }
+  //   if (video != null) {
+  //     switchPage(context, EditVideoEditorPage(video: video));
+  //   }
+  // }
 
   @override
   void initState() {
@@ -136,7 +136,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       Get.put(BackgroundImageChangeManagement());
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
-  static String? username = UserNameChangeManagement.to.userNameValue;
+  static String? username = userNameChangeManagement.userNameValue;
 
   Future<void> _selectAndCropImage({
     required ImageSource source,

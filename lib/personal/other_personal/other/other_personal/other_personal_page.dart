@@ -17,8 +17,8 @@ import 'package:yunji/personal/other_personal/other/other_personal/other_persona
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
 import 'package:yunji/main/app_module/sliver_header_delegate.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 
 class OtherPersonalPage extends StatefulWidget {

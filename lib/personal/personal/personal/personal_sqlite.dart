@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'dart:convert';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 

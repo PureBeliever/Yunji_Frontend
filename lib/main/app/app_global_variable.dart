@@ -10,7 +10,7 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_pe
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
+import 'package:yunji/setting/setting_user/setting_user.dart';
 import 'package:yunji/main/sqlite_init.dart';
 import 'package:dio/dio.dart';
 

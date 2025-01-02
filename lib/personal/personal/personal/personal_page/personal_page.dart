@@ -10,7 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
@@ -22,7 +22,7 @@ import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/review/review/start_review/review.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/setting/setting_account_user_name.dart';
+import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/personal/personal/personal/personal_sqlite.dart';
 
@@ -564,11 +564,9 @@ class _PersonalPageState extends State<PersonalPage>
                   decoration: TextDecoration.none,
                 ),
               ),
-              GetBuilder<UserNameChangeManagement>(
-                init: UserNameChangeManagement.to,
-                builder: (UserNameChangeManagement) {
-                  return Text(
-                    '@${UserNameChangeManagement.userNameValue}',
+             
+                 Text(
+                    '@${userNameChangeManagement.userNameValue}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
@@ -576,9 +574,8 @@ class _PersonalPageState extends State<PersonalPage>
                       fontFamily: 'Raleway',
                       decoration: TextDecoration.none,
                     ),
-                  );
-                },
-              ),
+                  ),
+           
               Padding(
                 padding: const EdgeInsets.only(top: 13.0),
                 child: editPersonalDataValueManagement.profileValue?.isNotEmpty ?? false

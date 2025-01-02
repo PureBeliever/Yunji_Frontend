@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 import 'package:sqflite/sqflite.dart';  
-import 'package:yunji/main/app_global_variable.dart';
+import 'package:yunji/main/app/app_global_variable.dart';
 Future<Map<String, dynamic>> queryIdAndLength() async {
   final db = databaseManager.database;
   if (db == null) {
@@ -32,16 +32,6 @@ Future<void> insertHomePageMemoryBank(List<Map<String, dynamic>> memoryBankData)
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-}
-
-// 查询主页记忆库
-Future<List<Map<String, dynamic>>> queryHomePageMemoryBank() async {
-  final db = databaseManager.database;
-  if (db == null) {
-    throw Exception('Database is not initialized');
-  }
-
-  return await db.query('memory_bank', orderBy: 'NULL');
 }
 
 // 更新intdatabase
