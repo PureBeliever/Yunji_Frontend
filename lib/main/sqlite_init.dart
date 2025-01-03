@@ -27,13 +27,13 @@ class DatabaseManager {
 
   Future<void> _createPersonalTable(Database txn) async {
     await txn.execute(
-      'CREATE TABLE personal_data( user_name  char(20)   PRIMARY KEY , name  char(50), introduction  char(170) ,residential_address  char(40), birth_time  char(15), background_image char(50), head_portrait char(50),join_date  char(15) ,like_list JSON,collect_list JSON,pull_list JSON,review_list JSON);',
+    'CREATE TABLE personal_data( user_name  char(20)   PRIMARY KEY , name  char(50), introduction  char(170) ,residential_address  char(40), birth_time  char(15), background_image char(50), head_portrait char(50),join_date  char(15) ,like_list JSON,collect_list JSON,pull_list JSON,review_list JSON,reply_list JSON);',
     );
   }
 
   Future<void> _createIntDatabaseTable(Database txn) async {
     await txn.execute(
-      'CREATE TABLE intdatabase (id INTEGER PRIMARY KEY, number LONGTEXT, length INT);',
+      'CREATE TABLE intdatabase (id BIGINT PRIMARY KEY, number LONGTEXT, length INT);',
     );
     List<int> number = [1];
     await txn.insert(
@@ -49,27 +49,27 @@ class DatabaseManager {
       'user_name CHAR(20), '
       'name CHAR(50), '
       'head_portrait CHAR(50), '
-      'memory_bank_id INT PRIMARY KEY, '
-      'question JSON, '
-      'reply JSON, '
+      'id BIGINT PRIMARY KEY, '
+     'question JSON, '
+      'answer JSON, '
       'theme CHAR(50), '
       'subscript  JSON, '
-      'collect  INT, '
+     'collect  INT, '
       'pull INT, '
       'like INT, '
-      'review INT);',
+      'reply INT);',
     );
   }
 
   Future<void> _createPersonalJiyikuTable(Database txn) async {
     await txn.execute(
-      'CREATE TABLE personal_memory_bank ('
+    'CREATE TABLE personal_memory_bank ('
       'user_name CHAR(20), '
       'name CHAR(50), '
       'head_portrait CHAR(50), '
-      'memory_bank_id INT PRIMARY KEY, '
+      'id BIGINT PRIMARY KEY, '
       'question JSON, '
-      'reply JSON, '
+      'answer JSON, '
       'theme CHAR(50), '
       'subscript  JSON, '
       'memory_time JSON, '
@@ -77,12 +77,13 @@ class DatabaseManager {
       'collect  INT, '
       'pull INT, '
       'like INT, '
-      'review INT, '
+      'reply INT, '
       'Information_notification BOOL, '
       'alarm_notification BOOL, '
       'complete_state BOOL, '
       'review_record JSON, '
       'review_scheme_name CHAR(10));',
+
     );
   }
 
@@ -92,15 +93,15 @@ class DatabaseManager {
       'user_name CHAR(20), '
       'name CHAR(50), '
       'head_portrait CHAR(50), '
-      'memory_bank_id INT PRIMARY KEY, '
+      'id BIGINT PRIMARY KEY, '
       'question JSON, '
-      'reply JSON, '
+      'answer JSON, '
       'theme CHAR(50), '
       'subscript  JSON, '
       'collect  INT, '
       'pull INT, '
       'like INT, '
-      'review INT);',
+      'reply INT);',
     );
   }
 

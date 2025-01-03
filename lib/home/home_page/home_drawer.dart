@@ -8,7 +8,6 @@ import 'package:yunji/personal/personal/personal/personal_page/personal_head_por
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/setting/setting_page.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/main/app_module/switch.dart';
 
 class HomeDrawer extends StatefulWidget {

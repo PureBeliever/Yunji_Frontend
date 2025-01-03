@@ -25,7 +25,7 @@ Future<void> insertHomePageMemoryBank(List<Map<String, dynamic>> memoryBankData)
 
   for (var memoryBank in memoryBankData) {
     memoryBank['question'] = jsonEncode(memoryBank['question']);
-    memoryBank['reply'] = jsonEncode(memoryBank['reply']);
+    memoryBank['answer'] = jsonEncode(memoryBank['answer']);
     await db.insert(
       'memory_bank',
       memoryBank,

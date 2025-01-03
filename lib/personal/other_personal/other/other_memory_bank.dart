@@ -61,18 +61,18 @@ class ViewPostDataManagementForMemoryBanks extends GetxController {
     theIndexValueOfTheMemoryItem =
         List<int>.from(theMemoryDataForThePost['subscript']);
     theNumberOfProblems = jsonDecode(theMemoryDataForThePost['question']);
-    theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['reply']);
+    theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['answer']);
   }
 
   // 刷新ExpansionTile
 }
 
 List<Item> generateItems(int numberOfItems, List<int> subscript,
-    Map<String, dynamic> question, Map<String, dynamic> reply) {
+    Map<String, dynamic> question, Map<String, dynamic> answer) {
   return List<Item>.generate(numberOfItems, (index) {
     return Item(
       headerValue: question[subscript[index].toString()] ?? '',
-      expandedValue: reply[subscript[index].toString()] ?? '',
+      expandedValue: answer[subscript[index].toString()] ?? '',
     );
   });
 }
@@ -278,7 +278,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['review']} ',
+          '${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['reply']} ',
           '回复',
         ),
       ],

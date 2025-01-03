@@ -10,7 +10,7 @@ Future<void> insertOtherPeoplePersonalMemoryBank(List<Map<String, dynamic>> memo
 
   for (var memoryBank in memoryBankData) {
     memoryBank['question'] = jsonEncode(memoryBank['question']);
-    memoryBank['reply'] = jsonEncode(memoryBank['reply']);
+    memoryBank['answer'] = jsonEncode(memoryBank['answer']);
 
     await db?.insert(
       'other_personal_memory_bank',
@@ -24,7 +24,7 @@ Future<void> insertOtherPeoplePersonalMemoryBank(List<Map<String, dynamic>> memo
 Future<List<Map<String, dynamic>>> queryOtherPeoplePersonalMemoryBank(List<int> ids) async {
   final db = databaseManager.database;
   final placeholders = List.filled(ids.length, '?').join(',');
-  final mysqlQueryStatement = 'memory_bank_id IN ($placeholders)';
+  final mysqlQueryStatement = 'id IN ($placeholders)';
 
   final List<Map<String, dynamic>> memoryBank = await db!.query(
     'other_personal_memory_bank',
@@ -33,6 +33,6 @@ Future<List<Map<String, dynamic>>> queryOtherPeoplePersonalMemoryBank(List<int> 
   );
 
   return ids.reversed
-      .map((id) => memoryBank.firstWhere((row) => row['memory_bank_id'] == id))
+      .map((id) => memoryBank.firstWhere((row) => row['id'] == id))
       .toList();
 }

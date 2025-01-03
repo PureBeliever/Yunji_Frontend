@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
@@ -151,7 +150,7 @@ class MemoryBankItem extends StatelessWidget {
                       const SizedBox(height: 20),
                       // 回复
                       Text(
-                        parseJson(data['reply'], data['subscript']),
+                        parseJson(data['answer'], data['subscript']),
                         style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
@@ -207,7 +206,7 @@ class LikeButtonRow extends StatelessWidget {
           size: 20,
         );
       },
-      isLiked: memoryBankIds.contains(data['memory_bank_id']),
+      isLiked: memoryBankIds.contains(data['id']),
       likeCount: likeCount,
       countBuilder: (int? count, bool isLiked, String text) {
         var color = isLiked ? likedColor : unlikedColor;
@@ -241,8 +240,9 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
                 likeCount: data['pull'],
                 onTap: (isLiked) async {
-
-                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 1);
+                  List<int> changeUserPulledMemoryBankIndex = userPersonalInformationManagement.userPulledMemoryBankIndex;
+                  changeUserPulledMemoryBankIndex.add(data['id']);
+                  synchronizeMemoryBankData(data['user_name'], changeUserPulledMemoryBankIndex, 'pull_list',data['id'],'pull');
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userPulledMemoryBankIndex,
@@ -267,7 +267,9 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
                 likeCount: data['collect'],
                 onTap: (isLiked) async {
-                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 2);
+                  List<int> changeUserCollectedMemoryBankIndex = userPersonalInformationManagement.userCollectedMemoryBankIndex;
+                  changeUserCollectedMemoryBankIndex.add(data['id']);
+                  synchronizeMemoryBankData(data['user_name'], changeUserCollectedMemoryBankIndex, 'collect_list',data['id'],'collect');
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userCollectedMemoryBankIndex,
@@ -292,7 +294,9 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
                 likeCount: data['like'],
                 onTap: (isLiked) async {
-                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 3);
+                  List<int> changeUserLikedMemoryBankIndex = userPersonalInformationManagement.userLikedMemoryBankIndex;
+                  changeUserLikedMemoryBankIndex.add(data['id']);
+                  synchronizeMemoryBankData(data['user_name'], changeUserLikedMemoryBankIndex, 'like_list',data['id'],'`like`');
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userLikedMemoryBankIndex,
@@ -315,9 +319,11 @@ class LikeButtonRow extends StatelessWidget {
                 unlikedIcon: Icons.messenger_outline,
                 likedColor: Colors.purpleAccent,
                 unlikedColor: Color.fromRGBO(84, 87, 105, 1),
-                likeCount: data['review'],
+                likeCount: data['reply'],
                 onTap: (isLiked) async {
-                  synchronizeMemoryBankData(data['user_name'], data['memory_bank_id'], 4);
+                  List<int> changeUserReplyMemoryBankIndex = userPersonalInformationManagement.userReplyMemoryBankIndex;
+                  changeUserReplyMemoryBankIndex.add(data['id']);
+                  synchronizeMemoryBankData(data['user_name'], changeUserReplyMemoryBankIndex, 'reply_list',data['id'],'reply');
                   return !isLiked;
                 },
                 memoryBankIds: userPersonalInformationManagement.userReplyMemoryBankIndex,

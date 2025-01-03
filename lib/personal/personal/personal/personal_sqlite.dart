@@ -9,7 +9,7 @@ Future<void> insertUserPersonalMemoryBank(var memoryBankData) async {
 
   memoryBankData.forEach((memoryBank) {
     memoryBank['question'] = jsonEncode(memoryBank['question']);
-    memoryBank['reply'] = jsonEncode(memoryBank['reply']);
+    memoryBank['answer'] = jsonEncode(memoryBank['answer']);
     memoryBank['review_record'] = jsonEncode(memoryBank['review_record']);
     memoryBank['memory_time'] = jsonEncode(memoryBank['memory_time']);
     
@@ -36,12 +36,12 @@ Future<List<Map<String, dynamic>>> queryUserPersonalMemoryBank(List<int> ids) as
   final placeholders = List.filled(ids.length, '?').join(',');
   final List<Map<String, dynamic>> memoryBank = await db.query(
     'personal_memory_bank',
-    where: 'memory_bank_id IN ($placeholders)',
+    where: 'id IN ($placeholders)',
     whereArgs: ids,
   );
 
   return ids.reversed
-      .map((id) => memoryBank.firstWhere((row) => row['memory_bank_id'] == id, orElse: () => {}))
+      .map((id) => memoryBank.firstWhere((row) => row['id'] == id, orElse: () => {}))
       .where((element) => element.isNotEmpty)
       .toList();
 }

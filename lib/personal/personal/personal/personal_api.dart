@@ -19,7 +19,7 @@ class PersonalData {
   final String? collectList;
   final String? pullList;
   final String? reviewList;
-
+  final String? replyList;
   const PersonalData({
     required this.userName,
     required this.name,
@@ -33,7 +33,7 @@ class PersonalData {
     required this.collectList,
     required this.pullList,
     required this.reviewList,
-
+    required this.replyList,
   });
 
   Map<String, String?> toMap() => {
@@ -49,7 +49,7 @@ class PersonalData {
         'collect_list': collectList,
         'pull_list': pullList,
         'review_list': reviewList,
-       
+        'reply_list': replyList,
       };
 }
 
@@ -73,10 +73,10 @@ void requestTheUsersPersonalData(String? userName) async {
   final results = response.data;
   final personalDataValue = results['personalDataValue'];
 
-  String? backgroundImage = await _saveImageToFile(
-      personalDataValue['background_image'], dir);
-  String? headPortrait = await _saveImageToFile(
-      personalDataValue['head_portrait'], dir);
+  String? backgroundImage =
+      await _saveImageToFile(personalDataValue['background_image'], dir);
+  String? headPortrait =
+      await _saveImageToFile(personalDataValue['head_portrait'], dir);
 
   final personalData = PersonalData(
     collectList: jsonEncode(personalDataValue['collect_list']),
@@ -91,14 +91,15 @@ void requestTheUsersPersonalData(String? userName) async {
     backgroundImage: backgroundImage,
     headPortrait: headPortrait,
     joinDate: personalDataValue['join_date'],
+    replyList: jsonEncode(personalDataValue['reply_list']),
   );
 
   await insertPersonalData(personalData);
   _updateDisplay(personalDataValue, backgroundImage, headPortrait);
 
   if (results['memoryBankResults'] != null) {
-    await _processMemoryBankResults(
-        results['memoryBankResults'], results['memoryBankPersonalResults'], dir);
+    await _processMemoryBankResults(results['memoryBankResults'],
+        results['memoryBankPersonalResults'], dir);
     userPersonalInformationManagement
         .requestUserPersonalInformationDataOnTheBackEnd(personalDataValue);
   }
@@ -115,9 +116,12 @@ Future<String?> _saveImageToFile(String? base64Image, Directory dir) async {
   return null;
 }
 
-void _updateDisplay(Map<String, dynamic> personalDataValue, String? backgroundImage, String? headPortrait) {
-  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(personalDataValue['residential_address']);
+void _updateDisplay(Map<String, dynamic> personalDataValue,
+    String? backgroundImage, String? headPortrait) {
+  selectorResultsUpdateDisplay
+      .dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
+      personalDataValue['residential_address']);
   backgroundImageChangeManagement.initBackgroundImage(backgroundImage);
   headPortraitChangeManagement.initHeadPortrait(headPortrait);
   editPersonalDataValueManagement.changePersonalInformation(
@@ -130,7 +134,8 @@ void _updateDisplay(Map<String, dynamic> personalDataValue, String? backgroundIm
   userNameChangeManagement.userNameChanged(personalDataValue['user_name']);
 }
 
-Future<void> _processMemoryBankResults(List<dynamic> memoryBankResults, List<dynamic> memoryBankPersonalResults, Directory dir) async {
+Future<void> _processMemoryBankResults(List<dynamic> memoryBankResults,
+    List<dynamic> memoryBankPersonalResults, Directory dir) async {
   for (var personalResult in memoryBankPersonalResults) {
     if (personalResult['head_portrait'] != null) {
       final filename = generateRandomFilename();

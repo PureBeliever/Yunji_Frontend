@@ -94,8 +94,8 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
     Map<String, String> stringQuestion = continueLearningAboutDataManagement
         .problems
         .map((key, value) => MapEntry(key.toString(), value));
-    Map<String, String> stringReply = continueLearningAboutDataManagement
-        .reply
+    Map<String, String> stringAnswer = continueLearningAboutDataManagement
+        .answer
         .map((key, value) => MapEntry(key.toString(), value));
     DateTime setTime = now.add(Duration(minutes: reviewTime[_valueChoice][0]));
 
@@ -133,7 +133,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
 
     continueReview(
         stringQuestion,
-        stringReply,
+        stringAnswer,
         continueLearningAboutDataManagement.id,
         continueLearningAboutDataManagement.memoryTheme,
         reviewTime[_valueChoice],

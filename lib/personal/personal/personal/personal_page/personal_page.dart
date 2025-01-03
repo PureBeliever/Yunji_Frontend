@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
+
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
@@ -22,7 +23,6 @@ import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/review/review/start_review/review.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/personal/personal/personal/personal_sqlite.dart';
 
@@ -132,7 +132,7 @@ class MemoryBankCompletionStatus extends GetxController {
             height: statusRecord.length * 23.0,
             child: ListView.builder(
               cacheExtent: 500,
-              physics: const BouncingScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: statusRecord.length,
               itemBuilder: (context, index) {
                 return Text(
@@ -162,8 +162,7 @@ class MemoryBankCompletionStatus extends GetxController {
       Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        reviewDataManagement
-            .initMemoryData(widgetsDisplayValues);
+        reviewDataManagement.initMemoryData(widgetsDisplayValues);
         switchPage(context, ReviewPage());
       },
       child: Text(
@@ -230,9 +229,12 @@ class UserPersonalInformationManagement extends GetxController {
         (indices) async =>
             userLikedMemoryBank = await queryUserPersonalMemoryBank(indices));
 
-    _updateMemoryBankData(
-        userPersonalInformationData, 'collect_list', userReplyMemoryBankIndex);
+    await _updateMemoryBankData(userPersonalInformationData, 'collect_list',
+        userCollectedMemoryBankIndex);
 
+    await _updateMemoryBankData(
+        userPersonalInformationData, 'reply_list', userReplyMemoryBankIndex);
+        
     await _updateMemoryBankData(
         userPersonalInformationData,
         'pull_list',
@@ -296,7 +298,8 @@ class _PersonalPageState extends State<PersonalPage>
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     )..addListener(() {
-        userPersonalInformationManagement.refreshDisplayText(tabController.index);
+        userPersonalInformationManagement
+            .refreshDisplayText(tabController.index);
       });
   }
 
@@ -304,7 +307,8 @@ class _PersonalPageState extends State<PersonalPage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.addListener(() {
         final offset = scrollController.offset;
-        userInformationListScrollDataManagement.setBackgroundColor(offset >= 160);
+        userInformationListScrollDataManagement
+            .setBackgroundColor(offset >= 160);
         userInformationListScrollDataManagement.setTransparency(offset >= 235);
       });
     });
@@ -328,13 +332,14 @@ class _PersonalPageState extends State<PersonalPage>
         init: editPersonalDataValueManagement,
         builder: (editPersonalDataValueManagement) {
           return EasyRefresh(
-                       callRefreshOverOffset: 5,
+            callRefreshOverOffset: 5,
             header: _buildClassicHeader(),
             onRefresh: _refresh,
             child: NestedScrollView(
               physics: const BouncingScrollPhysics(),
               controller: scrollController,
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   _buildSliverAppBar(context, editPersonalDataValueManagement),
                   _buildSliverToBoxAdapter(editPersonalDataValueManagement),
@@ -379,7 +384,8 @@ class _PersonalPageState extends State<PersonalPage>
     );
   }
 
-  SliverAppBar _buildSliverAppBar(BuildContext context, EditPersonalDataValueManagement editPersonalDataValueManagement) {
+  SliverAppBar _buildSliverAppBar(BuildContext context,
+      EditPersonalDataValueManagement editPersonalDataValueManagement) {
     return SliverAppBar(
       title: Padding(
         padding: const EdgeInsets.only(left: 48.0),
@@ -392,7 +398,8 @@ class _PersonalPageState extends State<PersonalPage>
                 Text(
                   editPersonalDataValueManagement.nameValue ?? '',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(userInformationListScrollDataManagement.opacity),
+                    color: Colors.white.withOpacity(
+                        userInformationListScrollDataManagement.opacity),
                     fontSize: 21,
                     fontWeight: FontWeight.w500,
                   ),
@@ -400,7 +407,8 @@ class _PersonalPageState extends State<PersonalPage>
                 Text(
                   userInformationListScrollDataManagement.displayText,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(userInformationListScrollDataManagement.opacity),
+                    color: Colors.white.withOpacity(
+                        userInformationListScrollDataManagement.opacity),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -453,7 +461,9 @@ class _PersonalPageState extends State<PersonalPage>
   LayoutBuilder _buildFlexibleSpaceBar() {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        double percent = ((constraints.maxHeight - kToolbarHeight) * 40 / (200 - kToolbarHeight));
+        double percent = ((constraints.maxHeight - kToolbarHeight) *
+            40 /
+            (200 - kToolbarHeight));
         double dx = 68 - percent * 1.20;
         double size = (80 + percent * 2) / 100;
 
@@ -476,7 +486,8 @@ class _PersonalPageState extends State<PersonalPage>
                       child: GetBuilder<BackgroundImageChangeManagement>(
                         init: backgroundImageChangeManagement,
                         builder: (backgroundImageChangeManagement) {
-                          return _buildBackgroundImage(backgroundImageChangeManagement);
+                          return _buildBackgroundImage(
+                              backgroundImageChangeManagement);
                         },
                       ),
                     ),
@@ -493,13 +504,21 @@ class _PersonalPageState extends State<PersonalPage>
                 init: userInformationListScrollDataManagement,
                 builder: (userInformationListScrollDataManagement) {
                   return AnimatedContainer(
-                    duration: Duration(seconds: userInformationListScrollDataManagement.backgroundState ? 1 : 0),
+                    duration: Duration(
+                        seconds: userInformationListScrollDataManagement
+                                .backgroundState
+                            ? 1
+                            : 0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                         colors: [
-                          Colors.black.withOpacity(userInformationListScrollDataManagement.backgroundState ? 0.5 : 0),
+                          Colors.black.withOpacity(
+                              userInformationListScrollDataManagement
+                                      .backgroundState
+                                  ? 0.5
+                                  : 0),
                           Colors.black.withOpacity(0.8),
                         ],
                       ),
@@ -514,7 +533,8 @@ class _PersonalPageState extends State<PersonalPage>
               child: Transform(
                 transform: Matrix4.identity()
                   ..scale(size)
-                  ..translate(dx, constraints.maxHeight / 2.3 - 0.06 * kToolbarHeight),
+                  ..translate(
+                      dx, constraints.maxHeight / 2.3 - 0.06 * kToolbarHeight),
                 child: GestureDetector(
                   onTap: () {
                     switchPage(context, const PersonalHeadPortrait());
@@ -527,9 +547,13 @@ class _PersonalPageState extends State<PersonalPage>
                       builder: (headPortraitChangeManagement) {
                         return CircleAvatar(
                           backgroundColor: Colors.grey,
-                          backgroundImage: headPortraitChangeManagement.headPortraitValue != null
-                              ? FileImage(headPortraitChangeManagement.headPortraitValue!)
-                              : const AssetImage('assets/personal/gray_back_head.png'),
+                          backgroundImage:
+                              headPortraitChangeManagement.headPortraitValue !=
+                                      null
+                                  ? FileImage(headPortraitChangeManagement
+                                      .headPortraitValue!)
+                                  : const AssetImage(
+                                      'assets/personal/gray_back_head.png'),
                           radius: 25,
                         );
                       },
@@ -544,7 +568,8 @@ class _PersonalPageState extends State<PersonalPage>
     );
   }
 
-  SliverToBoxAdapter _buildSliverToBoxAdapter(EditPersonalDataValueManagement editPersonalDataValueManagement) {
+  SliverToBoxAdapter _buildSliverToBoxAdapter(
+      EditPersonalDataValueManagement editPersonalDataValueManagement) {
     return SliverToBoxAdapter(
       child: Container(
         color: Colors.white,
@@ -564,21 +589,19 @@ class _PersonalPageState extends State<PersonalPage>
                   decoration: TextDecoration.none,
                 ),
               ),
-             
-                 Text(
-                    '@${userNameChangeManagement.userNameValue}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: Color.fromRGBO(84, 87, 105, 1),
-                      fontFamily: 'Raleway',
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-           
+              Text(
+                '@${userNameChangeManagement.userNameValue}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  color: Color.fromRGBO(84, 87, 105, 1),
+                  fontFamily: 'Raleway',
+                  decoration: TextDecoration.none,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 13.0),
-                child: editPersonalDataValueManagement.profileValue?.isNotEmpty ?? false
+                child: editPersonalDataValueManagement.profileValue != null
                     ? Text(
                         '${editPersonalDataValueManagement.profileValue}',
                         style: const TextStyle(
@@ -596,9 +619,20 @@ class _PersonalPageState extends State<PersonalPage>
                 direction: Axis.horizontal,
                 textDirection: TextDirection.ltr,
                 children: [
-                  _buildInfoRow('assets/personal/birth_time.svg', '出生于 ${editPersonalDataValueManagement.dateOfBirthValue}'),
-                  _buildInfoRow('assets/personal/residential_address.svg', '${editPersonalDataValueManagement.residentialAddressValue}'),
-                  _buildInfoRow('assets/personal/join_date.svg', '${editPersonalDataValueManagement.applicationDateValue}'),
+                  _buildInfoRow(
+                      'assets/personal/birth_time.svg',
+                      '出生于 ${editPersonalDataValueManagement.dateOfBirthValue}',
+                      editPersonalDataValueManagement.dateOfBirthValue != null),
+                  _buildInfoRow(
+                      'assets/personal/residential_address.svg',
+                      '${editPersonalDataValueManagement.residentialAddressValue}',
+                      editPersonalDataValueManagement.residentialAddressValue !=
+                          null),
+                  _buildInfoRow(
+                      'assets/personal/join_date.svg',
+                      '${editPersonalDataValueManagement.applicationDateValue}',
+                      editPersonalDataValueManagement.applicationDateValue !=
+                          null),
                 ],
               ),
               const Padding(
@@ -677,7 +711,8 @@ class _PersonalPageState extends State<PersonalPage>
         ),
         ElevatedButton(
           style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(const Color.fromARGB(255, 119, 118, 118)),
+            backgroundColor: WidgetStateProperty.all(
+                const Color.fromARGB(255, 119, 118, 118)),
             elevation: WidgetStateProperty.all(4.0),
           ),
           child: const Text(
@@ -764,10 +799,13 @@ class _PersonalPageState extends State<PersonalPage>
             _buildTabView(
               context,
               MemoryBankList(
-                refreshofMemoryBankextends: userPersonalInformationManagement.userPulledMemoryBank,
+                refreshofMemoryBankextends:
+                    userPersonalInformationManagement.userPulledMemoryBank,
                 onItemTap: (index) {
-                  viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
-                    userPersonalInformationManagement.userPulledMemoryBank![index],
+                  viewPostDataManagementForMemoryBanks
+                      .initTheMemoryDataForThePost(
+                    userPersonalInformationManagement
+                        .userPulledMemoryBank![index],
                   );
                   switchPage(context, const OtherMemoryBank());
                 },
@@ -785,10 +823,13 @@ class _PersonalPageState extends State<PersonalPage>
             _buildTabView(
               context,
               MemoryBankList(
-                refreshofMemoryBankextends: userPersonalInformationManagement.userLikedMemoryBank,
+                refreshofMemoryBankextends:
+                    userPersonalInformationManagement.userLikedMemoryBank,
                 onItemTap: (index) {
-                  viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(
-                    userPersonalInformationManagement.userLikedMemoryBank![index],
+                  viewPostDataManagementForMemoryBanks
+                      .initTheMemoryDataForThePost(
+                    userPersonalInformationManagement
+                        .userLikedMemoryBank![index],
                   );
                   switchPage(context, const OtherMemoryBank());
                 },
@@ -810,21 +851,24 @@ class _PersonalPageState extends State<PersonalPage>
     return ListView.builder(
       cacheExtent: 500,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: userPersonalInformationManagement.userReviewMemoryBank?.length ?? 0,
+      itemCount:
+          userPersonalInformationManagement.userReviewMemoryBank?.length ?? 0,
       itemBuilder: (context, index) {
-        final memoryBank = userPersonalInformationManagement.userReviewMemoryBank![index];
+        final memoryBank =
+            userPersonalInformationManagement.userReviewMemoryBank![index];
         final completeState = memoryBank['complete_state'];
         final headPortrait = memoryBank['head_portrait'];
         final name = memoryBank['name'];
         final userName = memoryBank['user_name'];
         final subscriptLength = memoryBank['subscript'].length;
         final theme = memoryBank['theme'];
-        final question = parseJson(memoryBank['question'], memoryBank['subscript']);
-        final reply = parseJson(memoryBank['reply'], memoryBank['subscript']);
+        final question =
+            parseJson(memoryBank['question'], memoryBank['subscript']);
+        final answer = parseJson(memoryBank['answer'], memoryBank['subscript']);
         final pull = memoryBank['pull'];
         final collect = memoryBank['collect'];
         final like = memoryBank['like'];
-        final review = memoryBank['review'];
+        final reply = memoryBank['reply'];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -837,11 +881,13 @@ class _PersonalPageState extends State<PersonalPage>
             const SizedBox(height: 5),
             InkWell(
               onTap: () {
-                viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(memoryBank);
+                viewPostDataManagementForMemoryBanks
+                    .initTheMemoryDataForThePost(memoryBank);
                 switchPage(context, const OtherMemoryBank());
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
                 child: Column(
                   children: [
                     GetBuilder<MemoryBankCompletionStatus>(
@@ -851,20 +897,32 @@ class _PersonalPageState extends State<PersonalPage>
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                left: memoryBankCompletionStatus.displayIconStatus(completeState) ? 21 : 28,
+                                left: memoryBankCompletionStatus
+                                        .displayIconStatus(completeState)
+                                    ? 21
+                                    : 28,
                                 right: 10,
                                 top: 3,
                               ),
                               child: SvgPicture.asset(
-                                memoryBankCompletionStatus.displayIconStatus(completeState)
+                                memoryBankCompletionStatus
+                                        .displayIconStatus(completeState)
                                     ? 'assets/personal/review_medal.svg'
                                     : 'assets/personal/set_time.svg',
-                                width: memoryBankCompletionStatus.displayIconStatus(completeState) ? 27 : 20,
-                                height: memoryBankCompletionStatus.displayIconStatus(completeState) ? 27 : 20,
+                                width: memoryBankCompletionStatus
+                                        .displayIconStatus(completeState)
+                                    ? 27
+                                    : 20,
+                                height: memoryBankCompletionStatus
+                                        .displayIconStatus(completeState)
+                                    ? 27
+                                    : 20,
                               ),
                             ),
                             Expanded(
-                              child: memoryBankCompletionStatus.memoryLibraryStatusDisplayWidget(memoryBank, context),
+                              child: memoryBankCompletionStatus
+                                  .memoryLibraryStatusDisplayWidget(
+                                      memoryBank, context),
                             ),
                           ],
                         );
@@ -881,7 +939,8 @@ class _PersonalPageState extends State<PersonalPage>
                                 radius: 21,
                                 backgroundImage: headPortrait != null
                                     ? FileImage(File(headPortrait))
-                                    : const AssetImage('assets/personal/gray_back_head.png'),
+                                    : const AssetImage(
+                                        'assets/personal/gray_back_head.png'),
                               ),
                             ),
                           ],
@@ -911,7 +970,8 @@ class _PersonalPageState extends State<PersonalPage>
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
-                                              color: Color.fromRGBO(84, 87, 105, 1),
+                                              color: Color.fromRGBO(
+                                                  84, 87, 105, 1),
                                             ),
                                           ),
                                         ],
@@ -957,7 +1017,7 @@ class _PersonalPageState extends State<PersonalPage>
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                reply,
+                                answer,
                                 style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500,
@@ -978,8 +1038,10 @@ class _PersonalPageState extends State<PersonalPage>
                                       end: Color.fromARGB(255, 142, 204, 255),
                                     ),
                                     bubblesColor: const BubblesColor(
-                                      dotPrimaryColor: Color.fromARGB(255, 0, 153, 255),
-                                      dotSecondaryColor: Color.fromARGB(255, 195, 238, 255),
+                                      dotPrimaryColor:
+                                          Color.fromARGB(255, 0, 153, 255),
+                                      dotSecondaryColor:
+                                          Color.fromARGB(255, 195, 238, 255),
                                     ),
                                   ),
                                   const Spacer(flex: 1),
@@ -992,8 +1054,10 @@ class _PersonalPageState extends State<PersonalPage>
                                       end: Color.fromARGB(255, 255, 174, 120),
                                     ),
                                     bubblesColor: const BubblesColor(
-                                      dotPrimaryColor: Color.fromARGB(255, 255, 102, 0),
-                                      dotSecondaryColor: Color.fromARGB(255, 255, 212, 163),
+                                      dotPrimaryColor:
+                                          Color.fromARGB(255, 255, 102, 0),
+                                      dotSecondaryColor:
+                                          Color.fromARGB(255, 255, 212, 163),
                                     ),
                                   ),
                                   const Spacer(flex: 1),
@@ -1006,22 +1070,26 @@ class _PersonalPageState extends State<PersonalPage>
                                       end: Color.fromARGB(255, 255, 206, 206),
                                     ),
                                     bubblesColor: const BubblesColor(
-                                      dotPrimaryColor: Color.fromARGB(255, 255, 0, 0),
-                                      dotSecondaryColor: Color.fromARGB(255, 255, 186, 186),
+                                      dotPrimaryColor:
+                                          Color.fromARGB(255, 255, 0, 0),
+                                      dotSecondaryColor:
+                                          Color.fromARGB(255, 255, 186, 186),
                                     ),
                                   ),
                                   const Spacer(flex: 1),
                                   _buildLikeButton(
                                     icon: Icons.messenger_outline,
                                     color: Colors.purpleAccent,
-                                    count: review,
+                                    count: reply,
                                     circleColor: const CircleColor(
                                       start: Color.fromARGB(255, 237, 42, 255),
                                       end: Color.fromARGB(255, 185, 142, 255),
                                     ),
                                     bubblesColor: const BubblesColor(
-                                      dotPrimaryColor: Color.fromARGB(255, 225, 0, 255),
-                                      dotSecondaryColor: Color.fromARGB(255, 233, 195, 255),
+                                      dotPrimaryColor:
+                                          Color.fromARGB(255, 225, 0, 255),
+                                      dotSecondaryColor:
+                                          Color.fromARGB(255, 233, 195, 255),
                                     ),
                                   ),
                                   const Spacer(flex: 1),
@@ -1072,10 +1140,12 @@ class _PersonalPageState extends State<PersonalPage>
             },
             likeCount: count,
             countBuilder: (int? count, bool isLiked, String text) {
-              var colorValue = isLiked ? color : const Color.fromRGBO(84, 87, 105, 1);
+              var colorValue =
+                  isLiked ? color : const Color.fromRGBO(84, 87, 105, 1);
               return Text(
                 text,
-                style: TextStyle(color: colorValue, fontWeight: FontWeight.w700),
+                style:
+                    TextStyle(color: colorValue, fontWeight: FontWeight.w700),
               );
             },
           ),
@@ -1103,7 +1173,8 @@ class _PersonalPageState extends State<PersonalPage>
     );
   }
 
-  Widget _buildBackgroundImage(BackgroundImageChangeManagement backgroundImageChangeManagement) {
+  Widget _buildBackgroundImage(
+      BackgroundImageChangeManagement backgroundImageChangeManagement) {
     return backgroundImageChangeManagement.backgroundImageValue != null
         ? Image.file(
             backgroundImageChangeManagement.changedBackgroundImageValue!,
@@ -1121,8 +1192,8 @@ class _PersonalPageState extends State<PersonalPage>
           );
   }
 
-  Widget _buildInfoRow(String assetPath, String text) {
-    return text.isNotEmpty
+  Widget _buildInfoRow(String assetPath, String text, bool isNotEmpty) {
+    return isNotEmpty
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [

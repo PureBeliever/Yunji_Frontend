@@ -4,8 +4,8 @@ import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 void continueReview(
     Map<String, String> question,
-    Map<String, String> reply,
-    int memorybankId,
+    Map<String, String> answer,
+    int id,
     String theme,
     List<int> memoryTime,
     DateTime setTime,
@@ -25,8 +25,8 @@ void continueReview(
   Map<String, dynamic> formdata = {
     'username': userName,
     'question': question,
-    'reply': reply,
-    'memoryBankId': memorybankId,
+    'answer': answer,
+    'id': id,
     'theme': theme,
     'memoryTime': memoryTime,
     'setTime': setTime.toString(),

@@ -39,7 +39,7 @@ class ContinueLearningAboutDataManagement extends GetxController {
   int numberOfMemories = 0;
   List<int> memoryItemIndices = [];
   Map<String, dynamic> problems = {};
-  Map<String, dynamic> reply = {};
+  Map<String, dynamic> answer = {};
   String memoryTheme = '';
   List<dynamic> memoryScheme = [];
   Map<String, dynamic> reviewRecords = {};
@@ -50,13 +50,13 @@ class ContinueLearningAboutDataManagement extends GetxController {
   int id = -1;
 
   void initMemoryData(Map<String, dynamic> data) {
-    id = data['memory_bank_id'];
+    id = data['id'];
     memoryBankDataValue = data;
     memoryTheme = data['theme'];
     numberOfMemories = data['subscript'].length;
     memoryItemIndices = List<int>.from(data['subscript']);
     problems = jsonDecode(data['question']);
-    reply = jsonDecode(data['reply']);
+    answer = jsonDecode(data['answer']);
     memoryScheme = jsonDecode(data['memory_time']);
     reviewRecords = jsonDecode(data['review_record']);
     isMessageNotificationEnabled = data['information_notification'] == 1;
@@ -82,7 +82,7 @@ class _ContinueReview extends State<ContinueReview> {
       continueLearningAboutDataManagement.numberOfMemories,
       continueLearningAboutDataManagement.memoryItemIndices,
       continueLearningAboutDataManagement.problems,
-      continueLearningAboutDataManagement.reply);
+      continueLearningAboutDataManagement.answer);
   final _controller = TextEditingController(text: continueLearningAboutDataManagement.memoryTheme);
   final FocusNode _focusNode = FocusNode();
 
@@ -183,7 +183,7 @@ class _ContinueReview extends State<ContinueReview> {
       int index = 0;
       for (var data in _data) {
         continueLearningAboutDataManagement.problems[index.toString()] = data.question;
-        continueLearningAboutDataManagement.reply[index.toString()] = data.reply;
+        continueLearningAboutDataManagement.answer[index.toString()] = data.reply;
         index++;
       }
       switchPage(context, ContinueReviewOption());

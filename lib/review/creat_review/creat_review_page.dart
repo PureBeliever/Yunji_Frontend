@@ -11,12 +11,12 @@ import 'package:toastification/toastification.dart' as toast;
 class CreatReviewController extends GetxController {
   static CreatReviewController get to => Get.find();
   Map<int, String> question = {};
-  Map<int, String> reply = {};
+  Map<int, String> answer = {};
   String? theme;
 
-  void initData(Map<int, String> question, Map<int, String> reply, String theme) {
+  void initData(Map<int, String> question, Map<int, String> answer, String theme) {
     this.question = question;
-    this.reply = reply;
+    this.answer = answer;
     this.theme = theme;
   }
 }
@@ -31,7 +31,7 @@ class CreatReviewPage extends StatefulWidget {
 class Item {
   Item({
     required this.question,
-    required this.reply,
+    required this.answer,
     required this.subscript,
     this.isReadOnly = true,
     this.isExpanded = true,
@@ -39,7 +39,7 @@ class Item {
 
   int subscript;
   String question;
-  String reply;
+  String answer;
   bool isReadOnly;
   bool isExpanded;
 }
@@ -50,7 +50,7 @@ List<Item> generateItems(int numberOfItems) {
       isReadOnly: false,
       isExpanded: false,
       question: 'e.g.示例：学习新知识后的遗忘曲线是什么?',
-      reply: '遗忘曲线表示人在学习新知识后，最初一段时间遗忘的最快，然后慢慢减缓，能记住的知识会越来越少\n\n根据遗忘曲线，人们获得了更加有效的记忆方式\n例如：\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后',
+      answer: '遗忘曲线表示人在学习新知识后，最初一段时间遗忘的最快，然后慢慢减缓，能记住的知识会越来越少\n\n根据遗忘曲线，人们获得了更加有效的记忆方式\n例如：\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后',
       subscript: 0,
     );
   });
@@ -74,7 +74,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
   @override
   void initState() {
     super.initState();
-    _data.add(Item(subscript: subscript, question: '您有什么疑惑或学习目标', reply: '请输入讲解的内容'));
+    _data.add(Item(subscript: subscript, question: '您有什么疑惑或学习目标', answer: '请输入讲解的内容'));
     _focusNode.requestFocus();
   }
 
@@ -305,7 +305,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
             onPressed: () {
               if (_data.length < 100) {
                 setState(() {
-                  _data.add(Item(subscript: subscript, question: '您有什么疑惑或学习目标', reply: '请输入讲解的内容'));
+                  _data.add(Item(subscript: subscript, question: '您有什么疑惑或学习目标', answer: '请输入讲解的内容'));
                 });
                 subscript += 1;
                 _scrollController.animateTo(
@@ -416,7 +416,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                   reply[item.subscript] = value;
                 },
                 decoration: InputDecoration(
-                  hintText: item.reply,
+                  hintText: item.answer,
                   hintStyle: const TextStyle(
                     color: Color.fromRGBO(84, 87, 105, 1),
                     fontSize: commonFontSize,

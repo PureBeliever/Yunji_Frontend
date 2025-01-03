@@ -16,8 +16,6 @@ import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_background_image.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
 import 'package:yunji/main/app_module/sliver_header_delegate.dart';
-import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 
@@ -584,9 +582,9 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       direction: Axis.horizontal,
       textDirection: TextDirection.ltr,
       children: [
-        _buildInfoRow('assets/personal/birth_time.svg', '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']?.isNotEmpty ?? false),
-        _buildInfoRow('assets/personal/residential_address.svg', '${otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']?.isNotEmpty ?? false),
-        _buildInfoRow('assets/personal/join_date.svg', '${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']?.isNotEmpty ?? false),
+        _buildInfoRow('assets/personal/birth_time.svg', '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']!=null),
+        _buildInfoRow('assets/personal/residential_address.svg', '${otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']!=null),
+        _buildInfoRow('assets/personal/join_date.svg', '${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']!=null),
       ],
     );
   }

@@ -93,7 +93,7 @@ Future<void> _processPersonalValue(List<dynamic> personalValue,
 
     for (final memory in memoryBankResults) {
       if (memory['user_name'] == person['user_name']) {
-        requestedValueId.add(memory['memory_bank_id']);
+        requestedValueId.add(memory['id']);
         memory['name'] = person['name'];
         memory['head_portrait'] = person['head_portrait'];
       }

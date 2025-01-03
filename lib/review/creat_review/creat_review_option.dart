@@ -83,14 +83,14 @@ class _CreatReviewOption extends State<CreatReviewOption> {
     DateTime now = DateTime.now();
 
     List<int> questionKey = creatReviewController.question.keys.toList();
-    List<int> replyKey = creatReviewController.reply.keys.toList();
+    List<int> answerKey = creatReviewController.answer.keys.toList();
 
-    Set<int> combinedSet = {...questionKey, ...replyKey};
+    Set<int> combinedSet = {...questionKey, ...answerKey};
     List<int> sortedList = combinedSet.toList()..sort();
 
     Map<String, String> stringQuestion = creatReviewController.question
         .map((key, value) => MapEntry(key.toString(), value));
-    Map<String, String> stringReply = creatReviewController.reply
+    Map<String, String> stringAnswer = creatReviewController.answer
         .map((key, value) => MapEntry(key.toString(), value));
 
     DateTime setTime = now.add(Duration(minutes: memoryTime[_valueChoice][0]));
@@ -127,7 +127,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
     }
     creatReview(
         stringQuestion,
-        stringReply,
+        stringAnswer,
         creatReviewController.theme!,
         memoryTime[_valueChoice],
         setTime,

@@ -23,8 +23,6 @@ Future<void> requestPermission() async {
   await Permission.scheduleExactAlarm.request();
 }
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());

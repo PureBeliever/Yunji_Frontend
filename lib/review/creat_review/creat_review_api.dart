@@ -5,7 +5,7 @@ import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 void creatReview(
   Map<String, String> question,
-  Map<String, String> reply,
+  Map<String, String> answer,
   String theme,
   List<int> memoryTime,
   DateTime setTime,
@@ -20,7 +20,7 @@ void creatReview(
   Map<String, dynamic> formdata = {
     'userName': userName,
     'question': question,
-    'reply': reply,
+    'answer': answer,
     'theme': theme,
     'memoryTime': memoryTime,
     'setTime': setTime.toString(),

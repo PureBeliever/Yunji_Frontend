@@ -15,23 +15,23 @@ import 'package:yunji/review/notification_init.dart';
 
 class Item {
   Item({
-    required this.reply,
+    required this.answer,
     required this.question,
     this.isExpanded = true,
   });
 
-  String reply;
-  String question;
+  String answer;
+    String  question;
   bool isExpanded;
 }
 
 List<Item> generateItems(int numberOfItems, List<int> subscript,
-    Map<String, dynamic> question, Map<String, dynamic> reply) {
+    Map<String, dynamic> question, Map<String, dynamic> answer) {
   return List<Item>.generate(
       numberOfItems,
       (index) => Item(
             question: question[subscript[index].toString()] ?? '',
-            reply: reply[subscript[index].toString()] ?? '',
+            answer: answer[subscript[index].toString()] ?? '',
           ));
 }
 
@@ -42,7 +42,7 @@ class ReviewDataManagement extends GetxController {
   int memoryCount = 0;
   List<int> memoryIndices = [];
   Map<String, dynamic> questions = {};
-  Map<String, dynamic> reply = {};
+  Map<String, dynamic> answer = {};
   String memoryTheme = '';
   List<dynamic> reviewScheme = [];
   Map<String, dynamic> reviewCounts = {};
@@ -53,13 +53,13 @@ class ReviewDataManagement extends GetxController {
   int memoryBankId = -1;
 
   void initMemoryData(Map<String, dynamic> data) {
-    memoryBankId = data['memory_bank_id'];
+    memoryBankId = data['id'];
     memoryBankData = data;
     memoryTheme = data['theme'];
     memoryCount = data['subscript'].length;
     memoryIndices = data['subscript'];
     questions = jsonDecode(data['question']);
-    reply = jsonDecode(data['reply']);
+    answer = jsonDecode(data['answer']);
     reviewScheme = jsonDecode(data['memory_time']);
     reviewCounts = jsonDecode(data['review_record']);
     isMessageNotificationEnabled = data['information_notification'] == 1;
@@ -83,7 +83,7 @@ class _ReviewPage extends State<ReviewPage> {
       reviewDataManagement.memoryCount,
       reviewDataManagement.memoryIndices,
       reviewDataManagement.questions,
-      reviewDataManagement.reply);
+      reviewDataManagement.answer);
   final _controller =
       TextEditingController(text: reviewDataManagement.memoryTheme);
   String theme = reviewDataManagement.memoryTheme;
@@ -170,14 +170,14 @@ class _ReviewPage extends State<ReviewPage> {
   void _clearAllExplanations() {
     setState(() {
       _data.forEach((item) {
-        item.reply = ' ';
+        item.answer = ' ';
       });
     });
   }
 
   void _clearSpecificExplanation(Item item) {
     setState(() {
-      item.reply = '';
+      item.answer = '';
     });
   }
 
@@ -241,7 +241,7 @@ class _ReviewPage extends State<ReviewPage> {
                   } else {
                     int value = 0;
                     Map<int, String> stringQuestion = {};
-                    Map<int, String> stringReply = {};
+                    Map<int, String> stringAnswer = {};
                     DateTime setTime = DateTime.now();
                     List<int> memoryScheme =
                         List.from(reviewDataManagement.reviewScheme);
@@ -255,12 +255,12 @@ class _ReviewPage extends State<ReviewPage> {
                     _data.forEach((data) {
                       sortedList.add(value);
                       stringQuestion[value] = data.question;
-                      stringReply[value] = data.reply;
+                      stringAnswer[value] = data.answer;
                       value++;
                     });
                     Map<String, String> question = stringQuestion
                         .map((key, value) => MapEntry(key.toString(), value));
-                    Map<String, String> reply = stringReply
+                    Map<String, String> answer = stringAnswer
                         .map((key, value) => MapEntry(key.toString(), value));
 
                     bool completeReviewStatus =
@@ -318,7 +318,7 @@ class _ReviewPage extends State<ReviewPage> {
 
                     continueReview(
                         question,
-                        reply,
+                        answer,
                         reviewDataManagement.memoryBankId,
                         theme,
                         memoryScheme,
@@ -494,9 +494,9 @@ class _ReviewPage extends State<ReviewPage> {
                   contentPadding: const EdgeInsets.only(left: 5, right: 10),
                   title: TextField(
                     onChanged: (value) {
-                      item.reply = value;
+                      item.answer = value;
                     },
-                    controller: TextEditingController(text: item.reply),
+                    controller: TextEditingController(text: item.answer),
                     maxLength: 1500,
                     maxLines: 30,
                     minLines: 1,
