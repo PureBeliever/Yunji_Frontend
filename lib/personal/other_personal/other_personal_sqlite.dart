@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:sqflite/sqflite.dart';
-// 插入其他人的个人记忆库
+
 Future<void> insertOtherPeoplePersonalMemoryBank(List<Map<String, dynamic>> memoryBankData) async {
   final db = databaseManager.database;
 
-  // 清空数据库中的数据
+
   await db?.delete('other_personal_memory_bank');
 
   for (var memoryBank in memoryBankData) {
@@ -20,7 +20,7 @@ Future<void> insertOtherPeoplePersonalMemoryBank(List<Map<String, dynamic>> memo
   }
 }
 
-// 查询其他人的个人记忆库
+
 Future<List<Map<String, dynamic>>> queryOtherPeoplePersonalMemoryBank(List<int> ids) async {
   final db = databaseManager.database;
   final placeholders = List.filled(ids.length, '?').join(',');

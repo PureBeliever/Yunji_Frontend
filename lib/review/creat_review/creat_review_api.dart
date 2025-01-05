@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 
-void creatReview(
+Future<void> creatReview(
   Map<String, String> question,
   Map<String, String> answer,
   String theme,
@@ -39,7 +39,6 @@ void creatReview(
     data: jsonformdata,
     options: Options(headers: header),
   );
-
+  await Future.delayed(const Duration(milliseconds: 500));
   requestTheUsersPersonalData(userName);
-    Future.delayed(const Duration(milliseconds: 500));
 }

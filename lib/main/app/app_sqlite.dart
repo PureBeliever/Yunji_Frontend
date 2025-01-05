@@ -20,11 +20,3 @@ Future<Map<String, dynamic>?> queryPersonalData() async {
   return personalMaps.isNotEmpty ? personalMaps[0] : null;
 }
 
-Future<List<Map<String, dynamic>>> queryPersonalMemoryBank(String memoryBankIdList) async {
-  final db = databaseManager.database;
-  if (db == null) {
-    throw Exception('Database is not initialized');
-  }
-  memoryBankIdList = memoryBankIdList.replaceAll('[', '').replaceAll(']', '');
-  return await db.query('personal_memory_bank', where: 'id IN ($memoryBankIdList)', orderBy: 'NULL');
-}

@@ -12,7 +12,9 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_sqlite.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/main/app_module/sliver_header_delegate.dart';
@@ -79,10 +81,12 @@ class MemoryBankCompletionStatus extends GetxController {
   static MemoryBankCompletionStatus get to => Get.find();
 
   // 是否显示其它图标
+
   bool displayIconStatus(int? status) => status == 1;
 
   Widget memoryLibraryStatusDisplayWidget(
       Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
+
     DateTime setTimeValueDateTime =
         DateTime.parse(widgetsDisplayValues['set_time']);
     Duration setTimeValueDuration =
@@ -220,6 +224,19 @@ class UserPersonalInformationManagement extends GetxController {
     );
   }
 
+  Future<void> personalInformationPointsAgreeStep(
+      String type, List<int> indexList) async {
+    if (type == 'like_list') {
+      userLikedMemoryBank = await queryUserPersonalMemoryBank(indexList);
+    }
+
+    if (type == 'pull_list') {
+      userPulledMemoryBank = await queryUserPersonalMemoryBank(indexList);
+    }
+
+    update();
+  }
+
   Future<void> requestUserPersonalInformationDataOnTheBackEnd(
       Map<String, dynamic> userPersonalInformationData) async {
     await _updateMemoryBankData(
@@ -234,7 +251,7 @@ class UserPersonalInformationManagement extends GetxController {
 
     await _updateMemoryBankData(
         userPersonalInformationData, 'reply_list', userReplyMemoryBankIndex);
-        
+
     await _updateMemoryBankData(
         userPersonalInformationData,
         'pull_list',
@@ -261,7 +278,9 @@ class UserPersonalInformationManagement extends GetxController {
   ]) async {
     if (data[key] != null) {
       indexList.clear();
-      indexList.addAll(data[key].cast<int>());
+      indexList.addAll(data[key] is List
+          ? data[key].cast<int>()
+          : jsonDecode(data[key]).cast<int>());
       if (updateMemoryBank != null) {
         await updateMemoryBank(indexList);
       }
@@ -857,18 +876,13 @@ class _PersonalPageState extends State<PersonalPage>
         final memoryBank =
             userPersonalInformationManagement.userReviewMemoryBank![index];
         final completeState = memoryBank['complete_state'];
-        final headPortrait = memoryBank['head_portrait'];
-        final name = memoryBank['name'];
-        final userName = memoryBank['user_name'];
+
+
         final subscriptLength = memoryBank['subscript'].length;
-        final theme = memoryBank['theme'];
+
         final question =
             parseJson(memoryBank['question'], memoryBank['subscript']);
         final answer = parseJson(memoryBank['answer'], memoryBank['subscript']);
-        final pull = memoryBank['pull'];
-        final collect = memoryBank['collect'];
-        final like = memoryBank['like'];
-        final reply = memoryBank['reply'];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -937,8 +951,8 @@ class _PersonalPageState extends State<PersonalPage>
                               onPressed: () {},
                               icon: CircleAvatar(
                                 radius: 21,
-                                backgroundImage: headPortrait != null
-                                    ? FileImage(File(headPortrait))
+                                backgroundImage: memoryBank['head_portrait'] != null
+                                    ? FileImage(File(memoryBank['head_portrait']))
                                     : const AssetImage(
                                         'assets/personal/gray_back_head.png'),
                               ),
@@ -958,7 +972,7 @@ class _PersonalPageState extends State<PersonalPage>
                                       text: TextSpan(
                                         children: [
                                           TextSpan(
-                                            text: name,
+                                            text: memoryBank['name'],
                                             style: const TextStyle(
                                               fontSize: 17,
                                               color: Colors.black,
@@ -966,7 +980,7 @@ class _PersonalPageState extends State<PersonalPage>
                                             ),
                                           ),
                                           TextSpan(
-                                            text: ' @$userName',
+                                            text: ' @${memoryBank['user_name']}',
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -997,7 +1011,7 @@ class _PersonalPageState extends State<PersonalPage>
                                 ],
                               ),
                               Text(
-                                theme,
+                                memoryBank['theme'],
                                 style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500,
@@ -1030,9 +1044,10 @@ class _PersonalPageState extends State<PersonalPage>
                               Row(
                                 children: [
                                   _buildLikeButton(
-                                    icon: Icons.swap_calls,
+                                    likeIcon: Icons.swap_calls,
+                                    unLikeIcon: Icons.swap_calls,
                                     color: Colors.blue,
-                                    count: pull,
+                                    count: memoryBank['pull'],
                                     circleColor: const CircleColor(
                                       start: Color.fromARGB(255, 42, 91, 255),
                                       end: Color.fromARGB(255, 142, 204, 255),
@@ -1043,12 +1058,58 @@ class _PersonalPageState extends State<PersonalPage>
                                       dotSecondaryColor:
                                           Color.fromARGB(255, 195, 238, 255),
                                     ),
+                                    onTap: (isLiked) async {
+                                      final List<int>
+                                          changeUserPulledMemoryBankIndex =
+                                          userPersonalInformationManagement
+                                              .userPulledMemoryBankIndex;
+                                      if (isLiked == false) {
+                                        addPersonalMemoryBankData(memoryBank);
+                                        changeUserPulledMemoryBankIndex
+                                            .add(memoryBank['id']);
+                                        await synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserPulledMemoryBankIndex,
+                                            'pull_list',
+                                            memoryBank['id'],
+                                            1,
+                                            'pull');
+                                      } else {
+                                        changeUserPulledMemoryBankIndex
+                                            .remove(memoryBank['id']);
+                                        await synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserPulledMemoryBankIndex,
+                                            'pull_list',
+                                            memoryBank['id'],
+                                            -1,
+                                            'pull');
+                                        if (!userPersonalInformationManagement
+                                                .userPulledMemoryBankIndex
+                                                .contains(memoryBank['id']) &&
+                                            !userPersonalInformationManagement
+                                                .userLikedMemoryBankIndex
+                                                .contains(memoryBank['id']) &&
+                                            !userPersonalInformationManagement
+                                                .userReviewMemoryBankIndex
+                                                .contains(memoryBank['id'])) {
+                                          deletePersonalMemoryBankData(
+                                              memoryBank['id']);
+                                        }
+                                      }
+                                      return !isLiked;
+                                    },
+                                    memoryBankIds:
+                                        userPersonalInformationManagement
+                                            .userPulledMemoryBankIndex,
+                                    memoryBank: memoryBank,
                                   ),
                                   const Spacer(flex: 1),
                                   _buildLikeButton(
-                                    icon: Icons.folder_open,
+                                    likeIcon: Icons.folder,
+                                    unLikeIcon: Icons.folder_open,
                                     color: Colors.orange,
-                                    count: collect,
+                                    count: memoryBank['collect'],
                                     circleColor: const CircleColor(
                                       start: Color.fromARGB(255, 253, 156, 46),
                                       end: Color.fromARGB(255, 255, 174, 120),
@@ -1059,12 +1120,45 @@ class _PersonalPageState extends State<PersonalPage>
                                       dotSecondaryColor:
                                           Color.fromARGB(255, 255, 212, 163),
                                     ),
+                                    onTap: (isLiked) async {
+                                      List<int>
+                                          changeUserCollectedMemoryBankIndex =
+                                          userPersonalInformationManagement
+                                              .userCollectedMemoryBankIndex;
+                                      if (isLiked == false) {
+                                        changeUserCollectedMemoryBankIndex
+                                            .add(memoryBank['id']);
+                                        synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserCollectedMemoryBankIndex,
+                                            'collect_list',
+                                            memoryBank['id'],
+                                            1,
+                                            'collect');
+                                      } else {
+                                        changeUserCollectedMemoryBankIndex
+                                            .remove(memoryBank['id']);
+                                        synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserCollectedMemoryBankIndex,
+                                            'collect_list',
+                                            memoryBank['id'],
+                                            -1,
+                                            'collect');
+                                      }
+                                      return !isLiked;
+                                    },
+                                    memoryBankIds:
+                                        userPersonalInformationManagement
+                                            .userCollectedMemoryBankIndex,
+                                    memoryBank: memoryBank,
                                   ),
                                   const Spacer(flex: 1),
                                   _buildLikeButton(
-                                    icon: Icons.favorite_border,
+                                    likeIcon: Icons.favorite,
+                                    unLikeIcon: Icons.favorite_border,
                                     color: Colors.red,
-                                    count: like,
+                                    count: memoryBank['like'],
                                     circleColor: const CircleColor(
                                       start: Color.fromARGB(255, 255, 64, 64),
                                       end: Color.fromARGB(255, 255, 206, 206),
@@ -1075,12 +1169,57 @@ class _PersonalPageState extends State<PersonalPage>
                                       dotSecondaryColor:
                                           Color.fromARGB(255, 255, 186, 186),
                                     ),
+                                    onTap: (isLiked) async {
+                                      List<int> changeUserLikedMemoryBankIndex =
+                                          userPersonalInformationManagement
+                                              .userLikedMemoryBankIndex;
+                                      if (isLiked == false) {
+                                        addPersonalMemoryBankData(memoryBank);
+                                        changeUserLikedMemoryBankIndex
+                                            .add(memoryBank['id']);
+                                        synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserLikedMemoryBankIndex,
+                                            'like_list',
+                                            memoryBank['id'],
+                                            1,
+                                            '`like`');
+                                      } else {
+                                        changeUserLikedMemoryBankIndex
+                                            .remove(memoryBank['id']);
+                                        synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserLikedMemoryBankIndex,
+                                            'like_list',
+                                            memoryBank['id'],
+                                            -1,
+                                            '`like`');
+                                        if (!userPersonalInformationManagement
+                                                .userPulledMemoryBankIndex
+                                                .contains(memoryBank['id']) &&
+                                            !userPersonalInformationManagement
+                                                .userLikedMemoryBankIndex
+                                                .contains(memoryBank['id']) &&
+                                            !userPersonalInformationManagement
+                                                .userReviewMemoryBankIndex
+                                                .contains(memoryBank['id'])) {
+                                          deletePersonalMemoryBankData(
+                                              memoryBank['id']);
+                                        }
+                                      }
+                                      return !isLiked;
+                                    },
+                                    memoryBankIds:
+                                        userPersonalInformationManagement
+                                            .userLikedMemoryBankIndex,
+                                    memoryBank: memoryBank,
                                   ),
                                   const Spacer(flex: 1),
                                   _buildLikeButton(
-                                    icon: Icons.messenger_outline,
+                                    likeIcon: Icons.messenger,
+                                    unLikeIcon: Icons.messenger_outline,
                                     color: Colors.purpleAccent,
-                                    count: reply,
+                                    count: memoryBank['reply'],
                                     circleColor: const CircleColor(
                                       start: Color.fromARGB(255, 237, 42, 255),
                                       end: Color.fromARGB(255, 185, 142, 255),
@@ -1091,6 +1230,37 @@ class _PersonalPageState extends State<PersonalPage>
                                       dotSecondaryColor:
                                           Color.fromARGB(255, 233, 195, 255),
                                     ),
+                                    onTap: (isLiked) async {
+                                      List<int> changeUserReplyMemoryBankIndex =
+                                          userPersonalInformationManagement
+                                              .userReplyMemoryBankIndex;
+                                      if (isLiked == false) {
+                                        changeUserReplyMemoryBankIndex
+                                            .add(memoryBank['id']);
+                                        synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserReplyMemoryBankIndex,
+                                            'reply_list',
+                                            memoryBank['id'],
+                                            1,
+                                            'reply');
+                                      } else {
+                                        changeUserReplyMemoryBankIndex
+                                            .remove(memoryBank['id']);
+                                        synchronizeMemoryBankData(
+                                            memoryBank['user_name'],
+                                            changeUserReplyMemoryBankIndex,
+                                            'reply_list',
+                                            memoryBank['id'],
+                                            -1,
+                                            'reply');
+                                      }
+                                      return !isLiked;
+                                    },
+                                    memoryBankIds:
+                                        userPersonalInformationManagement
+                                            .userReplyMemoryBankIndex,
+                                    memoryBank: memoryBank,
                                   ),
                                   const Spacer(flex: 1),
                                   const Spacer(flex: 1),
@@ -1113,11 +1283,15 @@ class _PersonalPageState extends State<PersonalPage>
   }
 
   Widget _buildLikeButton({
-    required IconData icon,
+    required IconData likeIcon,
+    required IconData unLikeIcon,
     required Color color,
     required int count,
     required CircleColor circleColor,
     required BubblesColor bubblesColor,
+    required Future<bool> Function(bool) onTap,
+    required List<int> memoryBankIds,
+    required dynamic memoryBank,
   }) {
     return SizedBox(
       width: 70,
@@ -1128,17 +1302,16 @@ class _PersonalPageState extends State<PersonalPage>
             size: 20,
             circleColor: circleColor,
             bubblesColor: bubblesColor,
-            onTap: (isLiked) async {
-              return !isLiked;
-            },
+            onTap: onTap,
             likeBuilder: (bool isLiked) {
               return Icon(
-                icon,
+                isLiked ? likeIcon : unLikeIcon,
                 color: isLiked ? color : const Color.fromRGBO(84, 87, 105, 1),
                 size: 20,
               );
             },
             likeCount: count,
+            isLiked: memoryBankIds.contains(memoryBank['id']),
             countBuilder: (int? count, bool isLiked, String text) {
               var colorValue =
                   isLiked ? color : const Color.fromRGBO(84, 87, 105, 1);

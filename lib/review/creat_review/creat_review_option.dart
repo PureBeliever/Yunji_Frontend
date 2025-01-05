@@ -125,7 +125,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
             scheduledDateTime: setTime);
       }
     }
-    creatReview(
+    await creatReview(
         stringQuestion,
         stringAnswer,
         creatReviewController.theme!,

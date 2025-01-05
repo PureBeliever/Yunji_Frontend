@@ -32,10 +32,8 @@ void main() async {
   final personalData = await queryPersonalData();
   await refreshHomePageMemoryBank(contexts!);
 
-
   if (homePageMemoryDatabaseData != null && personalData != null) {
     _initializeUserData(homePageMemoryDatabaseData, personalData);
-
   } else {
     soginDependencySettings(contexts!);
   }
@@ -55,19 +53,24 @@ Future<void> _initializeNotification() async {
   final notificationHelper = NotificationHelper();
   await notificationHelper.initialize();
 }
+
 void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
     Map<String, dynamic> personalData) async {
-  refreshofHomepageMemoryBankextends.updateMemoryRefreshValue(homePageMemoryDatabaseData);
-  
+  refreshofHomepageMemoryBankextends
+      .updateMemoryRefreshValue(homePageMemoryDatabaseData);
+
   loginStatus = true;
 
   // 初始化背景图和头像
-  backgroundImageChangeManagement.initBackgroundImage(personalData['background_image']);
+  backgroundImageChangeManagement
+      .initBackgroundImage(personalData['background_image']);
   headPortraitChangeManagement.initHeadPortrait(personalData['head_portrait']);
 
   // 更新选择器结果
-  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(personalData['birth_time']);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(personalData['residential_address']);
+  selectorResultsUpdateDisplay
+      .dateOfBirthSelectorResultValueChange(personalData['birth_time']);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
+      personalData['residential_address']);
 
   // 更新个人信息
   editPersonalDataValueManagement.changePersonalInformation(
@@ -78,12 +81,9 @@ void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
     applicationDate: personalData['join_date'],
   );
 
-  // 查询用户的记忆库
-  userPersonalInformationManagement.userPulledMemoryBank = await queryPersonalMemoryBank(personalData['pull_list']);
-  userPersonalInformationManagement.userLikedMemoryBank = await queryPersonalMemoryBank(personalData['like_list']);
-  userPersonalInformationManagement.userReviewMemoryBank = await queryPersonalMemoryBank(personalData['review_list']);
+  userPersonalInformationManagement
+      .requestUserPersonalInformationDataOnTheBackEnd(personalData);
 
-  // 更新用户名
   userNameChangeManagement.userNameChanged(personalData['user_name']);
 }
 

@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_sqlite.dart';
 
-Future<void> synchronizeMemoryBankData(
-    String userName, List<int> idList, String typeList, int id,String type) async {
+Future<void> synchronizeMemoryBankData(String userName, List<int> idList,
+    String typeList, int id, int quantity, String type) async {
   final formdata = {
     'userName': userName,
     'idList': idList,
     'typeList': typeList,
     'id': id,
+    'quantity': quantity,
     'type': type
   };
 
@@ -18,7 +20,10 @@ Future<void> synchronizeMemoryBankData(
     options: Options(headers: header),
   );
 
-  if (response.statusCode == 200) {
-    
-  } 
+  await updateMemoryBankData(userName, idList, typeList, id, quantity, type);
+  
+  if (typeList == 'like_list' || typeList == 'pull_list') {
+    userPersonalInformationManagement.personalInformationPointsAgreeStep(
+        typeList, idList);
+  }
 }

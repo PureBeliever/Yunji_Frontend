@@ -14,13 +14,9 @@ void smsVerificationCode(String mobileNumber) async {
   Map<String, dynamic> formdata = {
     'mobileNumber': mobileNumber,
   };
-  try {
-    await _dio.post('$baseUrl/getVerificationCode',
-        data: jsonEncode(formdata), options: Options(headers: _getHeaders()));
-  } on DioError catch (e, s) {
-    print('Error: \$e');
-    print('StackTrace: \$s');
-  }
+
+  await _dio.post('$baseUrl/getVerificationCode',
+      data: jsonEncode(formdata), options: Options(headers: _getHeaders()));
 }
 
 Future<bool> verification(String mobileNumber, String code) async {
