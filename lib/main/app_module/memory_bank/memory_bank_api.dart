@@ -22,8 +22,5 @@ Future<void> synchronizeMemoryBankData(String userName, List<int> idList,
 
   await updateMemoryBankData(userName, idList, typeList, id, quantity, type);
   
-  if (typeList == 'like_list' || typeList == 'pull_list') {
-    userPersonalInformationManagement.personalInformationPointsAgreeStep(
-        typeList, idList);
-  }
+
 }

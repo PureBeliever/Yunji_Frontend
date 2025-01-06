@@ -44,6 +44,7 @@ Future<void> handleSuccessfulLogin(String? token, BuildContext context) async {
     const Color(0xFFEDF7FF),
   );
     await refreshHomePageMemoryBank(context);
+    
     _isFirstLoginAttempt = false;
   }
 }

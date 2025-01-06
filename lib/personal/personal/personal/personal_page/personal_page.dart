@@ -224,18 +224,7 @@ class UserPersonalInformationManagement extends GetxController {
     );
   }
 
-  Future<void> personalInformationPointsAgreeStep(
-      String type, List<int> indexList) async {
-    if (type == 'like_list') {
-      userLikedMemoryBank = await queryUserPersonalMemoryBank(indexList);
-    }
 
-    if (type == 'pull_list') {
-      userPulledMemoryBank = await queryUserPersonalMemoryBank(indexList);
-    }
-
-    update();
-  }
 
   Future<void> requestUserPersonalInformationDataOnTheBackEnd(
       Map<String, dynamic> userPersonalInformationData) async {

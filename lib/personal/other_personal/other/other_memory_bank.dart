@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
+import 'package:yunji/main/app_module/memory_bank/memory_bank_sqlite.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
@@ -34,25 +36,18 @@ class Item {
 class ViewPostDataManagementForMemoryBanks extends GetxController {
   static ViewPostDataManagementForMemoryBanks get to => Get.find();
 
-  // 帖子的记忆库数据
   Map<String, dynamic> theMemoryBankValueOfThePost = {};
 
-  // 记忆库
   int numberOfMemories = 0;
 
-  // 记忆库下标
   List<int> theIndexValueOfTheMemoryItem = [];
 
-  // 题目
   Map<String, dynamic> theNumberOfProblems = {};
 
-  // 答案
   Map<String, dynamic> theNumberOfAnswers = {};
 
-  // 记忆库标题
   String theTitleOfTheMemory = '';
 
-  // 初始化记忆库数据
   void initTheMemoryDataForThePost(
       Map<String, dynamic> theMemoryDataForThePost) {
     theMemoryBankValueOfThePost = theMemoryDataForThePost;
@@ -116,7 +111,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           InkWell(
             onTap: () async {
               switchPage(context, const OtherPersonalPage());
-              
+
               await requestTheOtherPersonalData(
                   viewPostDataManagementForMemoryBanks
                       .theMemoryBankValueOfThePost['user_name']);
@@ -309,47 +304,233 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
       children: [
         const SizedBox(width: 10),
         _buildLikeButton(
-          startColor: const Color.fromARGB(255, 42, 91, 255),
-          endColor: const Color.fromARGB(255, 142, 204, 255),
-          dotPrimaryColor: const Color.fromARGB(255, 0, 153, 255),
-          dotSecondaryColor: const Color.fromARGB(255, 195, 238, 255),
-          likedIcon: Icons.swap_calls,
-          unlikedIcon: Icons.swap_calls,
-          likedColor: Colors.blue,
-          unlikedColor: const Color.fromRGBO(84, 87, 105, 1),
+          likeIcon: Icons.swap_calls,
+          unLikeIcon: Icons.swap_calls,
+          color: Colors.blue,
+          circleColor: const CircleColor(
+            start: Color.fromARGB(255, 42, 91, 255),
+            end: Color.fromARGB(255, 142, 204, 255),
+          ),
+          bubblesColor: const BubblesColor(
+            dotPrimaryColor: Color.fromARGB(255, 0, 153, 255),
+            dotSecondaryColor: Color.fromARGB(255, 195, 238, 255),
+          ),
+          onTap: (isLiked) async {
+            final List<int> changeUserPulledMemoryBankIndex =
+                userPersonalInformationManagement.userPulledMemoryBankIndex;
+            if (isLiked == false) {
+              addPersonalMemoryBankData(viewPostDataManagementForMemoryBanks
+                  .theMemoryBankValueOfThePost);
+              changeUserPulledMemoryBankIndex.add(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              await synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserPulledMemoryBankIndex,
+                  'pull_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  1,
+                  'pull');
+            } else {
+              changeUserPulledMemoryBankIndex.remove(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              await synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserPulledMemoryBankIndex,
+                  'pull_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  -1,
+                  'pull');
+              if (!userPersonalInformationManagement.userPulledMemoryBankIndex
+                      .contains(viewPostDataManagementForMemoryBanks
+                          .theMemoryBankValueOfThePost['id']) &&
+                  !userPersonalInformationManagement.userLikedMemoryBankIndex
+                      .contains(viewPostDataManagementForMemoryBanks
+                          .theMemoryBankValueOfThePost['id']) &&
+                  !userPersonalInformationManagement.userReviewMemoryBankIndex
+                      .contains(viewPostDataManagementForMemoryBanks
+                          .theMemoryBankValueOfThePost['id'])) {
+                deletePersonalMemoryBankData(
+                    viewPostDataManagementForMemoryBanks
+                        .theMemoryBankValueOfThePost['id']);
+              }
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userPulledMemoryBankIndex,
+          memoryBank:
+              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
-          startColor: const Color.fromARGB(255, 253, 156, 46),
-          endColor: const Color.fromARGB(255, 255, 174, 120),
-          dotPrimaryColor: const Color.fromARGB(255, 255, 102, 0),
-          dotSecondaryColor: const Color.fromARGB(255, 255, 212, 163),
-          likedIcon: Icons.folder,
-          unlikedIcon: Icons.folder_open,
-          likedColor: Colors.orange,
-          unlikedColor: const Color.fromRGBO(84, 87, 105, 1),
+          likeIcon: Icons.folder,
+          unLikeIcon: Icons.folder_open,
+          color: Colors.orange,
+          circleColor: const CircleColor(
+            start: Color.fromARGB(255, 253, 156, 46),
+            end: Color.fromARGB(255, 255, 174, 120),
+          ),
+          bubblesColor: const BubblesColor(
+            dotPrimaryColor: Color.fromARGB(255, 255, 102, 0),
+            dotSecondaryColor: Color.fromARGB(255, 255, 212, 163),
+          ),
+          onTap: (isLiked) async {
+            List<int> changeUserCollectedMemoryBankIndex =
+                userPersonalInformationManagement.userCollectedMemoryBankIndex;
+            if (isLiked == false) {
+              changeUserCollectedMemoryBankIndex.add(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserCollectedMemoryBankIndex,
+                  'collect_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  1,
+                  'collect');
+            } else {
+              changeUserCollectedMemoryBankIndex.remove(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserCollectedMemoryBankIndex,
+                  'collect_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  -1,
+                  'collect');
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userCollectedMemoryBankIndex,
+          memoryBank:
+              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
-          startColor: const Color.fromARGB(255, 255, 64, 64),
-          endColor: const Color.fromARGB(255, 255, 206, 206),
-          dotPrimaryColor: const Color.fromARGB(255, 255, 0, 0),
-          dotSecondaryColor: const Color.fromARGB(255, 255, 186, 186),
-          likedIcon: Icons.favorite,
-          unlikedIcon: Icons.favorite_border,
-          likedColor: Colors.red,
-          unlikedColor: const Color.fromRGBO(84, 87, 105, 1),
+          likeIcon: Icons.favorite,
+          unLikeIcon: Icons.favorite_border,
+          color: Colors.red,
+          circleColor: const CircleColor(
+            start: Color.fromARGB(255, 255, 64, 64),
+            end: Color.fromARGB(255, 255, 206, 206),
+          ),
+          bubblesColor: const BubblesColor(
+            dotPrimaryColor: Color.fromARGB(255, 255, 0, 0),
+            dotSecondaryColor: Color.fromARGB(255, 255, 186, 186),
+          ),
+          onTap: (isLiked) async {
+            List<int> changeUserLikedMemoryBankIndex =
+                userPersonalInformationManagement.userLikedMemoryBankIndex;
+            if (isLiked == false) {
+              addPersonalMemoryBankData(viewPostDataManagementForMemoryBanks
+                  .theMemoryBankValueOfThePost);
+              changeUserLikedMemoryBankIndex.add(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserLikedMemoryBankIndex,
+                  'like_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  1,
+                  '`like`');
+            } else {
+              changeUserLikedMemoryBankIndex.remove(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserLikedMemoryBankIndex,
+                  'like_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  -1,
+                  '`like`');
+              if (!userPersonalInformationManagement.userPulledMemoryBankIndex
+                      .contains(viewPostDataManagementForMemoryBanks
+                          .theMemoryBankValueOfThePost['id']) &&
+                  !userPersonalInformationManagement.userLikedMemoryBankIndex
+                      .contains(viewPostDataManagementForMemoryBanks
+                          .theMemoryBankValueOfThePost['id']) &&
+                  !userPersonalInformationManagement.userReviewMemoryBankIndex
+                      .contains(viewPostDataManagementForMemoryBanks
+                          .theMemoryBankValueOfThePost['id'])) {
+                deletePersonalMemoryBankData(
+                    viewPostDataManagementForMemoryBanks
+                        .theMemoryBankValueOfThePost['id']);
+              }
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userLikedMemoryBankIndex,
+          memoryBank:
+              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
-          startColor: const Color.fromARGB(255, 237, 42, 255),
-          endColor: const Color.fromARGB(255, 185, 142, 255),
-          dotPrimaryColor: const Color.fromARGB(255, 225, 0, 255),
-          dotSecondaryColor: const Color.fromARGB(255, 233, 195, 255),
-          likedIcon: Icons.messenger,
-          unlikedIcon: Icons.messenger_outline,
-          likedColor: Colors.purpleAccent,
-          unlikedColor: const Color.fromRGBO(84, 87, 105, 1),
+          likeIcon: Icons.messenger,
+          unLikeIcon: Icons.messenger_outline,
+          color: Colors.purpleAccent,
+          circleColor: const CircleColor(
+            start: Color.fromARGB(255, 237, 42, 255),
+            end: Color.fromARGB(255, 185, 142, 255),
+          ),
+          bubblesColor: const BubblesColor(
+            dotPrimaryColor: Color.fromARGB(255, 225, 0, 255),
+            dotSecondaryColor: Color.fromARGB(255, 233, 195, 255),
+          ),
+          onTap: (isLiked) async {
+            List<int> changeUserReplyMemoryBankIndex =
+                userPersonalInformationManagement.userReplyMemoryBankIndex;
+            if (isLiked == false) {
+              changeUserReplyMemoryBankIndex.add(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserReplyMemoryBankIndex,
+                  'reply_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  1,
+                  'reply');
+            } else {
+              changeUserReplyMemoryBankIndex.remove(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id']);
+              synchronizeMemoryBankData(
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['user_name'],
+                  changeUserReplyMemoryBankIndex,
+                  'reply_list',
+                  viewPostDataManagementForMemoryBanks
+                      .theMemoryBankValueOfThePost['id'],
+                  -1,
+                  'reply');
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userReplyMemoryBankIndex,
+          memoryBank:
+              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
         ),
         const SizedBox(width: 10),
       ],
@@ -357,34 +538,31 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
   }
 
   Widget _buildLikeButton({
-    required Color startColor,
-    required Color endColor,
-    required Color dotPrimaryColor,
-    required Color dotSecondaryColor,
-    required IconData likedIcon,
-    required IconData unlikedIcon,
-    required Color likedColor,
-    required Color unlikedColor,
+    required IconData likeIcon,
+    required IconData unLikeIcon,
+    required Color color,
+    required CircleColor circleColor,
+    required BubblesColor bubblesColor,
+    required Future<bool> Function(bool) onTap,
+    required List<int> memoryBankIds,
+    required dynamic memoryBank,
   }) {
     return LikeButton(
-      circleColor: CircleColor(start: startColor, end: endColor),
-      bubblesColor: BubblesColor(
-        dotPrimaryColor: dotPrimaryColor,
-        dotSecondaryColor: dotSecondaryColor,
-      ),
-      size: 25,
-      onTap: (isLiked) async => !isLiked,
+      circleColor: circleColor,
+      bubblesColor: bubblesColor,
+      onTap: onTap,
       likeBuilder: (bool isLiked) => Icon(
-        isLiked ? likedIcon : unlikedIcon,
-        color: isLiked ? likedColor : unlikedColor,
+        isLiked ? likeIcon : unLikeIcon,
+        color: isLiked ? color : const Color.fromRGBO(84, 87, 105, 1),
         size: 25,
       ),
+      isLiked: memoryBankIds.contains(memoryBank['id']),
       countBuilder: (int? count, bool isLiked, String text) {
-        var color = isLiked ? likedColor : unlikedColor;
+        var colorValue = isLiked ? color : const Color.fromRGBO(84, 87, 105, 1);
         return Text(
           count == 0 ? "love" : text,
           style: TextStyle(
-              color: color,
+              color: colorValue,
               fontWeight: count == 0 ? FontWeight.normal : FontWeight.w700),
         );
       },

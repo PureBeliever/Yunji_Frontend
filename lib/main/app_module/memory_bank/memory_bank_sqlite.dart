@@ -1,6 +1,9 @@
-
+import 'package:yunji/home/home_page/home_page.dart';
+import 'package:yunji/home/login/login_init.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'dart:convert';
+
+import 'package:yunji/main/app/app_sqlite.dart';
 
 Future<void> updateMemoryBankData(String userName, List<int> idList,
     String typeList, int id, int quantity, String type) async {
@@ -19,6 +22,21 @@ Future<void> updateMemoryBankData(String userName, List<int> idList,
   final updateQuery2 =
       'UPDATE other_personal_memory_bank SET $type = $type + ? WHERE id = ?';
   await db!.rawUpdate(updateQuery2, [quantity, id]);
+
+  await _synchronizeApp();
+}
+
+Future<void> _synchronizeApp() async {
+  final personalData = await queryPersonalData();
+  final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
+  if (personalData != null) {
+    userPersonalInformationManagement
+        .requestUserPersonalInformationDataOnTheBackEnd(personalData);
+    refreshofHomepageMemoryBankextends
+        .updateMemoryRefreshValue(homePageMemoryDatabaseData);
+  } else {
+    soginDependencySettings(contexts!);
+  }
 }
 
 Future<void> addPersonalMemoryBankData(dynamic data) async {
