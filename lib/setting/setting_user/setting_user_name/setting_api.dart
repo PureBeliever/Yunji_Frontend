@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 final dio = Dio();
 

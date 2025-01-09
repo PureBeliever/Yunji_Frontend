@@ -55,13 +55,15 @@ class _CreatReviewOption extends State<CreatReviewOption> {
       padding: const EdgeInsets.only(left: 17.0, top: commonFontSize),
       child: ChoiceChip(
         backgroundColor: Colors.white,
+        side: BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
         label: Text(
           reviewScheme[index],
           softWrap: true,
           maxLines: 20,
           style: TextStyle(
             fontSize: commonFontSize,
-            color: _valueChoice == index ? Colors.white : Colors.black54,
+            color: _valueChoice == index ? Colors.white : Color.fromRGBO(84, 87, 105, 1),
+            fontWeight: FontWeight.w500,
           ),
         ),
         selectedColor: Colors.blue,
@@ -158,6 +160,11 @@ class _CreatReviewOption extends State<CreatReviewOption> {
               Icons.arrow_back,
               size: 28,
             )),
+        title: const Text('创建复习方案',
+            style: TextStyle(
+                fontSize: 21,
+                fontWeight: FontWeight.w700,
+                )),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
@@ -208,7 +215,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                       const Text('信息通知',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(84, 87, 105, 1),
+                              color: Colors.black,
                               fontSize: commonFontSize)),
                     ],
                   ),
@@ -232,7 +239,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                       const Text('闹钟信息通知',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(84, 87, 105, 1),
+                              color: Colors.black,
                               fontSize: commonFontSize)),
                     ],
                   ),
@@ -296,7 +303,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                     '艾宾浩斯遗忘曲线表明，学习的知识会随着时间流逝而遗忘，因此随着遗忘曲线复习，将会让更多知识形成长期记忆\n\n过度重复的复习难以坚持，在记忆方案完成后的每次使用知识都可以称为复习，在生活中间断性的使用知识，可达到永久记忆的效果\n',
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: Color.fromRGBO(84, 87, 105, 1),
+                        color: Colors.black,
                         fontSize: commonFontSize)),
                 Row(
                   children: [
@@ -304,14 +311,14 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                       child: Text('请选择您的记忆方案:',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(84, 87, 105, 1),
+                              color: Colors.black,
                               fontSize: commonFontSize)),
-                     ),
+                    ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.black54),
+                        side: BorderSide(color:  Color.fromRGBO(84, 87, 105, 1)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -322,7 +329,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                       child: Text(
                         '自定义记忆方案',
                         style: TextStyle(
-                            color: Colors.black54, fontSize: commonFontSize),
+                            color:  Color.fromRGBO(84, 87, 105, 1), fontSize: commonFontSize,fontWeight: FontWeight.w500,),
                       ),
                     ),
                     const SizedBox(width: 15),
