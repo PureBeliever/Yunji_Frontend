@@ -7,7 +7,7 @@ import 'package:yunji/main/app/app_sqlite.dart';
 
 Future<void> updateMemoryBankData(String userName, List<int> idList,
     String typeList, int id, int quantity, String type) async {
-  final db = databaseManager.database;
+  final db = databaseManager.database;;
 
   final query = 'UPDATE personal_data SET $typeList = ? WHERE user_name = ?';
   await db!.rawUpdate(query, [jsonEncode(idList), userName]);
@@ -49,10 +49,13 @@ Future<void> addPersonalMemoryBankData(dynamic data) async {
     whereArgs: [data['id']],
   );
 
-  if (existingData.isEmpty) {
+
+  if (existingData.isEmpty ) {
     // 如果不存在，则插入数据
     await db.insert('personal_memory_bank', data);
+
   }
+
 }
 
 Future<void> deletePersonalMemoryBankData(int id) async {

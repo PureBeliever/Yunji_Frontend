@@ -12,10 +12,12 @@ import 'package:yunji/review/creat_review/creat_review_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/review/creat_review/creat_review_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
+import 'package:yunji/review/creat_review/custom_memory/custom_memory_scheme.dart';
 import 'package:yunji/review/notification_init.dart';
 
 // 通用字体大小
 const commonFontSize = 17.0;
+
 class CreatReviewOption extends StatefulWidget {
   const CreatReviewOption({super.key});
 
@@ -248,13 +250,13 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                     child: RichText(
                         text: TextSpan(children: <TextSpan>[
                       const TextSpan(
-                            text: '若需信息或闹钟提醒复习\n',
+                          text: '若需信息或闹钟提醒复习\n',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
                               fontSize: commonFontSize)),
                       const TextSpan(
-                          text: '需点击并打开：',
+                          text: '需点击打开：',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
@@ -276,6 +278,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                   ),
                 ),
               ),
+              const SizedBox(width: 15),
             ],
           ),
           Center(
@@ -284,15 +287,49 @@ class _CreatReviewOption extends State<CreatReviewOption> {
               width: double.infinity,
             ),
           ),
-          const Padding(
+          Padding(
             padding:
-                EdgeInsets.only(left: 17.0, right: 17.0, top: 16, bottom: 12),
-            child: Text(
-                '艾宾浩斯遗忘曲线表明，学习的知识会随着时间流逝而遗忘，因此随着遗忘曲线复习，将会让更多知识形成长期记忆\n\n过度重复的复习难以坚持，在记忆方案完成后的每次使用知识都可以称为复习，在生活中间断性的使用知识，可达到永久记忆的效果\n\n请选择您的记忆方案:',
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(84, 87, 105, 1),
-                    fontSize: commonFontSize)),
+                EdgeInsets.only(left: 17.0, right: 17.0, top: 15, bottom: 5),
+            child: Column(
+              children: [
+                Text(
+                    '艾宾浩斯遗忘曲线表明，学习的知识会随着时间流逝而遗忘，因此随着遗忘曲线复习，将会让更多知识形成长期记忆\n\n过度重复的复习难以坚持，在记忆方案完成后的每次使用知识都可以称为复习，在生活中间断性的使用知识，可达到永久记忆的效果\n',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromRGBO(84, 87, 105, 1),
+                        fontSize: commonFontSize)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text('请选择您的记忆方案:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(84, 87, 105, 1),
+                              fontSize: commonFontSize)),
+                     ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Colors.white,
+                        side: BorderSide(color: Colors.black54),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        switchPage(context, const CustomMemoryScheme());
+                      },
+                      child: Text(
+                        '自定义记忆方案',
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: commonFontSize),
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                  ],
+                ),
+              ],
+            ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

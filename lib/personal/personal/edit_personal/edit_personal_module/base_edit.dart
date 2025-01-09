@@ -1,8 +1,9 @@
 import 'dart:async';
 //  import 'package:city_pickers/city_pickers.dart';文件中export 'src/city_picker.dart';
-//中的引用被修改为import 'package:yunji/modified_component/base_edit.dart';
+//中的引用被修改为import 'package:yunji/personal/personal/edit_personal/edit_personal_module/base_edit.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:city_pickers/modal/base_citys.dart';
+
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:city_pickers/src/base/pickers.dart';

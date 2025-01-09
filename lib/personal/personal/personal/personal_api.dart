@@ -56,7 +56,7 @@ class PersonalData {
 //请求用户个人资料
 Future<void> requestTheUsersPersonalData(String? userName) async {
   final formdata = {'userName': userName};
-    print('已经被调用了');
+  print(formdata);
   final response = await dio.post(
     'http://47.92.98.170:36233/requestUserThePersonalData',
     data: jsonEncode(formdata),

@@ -49,7 +49,8 @@ class OtherPeopleInformationListScrollDataManagement extends GetxController {
       '${otherPeopleLikedMemoryBankIndex}个喜欢'
     ];
 
-    displayText = currentPageSubscript >= 0 && currentPageSubscript < memoryBankStrings.length
+    displayText = currentPageSubscript >= 0 &&
+            currentPageSubscript < memoryBankStrings.length
         ? memoryBankStrings[currentPageSubscript]
         : '';
     update();
@@ -92,7 +93,8 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
   List<int> otherPeopleReviewMemoryBankIndex = [];
 
   void refreshDisplayText(int tabControllerIndex) {
-    otherPeopleInformationListScrollDataManagement.calculateTheNumberOfMemoryBanksPerPage(
+    otherPeopleInformationListScrollDataManagement
+        .calculateTheNumberOfMemoryBanksPerPage(
       tabControllerIndex,
       otherPeopleReviewMemoryBankIndex.length,
       otherPeoplePulledMemoryBankIndex.length,
@@ -107,7 +109,8 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       otherPeoplePersonalInformationData,
       'like_list',
       otherPeopleLikedMemoryBankIndex,
-      (indices) async => otherPeopleLikedMemoryBank = await queryOtherPeoplePersonalMemoryBank(indices),
+      (indices) async => otherPeopleLikedMemoryBank =
+          await queryOtherPeoplePersonalMemoryBank(indices),
     );
 
     _updateMemoryBankIndices(
@@ -120,18 +123,21 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
       otherPeoplePersonalInformationData,
       'pull_list',
       otherPeoplePulledMemoryBankIndex,
-      (indices) async => otherPeoplePulledMemoryBank = await queryOtherPeoplePersonalMemoryBank(indices),
+      (indices) async => otherPeoplePulledMemoryBank =
+          await queryOtherPeoplePersonalMemoryBank(indices),
     );
 
     await _updateMemoryBankIndices(
       otherPeoplePersonalInformationData,
       'review_list',
       otherPeopleReviewMemoryBankIndex,
-      (indices) async => otherPeopleReviewMemoryBank = await queryOtherPeoplePersonalMemoryBank(indices),
+      (indices) async => otherPeopleReviewMemoryBank =
+          await queryOtherPeoplePersonalMemoryBank(indices),
     );
     refreshDisplayText(0);
     update();
   }
+
 // 更新记忆库下标
   Future<void> _updateMemoryBankIndices(
     Map<String, dynamic> data,
@@ -189,8 +195,10 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
 
   void _scrollListener() {
     final offset = scrollController.offset;
-    otherPeopleInformationListScrollDataManagement.setBackgroundColor(offset >= 160);
-    otherPeopleInformationListScrollDataManagement.setTransparency(offset >= 235);
+    otherPeopleInformationListScrollDataManagement
+        .setBackgroundColor(offset >= 160);
+    otherPeopleInformationListScrollDataManagement
+        .setTransparency(offset >= 235);
   }
 
   Future<void> _refresh() async {
@@ -214,9 +222,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
           textDimension: 190,
           iconTheme: const IconThemeData(color: Colors.white, size: 28),
           textStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700),
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
           messageBuilder: (context, state, text, dateTime) {
             TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
             return Text(
@@ -231,224 +237,262 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         ),
         onRefresh: _refresh,
         child: GetBuilder<OtherPeoplePersonalInformationManagement>(
-              init: otherPeoplePersonalInformationManagement,
-              builder: (otherPeoplePersonalInformationManagement) {
-                return NestedScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  controller: scrollController,
-                  headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      GetBuilder<OtherPeopleInformationListScrollDataManagement>(
-                        init: otherPeopleInformationListScrollDataManagement,
-                        builder: (otherPeopleInformationListScrollDataManagement) {
-                          return SliverAppBar(
-                            title: Padding(
-                              padding: const EdgeInsets.only(left: 48.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(
-                                          otherPeopleInformationListScrollDataManagement.opacity),
-                                      fontSize: 21,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Text(
-                                    otherPeopleInformationListScrollDataManagement.displayText,
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(
-                                          otherPeopleInformationListScrollDataManagement.opacity),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            pinned: true,
-                            leading: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black.withOpacity(0.5),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Icon(
-                                    Icons.arrow_back,
-                                    size: 25,
-                                    color: Colors.white,
-                                  ),
+          init: otherPeoplePersonalInformationManagement,
+          builder: (otherPeoplePersonalInformationManagement) {
+            return NestedScrollView(
+              physics: const BouncingScrollPhysics(),
+              controller: scrollController,
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  GetBuilder<OtherPeopleInformationListScrollDataManagement>(
+                    init: otherPeopleInformationListScrollDataManagement,
+                    builder: (otherPeopleInformationListScrollDataManagement) {
+                      return SliverAppBar(
+                        title: Padding(
+                          padding: const EdgeInsets.only(left: 48.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(
+                                      otherPeopleInformationListScrollDataManagement
+                                          .opacity),
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                            ),
-                            actions: [
-                              _buildActionIcon('assets/search.svg'),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13.0, right: 16.0),
-                                child: _buildActionIcon(Icons.more_vert),
-                              ),
+                              Text(
+                                otherPeopleInformationListScrollDataManagement
+                                    .displayText,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(
+                                      otherPeopleInformationListScrollDataManagement
+                                          .opacity),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
                             ],
-                            expandedHeight: 215,
-                            flexibleSpace: LayoutBuilder(
-                              builder: (BuildContext context, BoxConstraints constraints) {
-                                double percent = ((constraints.maxHeight - kToolbarHeight) * 40 / (200 - kToolbarHeight));
-                                double dx = 68 - percent * 1.20;
-                                double size = (80 + percent * 2) / 100;
-
-                                return Stack(
-                                  alignment: Alignment.center,
-                                  children: <Widget>[
-                                    Positioned.fill(
-                                      child: ImageFiltered(
-                                        imageFilter: ImageFilter.blur(
-                                            sigmaX: otherPeopleInformationListScrollDataManagement.filter,
-                                            sigmaY: 0),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            otherPeopleBackgroundImageChangeManagement.initBackgroundImage(
-                                                otherPeopleInformationListScrollDataManagement.scrollDataValue['background_image']);
-                                            switchPage(context, const OtherPersonalBackgroundImage());
-                                          },
-                                          child: _buildBackgroundImage(otherPeopleInformationListScrollDataManagement),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      height: 90,
-                                      top: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: AnimatedContainer(
-                                        duration: Duration(seconds: otherPeopleInformationListScrollDataManagement.backgroundState ? 1 : 0),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.bottomCenter,
-                                            end: Alignment.topCenter,
-                                            colors: [
-                                              Colors.black.withOpacity(otherPeopleInformationListScrollDataManagement.backgroundState ? 0.5 : 0),
-                                              Colors.black.withOpacity(0.8)
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 0,
-                                      top: 0,
-                                      child: Transform(
-                                        transform: Matrix4.identity()
-                                          ..scale(size)
-                                          ..translate(dx, constraints.maxHeight / 2.3 - 0.06 * kToolbarHeight),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
-                                                otherPeopleInformationListScrollDataManagement.scrollDataValue['head_portrait']);
-                                            switchPage(context, const OtherPersonalHeadPortrait());
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 27,
-                                            backgroundColor: Colors.white,
-                                            child: CircleAvatar(
-                                              backgroundColor: Colors.grey,
-                                              backgroundImage: _buildHeadPortraitImage(otherPeopleInformationListScrollDataManagement),
-                                              radius: 25,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 14.0, right: 8.0, top: 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildHeaderRow(),
-                                _buildNameText(),
-                                _buildUserNameText(),
-                                _buildIntroductionText(),
-                                const SizedBox(height: 13),
-                                _buildInfoWrap(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 13.0, bottom: 13.0),
-                                  child: _buildFollowInfoRow(),
-                                ),
-                              ],
-                            ),
                           ),
                         ),
-                      ),
-                      SliverPersistentHeader(
                         pinned: true,
-                        delegate: SliverHeaderDelegate.fixedHeight(
-                          height: 45,
-                          child: Material(
-                            child: Container(
-                              decoration: const BoxDecoration(
+                        leading: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Icon(
+                                Icons.arrow_back,
+                                size: 25,
                                 color: Colors.white,
                               ),
-                              child: TabBar(
-                                labelStyle: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 17.5,
-                                  color: Colors.black,
-                                  fontFamily: 'Raleway',
-                                  decoration: TextDecoration.none,
-                                ),
-                                indicatorColor: Colors.blue,
-                                unselectedLabelStyle: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17,
-                                  color: Color.fromARGB(255, 119, 118, 118),
-                                  fontFamily: 'Raleway',
-                                  decoration: TextDecoration.none,
-                                ),
-                                controller: tabController,
-                                tabs: const [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: Center(
-                                      child: Text('记忆库'),
-                                    ),
-                                  ),
-                                  Text('拉取'),
-                                  Text('回复'),
-                                  Text('喜欢'),
-                                ],
-                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ];
-                  },
-                  body: TabBarView(
-                    controller: tabController,
-                    children: [
-                      _buildMemoryBankList(otherPeoplePersonalInformationManagement.otherPeopleReviewMemoryBank),
-                      _buildMemoryBankList(otherPeoplePersonalInformationManagement.otherPeoplePulledMemoryBank),
-                      _buildEmptyListView(),
-                      _buildMemoryBankList(otherPeoplePersonalInformationManagement.otherPeopleLikedMemoryBank),
-                    ],
+                        actions: [
+                          _buildActionIcon('assets/search.svg'),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 13.0, right: 16.0),
+                            child: _buildActionIcon(Icons.more_vert),
+                          ),
+                        ],
+                        expandedHeight: 215,
+                        flexibleSpace: LayoutBuilder(
+                          builder: (BuildContext context,
+                              BoxConstraints constraints) {
+                            double percent =
+                                ((constraints.maxHeight - kToolbarHeight) *
+                                    40 /
+                                    (200 - kToolbarHeight));
+                            double dx = 68 - percent * 1.20;
+                            double size = (80 + percent * 2) / 100;
+
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: <Widget>[
+                                Positioned.fill(
+                                  child: ImageFiltered(
+                                    imageFilter: ImageFilter.blur(
+                                        sigmaX:
+                                            otherPeopleInformationListScrollDataManagement
+                                                .filter,
+                                        sigmaY: 0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        otherPeopleBackgroundImageChangeManagement
+                                            .initBackgroundImage(
+                                                otherPeopleInformationListScrollDataManagement
+                                                        .scrollDataValue[
+                                                    'background_image']);
+                                        switchPage(context,
+                                            const OtherPersonalBackgroundImage());
+                                      },
+                                      child: _buildBackgroundImage(
+                                          otherPeopleInformationListScrollDataManagement),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  height: 90,
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: AnimatedContainer(
+                                    duration: Duration(
+                                        seconds:
+                                            otherPeopleInformationListScrollDataManagement
+                                                    .backgroundState
+                                                ? 1
+                                                : 0),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(
+                                              otherPeopleInformationListScrollDataManagement
+                                                      .backgroundState
+                                                  ? 0.5
+                                                  : 0),
+                                          Colors.black.withOpacity(0.8)
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  top: 0,
+                                  child: Transform(
+                                    transform: Matrix4.identity()
+                                      ..scale(size)
+                                      ..translate(
+                                          dx,
+                                          constraints.maxHeight / 2.3 -
+                                              0.06 * kToolbarHeight),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        otherPeopleHeadPortraitChangeManagement
+                                            .initHeadPortrait(
+                                                otherPeopleInformationListScrollDataManagement
+                                                        .scrollDataValue[
+                                                    'head_portrait']);
+                                        switchPage(context,
+                                            const OtherPersonalHeadPortrait());
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 27,
+                                        backgroundColor: Colors.white,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage: _buildHeadPortraitImage(
+                                              otherPeopleInformationListScrollDataManagement),
+                                          radius: 25,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
-                );
+                  SliverToBoxAdapter(
+                    child: Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 14.0, right: 8.0, top: 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildHeaderRow(),
+                            _buildNameText(),
+                            _buildUserNameText(),
+                            _buildIntroductionText(),
+                            const SizedBox(height: 13),
+                            _buildInfoWrap(),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 13.0, bottom: 13.0),
+                              child: _buildFollowInfoRow(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: SliverHeaderDelegate.fixedHeight(
+                      height: 45,
+                      child: Material(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: TabBar(
+                            labelStyle: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 17.5,
+                              color: Colors.black,
+                              fontFamily: 'Raleway',
+                              decoration: TextDecoration.none,
+                            ),
+                            indicatorColor: Colors.blue,
+                            unselectedLabelStyle: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17,
+                              color: Color.fromARGB(255, 119, 118, 118),
+                              fontFamily: 'Raleway',
+                              decoration: TextDecoration.none,
+                            ),
+                            controller: tabController,
+                            tabs: const [
+                              SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text('记忆库'),
+                                ),
+                              ),
+                              Text('拉取'),
+                              Text('回复'),
+                              Text('喜欢'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ];
               },
+              body: TabBarView(
+                controller: tabController,
+                children: [
+                  _buildMemoryBankList(otherPeoplePersonalInformationManagement
+                      .otherPeopleReviewMemoryBank),
+                  _buildMemoryBankList(otherPeoplePersonalInformationManagement
+                      .otherPeoplePulledMemoryBank),
+                  _buildEmptyListView(),
+                  _buildMemoryBankList(otherPeoplePersonalInformationManagement
+                      .otherPeopleLikedMemoryBank),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -468,7 +512,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
     );
   }
 
-  Widget _buildBackgroundImage(OtherPeopleInformationListScrollDataManagement dataManagement) {
+  Widget _buildBackgroundImage(
+      OtherPeopleInformationListScrollDataManagement dataManagement) {
     return dataManagement.scrollDataValue['background_image'] != null
         ? Image.file(
             File(dataManagement.scrollDataValue['background_image']),
@@ -480,7 +525,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
           );
   }
 
-  ImageProvider _buildHeadPortraitImage(OtherPeopleInformationListScrollDataManagement dataManagement) {
+  ImageProvider _buildHeadPortraitImage(
+      OtherPeopleInformationListScrollDataManagement dataManagement) {
     return dataManagement.scrollDataValue['head_portrait'] != null
         ? FileImage(File(dataManagement.scrollDataValue['head_portrait']))
         : const AssetImage('assets/personal/gray_back_head.png');
@@ -493,7 +539,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         GestureDetector(
           onTap: () {
             otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
-                otherPeopleInformationListScrollDataManagement.scrollDataValue['head_portrait']);
+                otherPeopleInformationListScrollDataManagement
+                    .scrollDataValue['head_portrait']);
             switchPage(context, const OtherPersonalHeadPortrait());
           },
           child: Container(
@@ -562,9 +609,12 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
   Widget _buildIntroductionText() {
     return Padding(
       padding: const EdgeInsets.only(top: 13.0),
-      child: otherPeopleInformationListScrollDataManagement.scrollDataValue['introduction']?.isNotEmpty ?? false
+      child: otherPeopleInformationListScrollDataManagement
+                  .scrollDataValue['introduction']?.isNotEmpty ??
+              false
           ? Text(
-              otherPeopleInformationListScrollDataManagement.scrollDataValue['introduction'],
+              otherPeopleInformationListScrollDataManagement
+                  .scrollDataValue['introduction'],
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 17,
@@ -582,14 +632,29 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       direction: Axis.horizontal,
       textDirection: TextDirection.ltr,
       children: [
-        _buildInfoRow('assets/personal/birth_time.svg', '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']!=null),
-        _buildInfoRow('assets/personal/residential_address.svg', '${otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']!=null),
-        _buildInfoRow('assets/personal/join_date.svg', '${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']!=null),
+        _buildInfoRow(
+            'assets/personal/birth_time.svg',
+            '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',
+            otherPeopleInformationListScrollDataManagement
+                    .scrollDataValue['birth_time'] !=
+                null),
+        _buildInfoRow(
+            'assets/personal/residential_address.svg',
+            '${otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']}',
+            otherPeopleInformationListScrollDataManagement
+                    .scrollDataValue['residential_address'] !=
+                null),
+        _buildInfoRow(
+            'assets/personal/join_date.svg',
+            '${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',
+            otherPeopleInformationListScrollDataManagement
+                    .scrollDataValue['join_date'] !=
+                null),
       ],
     );
   }
 
-  Widget _buildInfoRow(String iconPath, String text,bool isNotEmpty) {
+  Widget _buildInfoRow(String iconPath, String text, bool isNotEmpty) {
     return isNotEmpty
         ? Row(
             mainAxisSize: MainAxisSize.min,
@@ -670,7 +735,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         child: MemoryBankList(
           refreshofMemoryBankextends: memoryBank,
           onItemTap: (index) {
-            viewPostDataManagementForMemoryBanks.initTheMemoryDataForThePost(memoryBank![index]);
+            viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank![index]);
             switchPage(context, const OtherMemoryBank());
           },
         ),

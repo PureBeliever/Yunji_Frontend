@@ -36,43 +36,33 @@ class Item {
 class ViewPostDataManagementForMemoryBanks extends GetxController {
   static ViewPostDataManagementForMemoryBanks get to => Get.find();
 
-  Map<String, dynamic> theMemoryBankValueOfThePost = {};
+  Map<String, dynamic> memoryBankValue = {};
+  int memoryCount = 0;
+  List<int> memoryIndices = [];
+  Map<String, dynamic> problemCount = {};
+  Map<String, dynamic> answerCount = {};
+  String memoryTitle = '';
 
-  int numberOfMemories = 0;
-
-  List<int> theIndexValueOfTheMemoryItem = [];
-
-  Map<String, dynamic> theNumberOfProblems = {};
-
-  Map<String, dynamic> theNumberOfAnswers = {};
-
-  String theTitleOfTheMemory = '';
-
-  void initTheMemoryDataForThePost(
-      Map<String, dynamic> theMemoryDataForThePost) {
-    theMemoryBankValueOfThePost = theMemoryDataForThePost;
-    theTitleOfTheMemory = theMemoryDataForThePost['theme'];
-    numberOfMemories = (theMemoryDataForThePost['subscript'] as List).length;
-    theIndexValueOfTheMemoryItem =
-        List<int>.from(theMemoryDataForThePost['subscript']);
-    theNumberOfProblems = jsonDecode(theMemoryDataForThePost['question']);
-    theNumberOfAnswers = jsonDecode(theMemoryDataForThePost['answer']);
+  void initMemoryData(Map<String, dynamic> memoryData) {
+    memoryBankValue = memoryData;
+    memoryTitle = memoryData['theme'];
+    memoryCount = (memoryData['subscript'] as List).length;
+    memoryIndices = List<int>.from(memoryData['subscript']);
+    problemCount = jsonDecode(memoryData['question']);
+    answerCount = jsonDecode(memoryData['answer']);
   }
-
-  // 刷新ExpansionTile
 }
 
-List<Item> generateItems(int numberOfItems, List<int> subscript,
-    Map<String, dynamic> question, Map<String, dynamic> answer) {
-  return List<Item>.generate(numberOfItems, (index) {
+List<Item> generateItems(int itemCount, List<int> indices,
+    Map<String, dynamic> questions, Map<String, dynamic> answers) {
+  return List<Item>.generate(itemCount, (index) {
     return Item(
-      headerValue: question[subscript[index].toString()] ?? '',
-      expandedValue: answer[subscript[index].toString()] ?? '',
+      headerValue: questions[indices[index].toString()] ?? '',
+      expandedValue: answers[indices[index].toString()] ?? '',
     );
   });
 }
 
-// ignore: camel_case_types
 class _OtherMemoryBankState extends State<OtherMemoryBank> {
   late final List<Item> _data;
 
@@ -80,10 +70,10 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
   void initState() {
     super.initState();
     _data = generateItems(
-      viewPostDataManagementForMemoryBanks.numberOfMemories,
-      viewPostDataManagementForMemoryBanks.theIndexValueOfTheMemoryItem,
-      viewPostDataManagementForMemoryBanks.theNumberOfProblems,
-      viewPostDataManagementForMemoryBanks.theNumberOfAnswers,
+      ViewPostDataManagementForMemoryBanks.to.memoryCount,
+      ViewPostDataManagementForMemoryBanks.to.memoryIndices,
+      ViewPostDataManagementForMemoryBanks.to.problemCount,
+      ViewPostDataManagementForMemoryBanks.to.answerCount,
     );
   }
 
@@ -102,7 +92,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           ),
         ),
         title: Text(
-          viewPostDataManagementForMemoryBanks.theTitleOfTheMemory,
+          ViewPostDataManagementForMemoryBanks.to.memoryTitle,
           style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
         ),
       ),
@@ -111,10 +101,8 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           InkWell(
             onTap: () async {
               switchPage(context, const OtherPersonalPage());
-
               await requestTheOtherPersonalData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name']);
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['user_name']);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
@@ -125,24 +113,16 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                     children: [
                       CircleAvatar(
                         radius: 21,
-                        backgroundImage: viewPostDataManagementForMemoryBanks
-                                        .theMemoryBankValueOfThePost[
-                                    'head_portrait'] !=
-                                null
-                            ? FileImage(File(
-                                viewPostDataManagementForMemoryBanks
-                                        .theMemoryBankValueOfThePost[
-                                    'head_portrait']))
-                            : const AssetImage(
-                                'assets/personal/gray_back_head.png'),
+                        backgroundImage: ViewPostDataManagementForMemoryBanks.to.memoryBankValue['head_portrait'] != null
+                            ? FileImage(File(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['head_portrait']))
+                            : const AssetImage('assets/personal/gray_back_head.png'),
                       ),
                       const SizedBox(width: 11),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            viewPostDataManagementForMemoryBanks
-                                .theMemoryBankValueOfThePost['name'],
+                            ViewPostDataManagementForMemoryBanks.to.memoryBankValue['name'],
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               color: Colors.black,
@@ -150,7 +130,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                             ),
                           ),
                           Text(
-                            '@${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['user_name']}',
+                            '@${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['user_name']}',
                             style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               color: Color.fromRGBO(84, 87, 105, 1),
@@ -258,22 +238,22 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
     return Row(
       children: [
         _buildInfoText(
-          '${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['pull']} ',
+          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['pull']} ',
           '拉取',
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['collect']} ',
+          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['collect']} ',
           '收藏',
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['like']} ',
+          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['like']} ',
           '喜欢',
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost['reply']} ',
+          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['reply']} ',
           '回复',
         ),
       ],
@@ -319,45 +299,38 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             final List<int> changeUserPulledMemoryBankIndex =
                 userPersonalInformationManagement.userPulledMemoryBankIndex;
             if (isLiked == false) {
-              addPersonalMemoryBankData(viewPostDataManagementForMemoryBanks
-                  .theMemoryBankValueOfThePost);
-              changeUserPulledMemoryBankIndex.add(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              addPersonalMemoryBankData(ViewPostDataManagementForMemoryBanks.to.memoryBankValue);
+              changeUserPulledMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? null
+                  : changeUserPulledMemoryBankIndex.add(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
               await synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserPulledMemoryBankIndex,
                   'pull_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   1,
                   'pull');
             } else {
-              changeUserPulledMemoryBankIndex.remove(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              changeUserPulledMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? changeUserPulledMemoryBankIndex.remove(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  : null;
               await synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserPulledMemoryBankIndex,
                   'pull_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   -1,
                   'pull');
               if (!userPersonalInformationManagement.userPulledMemoryBankIndex
-                      .contains(viewPostDataManagementForMemoryBanks
-                          .theMemoryBankValueOfThePost['id']) &&
+                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userLikedMemoryBankIndex
-                      .contains(viewPostDataManagementForMemoryBanks
-                          .theMemoryBankValueOfThePost['id']) &&
+                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userReviewMemoryBankIndex
-                      .contains(viewPostDataManagementForMemoryBanks
-                          .theMemoryBankValueOfThePost['id'])) {
+                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])) {
                 deletePersonalMemoryBankData(
-                    viewPostDataManagementForMemoryBanks
-                        .theMemoryBankValueOfThePost['id']);
+                    ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
               }
             }
             return !isLiked;
@@ -365,7 +338,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userPulledMemoryBankIndex,
           memoryBank:
-              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
+              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
@@ -384,29 +357,27 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             List<int> changeUserCollectedMemoryBankIndex =
                 userPersonalInformationManagement.userCollectedMemoryBankIndex;
             if (isLiked == false) {
-              changeUserCollectedMemoryBankIndex.add(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              changeUserCollectedMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? null
+                  : changeUserCollectedMemoryBankIndex.add(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
               synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserCollectedMemoryBankIndex,
                   'collect_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   1,
                   'collect');
             } else {
-              changeUserCollectedMemoryBankIndex.remove(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              changeUserCollectedMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? changeUserCollectedMemoryBankIndex.remove(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  : null;
               synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserCollectedMemoryBankIndex,
                   'collect_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   -1,
                   'collect');
             }
@@ -415,7 +386,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userCollectedMemoryBankIndex,
           memoryBank:
-              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
+              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
@@ -434,45 +405,38 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             List<int> changeUserLikedMemoryBankIndex =
                 userPersonalInformationManagement.userLikedMemoryBankIndex;
             if (isLiked == false) {
-              addPersonalMemoryBankData(viewPostDataManagementForMemoryBanks
-                  .theMemoryBankValueOfThePost);
-              changeUserLikedMemoryBankIndex.add(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              addPersonalMemoryBankData(ViewPostDataManagementForMemoryBanks.to.memoryBankValue);
+              changeUserLikedMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? null
+                  : changeUserLikedMemoryBankIndex.add(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
               synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserLikedMemoryBankIndex,
                   'like_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   1,
                   '`like`');
             } else {
-              changeUserLikedMemoryBankIndex.remove(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              changeUserLikedMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? changeUserLikedMemoryBankIndex.remove(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  : null;
               synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserLikedMemoryBankIndex,
                   'like_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   -1,
                   '`like`');
               if (!userPersonalInformationManagement.userPulledMemoryBankIndex
-                      .contains(viewPostDataManagementForMemoryBanks
-                          .theMemoryBankValueOfThePost['id']) &&
+                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userLikedMemoryBankIndex
-                      .contains(viewPostDataManagementForMemoryBanks
-                          .theMemoryBankValueOfThePost['id']) &&
+                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userReviewMemoryBankIndex
-                      .contains(viewPostDataManagementForMemoryBanks
-                          .theMemoryBankValueOfThePost['id'])) {
+                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])) {
                 deletePersonalMemoryBankData(
-                    viewPostDataManagementForMemoryBanks
-                        .theMemoryBankValueOfThePost['id']);
+                    ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
               }
             }
             return !isLiked;
@@ -480,7 +444,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userLikedMemoryBankIndex,
           memoryBank:
-              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
+              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
@@ -499,29 +463,27 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             List<int> changeUserReplyMemoryBankIndex =
                 userPersonalInformationManagement.userReplyMemoryBankIndex;
             if (isLiked == false) {
-              changeUserReplyMemoryBankIndex.add(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              changeUserReplyMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? null
+                  : changeUserReplyMemoryBankIndex.add(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
               synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserReplyMemoryBankIndex,
                   'reply_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   1,
                   'reply');
             } else {
-              changeUserReplyMemoryBankIndex.remove(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id']);
+              changeUserReplyMemoryBankIndex.contains(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  ? changeUserReplyMemoryBankIndex.remove(
+                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                  : null;
               synchronizeMemoryBankData(
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['user_name'],
                   changeUserReplyMemoryBankIndex,
                   'reply_list',
-                  viewPostDataManagementForMemoryBanks
-                      .theMemoryBankValueOfThePost['id'],
+                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
                   -1,
                   'reply');
             }
@@ -530,7 +492,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userReplyMemoryBankIndex,
           memoryBank:
-              viewPostDataManagementForMemoryBanks.theMemoryBankValueOfThePost,
+              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
         ),
         const SizedBox(width: 10),
       ],

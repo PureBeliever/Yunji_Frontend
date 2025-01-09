@@ -270,7 +270,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   refreshofHomepageMemoryBankextends.memoryRefreshValue,
                               onItemTap: (index) {
                                 viewPostDataManagementForMemoryBanks
-                                    .initTheMemoryDataForThePost(
+                                    .initMemoryData(
                                         refreshofHomepageMemoryBankextends
                                             .memoryRefreshValue[index]);
                                 switchPage(context, const OtherMemoryBank());

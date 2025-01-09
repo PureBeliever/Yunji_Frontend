@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:get/get.dart';
 import 'package:yunji/review/review/start_review/review.dart';
 import 'package:yunji/home/home_page/home_page.dart';
@@ -67,8 +68,9 @@ final userInformationListScrollDataManagement =
 // 登录状态
 bool loginStatus = false;
 
-  final header = {'Content-Type': 'application/json'};
-  
+
+final header = {'Content-Type': 'application/json'};
+
 final dio = Dio();
 
 String generateRandomFilename() {
@@ -79,5 +81,3 @@ String generateRandomFilename() {
           .join('') +
       '.jpg';
 }
-
-

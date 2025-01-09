@@ -39,8 +39,6 @@ void main() async {
   }
 }
 
-
-
 Future<void> _initializeApp() async {
   await Future.wait([
     requestPermission(),

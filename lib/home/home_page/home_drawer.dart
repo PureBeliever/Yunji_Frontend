@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
@@ -109,7 +110,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
         width: 30,
         height: 30,
       ),
-      onPressed: () {},
+      onPressed: () {
+        getUserName();
+      },
     );
   }
 
@@ -281,3 +284,6 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
     );
   }
 }
+
+
+

@@ -13,6 +13,8 @@ import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/home/home_sqlite.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app/app_sqlite.dart';
+import 'package:yunji/personal/personal/personal/personal_api.dart';
+
 /// Start of Selection
 // 刷新主页记忆库
 Future<void> refreshHomePageMemoryBank(BuildContext context) async {
@@ -100,4 +102,17 @@ Future<void> _processPersonalValue(List<dynamic> personalValue,
     }
   }
 }
+
 /// End of Selection
+
+// 获取用户名
+
+void getUserName() async {
+  final response = await dio.get(
+    'http://47.92.98.170:36233/getUserName',
+    options: Options(headers: header),
+  );
+  final data = response.data;
+  final userName = data['username'];
+  requestTheUsersPersonalData(userName);
+}

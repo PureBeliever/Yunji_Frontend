@@ -9,9 +9,8 @@ import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 
-
 class MemoryBankList extends StatelessWidget {
-  List<Map<String, dynamic>>? refreshofMemoryBankextends;
+  final List<Map<String, dynamic>>? refreshofMemoryBankextends;
   final Function(int) onItemTap;
 
   MemoryBankList({
@@ -37,13 +36,14 @@ class MemoryBankList extends StatelessWidget {
 class MemoryBankItem extends StatelessWidget {
   final dynamic data;
   final VoidCallback onTap;
+
+  MemoryBankItem({required this.data, required this.onTap});
+
   String parseJson(String? jsonString, List<dynamic> subscript) {
     if (jsonString == null) return ' ';
     var value = jsonDecode(jsonString);
     return value['${subscript[0]}'] ?? '';
   }
-
-  MemoryBankItem({required this.data, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +57,14 @@ class MemoryBankItem extends StatelessWidget {
             height: 0.9,
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                top: 3.0, bottom: 3.0, right: 15, left: 2),
+            padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 头像按钮
                 IconButton(
                   onPressed: () async {
                     switchPage(context, const OtherPersonalPage());
-                    await requestTheOtherPersonalData(
-                        viewPostDataManagementForMemoryBanks
-                            .theMemoryBankValueOfThePost['user_name']);
+                    await requestTheOtherPersonalData(data['user_name']);
                   },
                   icon: CircleAvatar(
                     radius: 21,
@@ -83,7 +79,6 @@ class MemoryBankItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 5),
-                      // 名称和用户名
                       Row(
                         children: [
                           Flexible(
@@ -128,7 +123,6 @@ class MemoryBankItem extends StatelessWidget {
                           )
                         ],
                       ),
-                      // 主题
                       Text(
                         '${data['theme']}',
                         style: const TextStyle(
@@ -137,7 +131,6 @@ class MemoryBankItem extends StatelessWidget {
                             color: Colors.black),
                       ),
                       const SizedBox(height: 20),
-                      // 问题
                       Text(
                         parseJson(data['question'], data['subscript']),
                         style: const TextStyle(
@@ -148,7 +141,6 @@ class MemoryBankItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 20),
-                      // 回复
                       Text(
                         parseJson(data['answer'], data['subscript']),
                         style: const TextStyle(
@@ -159,7 +151,6 @@ class MemoryBankItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 20),
-                      // 点赞按钮行
                       LikeButtonRow(data: data),
                     ],
                   ),
@@ -174,10 +165,10 @@ class MemoryBankItem extends StatelessWidget {
   }
 }
 
-// LikeButtonRow.dart
 class LikeButtonRow extends StatelessWidget {
   final dynamic data;
   LikeButtonRow({required this.data});
+
   Widget buildLikeButton({
     required Color startColor,
     required Color endColor,
@@ -209,12 +200,10 @@ class LikeButtonRow extends StatelessWidget {
       likeCount: likeCount,
       countBuilder: (int? count, bool isLiked, String text) {
         var color = isLiked ? likedColor : const Color.fromRGBO(84, 87, 105, 1);
-        Widget result;
-        result = Text(
+        return Text(
           text,
           style: TextStyle(color: color, fontWeight: FontWeight.w700),
         );
-        return result;
       },
     );
   }
@@ -223,215 +212,221 @@ class LikeButtonRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              buildLikeButton(
-                startColor: Color.fromARGB(255, 42, 91, 255),
-                endColor: Color.fromARGB(255, 142, 204, 255),
-                dotPrimaryColor: Color.fromARGB(255, 0, 153, 255),
-                dotSecondaryColor: Color.fromARGB(255, 195, 238, 255),
-                likedIcon: Icons.swap_calls,
-                unlikedIcon: Icons.swap_calls,
-                likedColor: Colors.blue,
-                  likeCount: data['pull'],
-                onTap: (isLiked) async {
-                  final List<int> changeUserPulledMemoryBankIndex =
-                      userPersonalInformationManagement
-                          .userPulledMemoryBankIndex;
-                  if (isLiked == false) {
-                    addPersonalMemoryBankData(data);
-                    changeUserPulledMemoryBankIndex.add(data['id']);
-                    await synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserPulledMemoryBankIndex,
-                        'pull_list',
-                        data['id'],
-                        1,
-                        'pull');
-                  } else {
-                    changeUserPulledMemoryBankIndex.remove(data['id']);
-                    await synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserPulledMemoryBankIndex,
-                        'pull_list',
-                        data['id'],
-                        -1,
-                        'pull');
-                    if (!userPersonalInformationManagement
-                            .userPulledMemoryBankIndex
-                            .contains(data['id']) &&
-                        !userPersonalInformationManagement
-                            .userLikedMemoryBankIndex
-                            .contains(data['id']) &&
-                        !userPersonalInformationManagement
-                            .userReviewMemoryBankIndex
-                            .contains(data['id'])) {
-                      deletePersonalMemoryBankData(data['id']);
-                    }
-                  }
-                  return !isLiked;
-                },
-                memoryBankIds:
-                    userPersonalInformationManagement.userPulledMemoryBankIndex,
-              ),
-            ],
-          ),
+        buildLikeButtonContainer(
+          startColor: Color.fromARGB(255, 42, 91, 255),
+          endColor: Color.fromARGB(255, 142, 204, 255),
+          dotPrimaryColor: Color.fromARGB(255, 0, 153, 255),
+          dotSecondaryColor: Color.fromARGB(255, 195, 238, 255),
+          likedIcon: Icons.swap_calls,
+          unlikedIcon: Icons.swap_calls,
+          likedColor: Colors.blue,
+          likeCount: data['pull'],
+          onTap: (isLiked) async {
+            final List<int> changeUserPulledMemoryBankIndex =
+                userPersonalInformationManagement.userPulledMemoryBankIndex;
+            if (!isLiked) {
+              await addPersonalMemoryBankData(data);
+              if (!changeUserPulledMemoryBankIndex.contains(data['id'])) {
+                changeUserPulledMemoryBankIndex.add(data['id']);
+              }
+              await synchronizeMemoryBankData(
+                  changeUserPulledMemoryBankIndex,
+                  'pull_list',
+                  data['id'],
+                  1,
+                  'pull');
+            } else {
+              if (changeUserPulledMemoryBankIndex.contains(data['id'])) {
+                changeUserPulledMemoryBankIndex.remove(data['id']);
+              }
+              await synchronizeMemoryBankData(
+                  changeUserPulledMemoryBankIndex,
+                  'pull_list',
+                  data['id'],
+                  -1,
+                  'pull');
+              if (!userPersonalInformationManagement
+                      .userPulledMemoryBankIndex
+                      .contains(data['id']) &&
+                  !userPersonalInformationManagement
+                      .userLikedMemoryBankIndex
+                      .contains(data['id']) &&
+                  !userPersonalInformationManagement
+                      .userReviewMemoryBankIndex
+                      .contains(data['id'])) {
+                deletePersonalMemoryBankData(data['id']);
+              }
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userPulledMemoryBankIndex,
         ),
         const Spacer(flex: 1),
-        SizedBox(
-          width: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              buildLikeButton(
-                startColor: Color.fromARGB(255, 253, 156, 46),
-                endColor: Color.fromARGB(255, 255, 174, 120),
-                dotPrimaryColor: Color.fromARGB(255, 255, 102, 0),
-                dotSecondaryColor: Color.fromARGB(255, 255, 212, 163),
-                likedIcon: Icons.folder,
-                unlikedIcon: Icons.folder_open,
-                likedColor: Colors.orange,
-                likeCount: data['collect'],
-                onTap: (isLiked) async {
-                  List<int> changeUserCollectedMemoryBankIndex =
-                      userPersonalInformationManagement
-                          .userCollectedMemoryBankIndex;
-                  if (isLiked == false) {
-                    changeUserCollectedMemoryBankIndex.add(data['id']);
-                    synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserCollectedMemoryBankIndex,
-                        'collect_list',
-                        data['id'],
-                        1,
-                        'collect');
-                  } else {
-                    changeUserCollectedMemoryBankIndex.remove(data['id']);
-                    synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserCollectedMemoryBankIndex,
-                        'collect_list',
-                        data['id'],
-                        -1,
-                        'collect');
-                  }
-                  return !isLiked;
-                },
-                memoryBankIds: userPersonalInformationManagement
-                    .userCollectedMemoryBankIndex,
-              ),
-            ],
-          ),
+        buildLikeButtonContainer(
+          startColor: Color.fromARGB(255, 253, 156, 46),
+          endColor: Color.fromARGB(255, 255, 174, 120),
+          dotPrimaryColor: Color.fromARGB(255, 255, 102, 0),
+          dotSecondaryColor: Color.fromARGB(255, 255, 212, 163),
+          likedIcon: Icons.folder,
+          unlikedIcon: Icons.folder_open,
+          likedColor: Colors.orange,
+          likeCount: data['collect'],
+          onTap: (isLiked) async {
+            List<int> changeUserCollectedMemoryBankIndex =
+                userPersonalInformationManagement.userCollectedMemoryBankIndex;
+            if (!isLiked) {
+              if (!changeUserCollectedMemoryBankIndex.contains(data['id'])) {
+                changeUserCollectedMemoryBankIndex.add(data['id']);
+              }
+              synchronizeMemoryBankData(
+                  changeUserCollectedMemoryBankIndex,
+                  'collect_list',
+                  data['id'],
+                  1,
+                  'collect');
+            } else {
+              if (changeUserCollectedMemoryBankIndex.contains(data['id'])) {
+                changeUserCollectedMemoryBankIndex.remove(data['id']);
+              }
+              synchronizeMemoryBankData(
+                  changeUserCollectedMemoryBankIndex,
+                  'collect_list',
+                  data['id'],
+                  -1,
+                  'collect');
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userCollectedMemoryBankIndex,
         ),
         const Spacer(flex: 1),
-        SizedBox(
-          width: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              buildLikeButton(
-                startColor: Color.fromARGB(255, 255, 64, 64),
-                endColor: Color.fromARGB(255, 255, 206, 206),
-                dotPrimaryColor: Color.fromARGB(255, 255, 0, 0),
-                dotSecondaryColor: Color.fromARGB(255, 255, 186, 186),
-                likedIcon: Icons.favorite,
-                unlikedIcon: Icons.favorite_border,
-                likedColor: Colors.red,
-                likeCount: data['like'],
-                onTap: (isLiked) async {
-                  List<int> changeUserLikedMemoryBankIndex =
-                      userPersonalInformationManagement
-                          .userLikedMemoryBankIndex;
-                  if (isLiked == false) {
-                    addPersonalMemoryBankData(data);
-                    changeUserLikedMemoryBankIndex.add(data['id']);
-                    synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserLikedMemoryBankIndex,
-                        'like_list',
-                        data['id'],
-                        1,
-                        '`like`');
-                  } else {
-                    changeUserLikedMemoryBankIndex.remove(data['id']);
-                    synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserLikedMemoryBankIndex,
-                        'like_list',
-                        data['id'],
-                        -1,
-                        '`like`');
-                    if (!userPersonalInformationManagement
-                            .userPulledMemoryBankIndex
-                            .contains(data['id']) &&
-                        !userPersonalInformationManagement
-                            .userLikedMemoryBankIndex
-                            .contains(data['id']) &&
-                        !userPersonalInformationManagement
-                            .userReviewMemoryBankIndex
-                            .contains(data['id'])) {
-                      deletePersonalMemoryBankData(data['id']);
-                    }
-                  }
-                  return !isLiked;
-                },
-                memoryBankIds:
-                    userPersonalInformationManagement.userLikedMemoryBankIndex,
-              ),
-            ],
-          ),
+        buildLikeButtonContainer(
+          startColor: Color.fromARGB(255, 255, 64, 64),
+          endColor: Color.fromARGB(255, 255, 206, 206),
+          dotPrimaryColor: Color.fromARGB(255, 255, 0, 0),
+          dotSecondaryColor: Color.fromARGB(255, 255, 186, 186),
+          likedIcon: Icons.favorite,
+          unlikedIcon: Icons.favorite_border,
+          likedColor: Colors.red,
+          likeCount: data['like'],
+          onTap: (isLiked) async {
+            List<int> changeUserLikedMemoryBankIndex =
+                userPersonalInformationManagement.userLikedMemoryBankIndex;
+            if (!isLiked) {
+              addPersonalMemoryBankData(data);
+              if (!changeUserLikedMemoryBankIndex.contains(data['id'])) {
+                changeUserLikedMemoryBankIndex.add(data['id']);
+              }
+              synchronizeMemoryBankData(
+                  changeUserLikedMemoryBankIndex,
+                  'like_list',
+                  data['id'],
+                  1,
+                  '`like`');
+            } else {
+              if (changeUserLikedMemoryBankIndex.contains(data['id'])) {
+                changeUserLikedMemoryBankIndex.remove(data['id']);
+              }
+              synchronizeMemoryBankData(
+                  changeUserLikedMemoryBankIndex,
+                  'like_list',
+                  data['id'],
+                  -1,
+                  '`like`');
+              if (!userPersonalInformationManagement
+                      .userPulledMemoryBankIndex
+                      .contains(data['id']) &&
+                  !userPersonalInformationManagement
+                      .userLikedMemoryBankIndex
+                      .contains(data['id']) &&
+                  !userPersonalInformationManagement
+                      .userReviewMemoryBankIndex
+                      .contains(data['id'])) {
+                deletePersonalMemoryBankData(data['id']);
+              }
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userLikedMemoryBankIndex,
         ),
         const Spacer(flex: 1),
-        SizedBox(
-          width: 70,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              buildLikeButton(
-                startColor: Color.fromARGB(255, 237, 42, 255),
-                endColor: Color.fromARGB(255, 185, 142, 255),
-                dotPrimaryColor: Color.fromARGB(255, 225, 0, 255),
-                dotSecondaryColor: Color.fromARGB(255, 233, 195, 255),
-                likedIcon: Icons.messenger,
-                unlikedIcon: Icons.messenger_outline,
-                likedColor: Colors.purpleAccent,
-                likeCount: data['reply'],
-                onTap: (isLiked) async {
-                  List<int> changeUserReplyMemoryBankIndex =
-                      userPersonalInformationManagement
-                          .userReplyMemoryBankIndex;
-                  if (isLiked == false) {
-                    changeUserReplyMemoryBankIndex.add(data['id']);
-                    synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserReplyMemoryBankIndex,
-                        'reply_list',
-                        data['id'],
-                        1,
-                        'reply');
-                  } else {
-                    changeUserReplyMemoryBankIndex.remove(data['id']);
-                    synchronizeMemoryBankData(
-                        data['user_name'],
-                        changeUserReplyMemoryBankIndex,
-                        'reply_list',
-                        data['id'],
-                        -1,
-                        'reply');
-                  }
-                  return !isLiked;
-                },
-                memoryBankIds:
-                    userPersonalInformationManagement.userReplyMemoryBankIndex,
-              ),
-            ],
-          ),
+        buildLikeButtonContainer(
+          startColor: Color.fromARGB(255, 237, 42, 255),
+          endColor: Color.fromARGB(255, 185, 142, 255),
+          dotPrimaryColor: Color.fromARGB(255, 225, 0, 255),
+          dotSecondaryColor: Color.fromARGB(255, 233, 195, 255),
+          likedIcon: Icons.messenger,
+          unlikedIcon: Icons.messenger_outline,
+          likedColor: Colors.purpleAccent,
+          likeCount: data['reply'],
+          onTap: (isLiked) async {
+            List<int> changeUserReplyMemoryBankIndex =
+                userPersonalInformationManagement.userReplyMemoryBankIndex;
+            if (!isLiked) {
+              if (!changeUserReplyMemoryBankIndex.contains(data['id'])) {
+                changeUserReplyMemoryBankIndex.add(data['id']);
+              }
+              synchronizeMemoryBankData(
+                  changeUserReplyMemoryBankIndex,
+                  'reply_list',
+                  data['id'],
+                  1,
+                  'reply');
+            } else {
+              if (changeUserReplyMemoryBankIndex.contains(data['id'])) {
+                changeUserReplyMemoryBankIndex.remove(data['id']);
+              }
+              synchronizeMemoryBankData(
+                  changeUserReplyMemoryBankIndex,
+                  'reply_list',
+                  data['id'],
+                  -1,
+                  'reply');
+            }
+            return !isLiked;
+          },
+          memoryBankIds:
+              userPersonalInformationManagement.userReplyMemoryBankIndex,
         ),
         const Spacer(flex: 2),
       ],
+    );
+  }
+
+  Widget buildLikeButtonContainer({
+    required Color startColor,
+    required Color endColor,
+    required Color dotPrimaryColor,
+    required Color dotSecondaryColor,
+    required IconData likedIcon,
+    required IconData unlikedIcon,
+    required Color likedColor,
+    required int likeCount,
+    required Future<bool> Function(bool) onTap,
+    required List<int> memoryBankIds,
+  }) {
+    return SizedBox(
+      width: 70,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildLikeButton(
+            startColor: startColor,
+            endColor: endColor,
+            dotPrimaryColor: dotPrimaryColor,
+            dotSecondaryColor: dotSecondaryColor,
+            likedIcon: likedIcon,
+            unlikedIcon: unlikedIcon,
+            likedColor: likedColor,
+            likeCount: likeCount,
+            onTap: onTap,
+            memoryBankIds: memoryBankIds,
+          ),
+        ],
+      ),
     );
   }
 }
