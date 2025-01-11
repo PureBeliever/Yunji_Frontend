@@ -9,7 +9,7 @@ import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
-import 'package:yunji/review/creat_review/creat_review_page.dart';
+import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 

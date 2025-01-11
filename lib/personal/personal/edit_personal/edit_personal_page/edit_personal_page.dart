@@ -819,12 +819,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                   maxLength: 50,
                   readOnly: true,
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return _buildDatePickerDialog(context);
-                      },
-                    );
+                    _buildDatePickerDialog(context);
                   },
                 ),
               ],
@@ -877,88 +872,95 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 
-  Widget _buildDatePickerDialog(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: SizedBox(
-        height: 300,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 250,
-              child: Localizations.override(
-                context: context,
-                locale: const Locale('en'),
-                delegates: const [MyDefaultCupertinoLocalizations.delegate],
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  minimumDate: DateTime(1900, 1, 1),
-                  maximumDate: DateTime.now(),
-                  initialDateTime: DateTime(2000, 1, 1),
-                  dateOrder: DatePickerDateOrder.ymd,
-                  onDateTimeChanged: (date) {
-                    selectDateOfBirth = DateFormat('yyyy年MM月dd日').format(date);
-                  },
-                ),
+  Future _buildDatePickerDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: SizedBox(
+              height: 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 250,
+                    child: Localizations.override(
+                      context: context,
+                      locale: const Locale('en'),
+                      delegates: const [
+                        MyDefaultCupertinoLocalizations.delegate
+                      ],
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        minimumDate: DateTime(1900, 1, 1),
+                        maximumDate: DateTime.now(),
+                        initialDateTime: DateTime(2000, 1, 1),
+                        dateOrder: DatePickerDateOrder.ymd,
+                        onDateTimeChanged: (date) {
+                          selectDateOfBirth =
+                              DateFormat('yyyy年MM月dd日').format(date);
+                        },
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              '取消',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              selectorResultsUpdateDisplay
+                                  .dateOfBirthSelectorResultValueChange(' ');
+                            },
+                            child: const Text(
+                              '移除',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          selectorResultsUpdateDisplay
+                              .dateOfBirthSelectorResultValueChange(
+                                  selectDateOfBirth);
+                        },
+                        child: const Text(
+                          '确定',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        '取消',
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.black),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        selectorResultsUpdateDisplay
-                            .dateOfBirthSelectorResultValueChange(' ');
-                      },
-                      child: const Text(
-                        '移除',
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    selectorResultsUpdateDisplay
-                        .dateOfBirthSelectorResultValueChange(
-                            selectDateOfBirth);
-                  },
-                  child: const Text(
-                    '确定',
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }

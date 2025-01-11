@@ -4,7 +4,7 @@ import 'package:keframe/keframe.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
-import 'package:yunji/review/creat_review/creat_review_option.dart';
+import 'package:yunji/review/creat_review/creat_review/creat_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 class CreatReviewController extends GetxController {
@@ -211,7 +211,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                     title: Text(
                       '费曼学习法详解',
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w800,
                         fontSize: commonFontSize,
                       ),
                     ),

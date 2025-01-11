@@ -7,12 +7,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/review/creat_review/creat_review_api.dart';
+import 'package:yunji/review/creat_review/creat_review/creat_review_api.dart';
 
 import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/review/creat_review/creat_review_page.dart';
+import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/review/creat_review/custom_memory/custom_memory_scheme.dart';
+import 'package:yunji/review/creat_review/custom_memory_scheme.dart';
 import 'package:yunji/review/notification_init.dart';
 
 // 通用字体大小
