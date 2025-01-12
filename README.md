@@ -1,7 +1,5 @@
 # yunji
 
-A new Flutter project.
-
 1.网络请求需要更换https的域名
 
 2.阿里云短信签名的认证
