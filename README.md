@@ -15,8 +15,8 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-1.网络请求需要更换https的域名
-2.阿里云短信签名的认证
+-1.网络请求需要更换https的域名
+-2.阿里云短信签名的认证
 3.https://juejin.cn/post/7304533060548247603
 4.完成上线标准
 5.需要一些具有吸引力的记忆库
