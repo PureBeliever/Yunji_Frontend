@@ -1,18 +1,17 @@
-import 'package:alarm/alarm.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+
 import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/setting/setting_page.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/global.dart';
+import 'package:yunji/main/main_module/switch.dart';
 
+// 主页面抽屉组件
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
 
@@ -21,6 +20,9 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
+  final _editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -35,8 +37,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildHeader(context),
-              _buildMenuList(context),
+              _buildHeader(context), // 构建抽屉头部
+              _buildMenuList(context), // 构建菜单列表
             ],
           ),
         ),
@@ -44,18 +46,19 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+  // 构建抽屉头部
   Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 26, left: 28, top: 50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildProfileRow(context),
+          _buildProfileRow(context), // 构建个人资料行
           const SizedBox(height: 3),
-          _buildName(),
-          _buildUserName(),
+          _buildName(), // 构建姓名
+          _buildUserName(), // 构建用户名
           const SizedBox(height: 10),
-          _buildFollowInfo(),
+          _buildFollowInfo(), // 构建关注信息
           const SizedBox(height: 25),
           const Divider(
             color: Color.fromRGBO(201, 201, 201, 1),
@@ -67,6 +70,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+  // 构建个人资料行
   Widget _buildProfileRow(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -74,14 +78,15 @@ class _HomeDrawerState extends State<HomeDrawer> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildProfileIcon(context),
-            _buildSettingsIcon(),
+            _buildProfileIcon(context), // 构建头像
+            _buildSettingsIcon(), // 构建设置图标
           ],
         ),
       ),
     );
   }
 
+  // 构建头像
   Widget _buildProfileIcon(BuildContext context) {
     return GetBuilder<HeadPortraitChangeManagement>(
       init: headPortraitChangeManagement,
@@ -104,6 +109,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+  // 构建设置图标
   Widget _buildSettingsIcon() {
     return IconButton(
       splashColor: const Color.fromRGBO(145, 145, 145, 1),
@@ -118,12 +124,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+  // 构建姓名
   Widget _buildName() {
     return GetBuilder<EditPersonalDataValueManagement>(
-      init: editPersonalDataValueManagement,
-      builder: (editPersonalDataValueManagement) {
+      init: _editPersonalDataValueManagement,
+      builder: (_editPersonalDataValueManagement) {
         return Text(
-          '${editPersonalDataValueManagement.nameValue}',
+          '${_editPersonalDataValueManagement.nameValue}',
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 21,
@@ -133,6 +140,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+  // 构建用户名
   Widget _buildUserName() {
     return Text(
       '@${userNameChangeManagement.userNameValue}',
@@ -144,6 +152,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+  // 构建关注信息
   Widget _buildFollowInfo() {
     return const Row(
       children: [
@@ -181,8 +190,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
-
-
+  // 构建菜单列表
   Widget _buildMenuList(BuildContext context) {
     return Expanded(
       child: MediaQuery.removePadding(
@@ -193,18 +201,17 @@ class _HomeDrawerState extends State<HomeDrawer> {
           physics: const BouncingScrollPhysics(),
           children: [
             _buildMenuItem(context, '个人资料', 'assets/home/personal_data.svg',
-                const PersonalPage()),
-            _buildMenuItem(context, '会员', 'assets/home/member.svg', null,
-               ),
-            _buildMenuItem(context, '收藏', 'assets/home/collect.svg', null),
+                const PersonalPage()), // 构建个人资料菜单项
+            _buildMenuItem(context, '会员', 'assets/home/member.svg', null), // 构建会员菜单项
+            _buildMenuItem(context, '收藏', 'assets/home/collect.svg', null), // 构建收藏菜单项
             _buildMenuItem(
               context,
               '反馈',
               'assets/home/feedback.svg',
               null,
-            ),
+            ), // 构建反馈菜单项
             _buildMenuItem(
-                context, '设置', 'assets/home/setting.svg', const SettingPage()),
+                context, '设置', 'assets/home/setting.svg', const SettingPage()), // 构建设置菜单项
             const Padding(
               padding: EdgeInsets.only(left: 28, right: 26),
               child: Divider(
@@ -213,13 +220,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 height: 50,
               ),
             ),
-            const MemoryAnalysis(),
+            const MemoryAnalysis(), // 构建记忆分析组件
           ],
         ),
       ),
     );
   }
 
+  // 构建菜单项
   Widget _buildMenuItem(
       BuildContext context, String title, String assetPath, Widget? page,
       {VoidCallback? onTap}) {
@@ -250,6 +258,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 }
 
+// 记忆分析组件
 class MemoryAnalysis extends StatefulWidget {
   const MemoryAnalysis({super.key});
 

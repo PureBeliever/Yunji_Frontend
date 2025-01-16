@@ -3,23 +3,22 @@ import 'dart:core';
 //依赖包
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:yunji/home/algorithm_home_api.dart';
 
 //项目文件
 import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/home/login/login_init.dart';
-import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/review/creat_review/start_review/review.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/review/notification_init.dart';
-import 'package:yunji/main/app/app_sqlite.dart';
+import 'package:yunji/main/main_init/app_sqlite.dart';
+import 'package:yunji/main.dart';
 
 Future<void> requestPermission() async {
-  // 请求通知权限
   await Permission.notification.request();
-  // 请求精确闹钟权限
   await Permission.scheduleExactAlarm.request();
 }
 
@@ -51,9 +50,11 @@ void OnRingCallback(String body, int id) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${body}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                        body,
+                        style: const TextStyle(
+                          fontSize: 16, 
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       SizedBox(
                         width: 90,
@@ -61,18 +62,19 @@ void OnRingCallback(String body, int id) {
                         child: TextButton(
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.grey[350],
-                            padding: EdgeInsets.all(0),
+                            padding: EdgeInsets.zero,
                           ),
                           onPressed: () {
                             Alarm.stop(id);
                             Navigator.of(context).pop();
                           },
-                          child: Text(
+                          child: const Text(
                             '停止闹钟',
                             style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromRGBO(84, 87, 105, 1)),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(84, 87, 105, 1),
+                            ),
                           ),
                         ),
                       ),
@@ -124,6 +126,10 @@ Future<void> _initializeNotification() async {
 
 void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
     Map<String, dynamic> personalData) async {
+       final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
+       final editPersonalDataValueManagement =
+    Get.put(EditPersonalDataValueManagement());
+
   refreshofHomepageMemoryBankextends
       .updateMemoryRefreshValue(homePageMemoryDatabaseData);
 
@@ -155,18 +161,3 @@ void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
   userNameChangeManagement.userNameChanged(personalData['user_name']);
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '云忆',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-        useMaterial3: true,
-      ),
-      home: const HomePage(title: '主页'),
-    );
-  }
-}

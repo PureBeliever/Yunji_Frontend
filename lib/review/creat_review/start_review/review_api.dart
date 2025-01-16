@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
+import 'package:yunji/global.dart';
 
 Future<void> continueReview(
     Map<String, String> question,
@@ -15,12 +16,13 @@ Future<void> continueReview(
     bool completeState,
     Map<String, String> reviewRecord,
     String reviewSchemeName,
-    String? userName,
 ) async {
   final dio = Dio();
-    Map<String, String> header = {
+  Map<String, String> header = {
     'Content-Type': 'application/json',
   };
+  String userName = userNameChangeManagement.userNameValue ?? '';
+  
 
   Map<String, dynamic> formdata = {
     'username': userName,
@@ -29,7 +31,7 @@ Future<void> continueReview(
     'id': id,
     'theme': theme,
     'memoryTime': memoryTime,
-    'setTime': setTime.toString(),
+    'setTime': setTime.toIso8601String(),
     'subscript': subscript,
     'informationNotification': informationNotification,
     'alarmNotification': alarmNotification,
@@ -38,11 +40,15 @@ Future<void> continueReview(
     'reviewSchemeName': reviewSchemeName
   };
 
-  String jsonformdata = jsonEncode(formdata);
- await dio.post(
-    'http://47.92.98.170:36233/continueReview',
-    data: jsonformdata,
-    options: Options(headers: header),
-  );
-  requestTheUsersPersonalData(userName);
+  try {
+    String jsonformdata = jsonEncode(formdata);
+    final response = await dio.post(
+      '$website/continueReview',
+      data: jsonformdata,
+      options: Options(headers: header),
+    ); 
+    requestTheUsersPersonalData(userName);
+  } catch (e) {
+    print('继续复习时出错: $e');
+  }
 }

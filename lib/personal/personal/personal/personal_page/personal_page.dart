@@ -12,18 +12,18 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
 
-import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
-import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
-import 'package:yunji/main/app_module/memory_bank_sqlite.dart';
-import 'package:yunji/main/app_module/show_toast.dart';
+import 'package:yunji/global.dart';
+import 'package:yunji/main/main_module/memory_bank/memory_bank_api.dart';
+import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
+import 'package:yunji/main/main_module/memory_bank/memory_bank_sqlite.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/review/review/continue_review.dart';
-import 'package:yunji/main/app_module/sliver_header_delegate.dart';
+import 'package:yunji/main/main_module/sliver_header_delegate.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/review/creat_review/start_review/review.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
@@ -37,7 +37,8 @@ class PersonalPage extends StatefulWidget {
   @override
   State<PersonalPage> createState() => _PersonalPageState();
 }
-
+final _userInformationListScrollDataManagement =
+    Get.put(UserInformationListScrollDataManagement());
 class UserInformationListScrollDataManagement extends GetxController {
   static UserInformationListScrollDataManagement get to => Get.find();
 
@@ -82,8 +83,11 @@ class UserInformationListScrollDataManagement extends GetxController {
 
 class MemoryBankCompletionStatus extends GetxController {
   static MemoryBankCompletionStatus get to => Get.find();
+  final _continueLearningAboutDataManagement =
+    Get.put(ContinueLearningAboutDataManagement());
 
-  // 是否显示其它图标
+final _reviewDataManagement = Get.put(ReviewDataManagement()); 
+
 
   bool displayIconStatus(int? status) => status == 1;
 
@@ -150,7 +154,7 @@ class MemoryBankCompletionStatus extends GetxController {
           ),
           GestureDetector(
             onTap: () {
-              continueLearningAboutDataManagement
+              _continueLearningAboutDataManagement
                   .initMemoryData(widgetsDisplayValues);
               switchPage(context, ContinueReview());
             },
@@ -168,7 +172,7 @@ class MemoryBankCompletionStatus extends GetxController {
       Map<String, dynamic> widgetsDisplayValues, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        reviewDataManagement.initMemoryData(widgetsDisplayValues);
+        _reviewDataManagement.initMemoryData(widgetsDisplayValues);
         switchPage(context, ReviewPage());
       },
       child: Text(
@@ -216,7 +220,7 @@ class UserPersonalInformationManagement extends GetxController {
   List<int> userReviewMemoryBankIndex = [];
 
   void refreshDisplayText(int tabControllerIndex) {
-    userInformationListScrollDataManagement
+    _userInformationListScrollDataManagement
         .calculateTheNumberOfMemoryBanksPerPage(
       tabControllerIndex,
       userReviewMemoryBankIndex.length,
@@ -285,12 +289,15 @@ class _PersonalPageState extends State<PersonalPage>
     with TickerProviderStateMixin {
   late TabController tabController;
   final memoryBankCompletionStatus = Get.put(MemoryBankCompletionStatus());
+    final _viewPostDataManagementForMemoryBanks =
+    Get.put(ViewPostDataManagementForMemoryBanks());
+    final _editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
   final ScrollController scrollController = ScrollController();
 
   @override
   void dispose() {
     tabController.index = 0;
-    userInformationListScrollDataManagement.clearData();
+    _userInformationListScrollDataManagement.clearData();
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
@@ -321,9 +328,9 @@ class _PersonalPageState extends State<PersonalPage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.addListener(() {
         final offset = scrollController.offset;
-        userInformationListScrollDataManagement
+        _userInformationListScrollDataManagement
             .setBackgroundColor(offset >= 160);
-        userInformationListScrollDataManagement.setTransparency(offset >= 235);
+        _userInformationListScrollDataManagement.setTransparency(offset >= 235);
       });
     });
   }
@@ -343,8 +350,8 @@ class _PersonalPageState extends State<PersonalPage>
     return Scaffold(
       backgroundColor: Colors.white,
       body: GetBuilder<EditPersonalDataValueManagement>(
-        init: editPersonalDataValueManagement,
-        builder: (editPersonalDataValueManagement) {
+        init: _editPersonalDataValueManagement,
+        builder: (_editPersonalDataValueManagement) {
           return EasyRefresh(
             callRefreshOverOffset: 5,
             header: _buildClassicHeader(),
@@ -355,8 +362,8 @@ class _PersonalPageState extends State<PersonalPage>
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
-                  _buildSliverAppBar(context, editPersonalDataValueManagement),
-                  _buildSliverToBoxAdapter(editPersonalDataValueManagement),
+                  _buildSliverAppBar(context, _editPersonalDataValueManagement),
+                  _buildSliverToBoxAdapter(_editPersonalDataValueManagement),
                   _buildSliverPersistentHeader(),
                 ];
               },
@@ -404,7 +411,7 @@ class _PersonalPageState extends State<PersonalPage>
       title: Padding(
         padding: const EdgeInsets.only(left: 48.0),
         child: GetBuilder<UserInformationListScrollDataManagement>(
-          init: userInformationListScrollDataManagement,
+          init: _userInformationListScrollDataManagement,
           builder: (controller) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,16 +420,16 @@ class _PersonalPageState extends State<PersonalPage>
                   editPersonalDataValueManagement.nameValue ?? '',
                   style: TextStyle(
                     color: Colors.white.withOpacity(
-                        userInformationListScrollDataManagement.opacity),
+                        _userInformationListScrollDataManagement.opacity),
                     fontSize: 21,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
-                  userInformationListScrollDataManagement.displayText,
+                  _userInformationListScrollDataManagement.displayText,
                   style: TextStyle(
                     color: Colors.white.withOpacity(
-                        userInformationListScrollDataManagement.opacity),
+                        _userInformationListScrollDataManagement.opacity),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -486,11 +493,11 @@ class _PersonalPageState extends State<PersonalPage>
           children: <Widget>[
             Positioned.fill(
               child: GetBuilder<UserInformationListScrollDataManagement>(
-                init: userInformationListScrollDataManagement,
-                builder: (userInformationListScrollDataManagement) {
+                init: _userInformationListScrollDataManagement,
+                builder: (_userInformationListScrollDataManagement) {
                   return ImageFiltered(
                     imageFilter: ImageFilter.blur(
-                      sigmaX: userInformationListScrollDataManagement.filter,
+                      sigmaX: _userInformationListScrollDataManagement.filter,
                       sigmaY: 0,
                     ),
                     child: GestureDetector(
@@ -515,11 +522,11 @@ class _PersonalPageState extends State<PersonalPage>
               left: 0,
               right: 0,
               child: GetBuilder<UserInformationListScrollDataManagement>(
-                init: userInformationListScrollDataManagement,
-                builder: (userInformationListScrollDataManagement) {
+                init: _userInformationListScrollDataManagement,
+                builder: (_userInformationListScrollDataManagement) {
                   return AnimatedContainer(
                     duration: Duration(
-                        seconds: userInformationListScrollDataManagement
+                        seconds: _userInformationListScrollDataManagement
                                 .backgroundState
                             ? 1
                             : 0),
@@ -529,7 +536,7 @@ class _PersonalPageState extends State<PersonalPage>
                         end: Alignment.topCenter,
                         colors: [
                           Colors.black.withOpacity(
-                              userInformationListScrollDataManagement
+                              _userInformationListScrollDataManagement
                                       .backgroundState
                                   ? 0.5
                                   : 0),
@@ -816,7 +823,7 @@ class _PersonalPageState extends State<PersonalPage>
                 refreshofMemoryBankextends:
                     userPersonalInformationManagement.userPulledMemoryBank,
                 onItemTap: (index) {
-                  viewPostDataManagementForMemoryBanks.initMemoryData(
+                  _viewPostDataManagementForMemoryBanks.initMemoryData(
                     userPersonalInformationManagement
                         .userPulledMemoryBank![index],
                   );
@@ -839,7 +846,7 @@ class _PersonalPageState extends State<PersonalPage>
                 refreshofMemoryBankextends:
                     userPersonalInformationManagement.userLikedMemoryBank,
                 onItemTap: (index) {
-                  viewPostDataManagementForMemoryBanks.initMemoryData(
+                  _viewPostDataManagementForMemoryBanks.initMemoryData(
                     userPersonalInformationManagement
                         .userLikedMemoryBank![index],
                   );
@@ -887,7 +894,7 @@ class _PersonalPageState extends State<PersonalPage>
             const SizedBox(height: 5),
             InkWell(
               onTap: () {
-                viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank);
+                _viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank);
                 switchPage(context, const OtherMemoryBank());
               },
               child: Padding(

@@ -2,7 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseManager {
-  Database? database;
+  late Database database;
   DatabaseManager() {
     initDatabase().then((db) {
       database = db;

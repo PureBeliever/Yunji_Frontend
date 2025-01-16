@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/setting/setting_user/setting_user.dart';
 
 class SettingPage extends StatelessWidget {

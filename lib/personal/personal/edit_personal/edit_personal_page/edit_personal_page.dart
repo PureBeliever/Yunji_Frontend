@@ -11,14 +11,16 @@ import 'package:city_pickers/city_pickers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toastification/toastification.dart' as toast;
-import 'package:yunji/main/app_module/switch.dart';
+
+
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_video_editor_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 
 class EditPersonalDataValueManagement extends GetxController {
   static EditPersonalDataValueManagement get to => Get.find();
@@ -109,6 +111,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   String? profile;
   String? selectResidentialAddress;
   String? selectDateOfBirth;
+  final _editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
 
   // final ImagePicker _picker = ImagePicker();
 
@@ -123,11 +126,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   @override
   void initState() {
     super.initState();
-    name = editPersonalDataValueManagement.nameValue;
-    profile = editPersonalDataValueManagement.profileValue;
+    name = _editPersonalDataValueManagement.nameValue;
+    profile = _editPersonalDataValueManagement.profileValue;
     selectResidentialAddress =
-        editPersonalDataValueManagement.residentialAddressValue;
-    selectDateOfBirth = editPersonalDataValueManagement.dateOfBirthValue;
+        _editPersonalDataValueManagement.residentialAddressValue;
+    selectDateOfBirth = _editPersonalDataValueManagement.dateOfBirthValue;
   }
 
   final saveBackSpace = Get.put(SaveBackSpace());
@@ -136,7 +139,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       Get.put(BackgroundImageChangeManagement());
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
-  static String? username = userNameChangeManagement.userNameValue;
+
 
   Future<void> _selectAndCropImage({
     required ImageSource source,
@@ -240,7 +243,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (editPersonalDataValueManagement.rollbackTheChangedValue(
+        if (_editPersonalDataValueManagement.rollbackTheChangedValue(
               name: name,
               profile: profile,
               residentialAddress: selectResidentialAddress,
@@ -271,8 +274,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 14.0, right: 10.0),
                 child: GetBuilder<EditPersonalDataValueManagement>(
-                  init: editPersonalDataValueManagement,
-                  builder: (editPersonalDataValueManagement) {
+                  init: _editPersonalDataValueManagement,
+                  builder: (_editPersonalDataValueManagement) {
                     return _buildFormFields();
                   },
                 ),
@@ -289,7 +292,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       backgroundColor: Colors.white,
       leading: GestureDetector(
         onTap: () {
-          if (editPersonalDataValueManagement.rollbackTheChangedValue(
+          if (_editPersonalDataValueManagement.rollbackTheChangedValue(
                 name: name,
                 profile: profile,
                 residentialAddress: selectResidentialAddress,
@@ -321,7 +324,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               child: saveBackSpace.backspaceValue
                   ? GestureDetector(
                       onTap: () {
-                        if (editPersonalDataValueManagement
+                        if (_editPersonalDataValueManagement
                                 .rollbackTheChangedValue(
                               name: name,
                               profile: profile,
@@ -329,18 +332,18 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                               dateOfBirth: selectDateOfBirth,
                             ) >
                             0) {
-                          editPersonalDataValueManagement
+                          _editPersonalDataValueManagement
                               .changePersonalInformation(
                             name: name,
                             profile: profile,
                             residentialAddress: selectResidentialAddress,
                             dateOfBirth: selectDateOfBirth,
-                            applicationDate: editPersonalDataValueManagement
+                            applicationDate: _editPersonalDataValueManagement
                                 .applicationDateValue,
                           );
 
                           editPersonal(
-                            username,
+                     
                             name,
                             profile,
                             selectResidentialAddress,
@@ -417,15 +420,15 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     onPressed: () {
                       selectorResultsUpdateDisplay
                           .dateOfBirthSelectorResultValueChange(
-                              editPersonalDataValueManagement.dateOfBirthValue);
+                              _editPersonalDataValueManagement.dateOfBirthValue);
                       selectorResultsUpdateDisplay
                           .residentialAddressSelectorResultValueChange(
-                              editPersonalDataValueManagement
+                              _editPersonalDataValueManagement
                                   .residentialAddressValue);
                       backgroundImageChangeManagement.restoreBackgroundImage();
                       headPortraitChangeManagement.restoreHeadPortrait();
-                      name = editPersonalDataValueManagement.nameValue;
-                      profile = editPersonalDataValueManagement.profileValue;
+                      name = _editPersonalDataValueManagement.nameValue;
+                      profile = _editPersonalDataValueManagement.profileValue;
                       selectResidentialAddress = selectorResultsUpdateDisplay
                           .residentialAddressSelectorResultValue;
                       selectDateOfBirth = selectorResultsUpdateDisplay

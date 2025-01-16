@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 import 'package:toastification/toastification.dart' as toast;
-import 'package:yunji/main/app_module/show_toast.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/home/login/login_init.dart';
 
 class PersonalHeadPortrait extends StatefulWidget {

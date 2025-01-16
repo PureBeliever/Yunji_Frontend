@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/main/app_module/show_toast.dart';
-import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
+import 'package:yunji/main/main_module/switch.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/review/review/continue_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
 
@@ -76,25 +76,32 @@ class ContinueReview extends StatefulWidget {
 }
 
 class _ContinueReview extends State<ContinueReview> {
-  final List<Item> _data = generateItems(
-      continueLearningAboutDataManagement.numberOfMemories,
-      continueLearningAboutDataManagement.memoryItemIndices,
-      continueLearningAboutDataManagement.question,
-      continueLearningAboutDataManagement.answer);
-  final _controller = TextEditingController(
-      text: continueLearningAboutDataManagement.theme);
+  final _continueLearningAboutDataManagement =
+      Get.put(ContinueLearningAboutDataManagement());
+  late List<Item> _data;
+  late TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+    _data = generateItems(
+      _continueLearningAboutDataManagement.numberOfMemories,
+      _continueLearningAboutDataManagement.memoryItemIndices,
+      _continueLearningAboutDataManagement.question,
+      _continueLearningAboutDataManagement.answer,
+    );
+    _controller = TextEditingController(
+      text: _continueLearningAboutDataManagement.theme,
+    );
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   void _showClearDialog(BuildContext context) {
@@ -263,7 +270,7 @@ class _ContinueReview extends State<ContinueReview> {
   }
 
   void _handleNextStep(BuildContext context) {
-    if (continueLearningAboutDataManagement.theme.isEmpty) {
+    if (_continueLearningAboutDataManagement.theme.isEmpty) {
       showToast(context, "请填写主题", "主题为空", toast.ToastificationType.success,
           const Color(0xff047aff), const Color(0xFFEDF7FF));
       FocusScope.of(context).requestFocus(_focusNode);
@@ -271,11 +278,10 @@ class _ContinueReview extends State<ContinueReview> {
       int index = 0;
       for (var data in _data) {
         if (data.question.isNotEmpty || data.answer.isNotEmpty) {
-          
-          continueLearningAboutDataManagement.question[index.toString()] =
+          _continueLearningAboutDataManagement.question[index.toString()] =
               data.question;
-          continueLearningAboutDataManagement.answer[index.toString()] =
-            data.answer;
+          _continueLearningAboutDataManagement.answer[index.toString()] =
+              data.answer;
           index++;
         }
       }
@@ -359,7 +365,7 @@ class _ContinueReview extends State<ContinueReview> {
                 const EdgeInsets.only(left: 5, right: 15, top: 50, bottom: 0),
             child: TextField(
               onChanged: (value) {
-                continueLearningAboutDataManagement.theme = value;
+                _continueLearningAboutDataManagement.theme = value;
               },
               controller: _controller,
               maxLength: 50,

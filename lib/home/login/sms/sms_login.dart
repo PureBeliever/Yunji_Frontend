@@ -5,8 +5,8 @@ import 'package:toastification/toastification.dart' as toast;
 
 
 import 'package:yunji/home/login/sms/sms_api.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/main/app_module/show_toast.dart';
+import 'package:yunji/global.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 
 
 // 短信登录功能

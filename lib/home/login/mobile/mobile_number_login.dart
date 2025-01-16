@@ -5,7 +5,7 @@ import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/home/login/mobile/mobile_number_api.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/home/algorithm_home_api.dart';
-import 'package:yunji/main/app_module/show_toast.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 
 bool _isFirstLoginAttempt = true;
 

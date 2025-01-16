@@ -1,30 +1,35 @@
 import 'dart:convert';
+import 'package:yunji/global.dart';
 import 'package:dio/dio.dart';
 
 final dio = Dio();
 
 void editUserName(String? editUserName, String? userName) async {
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
   Map<String, dynamic> formdata = {
     'editUserName': editUserName,
     'userName': userName,
   };
 
-  await dio.put('http://47.92.98.170:36233/editUserName',
-      data: jsonEncode(formdata), options: Options(headers: header));
+  try {
+    final response = await dio.put('$website/editUserName',
+        data: jsonEncode(formdata), options: Options(headers: header));
+  } catch (e) {
+    print('编辑用户名时出错: $e');
+  }
 }
 
 Future<bool> verifyUserName(String? editUserName) async {
-  Map<String, String> header = {
-    'Content-Type': 'application/json',
-  };
   Map<String, dynamic> formdata = {
     'editUserName': editUserName,
   };
 
-  final response = await dio.post('http://47.92.98.170:36233/verifyUserName',
-      data: jsonEncode(formdata), options: Options(headers: header));
-  return response.data['saveState'];
+  try {
+    final response = await dio.post('$website/verifyUserName',
+        data: jsonEncode(formdata), options: Options(headers: header));
+
+    return response.data['saveState'];
+  } catch (e) {
+    print('验证用户名时出错: $e');
+    return false;
+  }
 }

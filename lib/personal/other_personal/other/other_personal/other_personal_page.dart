@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, avoid_unnecessary_containers
 
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -9,14 +8,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:keframe/keframe.dart';
-import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
+import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_background_image.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
-import 'package:yunji/main/app_module/sliver_header_delegate.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/main/main_module/sliver_header_delegate.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 
 class OtherPersonalPage extends StatefulWidget {
@@ -27,8 +26,12 @@ class OtherPersonalPage extends StatefulWidget {
 }
 
 //信息列表滚动数据管理
+
+final _otherPeopleInformationListScrollDataManagement =
+    Get.put(OtherPeopleInformationListScrollDataManagement());
 class OtherPeopleInformationListScrollDataManagement extends GetxController {
   static OtherPeopleInformationListScrollDataManagement get to => Get.find();
+
 
   bool backgroundState = false;
   double filter = 0.0;
@@ -93,7 +96,7 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
   List<int> otherPeopleReviewMemoryBankIndex = [];
 
   void refreshDisplayText(int tabControllerIndex) {
-    otherPeopleInformationListScrollDataManagement
+    _otherPeopleInformationListScrollDataManagement
         .calculateTheNumberOfMemoryBanksPerPage(
       tabControllerIndex,
       otherPeopleReviewMemoryBankIndex.length,
@@ -158,16 +161,20 @@ class OtherPeoplePersonalInformationManagement extends GetxController {
 class _OtherPersonalPageState extends State<OtherPersonalPage>
     with TickerProviderStateMixin {
   late TabController tabController;
-  final otherPeopleBackgroundImageChangeManagement =
+  final _otherPeopleBackgroundImageChangeManagement =
       Get.put(OtherPeopleBackgroundImageChangeManagement());
-  final otherPeopleHeadPortraitChangeManagement =
+  final _otherPeopleHeadPortraitChangeManagement =
       Get.put(OtherPeopleHeadPortraitChangeManagement());
+        final _viewPostDataManagementForMemoryBanks =
+    Get.put(ViewPostDataManagementForMemoryBanks());
+  final _otherPeoplePersonalInformationManagement =
+      Get.put(OtherPeoplePersonalInformationManagement());
 
   ScrollController scrollController = ScrollController();
 
   @override
   void dispose() {
-    otherPeopleInformationListScrollDataManagement.clearData();
+    _otherPeopleInformationListScrollDataManagement.clearData();
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
@@ -182,7 +189,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     )..addListener(() {
-        otherPeoplePersonalInformationManagement
+        _otherPeoplePersonalInformationManagement
             .refreshDisplayText(tabController.index);
       });
     tabController.animateTo(0);
@@ -195,15 +202,16 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
 
   void _scrollListener() {
     final offset = scrollController.offset;
-    otherPeopleInformationListScrollDataManagement
+    _otherPeopleInformationListScrollDataManagement
         .setBackgroundColor(offset >= 160);
-    otherPeopleInformationListScrollDataManagement
+    _otherPeopleInformationListScrollDataManagement
         .setTransparency(offset >= 235);
   }
 
   Future<void> _refresh() async {
-    requestTheOtherPersonalData(otherPeopleInformationListScrollDataManagement
-        .scrollDataValue['user_name']);
+    requestTheOtherPersonalData(
+        _otherPeopleInformationListScrollDataManagement
+            .scrollDataValue['user_name']);
   }
 
   @override
@@ -237,7 +245,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         ),
         onRefresh: _refresh,
         child: GetBuilder<OtherPeoplePersonalInformationManagement>(
-          init: otherPeoplePersonalInformationManagement,
+          init: _otherPeoplePersonalInformationManagement,
           builder: (otherPeoplePersonalInformationManagement) {
             return NestedScrollView(
               physics: const BouncingScrollPhysics(),
@@ -246,7 +254,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   GetBuilder<OtherPeopleInformationListScrollDataManagement>(
-                    init: otherPeopleInformationListScrollDataManagement,
+                    init: _otherPeopleInformationListScrollDataManagement,
                     builder: (otherPeopleInformationListScrollDataManagement) {
                       return SliverAppBar(
                         title: Padding(
@@ -329,7 +337,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                         sigmaY: 0),
                                     child: GestureDetector(
                                       onTap: () {
-                                        otherPeopleBackgroundImageChangeManagement
+                                        _otherPeopleBackgroundImageChangeManagement
                                             .initBackgroundImage(
                                                 otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue[
@@ -382,7 +390,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                               0.06 * kToolbarHeight),
                                     child: GestureDetector(
                                       onTap: () {
-                                        otherPeopleHeadPortraitChangeManagement
+                                        _otherPeopleHeadPortraitChangeManagement
                                             .initHeadPortrait(
                                                 otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue[
@@ -538,8 +546,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       children: [
         GestureDetector(
           onTap: () {
-            otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
-                otherPeopleInformationListScrollDataManagement
+            _otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
+                _otherPeopleInformationListScrollDataManagement
                     .scrollDataValue['head_portrait']);
             switchPage(context, const OtherPersonalHeadPortrait());
           },
@@ -582,7 +590,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
 
   Widget _buildNameText() {
     return Text(
-      '${otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
+      '${_otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
       style: const TextStyle(
         fontWeight: FontWeight.w900,
         fontSize: 24,
@@ -609,11 +617,11 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
   Widget _buildIntroductionText() {
     return Padding(
       padding: const EdgeInsets.only(top: 13.0),
-      child: otherPeopleInformationListScrollDataManagement
+      child: _otherPeopleInformationListScrollDataManagement
                   .scrollDataValue['introduction']?.isNotEmpty ??
               false
           ? Text(
-              otherPeopleInformationListScrollDataManagement
+              _otherPeopleInformationListScrollDataManagement
                   .scrollDataValue['introduction'],
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
@@ -634,20 +642,20 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       children: [
         _buildInfoRow(
             'assets/personal/birth_time.svg',
-            '出生于 ${otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',
-            otherPeopleInformationListScrollDataManagement
+            '出生于 ${_otherPeopleInformationListScrollDataManagement.scrollDataValue['birth_time']}',
+            _otherPeopleInformationListScrollDataManagement
                     .scrollDataValue['birth_time'] !=
                 null),
         _buildInfoRow(
             'assets/personal/residential_address.svg',
-            '${otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']}',
-            otherPeopleInformationListScrollDataManagement
+            '${_otherPeopleInformationListScrollDataManagement.scrollDataValue['residential_address']}',
+            _otherPeopleInformationListScrollDataManagement
                     .scrollDataValue['residential_address'] !=
                 null),
         _buildInfoRow(
             'assets/personal/join_date.svg',
-            '${otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',
-            otherPeopleInformationListScrollDataManagement
+            '${_otherPeopleInformationListScrollDataManagement.scrollDataValue['join_date']}',
+            _otherPeopleInformationListScrollDataManagement
                     .scrollDataValue['join_date'] !=
                 null),
       ],
@@ -735,7 +743,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         child: MemoryBankList(
           refreshofMemoryBankextends: memoryBank,
           onItemTap: (index) {
-            viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank![index]);
+            _viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank![index]);
             switchPage(context, const OtherMemoryBank());
           },
         ),

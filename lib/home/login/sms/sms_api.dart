@@ -1,21 +1,20 @@
-import 'package:dio/dio.dart';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
-
-final _dio = Dio();
-
-Map<String, String> _getHeaders() {
-  return {'Content-Type': 'application/json'};
-}
 
 void smsVerificationCode(String mobileNumber) async {
   Map<String, dynamic> formdata = {
     'mobileNumber': mobileNumber,
   };
 
-  await _dio.post('http://47.92.98.170:36233/getVerificationCode',
-      data: jsonEncode(formdata), options: Options(headers: _getHeaders()));
+  try {
+    await dio.post('$website/getVerificationCode',
+        data: jsonEncode(formdata), options: Options(headers: header));
+  } catch (e) {
+    print('发送验证码失败: $e');
+  }
 }
 
 Future<bool> verification(String mobileNumber, String code) async {
@@ -25,17 +24,18 @@ Future<bool> verification(String mobileNumber, String code) async {
   };
 
   bool verificationState = false;
+
   try {
-    final response = await _dio.post('http://47.92.98.170:36233/verification',
-        data: jsonEncode(formdata), options: Options(headers: _getHeaders()));
+    final response = await dio.post('$website/verification',
+        data: jsonEncode(formdata), options: Options(headers: header));
 
     if (response.statusCode == 200) {
       verificationState = true;
       requestTheUsersPersonalData(response.data['username']);
     }
-  } on DioError catch (e, s) {
-    print('Error: \$e');
-    print('StackTrace: \$s');
+  } catch (e) {
+    print('验证失败: $e');
   }
+
   return verificationState;
 }

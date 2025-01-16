@@ -4,13 +4,13 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/review/custom_memory_scheme.dart';
 
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 
 class ContinueReviewOption extends StatefulWidget {
   const ContinueReviewOption({super.key});
@@ -150,8 +150,8 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
         alarmInformation,
         state,
         reviewRecord,
-        reviewSchemeName,
-        userNameChangeManagement.userNameValue ?? '');
+        reviewSchemeName
+       );
 
     Navigator.of(context).pop();
     Navigator.of(context).pop();

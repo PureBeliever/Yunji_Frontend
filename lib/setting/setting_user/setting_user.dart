@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 
 class SettingUser extends StatefulWidget {
   const SettingUser({super.key});

@@ -1,50 +1,40 @@
-
 import 'dart:convert';
-import 'package:sqflite/sqflite.dart';  
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:yunji/global.dart';
+
 Future<Map<String, dynamic>> queryIdAndLength() async {
-  final db = databaseManager.database;
-  if (db == null) {
-    throw Exception('Database is not initialized');
-  }
-
   final personalMaps = await db.query('intdatabase');
-  if (personalMaps.isEmpty) {
-    throw Exception('No data found in intdatabase');
-  }
-
-  return personalMaps.first;
+  return personalMaps.isNotEmpty ? personalMaps.first : {};
 }
 
 // 插入记忆库
-Future<void> insertHomePageMemoryBank(List<Map<String, dynamic>> memoryBankData) async {
-  final db = databaseManager.database;
-  if (db == null) {
-    throw Exception('Database is not initialized');
-  }
-
+Future<void> insertHomePageMemoryBank(
+    List<Map<String, dynamic>> memoryBankData) async {
   for (var memoryBank in memoryBankData) {
-    memoryBank['question'] = jsonEncode(memoryBank['question']);
-    memoryBank['answer'] = jsonEncode(memoryBank['answer']);
-    await db.insert(
-      'memory_bank',
-      memoryBank,
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      memoryBank['question'] = jsonEncode(memoryBank['question']);
+      memoryBank['answer'] = jsonEncode(memoryBank['answer']);
+      await db.insert(
+        'memory_bank',
+        memoryBank,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      print('插入记忆库失败: $e');
+    }
   }
 }
 
 // 更新intdatabase
 Future<void> updateint(String idList, int length) async {
-  final db = databaseManager.database;
-  if (db == null) {
-    throw Exception('Database is not initialized');
+  try {
+    await db.update(
+      'intdatabase',
+      {'number': idList, 'length': length},
+      where: 'id = ?',
+      whereArgs: [0],
+    );
+  } catch (e) {
+    print('更新intdatabase失败: $e');
   }
-
-  await db.update(
-    'intdatabase',
-    {'number': idList, 'length': length},
-    where: 'id = ?',
-    whereArgs: [0],
-  );
 }

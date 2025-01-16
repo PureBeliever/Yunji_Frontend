@@ -5,13 +5,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/global.dart';
+import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_api.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
+import 'package:yunji/review/notification_init.dart';
+import 'package:yunji/review/review/continue_review.dart';
 
 class CustomMemoryScheme extends StatefulWidget {
   const CustomMemoryScheme(
@@ -47,6 +49,9 @@ class Item {
 }
 
 class _CustomMemoryScheme extends State<CustomMemoryScheme> {
+  final notificationHelper = NotificationHelper();
+  final _continueLearningAboutDataManagement =
+      Get.put(ContinueLearningAboutDataManagement());
   List<Item> _itemList = [];
   late final Map<int, String> question;
   late final Map<int, String> answer;
@@ -128,7 +133,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
                 int notificationId = widget.continueReview
                     ? userPersonalInformationManagement
                             .userReviewMemoryBankIndex
-                            .indexOf(continueLearningAboutDataManagement.id) +
+                            .indexOf(_continueLearningAboutDataManagement.id) +
                         1
                     : userPersonalInformationManagement
                             .userReviewMemoryBankIndex.length +
@@ -176,8 +181,8 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
                     alarmInformation,
                     status,
                     reviewRecord,
-                    reviewSchemeName,
-                    userNameChangeManagement.userNameValue);
+                    reviewSchemeName
+                   );
               } else {
                 await creatReview(
                     stringQuestion,
@@ -191,7 +196,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
                     status,
                     reviewRecord,
                     reviewSchemeName,
-                    userNameChangeManagement.userNameValue);
+                    );
               }
               Navigator.of(context).popUntil((route) => route.isFirst);
               switchPage(context, const PersonalPage());

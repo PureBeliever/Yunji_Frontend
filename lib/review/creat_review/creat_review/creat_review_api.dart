@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 
 Future<void> creatReview(
@@ -15,15 +15,17 @@ Future<void> creatReview(
   bool completeState,
   Map<String, String> reviewRecord,
   String reviewSchemeName,
-  String? userName,
 ) async {
+  String userName = userNameChangeManagement.userNameValue ?? '';
+  
+
   Map<String, dynamic> formdata = {
-    'userName': userName ?? '',
+    'userName': userName,
     'question': question,
     'answer': answer,
     'theme': theme,
     'memoryTime': memoryTime,
-    'setTime': setTime.toString(),
+    'setTime': setTime.toIso8601String(),
     'subscript': subscript,
     'informationNotification': informationNotification,
     'alarmNotification': alarmNotification,
@@ -32,13 +34,20 @@ Future<void> creatReview(
     'reviewSchemeName': reviewSchemeName
   };
 
+  try {
+    String jsonformdata = jsonEncode(formdata);
+    final response = await dio.post(
+      '$website/creatReview',
+      data: jsonformdata,
+      options: Options(headers: header),
+    );
 
-  String jsonformdata = jsonEncode(formdata);
-  final response = await dio.post(
-    'http://47.92.98.170:36233/creatReview',
-    data: jsonformdata,
-    options: Options(headers: header),
-  );
-  await Future.delayed(const Duration(milliseconds: 500));
-  requestTheUsersPersonalData(userName);
+
+
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    requestTheUsersPersonalData(userName);
+  } catch (e) {
+    print('创建复习时出错: $e');
+  }
 }

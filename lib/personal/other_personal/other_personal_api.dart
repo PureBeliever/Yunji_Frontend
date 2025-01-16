@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 
 class OtherPersonalMemoryBank {
@@ -44,56 +46,68 @@ class OtherPersonalMemoryBank {
 }
 
 Future<void> requestTheOtherPersonalData(String userName) async {
-
+  final otherPeopleInformationListScrollDataManagement =
+      Get.put(OtherPeopleInformationListScrollDataManagement());
+  final otherPeoplePersonalInformationManagement =
+      Get.put(OtherPeoplePersonalInformationManagement());
   final formdata = {'userName': userName};
 
-  final response = await dio.post(
-    'http://47.92.98.170:36233/requestOtherPersonalData',
-    data: jsonEncode(formdata),
-    options: Options(headers: header),
-  );
-
-
-  final dir = await _prepareDirectory();
-
-  final results = response.data;
-  final personalDataValue = results['personalDataValue'];
-
-  final backgroundImage = await _processImage(
-    dir,
-    personalDataValue['background_image'],
-  );
-  final headPortrait = await _processImage(
-    dir,
-    personalDataValue['head_portrait'],
-  );
-
-  final otherPersonalMemoryBank = OtherPersonalMemoryBank(
-    userName: personalDataValue['user_name'],
-    name: personalDataValue['name'],
-    headPortrait: headPortrait,
-    backgroundImage: backgroundImage,
-    introduction: personalDataValue['introduction'],
-    residentialAddress: personalDataValue['residential_address'],
-    birthTime: personalDataValue['birth_time'],
-    joinDate: personalDataValue['join_date'],
-  );
-
-  otherPeopleInformationListScrollDataManagement
-      .initialScrollData(otherPersonalMemoryBank.toMap());
-
-  if (results['memoryBankResults'] != null) {
-    await _processMemoryBankResults(
-      dir,
-      List<Map<String, dynamic>>.from(results['memoryBankResults'] ?? []),
-      List<Map<String, dynamic>>.from(
-          results['memoryBankPersonalResults'] ?? []),
+  try {
+    final response = await dio.post(
+      '$website/requestOtherPersonalData',
+      data: jsonEncode(formdata),
+      options: Options(headers: header),
     );
 
-    await otherPeoplePersonalInformationManagement
-        .requestOtherPeoplePersonalInformationDataOnTheBackEnd(
-            personalDataValue);
+    if (response.statusCode == 200) {
+      final dir = await _prepareDirectory();
 
+      final results = response.data;
+   
+
+      final personalDataValue = results['personalDataValue'];
+
+      final backgroundImage = await _processImage(
+        dir,
+        personalDataValue['background_image'],
+      );
+      final headPortrait = await _processImage(
+        dir,
+        personalDataValue['head_portrait'],
+      );
+
+      final otherPersonalMemoryBank = OtherPersonalMemoryBank(
+        userName: personalDataValue['user_name'],
+        name: personalDataValue['name'],
+        headPortrait: headPortrait,
+        backgroundImage: backgroundImage,
+        introduction: personalDataValue['introduction'],
+        residentialAddress: personalDataValue['residential_address'],
+        birthTime: personalDataValue['birth_time'],
+        joinDate: personalDataValue['join_date'],
+      );
+
+      otherPeopleInformationListScrollDataManagement
+          .initialScrollData(otherPersonalMemoryBank.toMap());
+
+      if (results['memoryBankResults'] != null) {
+        await _processMemoryBankResults(
+          dir,
+          List<Map<String, dynamic>>.from(results['memoryBankResults'] ?? []),
+          List<Map<String, dynamic>>.from(
+              results['memoryBankPersonalResults'] ?? []),
+        );
+
+        await otherPeoplePersonalInformationManagement
+            .requestOtherPeoplePersonalInformationDataOnTheBackEnd(
+                personalDataValue);
+      }
+    } else {
+      throw Exception('Failed to load data: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error occurred: $e');
+    // 可以在这里添加更多的错误处理逻辑，比如显示错误提示
   }
 }
 

@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_sqlite.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
-
 class EditPersonalData {
   final String? userName;
   final String? name;
@@ -38,12 +36,17 @@ class EditPersonalData {
 }
 
 Future<String> encodeImageToBase64(File imageFile) async {
-  final imageBytes = await imageFile.readAsBytes();
-  return base64Encode(imageBytes);
+  try {
+    final imageBytes = await imageFile.readAsBytes();
+    return base64Encode(imageBytes);
+  } catch (e) {
+    // 处理读取文件错误
+    print('Error encoding image to Base64: $e');
+    return '';
+  }
 }
 
 Future<void> editPersonal(
-  String? userName,
   String? name,
   String? introduction,
   String? residentialAddress,
@@ -51,36 +54,44 @@ Future<void> editPersonal(
   File? backgroundImage,
   File? headPortrait,
 ) async {
-  
-  final requestData = {
-    'userName': userName,
-    'name': name,
-    'introduction': introduction,
-    'residentialAddress': residentialAddress,
-    'birthTime': birthTime,
-    'backgroundImage': backgroundImage != null ? await encodeImageToBase64(backgroundImage) : null,
-    'headPortrait': headPortrait != null ? await encodeImageToBase64(headPortrait) : null,
-  };
+  try {
+    String userName = userNameChangeManagement.userNameValue ?? '';
+    final requestData = {
+      'userName': userName,
+      'name': name,
+      'introduction': introduction,
+      'residentialAddress': residentialAddress,
+      'birthTime': birthTime,
+      'backgroundImage': backgroundImage != null ? await encodeImageToBase64(backgroundImage) : null,
+      'headPortrait': headPortrait != null ? await encodeImageToBase64(headPortrait) : null,
+    };
 
-  final response = await dio.post(
-    'http://47.92.98.170:36233/editTheUsersPersonalData',
-    data: requestData,
-    options: Options(headers: header),
-  );
-
-  if (response.statusCode == 200) {
-    final backgroundImageValue = backgroundImage?.path ?? backgroundImageChangeManagement.backgroundImageValue?.path;
-    final headPortraitValue = headPortrait?.path ?? headPortraitChangeManagement.headPortraitValue?.path;
-
-    final result = EditPersonalData(
-      userName: userName,
-      name: name,
-      introduction: introduction,
-      residentialAddress: residentialAddress,
-      birthTime: birthTime,
-      backgroundImage: backgroundImageValue,
-      headPortrait: headPortraitValue,
+    final response = await dio.post(
+      '$website/editTheUsersPersonalData',
+      data: requestData,
+      options: Options(headers: header),
     );
-    updatePersonal(result);
+
+    if (response.statusCode == 200) {
+      final backgroundImageValue = backgroundImage?.path ?? backgroundImageChangeManagement.backgroundImageValue?.path;
+      final headPortraitValue = headPortrait?.path ?? headPortraitChangeManagement.headPortraitValue?.path;
+
+      final result = EditPersonalData(
+        userName: userName,
+        name: name,
+        introduction: introduction,
+        residentialAddress: residentialAddress,
+        birthTime: birthTime,
+        backgroundImage: backgroundImageValue,
+        headPortrait: headPortraitValue,
+      );
+      updatePersonal(result);
+    } else {
+      // 处理非200状态码
+      print('Failed to edit personal data: ${response.statusCode}');
+    }
+  } catch (e) {
+    // 处理网络请求错误
+    print('Error editing personal data: $e');
   }
 }

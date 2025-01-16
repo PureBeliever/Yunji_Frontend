@@ -1,7 +1,7 @@
-
 // ignore_for_file: file_names, non_constant_identifier_names, library_private_types_in_public_api, prefer_inlined_adds, constant_identifier_names
 
 import 'package:flutter/material.dart';
+
 //主页面的浮动按钮
 /// created by:number9
 /// time:2021.7.02
@@ -30,15 +30,16 @@ class FloatExpendButton extends StatefulWidget {
 
   //主菜单卡变化图标（动画图标）
   AnimatedIconData? MainAnimatedIcon;
-  
+
   //选项卡类型即展开方向
   ButtonType type;
-  
+
   //按钮的点击事件
   final Function(int index) callback;
 
   FloatExpendButton(this.iconList,
-      {super.key, required this.callback,
+      {super.key,
+      required this.callback,
       this.fabHeight = 30,
       this.tabspace = 10,
       this.tabcolor = Colors.blue,
@@ -77,8 +78,8 @@ class _FloatExpendState extends State<FloatExpendButton>
   initState() {
     super.initState();
     //初始化动画控制器
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
     //添加动画监听
     _animationController.addListener(() {
       setState(() {});
@@ -169,7 +170,7 @@ class _FloatExpendState extends State<FloatExpendButton>
                 //if(isOpened){
                 floatClick();
                 widget.callback(i);
-                              //}
+                //}
               },
               child: Icon(
                 widget.iconList[i].icon,
@@ -195,9 +196,10 @@ class _FloatExpendState extends State<FloatExpendButton>
             : SizedBox(
                 height: (widget.fabHeight! + widget.tabspace!) *
                         widget.iconList.length +
-                    widget.fabHeight!), ...itemList,
-      ]//根据横纵情况拓展点击区域
-        
+                    widget.fabHeight!),
+        ...itemList,
+      ] //根据横纵情况拓展点击区域
+
         ..add(Positioned(
           child: floatButton(),
         )),
@@ -243,4 +245,3 @@ class _FloatExpendState extends State<FloatExpendButton>
 }
 
 enum ButtonType { Left, Right, Top, Bottom }
-

@@ -4,7 +4,7 @@
 // import 'package:image_picker/image_picker.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:video_editor_2/video_editor.dart';
-// import 'package:yunji/main/app_global_variable.dart';
+// import 'package:yunji/main/app/app_global_variable.dart';
 // import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 // class EditVideoEditorPage extends StatefulWidget {

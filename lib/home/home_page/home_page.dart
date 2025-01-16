@@ -1,21 +1,19 @@
 import 'dart:core';
 
-import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:keframe/keframe.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
-import 'package:yunji/main/app_module/show_toast.dart';
-import 'package:yunji/main/app_module/switch.dart';
-import 'package:yunji/main/app/app_global_variable.dart';
+import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
+import 'package:yunji/main/main_module/switch.dart';
+import 'package:yunji/global.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
-import 'package:yunji/main/app_module/sliver_header_delegate.dart';
+import 'package:yunji/main/main_module/sliver_header_delegate.dart';
 import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/ball_indicator.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
@@ -28,11 +26,9 @@ class RefreshofHomepageMemoryBankextends extends GetxController {
   static RefreshofHomepageMemoryBankextends get to => Get.find();
   List<Map<String, dynamic>> memoryRefreshValue = [];
 
-  void updateMemoryRefreshValue(List<Map<String, dynamic>>? value) {
-    if (value != null) {
-      memoryRefreshValue = value.reversed.toList();
-      update();
-    }
+  void updateMemoryRefreshValue(List<Map<String, dynamic>> value) {
+    memoryRefreshValue = value.reversed.toList();
+    update();
   }
 }
 
@@ -40,9 +36,7 @@ class RefreshofHomepageMemoryBankextends extends GetxController {
 BuildContext? contexts;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -50,13 +44,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late TabController tabController;
+  final _viewPostDataManagementForMemoryBanks =
+    Get.put(ViewPostDataManagementForMemoryBanks());
+
+  late TabController tabController; 
 
   Future<void> _refresh() async {
     await refreshHomePageMemoryBank(contexts!);
   }
 
- 
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
 
   // static const platform = MethodChannel('com.example.yunji/channel');
 
@@ -79,7 +80,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     );
-
   }
 
   Widget _buildSpeedDial() {
@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   refreshofHomepageMemoryBankextends
                                       .memoryRefreshValue,
                               onItemTap: (index) {
-                                viewPostDataManagementForMemoryBanks
+                                _viewPostDataManagementForMemoryBanks
                                     .initMemoryData(
                                         refreshofHomepageMemoryBankextends
                                             .memoryRefreshValue[index]);

@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/main/app_module/show_toast.dart';
+import 'package:yunji/global.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
@@ -77,30 +77,36 @@ class ReviewPage extends StatefulWidget {
 }
 
 class _ReviewPage extends State<ReviewPage> {
+  final _reviewDataManagement = Get.put(ReviewDataManagement());
   final NotificationHelper _notificationHelper = NotificationHelper();
   final FocusNode _focusNode = FocusNode();
-  final List<Item> _data = generateItems(
-      reviewDataManagement.memoryCount,
-      reviewDataManagement.memoryIndices,
-      reviewDataManagement.questions,
-      reviewDataManagement.answer);
-  final _controller =
-      TextEditingController(text: reviewDataManagement.memoryTheme);
-  String theme = reviewDataManagement.memoryTheme;
-  bool message = reviewDataManagement.isMessageNotificationEnabled;
-  bool alarmInformation = reviewDataManagement.isAlarmNotificationEnabled;
-  final creatReviewController = Get.put(CreatReviewController());
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
+  late List<Item> _data;
+  late TextEditingController _controller;
+  late String theme;
+  late bool message;
+  late bool alarmInformation;
 
   @override
   void initState() {
     super.initState();
     _focusNode.requestFocus();
+    _data = generateItems(
+      _reviewDataManagement.memoryCount,
+      _reviewDataManagement.memoryIndices,
+      _reviewDataManagement.questions,
+      _reviewDataManagement.answer,
+    );
+    _controller = TextEditingController(text: _reviewDataManagement.memoryTheme);
+    theme = _reviewDataManagement.memoryTheme;
+    message = _reviewDataManagement.isMessageNotificationEnabled;
+    alarmInformation = _reviewDataManagement.isAlarmNotificationEnabled;
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   void _showClearDialog(BuildContext context) {
@@ -331,9 +337,9 @@ class _ReviewPage extends State<ReviewPage> {
                     Map<int, String> stringAnswer = {};
                     DateTime setTime = DateTime.now();
                     List<int> memoryScheme =
-                        List.from(reviewDataManagement.reviewScheme);
+                        List.from(_reviewDataManagement.reviewScheme);
                     memoryScheme.removeAt(0);
-                    Map<String, String> numberOfReviews = reviewDataManagement
+                    Map<String, String> numberOfReviews = _reviewDataManagement
                         .reviewCounts
                         .map((key, value) => MapEntry(key.toString(), value));
 
@@ -353,7 +359,7 @@ class _ReviewPage extends State<ReviewPage> {
                         .map((key, value) => MapEntry(key.toString(), value));
 
                     bool completeReviewStatus =
-                        reviewDataManagement.isReviewComplete;
+                        _reviewDataManagement.isReviewComplete;
 
                     if (memoryScheme.isNotEmpty) {
                       setTime = setTime.add(Duration(minutes: memoryScheme[0]));
@@ -361,7 +367,7 @@ class _ReviewPage extends State<ReviewPage> {
                         final alarmSettings = AlarmSettings(
                           id: userPersonalInformationManagement
                                   .userReviewMemoryBankIndex
-                                  .indexOf(reviewDataManagement.memoryBankId) +
+                                  .indexOf(_reviewDataManagement.memoryBankId) +
                               1,
                           dateTime: setTime,
                           assetAudioPath: 'assets/review/alarm.mp3',
@@ -385,7 +391,7 @@ class _ReviewPage extends State<ReviewPage> {
                             id: userPersonalInformationManagement
                                     .userReviewMemoryBankIndex
                                     .indexOf(
-                                        reviewDataManagement.memoryBankId) +
+                                        _reviewDataManagement.memoryBankId) +
                                 1,
                             title: '开始复习 !',
                             body: '记忆库${theme}到达预定的复习时间',
@@ -394,7 +400,7 @@ class _ReviewPage extends State<ReviewPage> {
                     } else {
                       completeReviewStatus = true;
                       String memorySchemeName =
-                          reviewDataManagement.reviewSchemeName;
+                          _reviewDataManagement.reviewSchemeName;
                       String? stringFrequency;
                       for (final entry in numberOfReviews.entries) {
                         if (entry.value == memorySchemeName) {
@@ -415,7 +421,7 @@ class _ReviewPage extends State<ReviewPage> {
                     continueReview(
                         question,
                         answer,
-                        reviewDataManagement.memoryBankId,
+                        _reviewDataManagement.memoryBankId,
                         theme,
                         memoryScheme,
                         setTime,
@@ -424,8 +430,8 @@ class _ReviewPage extends State<ReviewPage> {
                         alarmInformation,
                         completeReviewStatus,
                         numberOfReviews,
-                        reviewDataManagement.reviewSchemeName,
-                        userNameChangeManagement.userNameValue ?? '');
+                        _reviewDataManagement.reviewSchemeName
+                       );
                     Navigator.of(context).pop();
                   }
                 },
