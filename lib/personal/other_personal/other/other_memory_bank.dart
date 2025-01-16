@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
-import 'package:yunji/main/app_module/memory_bank/memory_bank_sqlite.dart';
+import 'package:yunji/main/app_module/memory_bank_sqlite.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/main/app/app_global_variable.dart';

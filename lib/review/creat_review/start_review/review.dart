@@ -10,7 +10,7 @@ import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
-import 'package:yunji/review/review/start_review/review_api.dart';
+import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 
 class Item {
@@ -21,7 +21,7 @@ class Item {
   });
 
   String answer;
-    String  question;
+  String question;
   bool isExpanded;
 }
 
@@ -103,8 +103,7 @@ class _ReviewPage extends State<ReviewPage> {
     _focusNode.requestFocus();
   }
 
-  void _showClearDialog(
-      BuildContext context, VoidCallback onConfirm, bool isClearAll) {
+  void _showClearDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -126,8 +125,8 @@ class _ReviewPage extends State<ReviewPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
-                  child: Text('是否清空${isClearAll ? '所有讲解' : '当前讲解'}?',
-                      style: const TextStyle(fontSize: 16)),
+                  child:
+                      Text('是否清空所有讲解?', style: const TextStyle(fontSize: 16)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 7),
@@ -147,7 +146,7 @@ class _ReviewPage extends State<ReviewPage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: onConfirm,
+                        onPressed: _clearAllExplanations,
                         child: const Text(
                           '确定',
                           style: TextStyle(
@@ -167,18 +166,106 @@ class _ReviewPage extends State<ReviewPage> {
     );
   }
 
+  void _showDeleteDialog(BuildContext context, Item item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: SizedBox(
+            height: 150,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 20),
+                  child: Text(
+                    '复习',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                  child:
+                      Text('清空还是删除当前讲解?', style: const TextStyle(fontSize: 16)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          '取消',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.black),
+                        ),
+                      ),
+                      Row(children: [
+                        TextButton(
+                          onPressed: () {
+                            _deleteSpecificExplanation(item);
+                          },
+                          child: const Text(
+                            '删除',
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.black),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            _clearSpecificExplanation(item);
+                          },
+                          child: const Text(
+                            '清空',
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.black),
+                          ),
+                        )
+                      ])
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _clearAllExplanations() {
     setState(() {
       _data.forEach((item) {
         item.answer = ' ';
       });
     });
+    Navigator.of(context).pop();
   }
 
   void _clearSpecificExplanation(Item item) {
     setState(() {
       item.answer = '';
     });
+    Navigator.of(context).pop();
+  }
+
+  void _deleteSpecificExplanation(Item item) {
+    setState(() {
+      _data.remove(item);
+    });
+    Navigator.of(context).pop();
   }
 
   @override
@@ -207,7 +294,7 @@ class _ReviewPage extends State<ReviewPage> {
                     color: Colors.white),
               ),
               onPressed: () {
-                _showClearDialog(context, _clearAllExplanations, true);
+                _showClearDialog(context);
               },
             ),
           ),
@@ -252,12 +339,14 @@ class _ReviewPage extends State<ReviewPage> {
 
                     List<int> sortedList = [];
 
-                    _data.forEach((data) {
-                      sortedList.add(value);
-                      stringQuestion[value] = data.question;
-                      stringAnswer[value] = data.answer;
-                      value++;
-                    });
+                    for (var data in _data) {
+                      if (data.question.isNotEmpty || data.answer.isNotEmpty) {
+                        sortedList.add(value);
+                        stringQuestion[value] = data.question;
+                        stringAnswer[value] = data.answer;
+                        value++;
+                      }
+                    }
                     Map<String, String> question = stringQuestion
                         .map((key, value) => MapEntry(key.toString(), value));
                     Map<String, String> answer = stringAnswer
@@ -270,7 +359,10 @@ class _ReviewPage extends State<ReviewPage> {
                       setTime = setTime.add(Duration(minutes: memoryScheme[0]));
                       if (alarmInformation) {
                         final alarmSettings = AlarmSettings(
-                          id: 42,
+                          id: userPersonalInformationManagement
+                                  .userReviewMemoryBankIndex
+                                  .indexOf(reviewDataManagement.memoryBankId) +
+                              1,
                           dateTime: setTime,
                           assetAudioPath: 'assets/review/alarm.mp3',
                           loopAudio: true,
@@ -290,7 +382,11 @@ class _ReviewPage extends State<ReviewPage> {
                       }
                       if (message) {
                         _notificationHelper.zonedScheduleNotification(
-                            id: 888,
+                            id: userPersonalInformationManagement
+                                    .userReviewMemoryBankIndex
+                                    .indexOf(
+                                        reviewDataManagement.memoryBankId) +
+                                1,
                             title: '开始复习 !',
                             body: '记忆库${theme}到达预定的复习时间',
                             scheduledDateTime: setTime);
@@ -399,7 +495,7 @@ class _ReviewPage extends State<ReviewPage> {
           const Padding(
             padding: EdgeInsets.only(left: 15, right: 15, top: 10),
             child: Text(
-              '复读回顾 >> 清空讲解 >> 更加清晰简洁讲解 >> 完成复习',
+              '复读回顾 >> 清空讲解 >> 更加清晰简洁的讲解 >> 遗忘处查漏补缺 >> 完成讲解',
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -508,9 +604,10 @@ class _ReviewPage extends State<ReviewPage> {
                     decoration: InputDecoration(
                       suffixIcon: GestureDetector(
                           onTap: () {
-                            _showClearDialog(context, () {
-                              _clearSpecificExplanation(item);
-                            }, false);
+                            _showDeleteDialog(
+                              context,
+                              item,
+                            );
                           },
                           child: const Icon(
                             color: Color.fromRGBO(134, 134, 134, 1),
@@ -540,6 +637,31 @@ class _ReviewPage extends State<ReviewPage> {
               );
             }).toList(),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 100),
+                  backgroundColor: Colors.white,
+                  side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _data.add(Item(question: '', answer: '', isExpanded: true));
+                  });
+                },
+                child: const Icon(
+                  Icons.add,
+                  color: Color.fromRGBO(84, 87, 105, 1),
+                ),
+              ),
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -551,7 +673,7 @@ class _ReviewPage extends State<ReviewPage> {
         backgroundColor: Colors.blue,
         child: const Text(
           '退出\n键盘',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontSize: 15),
         ),
       ),
     );

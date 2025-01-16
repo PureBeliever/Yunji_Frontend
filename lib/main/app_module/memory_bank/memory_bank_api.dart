@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
-import 'package:yunji/main/app_module/memory_bank/memory_bank_sqlite.dart';
+import 'package:yunji/main/app_module/memory_bank_sqlite.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 
 Future<void> synchronizeMemoryBankData( List<int> idList,

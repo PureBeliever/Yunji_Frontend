@@ -8,11 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_api.dart';
-
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/review/creat_review/custom_memory_scheme.dart';
+import 'package:yunji/review/custom_memory_scheme.dart';
 import 'package:yunji/review/notification_init.dart';
 
 // 通用字体大小
@@ -28,12 +27,10 @@ class CreatReviewOption extends StatefulWidget {
 class _CreatReviewOption extends State<CreatReviewOption> {
   final creatReviewController = Get.put(CreatReviewController());
   final NotificationHelper _notificationHelper = NotificationHelper();
-  bool message = false;
-  bool alarmInformation = false;
+
   final List<List<int>> memoryTime = [
     [0],
     [2, 2],
-    // [1440,10080,20160],
     [1440, 10080, 20160, 43200],
     [1440, 10080, 20160, 43200, 129600],
     [1440, 10080, 20160, 43200, 129600, 259200],
@@ -55,14 +52,16 @@ class _CreatReviewOption extends State<CreatReviewOption> {
       padding: const EdgeInsets.only(left: 17.0, top: commonFontSize),
       child: ChoiceChip(
         backgroundColor: Colors.white,
-        side: BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
+        side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
         label: Text(
           reviewScheme[index],
           softWrap: true,
           maxLines: 20,
           style: TextStyle(
             fontSize: commonFontSize,
-            color: _valueChoice == index ? Colors.white : Color.fromRGBO(84, 87, 105, 1),
+            color: _valueChoice == index
+                ? Colors.white
+                : const Color.fromRGBO(84, 87, 105, 1),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -81,29 +80,29 @@ class _CreatReviewOption extends State<CreatReviewOption> {
   }
 
   Future<void> _handleCompletion() async {
-    bool status = false;
-    Map<String, String> reviewRecord = {"0": "方案${_valueChoice + 1}"};
+    bool status = _valueChoice == 0;
     String reviewSchemeName = "方案${_valueChoice + 1}";
     DateTime now = DateTime.now();
+    DateTime setTime = now.add(Duration(minutes: memoryTime[_valueChoice][0]));
 
-    List<int> questionKey = creatReviewController.question.keys.toList();
-    List<int> answerKey = creatReviewController.answer.keys.toList();
-
-    Set<int> combinedSet = {...questionKey, ...answerKey};
-    List<int> sortedList = combinedSet.toList()..sort();
+    List<int> sortedList = {
+      ...creatReviewController.question.keys,
+      ...creatReviewController.answer.keys
+    }.toList()
+      ..sort();
 
     Map<String, String> stringQuestion = creatReviewController.question
         .map((key, value) => MapEntry(key.toString(), value));
     Map<String, String> stringAnswer = creatReviewController.answer
         .map((key, value) => MapEntry(key.toString(), value));
 
-    DateTime setTime = now.add(Duration(minutes: memoryTime[_valueChoice][0]));
-    if (_valueChoice == 0) {
-      status = true;
-    } else {
-      if (alarmInformation) {
+    if (!status) {
+      int alarmId =
+          userPersonalInformationManagement.userReviewMemoryBankIndex.length +
+              1;
+      if (creatReviewController.alarmInformation) {
         final alarmSettings = AlarmSettings(
-          id: 42,
+          id: alarmId,
           dateTime: setTime,
           assetAudioPath: 'assets/review/alarm.mp3',
           loopAudio: true,
@@ -121,14 +120,15 @@ class _CreatReviewOption extends State<CreatReviewOption> {
         );
         await Alarm.set(alarmSettings: alarmSettings);
       }
-      if (message) {
+      if (creatReviewController.message) {
         _notificationHelper.zonedScheduleNotification(
-            id: 2,
+            id: alarmId,
             title: '开始复习 !',
             body: '记忆库${creatReviewController.theme}到达预定的复习时间',
             scheduledDateTime: setTime);
       }
     }
+
     await creatReview(
         stringQuestion,
         stringAnswer,
@@ -136,12 +136,12 @@ class _CreatReviewOption extends State<CreatReviewOption> {
         memoryTime[_valueChoice],
         setTime,
         sortedList,
-        message,
-        alarmInformation,
+        creatReviewController.message,
+        creatReviewController.alarmInformation,
         status,
-        reviewRecord,
+        {"0": reviewSchemeName},
         reviewSchemeName,
-        userNameChangeManagement.userNameValue ?? '');
+        userNameChangeManagement.userNameValue);
 
     Navigator.of(context).pop();
     Navigator.of(context).pop();
@@ -162,9 +162,9 @@ class _CreatReviewOption extends State<CreatReviewOption> {
             )),
         title: const Text('创建复习方案',
             style: TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.w700,
-                )),
+              fontSize: 21,
+              fontWeight: FontWeight.w700,
+            )),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
@@ -195,54 +195,19 @@ class _CreatReviewOption extends State<CreatReviewOption> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        height: 30,
-                        child: Transform.scale(
-                          scale: 0.7,
-                          child: CupertinoSwitch(
-                            value: message,
-                            onChanged: (value) {
-                              setState(() {
-                                message = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      const Text('信息通知',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                              fontSize: commonFontSize)),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        height: 30,
-                        child: Transform.scale(
-                          scale: 0.7,
-                          child: CupertinoSwitch(
-                            value: alarmInformation,
-                            onChanged: (value) {
-                              setState(() {
-                                alarmInformation = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      const Text('闹钟信息通知',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                              fontSize: commonFontSize)),
-                    ],
-                  ),
+                  _buildSwitchRow('信息通知', creatReviewController.message,
+                      (value) {
+                    setState(() {
+                      creatReviewController.message = value;
+                    });
+                  }),
+                  _buildSwitchRow(
+                      '闹钟信息通知', creatReviewController.alarmInformation,
+                      (value) {
+                    setState(() {
+                      creatReviewController.alarmInformation = value;
+                    });
+                  }),
                 ],
               ),
               const SizedBox(width: 10),
@@ -263,7 +228,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                               color: Color.fromRGBO(84, 87, 105, 1),
                               fontSize: commonFontSize)),
                       const TextSpan(
-                          text: '需点击打开：',
+                          text: '请点击打开：',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(84, 87, 105, 1),
@@ -280,7 +245,15 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                             ..onTap = () {
                               AppSettings.openAppSettings(
                                   type: AppSettingsType.settings);
-                            })
+                            }),
+                      TextSpan(
+                        text: '(部分机型需应用后台运行)',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 15,
+                        ),
+                      )
                     ])),
                   ),
                 ),
@@ -295,11 +268,11 @@ class _CreatReviewOption extends State<CreatReviewOption> {
             ),
           ),
           Padding(
-            padding:
-                EdgeInsets.only(left: 17.0, right: 17.0, top: 15, bottom: 5),
+            padding: const EdgeInsets.only(
+                left: 17.0, right: 17.0, top: 15, bottom: 5),
             child: Column(
               children: [
-                Text(
+                const Text(
                     '艾宾浩斯遗忘曲线表明，学习的知识会随着时间流逝而遗忘，因此随着遗忘曲线复习，将会让更多知识形成长期记忆\n\n过度重复的复习难以坚持，在记忆方案完成后的每次使用知识都可以称为复习，在生活中间断性的使用知识，可达到永久记忆的效果\n',
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
@@ -307,7 +280,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                         fontSize: commonFontSize)),
                 Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Text('请选择您的记忆方案:',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
@@ -318,18 +291,32 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.white,
-                        side: BorderSide(color:  Color.fromRGBO(84, 87, 105, 1)),
+                        side: const BorderSide(
+                            color: Color.fromRGBO(84, 87, 105, 1)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
                       onPressed: () {
-                        switchPage(context, const CustomMemoryScheme());
+                        switchPage(
+                            context,
+                            CustomMemoryScheme(
+                                question: creatReviewController.question,
+                                answer: creatReviewController.answer,
+                                theme: creatReviewController.theme!,
+                                message: creatReviewController.message,
+                                alarmInformation:
+                                    creatReviewController.alarmInformation,
+                                continueReview: false,
+                                id: 0));
                       },
-                      child: Text(
+                      child: const Text(
                         '自定义记忆方案',
                         style: TextStyle(
-                            color:  Color.fromRGBO(84, 87, 105, 1), fontSize: commonFontSize,fontWeight: FontWeight.w500,),
+                          color: Color.fromRGBO(84, 87, 105, 1),
+                          fontSize: commonFontSize,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 15),
@@ -347,6 +334,30 @@ class _CreatReviewOption extends State<CreatReviewOption> {
         ],
       ),
       backgroundColor: Colors.white,
+    );
+  }
+
+  Widget _buildSwitchRow(
+      String text, bool value, ValueChanged<bool> onChanged) {
+    return Row(
+      children: [
+        const SizedBox(width: 5),
+        SizedBox(
+          height: 30,
+          child: Transform.scale(
+            scale: 0.7,
+            child: CupertinoSwitch(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+        Text(text,
+            style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                fontSize: commonFontSize)),
+      ],
     );
   }
 }

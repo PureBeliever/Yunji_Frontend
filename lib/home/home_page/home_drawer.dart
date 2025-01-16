@@ -1,3 +1,5 @@
+import 'package:alarm/alarm.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -132,16 +134,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Widget _buildUserName() {
-
-        return Text(
-          '@${userNameChangeManagement.userNameValue}',
-          style: const TextStyle(
-            fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(84, 87, 105, 1),
-            fontSize: 16,
-          ),
-        );
-   
+    return Text(
+      '@${userNameChangeManagement.userNameValue}',
+      style: const TextStyle(
+        fontWeight: FontWeight.w400,
+        color: Color.fromRGBO(84, 87, 105, 1),
+        fontSize: 16,
+      ),
+    );
   }
 
   Widget _buildFollowInfo() {
@@ -181,6 +181,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+
+
   Widget _buildMenuList(BuildContext context) {
     return Expanded(
       child: MediaQuery.removePadding(
@@ -192,7 +194,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
           children: [
             _buildMenuItem(context, '个人资料', 'assets/home/personal_data.svg',
                 const PersonalPage()),
-            _buildMenuItem(context, '会员', 'assets/home/member.svg', null),
+            _buildMenuItem(context, '会员', 'assets/home/member.svg', null,
+               ),
             _buildMenuItem(context, '收藏', 'assets/home/collect.svg', null),
             _buildMenuItem(
               context,
@@ -284,6 +287,3 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
     );
   }
 }
-
-
-

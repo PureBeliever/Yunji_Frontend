@@ -15,10 +15,10 @@ Future<void> creatReview(
   bool completeState,
   Map<String, String> reviewRecord,
   String reviewSchemeName,
-  String userName,
+  String? userName,
 ) async {
   Map<String, dynamic> formdata = {
-    'userName': userName,
+    'userName': userName ?? '',
     'question': question,
     'answer': answer,
     'theme': theme,

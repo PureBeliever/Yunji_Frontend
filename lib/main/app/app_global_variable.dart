@@ -1,10 +1,12 @@
 import 'dart:math';
 
-import 'package:easy_refresh/easy_refresh.dart';
+
 import 'package:get/get.dart';
-import 'package:yunji/review/review/start_review/review.dart';
+import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
+import 'package:yunji/review/notification_init.dart';
+import 'package:yunji/review/creat_review/start_review/review.dart';
 import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/review/review/continue_review/continue_review.dart';
+import 'package:yunji/review/review/continue_review.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
@@ -65,9 +67,12 @@ final editPersonalDataValueManagement =
 final userInformationListScrollDataManagement =
     Get.put(UserInformationListScrollDataManagement());
 
+final creatReviewController = Get.put(CreatReviewController());
+
+final NotificationHelper notificationHelper = NotificationHelper();
+
 // 登录状态
 bool loginStatus = false;
-
 
 final header = {'Content-Type': 'application/json'};
 

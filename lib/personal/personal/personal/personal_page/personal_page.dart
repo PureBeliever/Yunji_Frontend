@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:alarm/alarm.dart';
 import 'package:keframe/keframe.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:flutter/material.dart';
@@ -14,15 +15,17 @@ import 'package:like_button/like_button.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/app_module/memory_bank/memory_bank_item.dart';
-import 'package:yunji/main/app_module/memory_bank/memory_bank_sqlite.dart';
+import 'package:yunji/main/app_module/memory_bank_sqlite.dart';
 import 'package:yunji/main/app_module/show_toast.dart';
-import 'package:yunji/review/review/continue_review/continue_review.dart';
+import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
+import 'package:yunji/personal/other_personal/other_personal_api.dart';
+import 'package:yunji/review/review/continue_review.dart';
 import 'package:yunji/main/app_module/sliver_header_delegate.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 import 'package:yunji/main/app_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
-import 'package:yunji/review/review/start_review/review.dart';
+import 'package:yunji/review/creat_review/start_review/review.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
@@ -265,15 +268,15 @@ class UserPersonalInformationManagement extends GetxController {
     if (data[key] != null) {
       indexList.clear();
 
-    if (data[key] is List) {
-      indexList.addAll(data[key].cast<int>());
-    } else if (jsonDecode(data[key]) != null) {
-      indexList.addAll(jsonDecode(data[key]).cast<int>());
-    }
+      if (data[key] is List) {
+        indexList.addAll(data[key].cast<int>());
+      } else if (jsonDecode(data[key]) != null) {
+        indexList.addAll(jsonDecode(data[key]).cast<int>());
+      }
 
-    if (updateMemoryBank != null) {
-      await updateMemoryBank(indexList);
-    }
+      if (updateMemoryBank != null) {
+        await updateMemoryBank(indexList);
+      }
     }
   }
 }
@@ -286,6 +289,7 @@ class _PersonalPageState extends State<PersonalPage>
 
   @override
   void dispose() {
+    tabController.index = 0;
     userInformationListScrollDataManagement.clearData();
     scrollController.dispose();
     tabController.dispose();
@@ -298,6 +302,7 @@ class _PersonalPageState extends State<PersonalPage>
     _initializeTabController();
     _initializeScrollController();
     _initializePeriodicTimer();
+
   }
 
   void _initializeTabController() {
@@ -934,7 +939,11 @@ class _PersonalPageState extends State<PersonalPage>
                         Column(
                           children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                switchPage(context, const OtherPersonalPage());
+                                await requestTheOtherPersonalData(
+                                    memoryBank['user_name']);
+                              },
                               icon: CircleAvatar(
                                 radius: 21,
                                 backgroundImage: memoryBank['head_portrait'] !=
@@ -1057,7 +1066,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserPulledMemoryBankIndex
                                             .add(memoryBank['id']);
                                         await synchronizeMemoryBankData(
-                                            
                                             changeUserPulledMemoryBankIndex,
                                             'pull_list',
                                             memoryBank['id'],
@@ -1067,7 +1075,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserPulledMemoryBankIndex
                                             .remove(memoryBank['id']);
                                         await synchronizeMemoryBankData(
-                                            
                                             changeUserPulledMemoryBankIndex,
                                             'pull_list',
                                             memoryBank['id'],
@@ -1118,7 +1125,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserCollectedMemoryBankIndex
                                             .add(memoryBank['id']);
                                         synchronizeMemoryBankData(
-                                           
                                             changeUserCollectedMemoryBankIndex,
                                             'collect_list',
                                             memoryBank['id'],
@@ -1128,7 +1134,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserCollectedMemoryBankIndex
                                             .remove(memoryBank['id']);
                                         synchronizeMemoryBankData(
-                                           
                                             changeUserCollectedMemoryBankIndex,
                                             'collect_list',
                                             memoryBank['id'],
@@ -1167,7 +1172,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserLikedMemoryBankIndex
                                             .add(memoryBank['id']);
                                         synchronizeMemoryBankData(
-                  
                                             changeUserLikedMemoryBankIndex,
                                             'like_list',
                                             memoryBank['id'],
@@ -1177,7 +1181,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserLikedMemoryBankIndex
                                             .remove(memoryBank['id']);
                                         synchronizeMemoryBankData(
-                                   
                                             changeUserLikedMemoryBankIndex,
                                             'like_list',
                                             memoryBank['id'],
@@ -1227,7 +1230,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserReplyMemoryBankIndex
                                             .add(memoryBank['id']);
                                         synchronizeMemoryBankData(
-                                  
                                             changeUserReplyMemoryBankIndex,
                                             'reply_list',
                                             memoryBank['id'],
@@ -1237,7 +1239,6 @@ class _PersonalPageState extends State<PersonalPage>
                                         changeUserReplyMemoryBankIndex
                                             .remove(memoryBank['id']);
                                         synchronizeMemoryBankData(
-                                          
                                             changeUserReplyMemoryBankIndex,
                                             'reply_list',
                                             memoryBank['id'],

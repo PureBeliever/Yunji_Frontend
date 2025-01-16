@@ -4,10 +4,12 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yunji/main/app_module/switch.dart';
+import 'package:yunji/review/custom_memory_scheme.dart';
 
 import 'package:yunji/review/notification_init.dart';
-import 'package:yunji/review/review/continue_review/continue_review.dart';
-import 'package:yunji/review/review/start_review/review_api.dart';
+import 'package:yunji/review/review/continue_review.dart';
+import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/main/app/app_global_variable.dart';
 
 class ContinueReviewOption extends StatefulWidget {
@@ -16,9 +18,10 @@ class ContinueReviewOption extends StatefulWidget {
   @override
   State<ContinueReviewOption> createState() => _ContinueReviewOption();
 }
+
 class _ContinueReviewOption extends State<ContinueReviewOption> {
-  final continueLearningAboutDataManagement = Get.put(ContinueLearningAboutDataManagement());
- 
+  final continueLearningAboutDataManagement =
+      Get.put(ContinueLearningAboutDataManagement());
 
   final NotificationHelper _notificationHelper = NotificationHelper();
   bool message = false;
@@ -32,7 +35,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
     [60, 360, 1440, 4320, 10080, 20160, 43200, 129600, 259200]
   ];
   int _valueChoice = 2;
-  final List<String>reviewScheme = [
+  final List<String> reviewScheme = [
     '不复习',
     '第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n记忆时长超过3个月',
     '[推荐]\n第1次复习:  学习后的第2天\n第2次复习:  第1次复习1周后\n第3次复习:  第2次复习2周后\n第4次复习:  第3次复习1个月后\n记忆时长超过6个月',
@@ -92,7 +95,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
 
     DateTime now = DateTime.now();
     Map<String, String> stringQuestion = continueLearningAboutDataManagement
-        .problems
+        .question
         .map((key, value) => MapEntry(key.toString(), value));
     Map<String, String> stringAnswer = continueLearningAboutDataManagement
         .answer
@@ -104,7 +107,9 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
     } else {
       if (alarmInformation) {
         final alarmSettings = AlarmSettings(
-          id: 42,
+          id: userPersonalInformationManagement.userReviewMemoryBankIndex
+                  .indexOf(continueLearningAboutDataManagement.id) +
+              1,
           dateTime: setTime,
           assetAudioPath: 'assets/review/alarm.mp3',
           loopAudio: true,
@@ -115,7 +120,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
           androidFullScreenIntent: true,
           notificationSettings: NotificationSettings(
             title: '开始复习 !',
-            body: '记忆库${continueLearningAboutDataManagement.memoryTheme}到达预定的复习时间',
+            body: '记忆库${continueLearningAboutDataManagement.theme}到达预定的复习时间',
             stopButton: '停止闹钟',
             icon: 'notification_icon',
           ),
@@ -124,9 +129,11 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
       }
       if (message) {
         _notificationHelper.zonedScheduleNotification(
-            id: 2,
+            id: userPersonalInformationManagement.userReviewMemoryBankIndex
+                    .indexOf(continueLearningAboutDataManagement.id) +
+                1,
             title: '开始复习 !',
-            body: '记忆库${continueLearningAboutDataManagement.memoryTheme}到达预定的复习时间',
+            body: '记忆库${continueLearningAboutDataManagement.theme}到达预定的复习时间',
             scheduledDateTime: setTime);
       }
     }
@@ -135,7 +142,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
         stringQuestion,
         stringAnswer,
         continueLearningAboutDataManagement.id,
-        continueLearningAboutDataManagement.memoryTheme,
+        continueLearningAboutDataManagement.theme,
         reviewTime[_valueChoice],
         setTime,
         continueLearningAboutDataManagement.memoryItemIndices,
@@ -191,51 +198,99 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
       body: ListView(
         children: [
           Row(
+
             children: [
-              const SizedBox(width: 5),
-              SizedBox(
-                height: 30,
-                child: Transform.scale(
-                  scale: 0.7,
-                  child: CupertinoSwitch(
-                    value: message,
-                    onChanged: (value) {
-                      setState(() {
-                        message = value;
-                      });
-                    },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 5),
+                      SizedBox(
+                        height: 30,
+                        child: Transform.scale(
+                          scale: 0.7,
+                          child: CupertinoSwitch(
+                            value: message,
+                            onChanged: (value) {
+                              setState(() {
+                                message = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      const Text('信息通知',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(84, 87, 105, 1),
+                              fontSize: 17)),
+                    ],
+                  ),
+                  const SizedBox(width: 15),
+                  Row(
+                    children: [
+                      const SizedBox(width: 5),
+                      SizedBox(
+                        height: 30,
+                        child: Transform.scale(
+                          scale: 0.7,
+                          child: CupertinoSwitch(
+                            value: alarmInformation,
+                            onChanged: (value) {
+                              setState(() {
+                                alarmInformation = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      const Text('闹钟信息通知',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(84, 87, 105, 1),
+                              fontSize: 17)),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(width: 30),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                onPressed: () {
+                  switchPage(
+                      context,
+                      CustomMemoryScheme(
+                          question: continueLearningAboutDataManagement.question
+                              .map((key, value) =>
+                                  MapEntry(int.parse(key), value.toString())),
+                          answer: continueLearningAboutDataManagement.answer
+                              .map((key, value) =>
+                                  MapEntry(int.parse(key), value.toString())),
+                          theme: continueLearningAboutDataManagement.theme,
+                          message: continueLearningAboutDataManagement.message,
+                          alarmInformation: continueLearningAboutDataManagement
+                              .alarmInformation,
+                          continueReview: true,
+                          id: continueLearningAboutDataManagement.id));
+                },
+                child: const Text(
+                  '自定义记忆方案',
+                  style: TextStyle(
+                    color: Color.fromRGBO(84, 87, 105, 1),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-              const Text('信息通知',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromRGBO(84, 87, 105, 1),
-                      fontSize: 17)),
-            ],
-          ),
-          Row(
-            children: [
-              const SizedBox(width: 5),
-              SizedBox(
-                height: 30,
-                child: Transform.scale(
-                  scale: 0.7,
-                  child: CupertinoSwitch(
-                    value: alarmInformation,
-                    onChanged: (value) {
-                      setState(() {
-                        alarmInformation = value;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              const Text('闹钟信息通知',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Color.fromRGBO(84, 87, 105, 1),
-                      fontSize: 17)),
             ],
           ),
           Column(

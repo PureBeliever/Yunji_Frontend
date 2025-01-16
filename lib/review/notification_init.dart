@@ -11,7 +11,6 @@ class NotificationHelper {
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-
   // 初始化函数
   Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -28,7 +27,6 @@ class NotificationHelper {
     await _notificationsPlugin.initialize(initializationSettings);
   }
 
-
 // 定时通知
   Future<void> zonedScheduleNotification(
       {required int id,
@@ -37,7 +35,7 @@ class NotificationHelper {
       required DateTime scheduledDateTime}) async {
     // 安卓通知权限类别
     const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your.channel.id', '新信息通知',
+        AndroidNotificationDetails('your.channel.id', '信息通知',
             channelDescription: '提醒复习时使用的通知类别',
             importance: Importance.max,
             priority: Priority.high,
@@ -53,15 +51,24 @@ class NotificationHelper {
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
         android: androidNotificationDetails, iOS: iosNotificationDetails);
     // 设定定时通知
-    await _notificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledDateTime, tz.local),
-      platformChannelSpecifics,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidScheduleMode: AndroidScheduleMode.alarmClock,
-    );
+    if (scheduledDateTime.isBefore(DateTime.now())) {
+      await _notificationsPlugin.show(
+        id,
+        title,
+        body,
+        platformChannelSpecifics,
+      );
+    } else {
+      await _notificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduledDateTime, tz.local),
+        platformChannelSpecifics,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidScheduleMode: AndroidScheduleMode.alarmClock,
+      );
+    }
   }
 }

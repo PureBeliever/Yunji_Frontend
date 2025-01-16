@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 
-void continueReview(
+Future<void> continueReview(
     Map<String, String> question,
     Map<String, String> answer,
     int id,
@@ -15,7 +15,7 @@ void continueReview(
     bool completeState,
     Map<String, String> reviewRecord,
     String reviewSchemeName,
-    String userName,
+    String? userName,
 ) async {
   final dio = Dio();
     Map<String, String> header = {

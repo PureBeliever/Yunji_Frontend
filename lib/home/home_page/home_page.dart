@@ -1,10 +1,12 @@
 import 'dart:core';
 
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:keframe/keframe.dart';
 import 'package:toastification/toastification.dart' as toast;
 
@@ -21,15 +23,12 @@ import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 
-
 // 主页记忆板刷新
 class RefreshofHomepageMemoryBankextends extends GetxController {
   static RefreshofHomepageMemoryBankextends get to => Get.find();
   List<Map<String, dynamic>> memoryRefreshValue = [];
 
-
   void updateMemoryRefreshValue(List<Map<String, dynamic>>? value) {
-
     if (value != null) {
       memoryRefreshValue = value.reversed.toList();
       update();
@@ -57,8 +56,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     await refreshHomePageMemoryBank(contexts!);
   }
 
+ 
+
+  // static const platform = MethodChannel('com.example.yunji/channel');
+
+  // Future<void> _getNativeMessage() async {
+  //   try {
+  //     final String result = await platform.invokeMethod('getNativeMessage');
+  //     print(result);
+  //   } on PlatformException catch (e) {
+  //     print("Failed to get native message: '${e.message}'.");
+  //   }
+  // }
+
   @override
   void initState() {
+    // _getNativeMessage();
     super.initState();
     tabController = TabController(
       length: 2,
@@ -66,6 +79,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     );
+
   }
 
   Widget _buildSpeedDial() {
@@ -94,8 +108,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       label: '创建记忆库',
       labelShadow: List.empty(),
       labelBackgroundColor: Colors.white,
-      labelStyle: const TextStyle(
-          fontSize: 20.0, fontWeight: FontWeight.w700),
+      labelStyle: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
       onTap: _handleSpeedDialChildTap,
     );
   }
@@ -103,13 +116,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void _handleSpeedDialChildTap() {
     if (loginStatus == false) {
       smsLogin(context);
-      showToast(context, "未登录", "未登录", toast.ToastificationType.success, const Color(0xff047aff), const Color(0xFFEDF7FF));
+      showToast(context, "未登录", "未登录", toast.ToastificationType.success,
+          const Color(0xff047aff), const Color(0xFFEDF7FF));
     } else {
       switchPage(context, const CreatReviewPage());
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +191,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 },
               ),
               iconTheme: const IconThemeData(color: Colors.black),
-        
             ),
             SliverPersistentHeader(
               pinned: true,
@@ -267,7 +278,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           child: SizeCacheWidget(
                             child: MemoryBankList(
                               refreshofMemoryBankextends:
-                                  refreshofHomepageMemoryBankextends.memoryRefreshValue,
+                                  refreshofHomepageMemoryBankextends
+                                      .memoryRefreshValue,
                               onItemTap: (index) {
                                 viewPostDataManagementForMemoryBanks
                                     .initMemoryData(

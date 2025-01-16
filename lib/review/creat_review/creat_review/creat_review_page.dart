@@ -12,6 +12,8 @@ class CreatReviewController extends GetxController {
   Map<int, String> question = {};
   Map<int, String> answer = {};
   String? theme;
+  bool message = false;
+  bool alarmInformation = false;
 
   void initData(
       Map<int, String> question, Map<int, String> answer, String theme) {
@@ -62,7 +64,6 @@ class _CreatReviewPage extends State<CreatReviewPage> {
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
   final List<Item> _data = generateItems(1);
-
 
   int subscript = 1;
   String theme = '';

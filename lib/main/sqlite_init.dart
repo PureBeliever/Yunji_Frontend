@@ -78,7 +78,7 @@ class DatabaseManager {
       'pull INT, '
       'like INT, '
       'reply INT, '
-      'Information_notification BOOL, '
+      'information_notification BOOL, '
       'alarm_notification BOOL, '
       'complete_state BOOL, '
       'review_record JSON, '
