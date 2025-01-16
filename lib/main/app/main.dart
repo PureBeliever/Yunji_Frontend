@@ -33,7 +33,7 @@ void OnRingCallback(String body, int id) {
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: SizedBox(
-          height: 120,
+          height: 110,
           width: 200,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
