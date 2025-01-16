@@ -15,3 +15,5 @@
 7.在理想状态下，mysql表格单表行数超过500万行或容量超过2GB，需要分库分表
 
 8.import 'package:city_pickers/city_pickers.dart';文件中export 'src/city_picker.dart';中的引用被修改为import 'package:yunji/personal/personal/edit_personal/edit_personal_module/base_edit.dart';
+
+9.https://blog.csdn.net/qq_45625499/article/details/123463407
