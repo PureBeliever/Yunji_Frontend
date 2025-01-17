@@ -532,7 +532,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 10),
                                       ],
                                     ),
                                   ),

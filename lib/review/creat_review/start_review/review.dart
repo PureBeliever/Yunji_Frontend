@@ -9,7 +9,6 @@ import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 
@@ -129,10 +128,10 @@ class _ReviewPage extends State<ReviewPage> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
                   child:
-                      Text('是否清空所有讲解?', style: const TextStyle(fontSize: 16)),
+                      Text('是否清空所有讲解?', style: TextStyle(fontSize: 16)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 7),
@@ -192,10 +191,10 @@ class _ReviewPage extends State<ReviewPage> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
                   child:
-                      Text('清空还是删除当前讲解?', style: const TextStyle(fontSize: 16)),
+                      Text('清空还是删除当前讲解?', style: TextStyle(fontSize: 16)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 7),
@@ -253,9 +252,9 @@ class _ReviewPage extends State<ReviewPage> {
 
   void _clearAllExplanations() {
     setState(() {
-      _data.forEach((item) {
+      for (var item in _data) {
         item.answer = ' ';
-      });
+      }
     });
     Navigator.of(context).pop();
   }
@@ -379,7 +378,7 @@ class _ReviewPage extends State<ReviewPage> {
                           androidFullScreenIntent: true,
                           notificationSettings: NotificationSettings(
                             title: '开始复习 !',
-                            body: '记忆库${theme}到达预定的复习时间',
+                            body: '记忆库$theme到达预定的复习时间',
                             stopButton: '停止闹钟',
                             icon: 'notification_icon',
                           ),
@@ -394,7 +393,7 @@ class _ReviewPage extends State<ReviewPage> {
                                         _reviewDataManagement.memoryBankId) +
                                 1,
                             title: '开始复习 !',
-                            body: '记忆库${theme}到达预定的复习时间',
+                            body: '记忆库$theme到达预定的复习时间',
                             scheduledDateTime: setTime);
                       }
                     } else {
@@ -412,7 +411,7 @@ class _ReviewPage extends State<ReviewPage> {
                         int frequency = int.parse(stringFrequency);
                         int key = frequency + 1;
                         String value = numberOfReviews[stringFrequency] ?? ' s';
-                        Map<String, String> newEntries = {'${key}': value};
+                        Map<String, String> newEntries = {'$key': value};
                         numberOfReviews.remove(stringFrequency);
                         numberOfReviews.addEntries(newEntries.entries);
                       }

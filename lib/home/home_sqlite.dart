@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 
 Future<Map<String, dynamic>> queryIdAndLength() async {
   final personalMaps = await db.query('intdatabase');

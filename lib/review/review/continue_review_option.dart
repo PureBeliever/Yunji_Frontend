@@ -10,7 +10,7 @@ import 'package:yunji/review/custom_memory_scheme.dart';
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 
 class ContinueReviewOption extends StatefulWidget {
   const ContinueReviewOption({super.key});
@@ -180,6 +180,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                       left: 10, right: 10, top: 0, bottom: 0),
                   backgroundColor: Colors.blue,
                 ),
+                onPressed: _handleCompleteButtonPress,
                 child: const Text(
                   "完成",
                   style: TextStyle(
@@ -187,7 +188,6 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 ),
-                onPressed: _handleCompleteButtonPress,
               ),
             ),
           ),

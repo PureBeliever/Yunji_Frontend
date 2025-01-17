@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:alarm/alarm.dart';
 import 'package:keframe/keframe.dart';
 import 'package:toastification/toastification.dart' as toast;
 import 'package:flutter/material.dart';
@@ -111,7 +110,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
     }).toList();
 
     String displayStatusRecord =
-        "距离下一次复习还剩${numberOfDays}天${numberOfHours}小时${numberOfMinutes}分钟";
+        "距离下一次复习还剩$numberOfDays天$numberOfHours小时$numberOfMinutes分钟";
 
     Widget statusDisplayWidget =
         _buildStatusDisplayWidget(statusRecord, widgetsDisplayValues, context);
@@ -156,7 +155,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
             onTap: () {
               _continueLearningAboutDataManagement
                   .initMemoryData(widgetsDisplayValues);
-              switchPage(context, ContinueReview());
+              switchPage(context, const ContinueReview());
             },
             child: Text(
               '继续学习',
@@ -173,7 +172,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
     return GestureDetector(
       onTap: () {
         _reviewDataManagement.initMemoryData(widgetsDisplayValues);
-        switchPage(context, ReviewPage());
+        switchPage(context, const ReviewPage());
       },
       child: Text(
         '开始复习',
@@ -183,7 +182,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
   }
 
   TextStyle _statusTextStyle() {
-    return TextStyle(
+    return const TextStyle(
       fontWeight: FontWeight.w900,
       fontSize: 16,
       color: Color.fromRGBO(84, 87, 105, 1),
@@ -191,7 +190,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
   }
 
   TextStyle _linkTextStyle() {
-    return TextStyle(
+    return const TextStyle(
       fontWeight: FontWeight.w500,
       color: Colors.green,
       fontSize: 16,
@@ -336,7 +335,7 @@ class _PersonalPageState extends State<PersonalPage>
   }
 
   void _initializePeriodicTimer() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
+    Timer.periodic(const Duration(minutes: 1), (timer) {
       memoryBankCompletionStatus.refreshDisplay();
     });
   }
@@ -351,7 +350,7 @@ class _PersonalPageState extends State<PersonalPage>
       backgroundColor: Colors.white,
       body: GetBuilder<EditPersonalDataValueManagement>(
         init: _editPersonalDataValueManagement,
-        builder: (_editPersonalDataValueManagement) {
+        builder: (editPersonalDataValueManagement) {
           return EasyRefresh(
             callRefreshOverOffset: 5,
             header: _buildClassicHeader(),
@@ -362,8 +361,8 @@ class _PersonalPageState extends State<PersonalPage>
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
-                  _buildSliverAppBar(context, _editPersonalDataValueManagement),
-                  _buildSliverToBoxAdapter(_editPersonalDataValueManagement),
+                  _buildSliverAppBar(context, editPersonalDataValueManagement),
+                  _buildSliverToBoxAdapter(editPersonalDataValueManagement),
                   _buildSliverPersistentHeader(),
                 ];
               },
@@ -494,10 +493,10 @@ class _PersonalPageState extends State<PersonalPage>
             Positioned.fill(
               child: GetBuilder<UserInformationListScrollDataManagement>(
                 init: _userInformationListScrollDataManagement,
-                builder: (_userInformationListScrollDataManagement) {
+                builder: (userInformationListScrollDataManagement) {
                   return ImageFiltered(
                     imageFilter: ImageFilter.blur(
-                      sigmaX: _userInformationListScrollDataManagement.filter,
+                      sigmaX: userInformationListScrollDataManagement.filter,
                       sigmaY: 0,
                     ),
                     child: GestureDetector(
@@ -523,10 +522,10 @@ class _PersonalPageState extends State<PersonalPage>
               right: 0,
               child: GetBuilder<UserInformationListScrollDataManagement>(
                 init: _userInformationListScrollDataManagement,
-                builder: (_userInformationListScrollDataManagement) {
+                builder: (userInformationListScrollDataManagement) {
                   return AnimatedContainer(
                     duration: Duration(
-                        seconds: _userInformationListScrollDataManagement
+                        seconds: userInformationListScrollDataManagement
                                 .backgroundState
                             ? 1
                             : 0),
@@ -536,7 +535,7 @@ class _PersonalPageState extends State<PersonalPage>
                         end: Alignment.topCenter,
                         colors: [
                           Colors.black.withOpacity(
-                              _userInformationListScrollDataManagement
+                              userInformationListScrollDataManagement
                                       .backgroundState
                                   ? 0.5
                                   : 0),

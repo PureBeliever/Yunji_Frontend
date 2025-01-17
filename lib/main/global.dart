@@ -43,7 +43,6 @@ String generateRandomFilename() {
   const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   Random random = Random();
-  return List.generate(10, (_) => chars[random.nextInt(chars.length)])
-          .join('') +
-      '.jpg';
+  return '${List.generate(10, (_) => chars[random.nextInt(chars.length)])
+          .join('')}.jpg';
 }

@@ -1,6 +1,6 @@
 import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/home/login/login_init.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'dart:convert';
 
 import 'package:yunji/main/main_init/app_sqlite.dart';

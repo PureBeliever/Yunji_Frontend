@@ -130,16 +130,16 @@ Future<String?> _saveImageToFile(String? base64Image, Directory dir) async {
 
 void _updateDisplay(Map<String, dynamic> personalDataValue,
     String? backgroundImage, String? headPortrait) {
-  final _editPersonalDataValueManagement =
+  final editPersonalDataValueManagement =
       Get.put(EditPersonalDataValueManagement());
-  final _selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
-  _selectorResultsUpdateDisplay
+  final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
+  selectorResultsUpdateDisplay
       .dateOfBirthSelectorResultValueChange(personalDataValue['birth_time']);
-  _selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
       personalDataValue['residential_address']);
   backgroundImageChangeManagement.initBackgroundImage(backgroundImage);
   headPortraitChangeManagement.initHeadPortrait(headPortrait);
-  _editPersonalDataValueManagement.changePersonalInformation(
+  editPersonalDataValueManagement.changePersonalInformation(
     name: personalDataValue['name'],
     profile: personalDataValue['introduction'],
     residentialAddress: personalDataValue['residential_address'],

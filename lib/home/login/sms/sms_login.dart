@@ -139,14 +139,14 @@ class LoginDialogContent extends StatelessWidget {
   final VoidCallback onVerify;
 
   const LoginDialogContent({
-    Key? key,
+    super.key,
     required this.phoneController,
     required this.codeController,
     required this.sendingState,
     required this.seconds,
     required this.onSendCode,
     required this.onVerify,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -249,11 +249,11 @@ class LoginDialogContent extends StatelessWidget {
         ),
         const SizedBox(width: 5),
         TextButton(
+          onPressed: onSendCode,
           child: const Text(
             "获取验证码",
             style: TextStyle(fontSize: 17, color: Colors.blue),
           ),
-          onPressed: onSendCode,
         ),
       ],
     );
@@ -305,6 +305,7 @@ class LoginDialogContent extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 90),
         backgroundColor: Colors.blue,
       ),
+      onPressed: onVerify,
       child: const Text(
         "验证登录",
         style: TextStyle(
@@ -313,7 +314,6 @@ class LoginDialogContent extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      onPressed: onVerify,
     );
   }
 }

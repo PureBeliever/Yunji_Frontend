@@ -13,7 +13,7 @@ class MemoryBankList extends StatelessWidget {
   final List<Map<String, dynamic>>? refreshofMemoryBankextends;
   final Function(int) onItemTap;
 
-  MemoryBankList({
+  const MemoryBankList({super.key, 
     required this.refreshofMemoryBankextends,
     required this.onItemTap,
   });
@@ -37,7 +37,7 @@ class MemoryBankItem extends StatelessWidget {
   final dynamic data;
   final VoidCallback onTap;
 
-  MemoryBankItem({required this.data, required this.onTap});
+  const MemoryBankItem({super.key, required this.data, required this.onTap});
 
   String parseJson(String? jsonString, List<dynamic> subscript) {
     if (jsonString == null) return ' ';
@@ -167,7 +167,7 @@ class MemoryBankItem extends StatelessWidget {
 
 class LikeButtonRow extends StatelessWidget {
   final dynamic data;
-  LikeButtonRow({required this.data});
+  const LikeButtonRow({super.key, required this.data});
 
   Widget buildLikeButton({
     required Color startColor,
@@ -213,10 +213,10 @@ class LikeButtonRow extends StatelessWidget {
     return Row(
       children: [
         buildLikeButtonContainer(
-          startColor: Color.fromARGB(255, 42, 91, 255),
-          endColor: Color.fromARGB(255, 142, 204, 255),
-          dotPrimaryColor: Color.fromARGB(255, 0, 153, 255),
-          dotSecondaryColor: Color.fromARGB(255, 195, 238, 255),
+          startColor: const Color.fromARGB(255, 42, 91, 255),
+          endColor: const Color.fromARGB(255, 142, 204, 255),
+          dotPrimaryColor: const Color.fromARGB(255, 0, 153, 255),
+          dotSecondaryColor: const Color.fromARGB(255, 195, 238, 255),
           likedIcon: Icons.swap_calls,
           unlikedIcon: Icons.swap_calls,
           likedColor: Colors.blue,
@@ -264,10 +264,10 @@ class LikeButtonRow extends StatelessWidget {
         ),
         const Spacer(flex: 1),
         buildLikeButtonContainer(
-          startColor: Color.fromARGB(255, 253, 156, 46),
-          endColor: Color.fromARGB(255, 255, 174, 120),
-          dotPrimaryColor: Color.fromARGB(255, 255, 102, 0),
-          dotSecondaryColor: Color.fromARGB(255, 255, 212, 163),
+          startColor: const Color.fromARGB(255, 253, 156, 46),
+          endColor: const Color.fromARGB(255, 255, 174, 120),
+          dotPrimaryColor: const Color.fromARGB(255, 255, 102, 0),
+          dotSecondaryColor: const Color.fromARGB(255, 255, 212, 163),
           likedIcon: Icons.folder,
           unlikedIcon: Icons.folder_open,
           likedColor: Colors.orange,
@@ -303,10 +303,10 @@ class LikeButtonRow extends StatelessWidget {
         ),
         const Spacer(flex: 1),
         buildLikeButtonContainer(
-          startColor: Color.fromARGB(255, 255, 64, 64),
-          endColor: Color.fromARGB(255, 255, 206, 206),
-          dotPrimaryColor: Color.fromARGB(255, 255, 0, 0),
-          dotSecondaryColor: Color.fromARGB(255, 255, 186, 186),
+          startColor: const Color.fromARGB(255, 255, 64, 64),
+          endColor: const Color.fromARGB(255, 255, 206, 206),
+          dotPrimaryColor: const Color.fromARGB(255, 255, 0, 0),
+          dotSecondaryColor: const Color.fromARGB(255, 255, 186, 186),
           likedIcon: Icons.favorite,
           unlikedIcon: Icons.favorite_border,
           likedColor: Colors.red,
@@ -354,10 +354,10 @@ class LikeButtonRow extends StatelessWidget {
         ),
         const Spacer(flex: 1),
         buildLikeButtonContainer(
-          startColor: Color.fromARGB(255, 237, 42, 255),
-          endColor: Color.fromARGB(255, 185, 142, 255),
-          dotPrimaryColor: Color.fromARGB(255, 225, 0, 255),
-          dotSecondaryColor: Color.fromARGB(255, 233, 195, 255),
+          startColor: const Color.fromARGB(255, 237, 42, 255),
+          endColor: const Color.fromARGB(255, 185, 142, 255),
+          dotPrimaryColor: const Color.fromARGB(255, 225, 0, 255),
+          dotSecondaryColor: const Color.fromARGB(255, 233, 195, 255),
           likedIcon: Icons.messenger,
           unlikedIcon: Icons.messenger_outline,
           likedColor: Colors.purpleAccent,

@@ -10,7 +10,6 @@ import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_api.dart';
-import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review.dart';
@@ -52,7 +51,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
   final notificationHelper = NotificationHelper();
   final _continueLearningAboutDataManagement =
       Get.put(ContinueLearningAboutDataManagement());
-  List<Item> _itemList = [];
+  final List<Item> _itemList = [];
   late final Map<int, String> question;
   late final Map<int, String> answer;
   late final String theme;
@@ -152,7 +151,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
                     androidFullScreenIntent: true,
                     notificationSettings: NotificationSettings(
                       title: '开始复习 !',
-                      body: '记忆库${theme}到达预定的复习时间',
+                      body: '记忆库$theme到达预定的复习时间',
                       stopButton: '停止闹钟',
                       icon: 'notification_icon',
                     ),
@@ -163,7 +162,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
                   notificationHelper.zonedScheduleNotification(
                       id: notificationId,
                       title: '开始复习 !',
-                      body: '记忆库${theme}到达预定的复习时间',
+                      body: '记忆库$theme到达预定的复习时间',
                       scheduledDateTime: setTime);
                 }
               }
@@ -187,7 +186,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
                 await creatReview(
                     stringQuestion,
                     stringAnswer,
-                    theme!,
+                    theme,
                     memoryTime,
                     setTime,
                     sortedList,
@@ -440,33 +439,27 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
           onPressed: () {
             _buildDatePickerDialog(context, item);
           },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            backgroundColor: Colors.white,
+            side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 0, // 消除阴影
+          ),
           child: Text(item.dateByDays,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: Color.fromRGBO(84, 87, 105, 1),
               )),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            backgroundColor: Colors.white,
-            side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            elevation: 0, // 消除阴影
-          ),
         ),
         const SizedBox(width: 5),
         ElevatedButton(
           onPressed: () {
             _buildDatePickerDialogMinute(context, item);
           },
-          child: Text(item.dateByMinute,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Color.fromRGBO(84, 87, 105, 1),
-              )),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             backgroundColor: Colors.white,
@@ -476,6 +469,12 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
             ),
             elevation: 0, // 消除阴影
           ),
+          child: Text(item.dateByMinute,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Color.fromRGBO(84, 87, 105, 1),
+              )),
         ),
         const SizedBox(width: 5),
         Flexible(

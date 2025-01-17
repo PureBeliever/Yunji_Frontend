@@ -128,9 +128,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget _buildName() {
     return GetBuilder<EditPersonalDataValueManagement>(
       init: _editPersonalDataValueManagement,
-      builder: (_editPersonalDataValueManagement) {
+      builder: (editPersonalDataValueManagement) {
         return Text(
-          '${_editPersonalDataValueManagement.nameValue}',
+          '${editPersonalDataValueManagement.nameValue}',
           style: const TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 21,

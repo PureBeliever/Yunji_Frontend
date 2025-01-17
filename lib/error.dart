@@ -11,7 +11,7 @@ Future<void> someFunction() async {
 }
 
 Future<void> sendErrorLogToServer(String error, String stackTrace) async {
-  final url = 'https://your-server.com/api/logs';
+  const url = 'https://your-server.com/api/logs';
   final response = await http.post(
     Uri.parse(url),
     headers: {'Content-Type': 'application/json'},

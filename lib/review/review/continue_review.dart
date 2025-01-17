@@ -124,10 +124,10 @@ class _ContinueReview extends State<ContinueReview> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
                   child:
-                      Text('是否清空所有讲解?', style: const TextStyle(fontSize: 16)),
+                      Text('是否清空所有讲解?', style: TextStyle(fontSize: 16)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 7),
@@ -187,10 +187,10 @@ class _ContinueReview extends State<ContinueReview> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
                   child:
-                      Text('清空还是删除当前讲解?', style: const TextStyle(fontSize: 16)),
+                      Text('清空还是删除当前讲解?', style: TextStyle(fontSize: 16)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 7),
@@ -285,7 +285,7 @@ class _ContinueReview extends State<ContinueReview> {
           index++;
         }
       }
-      switchPage(context, ContinueReviewOption());
+      switchPage(context, const ContinueReviewOption());
     }
   }
 
@@ -349,8 +349,8 @@ class _ContinueReview extends State<ContinueReview> {
       backgroundColor: Colors.white,
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+          const Padding(
+            padding: EdgeInsets.only(left: 15, right: 15, top: 10),
             child: Text(
               '复读回顾 >> 清空讲解 >> 更加清晰简洁的讲解 >> 遗忘处查漏补缺 >> 完成讲解',
               style: TextStyle(
@@ -444,7 +444,7 @@ class _ContinueReview extends State<ContinueReview> {
                   );
                 },
                 body: ListTile(
-                  contentPadding: EdgeInsets.only(left: 5, right: 10),
+                  contentPadding: const EdgeInsets.only(left: 5, right: 10),
                   title: TextField(
                     onChanged: (value) {
                       item.answer = value;
@@ -472,13 +472,13 @@ class _ContinueReview extends State<ContinueReview> {
                       counterText: "",
                       filled: true,
                       fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0x00FF0000)),
                         borderRadius: BorderRadius.all(
                           Radius.circular(100),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
+                      focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0x00000000)),
                         borderRadius: BorderRadius.all(
                           Radius.circular(100),

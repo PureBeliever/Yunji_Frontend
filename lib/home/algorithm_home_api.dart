@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/home/home_sqlite.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/main/main_init/app_sqlite.dart';

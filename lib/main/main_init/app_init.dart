@@ -10,12 +10,101 @@ import 'package:yunji/home/algorithm_home_api.dart';
 
 //项目文件
 import 'package:yunji/home/home_page/home_page.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/home/login/login_init.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/main/main_init/app_sqlite.dart';
-import 'package:yunji/main.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
+  await _initializeApp();
+
+  final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
+  final personalData = await queryPersonalData();
+  await refreshHomePageMemoryBank(contexts!);
+
+  if (homePageMemoryDatabaseData != null && personalData != null) {
+    _initializeUserData(homePageMemoryDatabaseData, personalData);
+  } else {
+    soginDependencySettings(contexts!);
+  }
+
+  Alarm.ringStream.stream.listen(
+      (OnData) => OnRingCallback(OnData.notificationSettings.body, OnData.id));
+}
+
+Future<void> _initializeApp() async {
+  await Future.wait([
+    requestPermission(),
+    Alarm.init(),
+    databaseManager.initDatabase(),
+    _initializeNotification(),
+  ]);
+  tz.initializeTimeZones();
+}
+
+Future<void> _initializeNotification() async {
+  final notificationHelper = NotificationHelper();
+  await notificationHelper.initialize();
+}
+
+void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
+    Map<String, dynamic> personalData) async {
+       final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
+       final editPersonalDataValueManagement =
+    Get.put(EditPersonalDataValueManagement());
+
+  refreshofHomepageMemoryBankextends
+      .updateMemoryRefreshValue(homePageMemoryDatabaseData);
+
+  loginStatus = true;
+
+  // 初始化背景图和头像
+  backgroundImageChangeManagement
+      .initBackgroundImage(personalData['background_image']);
+  headPortraitChangeManagement.initHeadPortrait(personalData['head_portrait']);
+
+  // 更新选择器结果
+  selectorResultsUpdateDisplay
+      .dateOfBirthSelectorResultValueChange(personalData['birth_time']);
+  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
+      personalData['residential_address']);
+
+  // 更新个人信息
+  editPersonalDataValueManagement.changePersonalInformation(
+    name: personalData['name'],
+    profile: personalData['introduction'],
+    residentialAddress: personalData['residential_address'],
+    dateOfBirth: personalData['birth_time'],
+    applicationDate: personalData['join_date'],
+  );
+
+  userPersonalInformationManagement
+      .requestUserPersonalInformationDataOnTheBackEnd(personalData);
+
+  userNameChangeManagement.userNameChanged(personalData['user_name']);
+}
+
+
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: '云忆',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        useMaterial3: true,
+      ),
+      home: const HomePage(),
+    );
+  }
+}
 
 Future<void> requestPermission() async {
   await Permission.notification.request();
@@ -89,75 +178,3 @@ void OnRingCallback(String body, int id) {
     },
   );
 }
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-  await _initializeApp();
-
-  final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
-  final personalData = await queryPersonalData();
-  await refreshHomePageMemoryBank(contexts!);
-
-  if (homePageMemoryDatabaseData != null && personalData != null) {
-    _initializeUserData(homePageMemoryDatabaseData, personalData);
-  } else {
-    soginDependencySettings(contexts!);
-  }
-
-  Alarm.ringStream.stream.listen(
-      (OnData) => OnRingCallback(OnData.notificationSettings.body, OnData.id));
-}
-
-Future<void> _initializeApp() async {
-  await Future.wait([
-    requestPermission(),
-    Alarm.init(),
-    databaseManager.initDatabase(),
-    _initializeNotification(),
-  ]);
-  tz.initializeTimeZones();
-}
-
-Future<void> _initializeNotification() async {
-  final notificationHelper = NotificationHelper();
-  await notificationHelper.initialize();
-}
-
-void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
-    Map<String, dynamic> personalData) async {
-       final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
-       final editPersonalDataValueManagement =
-    Get.put(EditPersonalDataValueManagement());
-
-  refreshofHomepageMemoryBankextends
-      .updateMemoryRefreshValue(homePageMemoryDatabaseData);
-
-  loginStatus = true;
-
-  // 初始化背景图和头像
-  backgroundImageChangeManagement
-      .initBackgroundImage(personalData['background_image']);
-  headPortraitChangeManagement.initHeadPortrait(personalData['head_portrait']);
-
-  // 更新选择器结果
-  selectorResultsUpdateDisplay
-      .dateOfBirthSelectorResultValueChange(personalData['birth_time']);
-  selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
-      personalData['residential_address']);
-
-  // 更新个人信息
-  editPersonalDataValueManagement.changePersonalInformation(
-    name: personalData['name'],
-    profile: personalData['introduction'],
-    residentialAddress: personalData['residential_address'],
-    dateOfBirth: personalData['birth_time'],
-    applicationDate: personalData['join_date'],
-  );
-
-  userPersonalInformationManagement
-      .requestUserPersonalInformationDataOnTheBackEnd(personalData);
-
-  userNameChangeManagement.userNameChanged(personalData['user_name']);
-}
-

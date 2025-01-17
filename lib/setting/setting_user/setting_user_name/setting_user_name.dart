@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yunji/setting/setting_user/setting_user_name/setting_api.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 
   bool saveState = false;
 

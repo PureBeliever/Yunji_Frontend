@@ -1,9 +1,7 @@
-import 'package:yunji/global.dart';
-
+import 'package:yunji/main/global.dart';
 
 // 查询主页记忆库
 Future<List<Map<String, dynamic>>?> queryHomePageMemoryBank() async {
-
   try {
     return await db.query('memory_bank', orderBy: 'NULL');
   } catch (e) {
@@ -13,7 +11,6 @@ Future<List<Map<String, dynamic>>?> queryHomePageMemoryBank() async {
 }
 
 Future<Map<String, dynamic>?> queryPersonalData() async {
-
   try {
     final List<Map<String, dynamic>> personalMaps =
         await db.query('personal_data');

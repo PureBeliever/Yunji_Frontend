@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_api.dart';
 import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
@@ -174,6 +174,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                     const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                 backgroundColor: Colors.blue,
               ),
+              onPressed: _handleCompletion,
               child: const Text(
                 "完成",
                 style: TextStyle(
@@ -181,7 +182,6 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                     fontWeight: FontWeight.w900,
                     color: Colors.white),
               ),
-              onPressed: _handleCompletion,
             ),
           ),
         ],
@@ -246,9 +246,9 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                               AppSettings.openAppSettings(
                                   type: AppSettingsType.settings);
                             }),
-                      TextSpan(
+                      const TextSpan(
                         text: '(部分机型需应用后台运行)',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
                           fontSize: 15,

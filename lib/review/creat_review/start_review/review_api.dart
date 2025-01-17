@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 
 Future<void> continueReview(
     Map<String, String> question,

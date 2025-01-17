@@ -46,10 +46,10 @@ class OtherPeopleInformationListScrollDataManagement extends GetxController {
       int otherPeopleReplyMemoryBankIndex,
       int otherPeopleLikedMemoryBankIndex) {
     List<String> memoryBankStrings = [
-      '${otherPeopleReviewMemoryBankIndex}个记忆库',
-      '${otherPeoplePulledMemoryBankIndex}个拉取',
-      '${otherPeopleReplyMemoryBankIndex}个回复',
-      '${otherPeopleLikedMemoryBankIndex}个喜欢'
+      '$otherPeopleReviewMemoryBankIndex个记忆库',
+      '$otherPeoplePulledMemoryBankIndex个拉取',
+      '$otherPeopleReplyMemoryBankIndex个回复',
+      '$otherPeopleLikedMemoryBankIndex个喜欢'
     ];
 
     displayText = currentPageSubscript >= 0 &&
@@ -688,8 +688,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
   }
 
   Widget _buildFollowInfoRow() {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         Text(
           '0',
           style: TextStyle(

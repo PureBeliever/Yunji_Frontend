@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<void> insertOtherPeoplePersonalMemoryBank(

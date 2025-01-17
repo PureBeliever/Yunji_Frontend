@@ -13,13 +13,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:toastification/toastification.dart' as toast;
 
 
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_video_editor_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/global.dart';
 
 class EditPersonalDataValueManagement extends GetxController {
@@ -58,8 +55,9 @@ class EditPersonalDataValueManagement extends GetxController {
     if (residentialAddressValue != residentialAddress) changes++;
     if (dateOfBirthValue != dateOfBirth) changes++;
     if (backgroundImageChangeManagement.backgroundImageValue?.path !=
-        backgroundImageChangeManagement.changedBackgroundImageValue?.path)
+        backgroundImageChangeManagement.changedBackgroundImageValue?.path) {
       changes++;
+    }
     if (headPortraitChangeManagement.changedHeadPortraitValue?.path !=
         headPortraitChangeManagement.headPortraitValue?.path) changes++;
 
@@ -275,7 +273,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 padding: const EdgeInsets.only(left: 14.0, right: 10.0),
                 child: GetBuilder<EditPersonalDataValueManagement>(
                   init: _editPersonalDataValueManagement,
-                  builder: (_editPersonalDataValueManagement) {
+                  builder: (editPersonalDataValueManagement) {
                     return _buildFormFields();
                   },
                 ),

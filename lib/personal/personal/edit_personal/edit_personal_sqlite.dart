@@ -1,4 +1,4 @@
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
 
 Future<void> updatePersonal(EditPersonalData personalData) async {

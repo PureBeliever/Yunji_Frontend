@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_sqlite.dart';
 class EditPersonalData {
   final String? userName;
