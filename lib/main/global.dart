@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yunji/main/main_init/sqlite_init.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -14,12 +15,49 @@ import 'package:yunji/setting/setting_user/setting_user.dart';
 // 登录状态
 bool loginStatus = false;
 
-// 颜色
-Map<String, Color> color = {
-  'background': Colors.black,
-  'textGray': Color.fromRGBO(84, 87, 105, 1),
-  'text': Colors.white,
-};
+Future<void> saveLoginStatus(bool status) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('color', status);
+}
+
+Future<bool> getLoginStatus() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('color') ?? false; // 默认值为false
+}
+
+Future<void> initializeNightMode() async {
+  bool isNight = await getLoginStatus();
+  AppColors.isNight = isNight;
+}
+
+class AppColors {
+  static bool isNight = false;
+  static Color get background =>
+      isNight ? Color.fromRGBO(42, 42, 42, 1) : Colors.white;
+  static Color get textGray => isNight
+      ? Color.fromRGBO(115, 115, 115, 1)
+      : Color.fromRGBO(84, 87, 105, 1);
+  static Color get divider => isNight
+      ? Color.fromRGBO(115, 115, 115, 1)
+      : Color.fromRGBO(84, 87, 105, 1);
+  static Color get text => isNight ? Colors.white : Colors.black;
+  static Color get svg => isNight
+      ? Color.fromRGBO(115, 115, 115, 1)
+      : Color.fromRGBO(84, 87, 105, 1);
+}
+
+class AppTextStyle {
+  static TextStyle get textStyle => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: AppColors.text,
+      );
+  static TextStyle get titleStyle => TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w900,
+        color: AppColors.text,
+      );
+}
 
 final header = {'Content-Type': 'application/json'};
 

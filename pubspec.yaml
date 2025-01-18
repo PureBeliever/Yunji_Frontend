@@ -57,6 +57,7 @@ dependencies:
   alarm: ^4.0.12
   app_settings: ^5.1.1
   keframe: ^3.0.0
+  shared_preferences: ^2.1.1
   # flutter_ffmpeg: ^0.4.2
   # video_editor_2: ^3.0.2
 

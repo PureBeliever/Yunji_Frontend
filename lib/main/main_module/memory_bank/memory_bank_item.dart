@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_sqlite.dart';
 import 'package:yunji/main/main_module/switch.dart';

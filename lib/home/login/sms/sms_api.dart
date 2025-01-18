@@ -32,6 +32,7 @@ Future<bool> verification(String mobileNumber, String code) async {
     if (response.statusCode == 200) {
       verificationState = true;
       requestTheUsersPersonalData(response.data['username']);
+
     }
   } catch (e) {
     print('验证失败: $e');

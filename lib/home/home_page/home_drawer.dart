@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
+import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
@@ -31,7 +31,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         borderRadius: BorderRadius.circular(0),
       ),
       child: Container(
-        color: color['background'],
+        color: AppColors.background,
         child: Material(
           color: Colors.transparent,
           child: Column(
@@ -60,8 +60,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
           const SizedBox(height: 10),
           _buildFollowInfo(), // 构建关注信息
           const SizedBox(height: 25),
-          const Divider(
-            color: Color.fromRGBO(201, 201, 201, 1),
+          Divider(
+            color: AppColors.divider,
             thickness: 0.3,
           ),
           const SizedBox(height: 10),
@@ -79,7 +79,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildProfileIcon(context), // 构建头像
-            _buildSettingsIcon(), // 构建设置图标
+            _buildThemeIcon(), // 构建主题图标
           ],
         ),
       ),
@@ -110,16 +110,31 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   // 构建设置图标
-  Widget _buildSettingsIcon() {
+  Widget _buildThemeIcon() {
     return IconButton(
-      splashColor: const Color.fromRGBO(145, 145, 145, 1),
+      splashColor: AppColors.svg,
       icon: SvgPicture.asset(
-        'assets/home/sunny.svg',
+        AppColors.isNight ? 'assets/home/moon.svg' : 'assets/home/sunny.svg',
         width: 30,
         height: 30,
+        colorFilter: ColorFilter.mode(AppColors.svg, BlendMode.srcIn),
       ),
       onPressed: () {
-        getUserName();
+        showDialogTwoButton(
+          context: context,
+          title: '切换主题',
+          message: '是否切换为夜间模式(重启后生效)?',
+          buttonLeft: '日间模式',
+          buttonRight: '夜间模式',
+          onConfirmDayMode: () {
+            saveLoginStatus(false);
+            Navigator.of(context).pop();
+          },
+          onConfirmNightMode: () {
+            saveLoginStatus(true);
+            Navigator.of(context).pop();
+          },
+        );
       },
     );
   }
@@ -131,9 +146,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
       builder: (editPersonalDataValueManagement) {
         return Text(
           '${editPersonalDataValueManagement.nameValue}',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 21,
+            color: AppColors.text,
           ),
         );
       },
@@ -146,7 +162,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       '@${userNameChangeManagement.userNameValue}',
       style: TextStyle(
         fontWeight: FontWeight.w400,
-        color: color['textGray'],
+        color: AppColors.textGray,
         fontSize: 16,
       ),
     );
@@ -154,21 +170,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   // 构建关注信息
   Widget _buildFollowInfo() {
-    return  Row(
+    return Row(
       children: [
         Text(
           '0 ',
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
-            color: color['text'],
+            color: AppColors.text,
           ),
         ),
         Text(
           '正在关注  ',
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            color: color['textGray'],
+            color: AppColors.textGray,
             fontSize: 16,
           ),
         ),
@@ -177,14 +193,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
-            color: color['text'],
+            color: AppColors.text,
           ),
         ),
         Text(
           '关注者  ',
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            color: color['textGray'],
+            color: AppColors.textGray,
             fontSize: 16,
           ),
         ),
@@ -204,20 +220,22 @@ class _HomeDrawerState extends State<HomeDrawer> {
           children: [
             _buildMenuItem(context, '个人资料', 'assets/home/personal_data.svg',
                 const PersonalPage()), // 构建个人资料菜单项
-            _buildMenuItem(context, '会员', 'assets/home/member.svg', null), // 构建会员菜单项
-            _buildMenuItem(context, '收藏', 'assets/home/collect.svg', null), // 构建收藏菜单项
+            _buildMenuItem(
+                context, '会员', 'assets/home/member.svg', null), // 构建会员菜单项
+            _buildMenuItem(
+                context, '收藏', 'assets/home/collect.svg', null), // 构建收藏菜单项
             _buildMenuItem(
               context,
               '反馈',
               'assets/home/feedback.svg',
               null,
             ), // 构建反馈菜单项
-            _buildMenuItem(
-                context, '设置', 'assets/home/setting.svg', const SettingPage()), // 构建设置菜单项
-            const Padding(
-              padding: EdgeInsets.only(left: 28, right: 26),
+            _buildMenuItem(context, '设置', 'assets/home/setting.svg',
+                const SettingPage()), // 构建设置菜单项
+            Padding(
+              padding: const EdgeInsets.only(left: 28, right: 26),
               child: Divider(
-                color: Color.fromRGBO(201, 201, 201, 1),
+                color: AppColors.divider,
                 thickness: 0.3,
                 height: 50,
               ),
@@ -246,13 +264,15 @@ class _HomeDrawerState extends State<HomeDrawer> {
             assetPath,
             width: 30,
             height: 30,
+            colorFilter: ColorFilter.mode(AppColors.svg, BlendMode.srcIn),
           ),
         ),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 21,
+            color: AppColors.text,
           ),
         ),
       ),
@@ -273,18 +293,18 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-      child:  sizeExpansionTile(
-        collapsedIconColor: Colors.black,
+      child: sizeExpansionTile(
+        collapsedIconColor: AppColors.text,
         iconColor: Colors.blue,
         trailing: null,
         title: Padding(
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16),
           child: Text(
             '记忆分析',
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 18,
-              color: color['text'],
+              color: AppColors.text,
             ),
           ),
         ),

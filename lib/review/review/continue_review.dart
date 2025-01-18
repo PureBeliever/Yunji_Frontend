@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/review/review/continue_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
 

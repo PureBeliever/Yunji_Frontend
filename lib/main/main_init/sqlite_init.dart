@@ -18,6 +18,7 @@ class DatabaseManager {
           await _createJiyikuTable(db);
           await _createPersonalJiyikuTable(db);
           await _createPersonalJiyikudianjiTable(db);
+
         });
       },
       version: 1,
@@ -60,6 +61,7 @@ class DatabaseManager {
       'reply INT);',
     );
   }
+
 
   Future<void> _createPersonalJiyikuTable(Database txn) async {
     await txn.execute(

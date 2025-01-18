@@ -45,9 +45,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _viewPostDataManagementForMemoryBanks =
-    Get.put(ViewPostDataManagementForMemoryBanks());
+      Get.put(ViewPostDataManagementForMemoryBanks());
 
-  late TabController tabController; 
+  late TabController tabController;
 
   Future<void> _refresh() async {
     await refreshHomePageMemoryBank(contexts!);
@@ -125,9 +125,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //   systemNavigationBarColor: Colors.white,
+    //   statusBarBrightness: Brightness.light, // 状态栏的字体颜色设置为黑色
+    // ));
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.dark, // 状态栏的字体颜色设置为白色
+      systemNavigationBarColor: Colors.black, // 设置底部状态栏颜色为黑色
     ));
     contexts = context;
     double appBarHeight = MediaQuery.of(context).size.height * 0.05;
@@ -301,7 +305,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: Center(
                       child: Text(
                         'Item $i',
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
                   ),

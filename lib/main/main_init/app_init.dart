@@ -16,10 +16,9 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_pe
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/main/main_init/app_sqlite.dart';
 
-
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
   await _initializeApp();
 
   final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
@@ -42,6 +41,7 @@ Future<void> _initializeApp() async {
     Alarm.init(),
     databaseManager.initDatabase(),
     _initializeNotification(),
+    initializeNightMode(),
   ]);
   tz.initializeTimeZones();
 }
@@ -53,9 +53,9 @@ Future<void> _initializeNotification() async {
 
 void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
     Map<String, dynamic> personalData) async {
-       final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
-       final editPersonalDataValueManagement =
-    Get.put(EditPersonalDataValueManagement());
+  final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
+  final editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
 
   refreshofHomepageMemoryBankextends
       .updateMemoryRefreshValue(homePageMemoryDatabaseData);
@@ -87,8 +87,6 @@ void _initializeUserData(List<Map<String, dynamic>> homePageMemoryDatabaseData,
 
   userNameChangeManagement.userNameChanged(personalData['user_name']);
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -141,7 +139,7 @@ void OnRingCallback(String body, int id) {
                       Text(
                         body,
                         style: const TextStyle(
-                          fontSize: 16, 
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
