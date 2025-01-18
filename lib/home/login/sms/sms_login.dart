@@ -5,7 +5,7 @@ import 'package:toastification/toastification.dart' as toast;
 
 
 import 'package:yunji/home/login/sms/sms_api.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 
 

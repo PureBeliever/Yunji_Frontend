@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 
 void mobileNumberLogin(String mobileNumber) async {
   loginStatus = true;
@@ -10,7 +10,7 @@ void mobileNumberLogin(String mobileNumber) async {
   };
 
   try {
-    final response = await dio.post(
+    await dio.post(
       '$website/mobileNumberLogin',
       data: jsonEncode(formdata),
       options: Options(headers: header),

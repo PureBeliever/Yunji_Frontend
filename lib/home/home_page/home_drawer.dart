@@ -8,7 +8,7 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_pe
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/setting/setting_page.dart';
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/switch.dart';
 
 // 主页面抽屉组件
@@ -31,7 +31,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         borderRadius: BorderRadius.circular(0),
       ),
       child: Container(
-        color: Colors.white,
+        color: color['background'],
         child: Material(
           color: Colors.transparent,
           child: Column(
@@ -144,9 +144,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget _buildUserName() {
     return Text(
       '@${userNameChangeManagement.userNameValue}',
-      style: const TextStyle(
+      style: TextStyle(
         fontWeight: FontWeight.w400,
-        color: Color.fromRGBO(84, 87, 105, 1),
+        color: color['textGray'],
         fontSize: 16,
       ),
     );
@@ -154,20 +154,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   // 构建关注信息
   Widget _buildFollowInfo() {
-    return const Row(
+    return  Row(
       children: [
         Text(
           '0 ',
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
+            color: color['text'],
           ),
         ),
         Text(
           '正在关注  ',
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(84, 87, 105, 1),
+            color: color['textGray'],
             fontSize: 16,
           ),
         ),
@@ -176,13 +177,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
+            color: color['text'],
           ),
         ),
         Text(
           '关注者  ',
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(84, 87, 105, 1),
+            color: color['textGray'],
             fontSize: 16,
           ),
         ),
@@ -271,7 +273,7 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-      child: const sizeExpansionTile(
+      child:  sizeExpansionTile(
         collapsedIconColor: Colors.black,
         iconColor: Colors.blue,
         trailing: null,
@@ -282,6 +284,7 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
             style: TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 18,
+              color: color['text'],
             ),
           ),
         ),

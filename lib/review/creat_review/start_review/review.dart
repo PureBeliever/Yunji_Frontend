@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:toastification/toastification.dart' as toast;
 
-import 'package:yunji/global.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
+import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:yunji/main/main_init/sqlite_init.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,13 @@ import 'package:yunji/setting/setting_user/setting_user.dart';
 // 登录状态
 bool loginStatus = false;
 
+// 颜色
+Map<String, Color> color = {
+  'background': Colors.black,
+  'textGray': Color.fromRGBO(84, 87, 105, 1),
+  'text': Colors.white,
+};
+
 final header = {'Content-Type': 'application/json'};
 
 const website = 'http://47.92.98.170:36233';
@@ -20,7 +28,7 @@ const website = 'http://47.92.98.170:36233';
 final dio = Dio();
 // 数据库管理
 final databaseManager = DatabaseManager();
-  final db = databaseManager.database;
+final db = databaseManager.database;
 // 用户名管理
 final userNameChangeManagement = Get.put(UserNameChangeManagement());
 
@@ -43,6 +51,5 @@ String generateRandomFilename() {
   const chars =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   Random random = Random();
-  return '${List.generate(10, (_) => chars[random.nextInt(chars.length)])
-          .join('')}.jpg';
+  return '${List.generate(10, (_) => chars[random.nextInt(chars.length)]).join('')}.jpg';
 }
