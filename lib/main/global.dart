@@ -32,20 +32,15 @@ Future<void> initializeNightMode() async {
 
 class AppColors {
   static bool isNight = false;
-  static Color get background =>
-      isNight ? Color.fromRGBO(42, 42, 42, 1) : Colors.white;
-  static Color get textGray => isNight
-      ? Color.fromRGBO(115, 115, 115, 1)
-      : Color.fromRGBO(84, 87, 105, 1);
-  static Color get divider => isNight
-      ? Color.fromRGBO(115, 115, 115, 1)
-      : Color.fromRGBO(84, 87, 105, 1);
-  static Color get text => isNight ? Colors.white : Colors.black;
-  static Color get svg => isNight
-      ? Color.fromRGBO(115, 115, 115, 1)
-      : Color.fromRGBO(84, 87, 105, 1);
   static Brightness get statusBarBrightness =>
       isNight ? Brightness.dark : Brightness.light;
+  static Color get background =>
+      isNight ? Color.fromRGBO(42, 42, 42, 1) : Colors.white;
+  static Color get Gray =>
+      isNight ? Colors.grey : Color.fromRGBO(84, 87, 105, 1);
+  static Color get text => isNight ? Colors.white : Colors.black;
+  static Color get iconColor => isNight ? Colors.grey : Colors.blue;
+  static Color get iconColorTwo => isNight ? Colors.grey : Colors.black;
 }
 
 class AppTextStyle {
@@ -54,8 +49,34 @@ class AppTextStyle {
         fontWeight: FontWeight.w700,
         color: AppColors.text,
       );
+  static TextStyle get whiteTextStyle => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+      );
+  static TextStyle get blueTextStyle => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: AppColors.iconColor,
+      );
+  static TextStyle get coarseTextStyle => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w900,
+        color: AppColors.text,
+      );
+  static TextStyle get subsidiaryText => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w400,
+        color: AppColors.Gray,
+      );
   static TextStyle get titleStyle => TextStyle(
-        fontSize: 20,
+        fontSize: 21,
+        fontWeight: FontWeight.w900,
+        color: AppColors.text,
+      );
+
+  static TextStyle get littleTitleStyle => TextStyle(
+        fontSize: 19,
         fontWeight: FontWeight.w900,
         color: AppColors.text,
       );

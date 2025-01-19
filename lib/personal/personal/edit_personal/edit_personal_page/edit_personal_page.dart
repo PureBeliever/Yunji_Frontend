@@ -12,6 +12,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toastification/toastification.dart' as toast;
 
+
+
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
 
@@ -110,8 +112,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   String? profile;
   String? selectResidentialAddress;
   String? selectDateOfBirth;
-  final _editPersonalDataValueManagement =
-      Get.put(EditPersonalDataValueManagement());
+  final _editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
 
   // final ImagePicker _picker = ImagePicker();
 
@@ -139,6 +140,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       Get.put(BackgroundImageChangeManagement());
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
+
 
   Future<void> _selectAndCropImage({
     required ImageSource source,
@@ -240,8 +242,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvoked: (didPop) async {
+    return WillPopScope(
+      onWillPop: () async {
         if (_editPersonalDataValueManagement.rollbackTheChangedValue(
               name: name,
               profile: profile,
@@ -258,6 +260,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
         } else {
           Navigator.of(context).pop();
         }
+        return true;
       },
       child: GestureDetector(
         onTap: () {
@@ -341,6 +344,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                           );
 
                           editPersonal(
+                     
                             name,
                             profile,
                             selectResidentialAddress,
@@ -417,8 +421,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     onPressed: () {
                       selectorResultsUpdateDisplay
                           .dateOfBirthSelectorResultValueChange(
-                              _editPersonalDataValueManagement
-                                  .dateOfBirthValue);
+                              _editPersonalDataValueManagement.dateOfBirthValue);
                       selectorResultsUpdateDisplay
                           .residentialAddressSelectorResultValueChange(
                               _editPersonalDataValueManagement

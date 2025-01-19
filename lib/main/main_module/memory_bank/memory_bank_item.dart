@@ -49,117 +49,99 @@ class MemoryBankItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Column(
-        children: [
-          const Divider(
-            color: Color.fromRGBO(223, 223, 223, 1),
-            thickness: 0.9,
-            height: 0.9,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    switchPage(context, const OtherPersonalPage());
-                    await requestTheOtherPersonalData(data['user_name']);
-                  },
-                  icon: CircleAvatar(
-                    radius: 21,
-                    backgroundImage: data['head_portrait'] != null
-                        ? FileImage(File(data['head_portrait']))
-                        : const AssetImage(
-                            'assets/personal/gray_back_head.png'),
+      
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.background,
+        ),
+        child: Column(
+          children: [
+             Divider(
+              color: AppColors.Gray,
+               thickness: 0.3,
+              height: 0.9,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      switchPage(context, const OtherPersonalPage());
+                      await requestTheOtherPersonalData(data['user_name']);
+                    },
+                    icon: CircleAvatar(
+                      radius: 21,
+                      backgroundImage: data['head_portrait'] != null
+                          ? FileImage(File(data['head_portrait']))
+                          : const AssetImage(
+                              'assets/personal/gray_back_head.png'),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: RichText(
-                              overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: data['name'],
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: RichText(
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: data['name'],
+                                      style: AppTextStyle.coarseTextStyle,
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: ' @${data['user_name']}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color.fromRGBO(84, 87, 105, 1),
+                                    TextSpan(
+                                      text: ' @${data['user_name']}',
+                                      style: AppTextStyle.subsidiaryText,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          const Text(
-                            '·',
-                            style: TextStyle(
-                                fontSize: 17,
-                                color: Color.fromRGBO(84, 87, 105, 1),
-                                fontWeight: FontWeight.w900),
-                          ),
-                          Text(
-                            '${data['subscript'].length}个记忆项',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Color.fromRGBO(84, 87, 105, 1),
-                              fontWeight: FontWeight.w500,
+                             Text(
+                              '·',
+                              style: AppTextStyle.subsidiaryText,
                             ),
-                          )
-                        ],
-                      ),
-                      Text(
-                        '${data['theme']}',
-                        style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        parseJson(data['question'], data['subscript']),
-                        style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        parseJson(data['answer'], data['subscript']),
-                        style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                        maxLines: 7,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 20),
-                      LikeButtonRow(data: data),
-                    ],
-                  ),
-                )
-              ],
+                            Text(
+                              '${data['subscript'].length}个记忆项',
+                              style: AppTextStyle.subsidiaryText,
+                            )
+                          ],
+                        ),
+                        Text(
+                          '${data['theme']}',
+                          style: AppTextStyle.textStyle,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          parseJson(data['question'], data['subscript']),
+                          style: AppTextStyle.textStyle,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          parseJson(data['answer'], data['subscript']),
+                          style: AppTextStyle.textStyle,
+                          maxLines: 7,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 20),
+                        LikeButtonRow(data: data),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 5),
-        ],
+            const SizedBox(height: 5),
+          ],
+        ),
       ),
     );
   }
@@ -192,14 +174,14 @@ class LikeButtonRow extends StatelessWidget {
       likeBuilder: (bool isLiked) {
         return Icon(
           isLiked ? likedIcon : unlikedIcon,
-          color: isLiked ? likedColor : const Color.fromRGBO(84, 87, 105, 1),
+          color: isLiked ? likedColor : AppColors.Gray,
           size: 20,
         );
       },
       isLiked: memoryBankIds.contains(data['id']),
       likeCount: likeCount,
       countBuilder: (int? count, bool isLiked, String text) {
-        var color = isLiked ? likedColor : const Color.fromRGBO(84, 87, 105, 1);
+        var color = isLiked ? likedColor : AppColors.Gray;
         return Text(
           text,
           style: TextStyle(color: color, fontWeight: FontWeight.w700),

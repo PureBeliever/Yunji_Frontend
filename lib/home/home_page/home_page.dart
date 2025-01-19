@@ -82,37 +82,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSpeedDial() {
-    return SpeedDial(
-      backgroundColor: Colors.blue,
-      buttonSize: const Size(60, 60),
-      animatedIcon: AnimatedIcons.add_event,
-      animatedIconTheme: const IconThemeData(color: Colors.white, size: 28),
-      spacing: 12,
-      childrenButtonSize: const Size(53, 53),
-      shape: const CircleBorder(),
-      children: [_buildSpeedDialChild()],
-    );
-  }
-
-  SpeedDialChild _buildSpeedDialChild() {
-    return SpeedDialChild(
-      shape: const CircleBorder(),
-      child: SvgPicture.asset(
-        'assets/home/creat_memory_bank.svg',
-        color: Colors.blue,
-        width: 25,
-        height: 25,
-      ),
-      backgroundColor: Colors.white,
-      label: '创建记忆库',
-      labelShadow: List.empty(),
-      labelBackgroundColor: Colors.white,
-      labelStyle: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
-      onTap: _handleSpeedDialChildTap,
-    );
-  }
-
   void _handleSpeedDialChildTap() {
     if (loginStatus == false) {
       smsLogin(context);
@@ -128,6 +97,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarBrightness: AppColors.statusBarBrightness,
       systemNavigationBarColor: AppColors.background,
+      systemNavigationBarIconBrightness: AppColors.statusBarBrightness,
+      systemNavigationBarDividerColor: AppColors.background,
     ));
     contexts = context;
     double appBarHeight = MediaQuery.of(context).size.height * 0.05;
@@ -227,23 +198,129 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ],
                       );
                     }))),
-        ListView(
-          children: <Widget>[
-            for (int i = 0; i < 20; ++i)
-              Container(
-                height: 50,
-                color: i % 2 == 0 ? Colors.blue : Colors.green,
-                child: Center(
-                  child: Text(
-                    'Item $i',
-                    style: const TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                ),
-              ),
-          ],
-        ),
+        GestureDetector(
+            onHorizontalDragEnd: (details) {
+              if (details.primaryVelocity! > 5) {
+                tabController.animateTo(0);
+              }
+            },
+            child: BallIndicator(
+                onRefresh: _refresh,
+                ballColors: const [
+                  Colors.blue,
+                  Colors.red,
+                  Colors.green,
+                  Colors.amber,
+                  Colors.pink,
+                  Colors.purple,
+                  Colors.cyan,
+                  Colors.orange,
+                  Colors.yellow,
+                ],
+                child: GetBuilder<RefreshofHomepageMemoryBankextends>(
+                    init: refreshofHomepageMemoryBankextends,
+                    builder: (refreshofHomepageMemoryBankextends) {
+                      return CustomScrollView(
+                        slivers: <Widget>[
+                          SliverAppBar(
+                            floating: true,
+                            pinned: false,
+                            snap: true,
+                            expandedHeight: appBarHeight + 40,
+                            surfaceTintColor: AppColors.background,
+                            backgroundColor: AppColors.background,
+                            toolbarHeight: appBarHeight,
+                            leading: GetBuilder<HeadPortraitChangeManagement>(
+                              init: headPortraitChangeManagement,
+                              builder: (headPortraitChangeManagement) {
+                                return headPortraitChangeManagement
+                                            .headPortraitValue !=
+                                        null
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: IconButton(
+                                            padding: const EdgeInsets.all(0),
+                                            onPressed: () {
+                                              _scaffoldKey.currentState
+                                                  ?.openDrawer();
+                                            },
+                                            icon: CircleAvatar(
+                                                radius: 30,
+                                                backgroundImage: FileImage(
+                                                    headPortraitChangeManagement
+                                                        .headPortraitValue!))),
+                                      )
+                                    : IconButton(
+                                        icon: SvgPicture.asset(
+                                          'assets/home/personal_add.svg',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        onPressed: () {
+                                          _scaffoldKey.currentState
+                                              ?.openDrawer();
+                                        },
+                                      );
+                              },
+                            ),
+                            iconTheme: const IconThemeData(color: Colors.black),
+                            flexibleSpace: _buildTabBar(),
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                return Container(
+                                  color: index.isOdd
+                                      ? Colors.white
+                                      : Colors.black12,
+                                  height: 100.0,
+                                  child: Center(
+                                    child: Text('$index',
+                                        textScaler: const TextScaler.linear(5)),
+                                  ),
+                                );
+                              },
+                              childCount: 20,
+                            ),
+                          ),
+                        ],
+                      );
+                    }))),
       ]),
       floatingActionButton: _buildSpeedDial(),
+    );
+  }
+
+  SpeedDialChild _buildSpeedDialChild() {
+    return SpeedDialChild(
+      shape: const CircleBorder(),
+      child: SvgPicture.asset(
+        'assets/home/creat_memory_bank.svg',
+        colorFilter: ColorFilter.mode(AppColors.Gray, BlendMode.srcIn),
+        width: 25,
+        height: 25,
+      ),
+      backgroundColor: AppColors.background,
+      label: '创建记忆库',
+      labelShadow: List.empty(),
+      labelBackgroundColor: AppColors.background,
+      labelStyle: AppTextStyle.littleTitleStyle,
+      onTap: _handleSpeedDialChildTap,
+    );
+  }
+
+  Widget _buildSpeedDial() {
+    return SpeedDial(
+      
+      backgroundColor: AppColors.iconColor,
+      buttonSize: const Size(60, 60),
+      animatedIcon: AnimatedIcons.add_event,
+      animatedIconTheme: IconThemeData(color: AppColors.background, size: 28),
+      spacing: 12,
+      childrenButtonSize: const Size(53, 53),
+      shape: const CircleBorder(),
+      children: [_buildSpeedDialChild()],
     );
   }
 
@@ -258,23 +335,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             color: AppColors.background,
           ),
           child: TabBar(
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 17,
-              color: Colors.black,
-              fontFamily: 'Raleway',
-              decoration: TextDecoration.none,
-            ),
-            indicatorColor: Colors.blue,
-            unselectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 17,
-              color: Color.fromARGB(255, 119, 118, 118),
-              fontFamily: 'Raleway',
-              decoration: TextDecoration.none,
-            ),
+            labelStyle: AppTextStyle.coarseTextStyle,
+            indicatorColor: AppColors.iconColor,
+            unselectedLabelStyle: AppTextStyle.subsidiaryText,
             controller: tabController,
-            tabs: const [
+            tabs: [
               SizedBox(
                 width: double.infinity,
                 height: 40,

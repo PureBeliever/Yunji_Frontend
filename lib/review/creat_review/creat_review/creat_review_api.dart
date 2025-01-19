@@ -17,7 +17,6 @@ Future<void> creatReview(
   String reviewSchemeName,
 ) async {
   String userName = userNameChangeManagement.userNameValue ?? '';
-  
 
   Map<String, dynamic> formdata = {
     'userName': userName,
@@ -36,14 +35,11 @@ Future<void> creatReview(
 
   try {
     String jsonformdata = jsonEncode(formdata);
-    final response = await dio.post(
+    await dio.post(
       '$website/creatReview',
       data: jsonformdata,
       options: Options(headers: header),
     );
-
-
-
 
     await Future.delayed(const Duration(milliseconds: 500));
     requestTheUsersPersonalData(userName);

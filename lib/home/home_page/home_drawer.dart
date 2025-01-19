@@ -61,7 +61,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           _buildFollowInfo(), // 构建关注信息
           const SizedBox(height: 25),
           Divider(
-            color: AppColors.divider,
+            color: AppColors.Gray,
             thickness: 0.3,
           ),
           const SizedBox(height: 10),
@@ -112,15 +112,15 @@ class _HomeDrawerState extends State<HomeDrawer> {
   // 构建设置图标
   Widget _buildThemeIcon() {
     return IconButton(
-      splashColor: AppColors.svg,
+      splashColor: AppColors.Gray,
       icon: SvgPicture.asset(
         AppColors.isNight ? 'assets/home/moon.svg' : 'assets/home/sunny.svg',
         width: 30,
         height: 30,
-        colorFilter: ColorFilter.mode(AppColors.svg, BlendMode.srcIn),
+        colorFilter: ColorFilter.mode(AppColors.Gray, BlendMode.srcIn),
       ),
       onPressed: () {
-        showDialogTwoButton(
+        dialogTwoButton(
           context: context,
           title: '切换主题',
           message: '是否切换为夜间模式(重启后生效)?',
@@ -146,11 +146,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       builder: (editPersonalDataValueManagement) {
         return Text(
           '${editPersonalDataValueManagement.nameValue}',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 21,
-            color: AppColors.text,
-          ),
+          style: AppTextStyle.littleTitleStyle,
         );
       },
     );
@@ -160,11 +156,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget _buildUserName() {
     return Text(
       '@${userNameChangeManagement.userNameValue}',
-      style: TextStyle(
-        fontWeight: FontWeight.w400,
-        color: AppColors.textGray,
-        fontSize: 16,
-      ),
+      style: AppTextStyle.subsidiaryText,
     );
   }
 
@@ -174,35 +166,19 @@ class _HomeDrawerState extends State<HomeDrawer> {
       children: [
         Text(
           '0 ',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            color: AppColors.text,
-          ),
+          style: AppTextStyle.textStyle
         ),
         Text(
           '正在关注  ',
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            color: AppColors.textGray,
-            fontSize: 16,
-          ),
+          style: AppTextStyle.subsidiaryText,
         ),
         Text(
           '0 ',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            color: AppColors.text,
-          ),
+          style: AppTextStyle.textStyle,
         ),
         Text(
           '关注者  ',
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            color: AppColors.textGray,
-            fontSize: 16,
-          ),
+          style: AppTextStyle.subsidiaryText,
         ),
       ],
     );
@@ -235,7 +211,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             Padding(
               padding: const EdgeInsets.only(left: 28, right: 26),
               child: Divider(
-                color: AppColors.divider,
+                color: AppColors.Gray,
                 thickness: 0.3,
                 height: 50,
               ),
@@ -264,16 +240,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
             assetPath,
             width: 30,
             height: 30,
-            colorFilter: ColorFilter.mode(AppColors.svg, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(AppColors.Gray, BlendMode.srcIn),
           ),
         ),
         title: Text(
           title,
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 21,
-            color: AppColors.text,
-          ),
+          style: AppTextStyle.titleStyle,
         ),
       ),
     );
@@ -295,25 +267,21 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: sizeExpansionTile(
         collapsedIconColor: AppColors.text,
-        iconColor: Colors.blue,
+        iconColor: AppColors.iconColor,
         trailing: null,
         title: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Text(
             '记忆分析',
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
-              color: AppColors.text,
-            ),
+            style: AppTextStyle.littleTitleStyle,
           ),
         ),
         children: [
-          ListTile(title: Text('示例')),
-          ListTile(title: Text('示例')),
-          ListTile(title: Text('示例')),
-          ListTile(title: Text('示例')),
-          ListTile(title: Text('示例')),
+          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
+          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
+          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
+          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
+          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
         ],
       ),
     );

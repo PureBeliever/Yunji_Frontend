@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
+import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_option.dart';
 import 'package:toastification/toastification.dart' as toast;
+import 'package:yunji/main/main_module/dialog.dart';
 
 class CreatReviewController extends GetxController {
   static CreatReviewController get to => Get.find();
@@ -71,6 +73,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -93,50 +96,33 @@ class _CreatReviewPage extends State<CreatReviewPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           leading: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: const Icon(Icons.close, size: 30),
+            child: Icon(Icons.close, size: 30, color: AppColors.iconColorTwo),
           ),
           title: Padding(
-            padding: const EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 15.0),
             child: TextField(
               onChanged: (value) {
                 theme = value;
               },
               focusNode: _focusNode,
               maxLength: 50,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-                fontSize: commonFontSize,
-              ),
+              style: AppTextStyle.textStyle,
               textInputAction: TextInputAction.done,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 counterText: "",
                 filled: true,
-                fillColor: Color.fromRGBO(238, 239, 243, 1),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0x00FF0000)),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(100),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0x00000000)),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(100),
-                  ),
-                ),
+                fillColor: AppColors.background,
+                enabledBorder: _transparentInput(),
+                focusedBorder: _transparentInput(),
                 contentPadding: EdgeInsets.all(10),
-                hintStyle: TextStyle(
-                  color: Color.fromRGBO(84, 87, 105, 1),
-                  fontSize: commonFontSize,
-                  fontWeight: FontWeight.w700,
-                ),
-                hintText: " 今天您想学习些什么呢?",
+                hintStyle: AppTextStyle.subsidiaryText,
+                hintText: "今天您想学习些什么呢?",
               ),
             ),
           ),
@@ -147,15 +133,11 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 0, bottom: 0),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: AppColors.iconColor,
                 ),
-                child: const Text(
+                child: Text(
                   "下一步",
-                  style: TextStyle(
-                    fontSize: commonFontSize,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                  ),
+                  style: AppTextStyle.whiteTextStyle,
                 ),
                 onPressed: () {
                   if (question.isEmpty && answer.isEmpty) {
@@ -184,10 +166,9 @@ class _CreatReviewPage extends State<CreatReviewPage> {
               ),
             ),
           ],
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
+          backgroundColor: AppColors.background,
+          surfaceTintColor: AppColors.background,
         ),
-        backgroundColor: Colors.white,
         body: MediaQuery.removePadding(
           context: context,
           removeTop: true,
@@ -205,24 +186,17 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                 Theme(
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
-                  child: const sizeExpansionTile(
-                    collapsedIconColor: Colors.black,
-                    iconColor: Colors.blue,
+                  child: sizeExpansionTile(
+                    collapsedIconColor: AppColors.text,
+                    iconColor: AppColors.iconColor,
                     trailing: null,
                     title: Text(
                       '费曼学习法详解',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: commonFontSize,
-                      ),
+                      style: AppTextStyle.coarseTextStyle,
                     ),
                     subtitle: Text(
                       '您将以扮演学生与老师，提问与讲解的方法，提高学习内容的留存率',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromRGBO(84, 87, 105, 1),
-                        fontSize: commonFontSize,
-                      ),
+                      style: AppTextStyle.subsidiaryText,
                     ),
                     children: [
                       ListTile(
@@ -232,82 +206,47 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                               TextSpan(
                                 text:
                                     "费曼学习法：由诺贝尔奖得主理查德·费曼创立，它的核心是通过简单易懂的语言去解释知识，并不断修正和完善自己的解释，以达到高效学习的目的，\n\n",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: commonFontSize,
-                                ),
+                                style: AppTextStyle.textStyle,
                               ),
                               TextSpan(
                                 text: "软件依照费曼学习法设定，旨在建立一个帮助学习和记忆的学习平台\n\n",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: commonFontSize,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: AppTextStyle.blueTextStyle,
                               ),
                               TextSpan(
                                 text:
                                     "简单来说，费曼学习法就是能够把深奥的知识以简单易懂的方式解释给一个外行、无任何背景知识的人听，这种能力越强，代表我们对所学知识的理解越透彻\n\n费曼学习法的具体步骤:\n\n第一步：选择目标\n\n确定您要学什么，在这里比如学习一门技术、学习一门语言等，都可以作为目标，",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: commonFontSize,
-                                ),
+                                style: AppTextStyle.textStyle,
                               ),
                               TextSpan(
                                 text: "即作为学生问出想要学习和了解的问题(设定目标）\n\n",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: commonFontSize,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: AppTextStyle.blueTextStyle,
                               ),
                               TextSpan(
                                 text:
                                     "第二步：教学\n\n创造一个场景，在这个场景中将自己学到的知识讲授给“别人”，过程中遇到的问题，比如说不清楚的，模棱两可的，就说明这些知识点并没有熟练掌握，尝试教授和发现薄弱点就是这一步的重点\n\n",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: commonFontSize,
-                                ),
+                                style: AppTextStyle.textStyle,
                               ),
                               TextSpan(
                                 text: "即作为老师讲解问题\n\n",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: commonFontSize,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: AppTextStyle.blueTextStyle,
                               ),
                               TextSpan(
                                 text:
                                     "第三步：纠错\n\n在教授的过程中说错的、说不清楚的、模棱两可的知识，需要进行纠错和重新学习，得以强化，直到可以顺利的教授相应的知识\n\n",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: commonFontSize,
-                                ),
+                                style: AppTextStyle.textStyle,
                               ),
                               TextSpan(
                                 text: "可通过查询学习书籍或ai，浏览器等，完善讲解\n\n",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: commonFontSize,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: AppTextStyle.blueTextStyle,
                               ),
                               TextSpan(
                                 text:
                                     "第四步：简化\n\n对上面学习的内容进行提炼、简化，到让一个非专业人士都能听懂，简化知识的过程，将极大程度的学习知识\n\n",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: commonFontSize,
-                                ),
+                                style: AppTextStyle.textStyle,
                               ),
                               TextSpan(
                                 text: "此时，您以费曼学习法最有效的学习了知识",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: commonFontSize,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                style: AppTextStyle.blueTextStyle,
                               ),
                             ],
                           ),
@@ -327,7 +266,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.only(top: 0, bottom: 0),
-              backgroundColor: Colors.blue,
+              backgroundColor: AppColors.iconColor,
             ),
             onPressed: () {
               if (_data.length < 100) {
@@ -355,13 +294,9 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                     const Color(0xFFEDF7FF));
               }
             },
-            child: const Text(
+            child: Text(
               "添加",
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-              ),
+              style: AppTextStyle.whiteTextStyle,
             ),
           ),
         ),
@@ -371,10 +306,10 @@ class _CreatReviewPage extends State<CreatReviewPage> {
           },
           elevation: 5.0,
           highlightElevation: 20.0,
-          backgroundColor: Colors.blue,
-          child: const Text(
+          backgroundColor: AppColors.iconColor,
+          child: Text(
             '退出\n键盘',
-            style: TextStyle(color: Colors.white, fontSize: 15),
+            style: AppTextStyle.whiteTextStyle,
           ),
         ),
       ),
@@ -389,8 +324,9 @@ class _CreatReviewPage extends State<CreatReviewPage> {
       padding: const EdgeInsets.only(bottom: 230.0),
       child: ExpansionPanelList(
         materialGapSize: commonFontSize,
+        expandIconColor: AppColors.Gray,
         elevation: 0,
-        dividerColor: Colors.white,
+        dividerColor: AppColors.background,
         expansionCallback: (int index, bool isExpanded) {
           setState(() {
             _data[index].isExpanded = isExpanded;
@@ -398,7 +334,8 @@ class _CreatReviewPage extends State<CreatReviewPage> {
         },
         children: _data.map<ExpansionPanel>((Item item) {
           return ExpansionPanel(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.background,
+           
             headerBuilder: (BuildContext context, bool isExpanded) {
               return Column(
                 children: [
@@ -417,11 +354,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                         onChanged: (value) {
                           question[item.subscript] = value;
                         },
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          fontSize: commonFontSize,
-                        ),
+                        style: AppTextStyle.textStyle,
                         enabled: item.isExpanded,
                         minLines: 1,
                         readOnly: item.isReadOnly,
@@ -429,10 +362,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                         maxLength: 150,
                         decoration: InputDecoration(
                           hintText: item.question,
-                          hintStyle: const TextStyle(
-                            color: Color.fromRGBO(84, 87, 105, 1),
-                            fontSize: commonFontSize,
-                          ),
+                          hintStyle: AppTextStyle.subsidiaryText,
                           border: InputBorder.none,
                           counterText: "",
                         ),
@@ -447,10 +377,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
               padding: const EdgeInsets.only(left: 17.0, right: 9),
               child: TextFormField(
                 controller: TextEditingController(text: answer[item.subscript]),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: commonFontSize,
-                ),
+                style: AppTextStyle.textStyle,
                 minLines: 1,
                 maxLines: 30,
                 maxLength: 1500,
@@ -459,92 +386,26 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                 },
                 decoration: InputDecoration(
                   hintText: item.answer,
-                  hintStyle: const TextStyle(
-                    color: Color.fromRGBO(84, 87, 105, 1),
-                    fontSize: commonFontSize,
-                  ),
+                  hintStyle: AppTextStyle.subsidiaryText,
                   suffixIcon: GestureDetector(
                     onTap: () {
-                      showDialog(
+                      buildDialog(
                         context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: SizedBox(
-                              height: 150,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 25, top: 20),
-                                    child: Text(
-                                      '创建记忆库',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 25, top: 10),
-                                    child: Text(
-                                      '是否删除选择项?',
-                                      style:
-                                          TextStyle(fontSize: commonFontSize),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            '取消',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w900,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              question.remove(item.subscript);
-                                              answer.remove(item.subscript);
-                                              _data.removeWhere((element) =>
-                                                  element.subscript ==
-                                                  item.subscript);
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            '确定',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w900,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                        title: '创建记忆库',
+                        content: '是否删除选择项?',
+                        onConfirm: () {
+                          setState(() {
+                            question.remove(item.subscript);
+                            answer.remove(item.subscript);
+                            _data.removeWhere((element) =>
+                                element.subscript == item.subscript);
+                          });
+                          Navigator.of(context).pop();
                         },
                       );
                     },
-                    child: const Icon(
-                      color: Color.fromRGBO(134, 134, 134, 1),
+                    child:  Icon(
+                      color: AppColors.Gray,
                       Icons.remove,
                       size: 26,
                     ),
@@ -560,4 +421,13 @@ class _CreatReviewPage extends State<CreatReviewPage> {
       ),
     );
   }
+}
+
+OutlineInputBorder _transparentInput() {
+  return OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.transparent), // 设置为透明
+    borderRadius: BorderRadius.all(
+      Radius.circular(100),
+    ),
+  );
 }
