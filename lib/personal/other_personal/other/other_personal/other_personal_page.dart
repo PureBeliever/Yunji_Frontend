@@ -14,7 +14,7 @@ import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_background_image.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
-import 'package:yunji/main/main_module/sliver_header_delegate.dart';
+import 'package:yunji/personal/sliver_header_delegate.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/personal/other_personal/other_personal_sqlite.dart';
 

@@ -20,7 +20,7 @@ import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/review/review/continue_review.dart';
-import 'package:yunji/main/main_module/sliver_header_delegate.dart';
+import 'package:yunji/personal/sliver_header_delegate.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
 import 'package:yunji/main/main_module/switch.dart';

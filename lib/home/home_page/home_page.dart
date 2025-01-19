@@ -13,7 +13,7 @@ import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
-import 'package:yunji/main/main_module/sliver_header_delegate.dart';
+import 'package:yunji/personal/sliver_header_delegate.dart';
 import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/ball_indicator.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
@@ -125,197 +125,177 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    //   systemNavigationBarColor: Colors.white,
-    //   statusBarBrightness: Brightness.light, // 状态栏的字体颜色设置为黑色
-    // ));
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark, // 状态栏的字体颜色设置为白色
-      systemNavigationBarColor: Colors.black, // 设置底部状态栏颜色为黑色
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: AppColors.statusBarBrightness,
+      systemNavigationBarColor: AppColors.background,
     ));
     contexts = context;
     double appBarHeight = MediaQuery.of(context).size.height * 0.05;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       key: _scaffoldKey,
       drawer: const HomeDrawer(),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: SliverHeaderDelegateshijian.fixedHeight(
-                height: 23,
-                child: Material(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
+      body: TabBarView(controller: tabController, children: [
+        GestureDetector(
+            onHorizontalDragEnd: (details) {
+              if (details.primaryVelocity! > 5) {
+                _scaffoldKey.currentState?.openDrawer();
+              } else if (details.primaryVelocity! < -5) {
+                tabController.animateTo(1);
+              }
+            },
+            child: BallIndicator(
+                onRefresh: _refresh,
+                ballColors: const [
+                  Colors.blue,
+                  Colors.red,
+                  Colors.green,
+                  Colors.amber,
+                  Colors.pink,
+                  Colors.purple,
+                  Colors.cyan,
+                  Colors.orange,
+                  Colors.yellow,
+                ],
+                child: GetBuilder<RefreshofHomepageMemoryBankextends>(
+                    init: refreshofHomepageMemoryBankextends,
+                    builder: (refreshofHomepageMemoryBankextends) {
+                      return CustomScrollView(
+                        slivers: <Widget>[
+                          SliverAppBar(
+                            floating: true,
+                            pinned: false,
+                            snap: true,
+                            expandedHeight: appBarHeight + 40,
+                            surfaceTintColor: AppColors.background,
+                            backgroundColor: AppColors.background,
+                            toolbarHeight: appBarHeight,
+                            leading: GetBuilder<HeadPortraitChangeManagement>(
+                              init: headPortraitChangeManagement,
+                              builder: (headPortraitChangeManagement) {
+                                return headPortraitChangeManagement
+                                            .headPortraitValue !=
+                                        null
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: IconButton(
+                                            padding: const EdgeInsets.all(0),
+                                            onPressed: () {
+                                              _scaffoldKey.currentState
+                                                  ?.openDrawer();
+                                            },
+                                            icon: CircleAvatar(
+                                                radius: 30,
+                                                backgroundImage: FileImage(
+                                                    headPortraitChangeManagement
+                                                        .headPortraitValue!))),
+                                      )
+                                    : IconButton(
+                                        icon: SvgPicture.asset(
+                                          'assets/home/personal_add.svg',
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                        onPressed: () {
+                                          _scaffoldKey.currentState
+                                              ?.openDrawer();
+                                        },
+                                      );
+                              },
+                            ),
+                            iconTheme: const IconThemeData(color: Colors.black),
+                            flexibleSpace: _buildTabBar(),
+                          ),
+                          SliverList.builder(
+                            itemCount: refreshofHomepageMemoryBankextends
+                                .memoryRefreshValue.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return MemoryBankItem(
+                                data: refreshofHomepageMemoryBankextends
+                                    .memoryRefreshValue[index],
+                                onTap: () {
+                                  _viewPostDataManagementForMemoryBanks
+                                      .initMemoryData(
+                                          refreshofHomepageMemoryBankextends
+                                              .memoryRefreshValue[index]);
+                                  switchPage(context, const OtherMemoryBank());
+                                },
+                              );
+                            },
+                          )
+                        ],
+                      );
+                    }))),
+        ListView(
+          children: <Widget>[
+            for (int i = 0; i < 20; ++i)
+              Container(
+                height: 50,
+                color: i % 2 == 0 ? Colors.blue : Colors.green,
+                child: Center(
+                  child: Text(
+                    'Item $i',
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
                   ),
                 ),
               ),
-            ),
-            SliverAppBar(
-              floating: true,
-              pinned: false,
-              snap: true,
-              expandedHeight: 0,
-              collapsedHeight: appBarHeight,
-              surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white,
-              toolbarHeight: appBarHeight,
-              leading: GetBuilder<HeadPortraitChangeManagement>(
-                init: headPortraitChangeManagement,
-                builder: (headPortraitChangeManagement) {
-                  return headPortraitChangeManagement.headPortraitValue != null
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 15.0),
-                          child: IconButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {
-                                _scaffoldKey.currentState?.openDrawer();
-                              },
-                              icon: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage: FileImage(
-                                      headPortraitChangeManagement
-                                          .headPortraitValue!))),
-                        )
-                      : IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/home/personal_add.svg',
-                            // 将此处的icon_name替换为您的SVG图标名称
-                            width: 30,
-                            height: 30,
-                          ),
-                          onPressed: () {
-                            _scaffoldKey.currentState?.openDrawer();
-                          },
-                        );
-                },
-              ),
-              iconTheme: const IconThemeData(color: Colors.black),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: SliverHeaderDelegate.fixedHeight(
-                height: 40,
-                child: Material(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: TabBar(
-                      labelStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Colors.black,
-                        fontFamily: 'Raleway',
-                        decoration: TextDecoration.none,
-                      ),
-                      indicatorColor: Colors.blue,
-                      unselectedLabelStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        color: Color.fromARGB(255, 119, 118, 118),
-                        fontFamily: 'Raleway',
-                        decoration: TextDecoration.none,
-                      ),
-                      controller: tabController,
-                      tabs: const [
-                        SizedBox(
-                          width: double.infinity,
-                          height: 40,
-                          child: Center(
-                            child: Text(
-                              '推荐',
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              '正在关注',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            GestureDetector(
-              onHorizontalDragEnd: (details) {
-                if (details.primaryVelocity! > 5) {
-                  _scaffoldKey.currentState?.openDrawer();
-                } else if (details.primaryVelocity! < -5) {
-                  tabController.animateTo(1);
-                }
-              },
-              child: BallIndicator(
-                  onRefresh: _refresh,
-                  ballColors: const [
-                    Colors.blue,
-                    Colors.red,
-                    Colors.green,
-                    Colors.amber,
-                    Colors.pink,
-                    Colors.purple,
-                    Colors.cyan,
-                    Colors.orange,
-                    Colors.yellow,
-                  ],
-                  child: GetBuilder<RefreshofHomepageMemoryBankextends>(
-                      init: refreshofHomepageMemoryBankextends,
-                      builder: (refreshofHomepageMemoryBankextends) {
-                        return MediaQuery.removePadding(
-                          context: context,
-                          removeTop: true,
-                          removeBottom: true,
-                          child: SizeCacheWidget(
-                            child: MemoryBankList(
-                              refreshofMemoryBankextends:
-                                  refreshofHomepageMemoryBankextends
-                                      .memoryRefreshValue,
-                              onItemTap: (index) {
-                                _viewPostDataManagementForMemoryBanks
-                                    .initMemoryData(
-                                        refreshofHomepageMemoryBankextends
-                                            .memoryRefreshValue[index]);
-                                switchPage(context, const OtherMemoryBank());
-                              },
-                            ),
-                          ),
-                        );
-                      })),
-            ),
-            ListView(
-              children: <Widget>[
-                for (int i = 0; i < 20; ++i)
-                  Container(
-                    height: 50,
-                    color: i % 2 == 0 ? Colors.blue : Colors.green,
-                    child: Center(
-                      child: Text(
-                        'Item $i',
-                        style:
-                            const TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
           ],
         ),
-      ),
+      ]),
       floatingActionButton: _buildSpeedDial(),
+    );
+  }
+
+  Widget? _buildTabBar() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SizedBox(height: 30),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.background,
+          ),
+          child: TabBar(
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 17,
+              color: Colors.black,
+              fontFamily: 'Raleway',
+              decoration: TextDecoration.none,
+            ),
+            indicatorColor: Colors.blue,
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 17,
+              color: Color.fromARGB(255, 119, 118, 118),
+              fontFamily: 'Raleway',
+              decoration: TextDecoration.none,
+            ),
+            controller: tabController,
+            tabs: const [
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: Center(
+                  child: Text(
+                    '推荐',
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    '正在关注',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

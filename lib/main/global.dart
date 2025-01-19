@@ -44,6 +44,8 @@ class AppColors {
   static Color get svg => isNight
       ? Color.fromRGBO(115, 115, 115, 1)
       : Color.fromRGBO(84, 87, 105, 1);
+  static Brightness get statusBarBrightness =>
+      isNight ? Brightness.dark : Brightness.light;
 }
 
 class AppTextStyle {
