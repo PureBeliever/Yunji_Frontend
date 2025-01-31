@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:alarm/alarm.dart';
 import 'package:keframe/keframe.dart';
-import 'package:toastification/toastification.dart' as toast;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -37,8 +35,10 @@ class PersonalPage extends StatefulWidget {
   @override
   State<PersonalPage> createState() => _PersonalPageState();
 }
+
 final _userInformationListScrollDataManagement =
     Get.put(UserInformationListScrollDataManagement());
+
 class UserInformationListScrollDataManagement extends GetxController {
   static UserInformationListScrollDataManagement get to => Get.find();
 
@@ -84,10 +84,9 @@ class UserInformationListScrollDataManagement extends GetxController {
 class MemoryBankCompletionStatus extends GetxController {
   static MemoryBankCompletionStatus get to => Get.find();
   final _continueLearningAboutDataManagement =
-    Get.put(ContinueLearningAboutDataManagement());
+      Get.put(ContinueLearningAboutDataManagement());
 
-final _reviewDataManagement = Get.put(ReviewDataManagement()); 
-
+  final _reviewDataManagement = Get.put(ReviewDataManagement());
 
   bool displayIconStatus(int? status) => status == 1;
 
@@ -123,7 +122,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
         widgetsDisplayValues['complete_state'] == 0) {
       statusDisplayWidget = Text(
         displayStatusRecord,
-        style: _statusTextStyle(),
+        style: AppTextStyle.subsidiaryText,
       );
     }
 
@@ -145,10 +144,8 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
               physics: const NeverScrollableScrollPhysics(),
               itemCount: statusRecord.length,
               itemBuilder: (context, index) {
-                return Text(
-                  statusRecord[index],
-                  style: _statusTextStyle(),
-                );
+                return Text(statusRecord[index],
+                    style: AppTextStyle.subsidiaryText);
               },
             ),
           ),
@@ -160,7 +157,7 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
             },
             child: Text(
               '继续学习',
-              style: _linkTextStyle(),
+              style: AppTextStyle.greenTextStyle,
             ),
           ),
         ],
@@ -177,27 +174,8 @@ final _reviewDataManagement = Get.put(ReviewDataManagement());
       },
       child: Text(
         '开始复习',
-        style: _linkTextStyle(),
+        style: AppTextStyle.greenTextStyle,
       ),
-    );
-  }
-
-  TextStyle _statusTextStyle() {
-    return const TextStyle(
-      fontWeight: FontWeight.w900,
-      fontSize: 16,
-      color: Color.fromRGBO(84, 87, 105, 1),
-    );
-  }
-
-  TextStyle _linkTextStyle() {
-    return const TextStyle(
-      fontWeight: FontWeight.w500,
-      color: Colors.green,
-      fontSize: 16,
-      decoration: TextDecoration.underline,
-      decorationColor: Colors.green,
-      decorationStyle: TextDecorationStyle.solid,
     );
   }
 
@@ -289,9 +267,10 @@ class _PersonalPageState extends State<PersonalPage>
     with TickerProviderStateMixin {
   late TabController tabController;
   final memoryBankCompletionStatus = Get.put(MemoryBankCompletionStatus());
-    final _viewPostDataManagementForMemoryBanks =
-    Get.put(ViewPostDataManagementForMemoryBanks());
-    final _editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+  final _viewPostDataManagementForMemoryBanks =
+      Get.put(ViewPostDataManagementForMemoryBanks());
+  final _editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -309,7 +288,6 @@ class _PersonalPageState extends State<PersonalPage>
     _initializeTabController();
     _initializeScrollController();
     _initializePeriodicTimer();
-
   }
 
   void _initializeTabController() {
@@ -348,7 +326,7 @@ class _PersonalPageState extends State<PersonalPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: GetBuilder<EditPersonalDataValueManagement>(
         init: _editPersonalDataValueManagement,
         builder: (editPersonalDataValueManagement) {
@@ -422,7 +400,7 @@ class _PersonalPageState extends State<PersonalPage>
                     color: Colors.white.withOpacity(
                         _userInformationListScrollDataManagement.opacity),
                     fontSize: 21,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
@@ -431,7 +409,7 @@ class _PersonalPageState extends State<PersonalPage>
                     color: Colors.white.withOpacity(
                         _userInformationListScrollDataManagement.opacity),
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -461,7 +439,7 @@ class _PersonalPageState extends State<PersonalPage>
           },
           child: const Icon(
             Icons.arrow_back,
-            size: 25,
+            size: 26,
             color: Colors.white,
           ),
         ),
@@ -562,7 +540,7 @@ class _PersonalPageState extends State<PersonalPage>
                   },
                   child: CircleAvatar(
                     radius: 27,
-                    backgroundColor: Colors.white,
+                    backgroundColor: AppColors.background,
                     child: GetBuilder<HeadPortraitChangeManagement>(
                       init: headPortraitChangeManagement,
                       builder: (headPortraitChangeManagement) {
@@ -593,7 +571,7 @@ class _PersonalPageState extends State<PersonalPage>
       EditPersonalDataValueManagement editPersonalDataValueManagement) {
     return SliverToBoxAdapter(
       child: Container(
-        color: Colors.white,
+        color: AppColors.background,
         child: Padding(
           padding: const EdgeInsets.only(left: 14.0, right: 8.0, top: 0),
           child: Column(
@@ -602,36 +580,18 @@ class _PersonalPageState extends State<PersonalPage>
               _buildProfileHeader(context),
               Text(
                 '${editPersonalDataValueManagement.nameValue}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 24,
-                  color: Colors.black,
-                  fontFamily: 'Raleway',
-                  decoration: TextDecoration.none,
-                ),
+                style: AppTextStyle.titleStyle,
               ),
               Text(
                 '@${userNameChangeManagement.userNameValue}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  color: Color.fromRGBO(84, 87, 105, 1),
-                  fontFamily: 'Raleway',
-                  decoration: TextDecoration.none,
-                ),
+                style: AppTextStyle.subsidiaryText,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 13.0),
                 child: editPersonalDataValueManagement.profileValue != null
                     ? Text(
                         '${editPersonalDataValueManagement.profileValue}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 17,
-                          color: Colors.black,
-                          fontFamily: 'Raleway',
-                          decoration: TextDecoration.none,
-                        ),
+                        style: AppTextStyle.subsidiaryText,
                       )
                     : const SizedBox(),
               ),
@@ -656,49 +616,25 @@ class _PersonalPageState extends State<PersonalPage>
                           null),
                 ],
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 13.0, bottom: 13.0),
                 child: Row(
                   children: [
                     Text(
                       '0',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontFamily: 'Raleway',
-                        decoration: TextDecoration.none,
-                      ),
+                      style: AppTextStyle.textStyle,
                     ),
                     Text(
                       ' 正在关注    ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: Color.fromRGBO(84, 87, 105, 1),
-                        fontFamily: 'Raleway',
-                        decoration: TextDecoration.none,
-                      ),
+                      style: AppTextStyle.subsidiaryText,
                     ),
                     Text(
                       '0',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontFamily: 'Raleway',
-                        decoration: TextDecoration.none,
-                      ),
+                      style: AppTextStyle.textStyle,
                     ),
                     Text(
                       ' 关注者',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: Color.fromRGBO(84, 87, 105, 1),
-                        fontFamily: 'Raleway',
-                        decoration: TextDecoration.none,
-                      ),
+                      style: AppTextStyle.subsidiaryText,
                     ),
                   ],
                 ),
@@ -721,9 +657,9 @@ class _PersonalPageState extends State<PersonalPage>
           child: Container(
             width: 90,
             height: 40,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(60),
                 bottomRight: Radius.circular(60),
               ),
@@ -732,29 +668,17 @@ class _PersonalPageState extends State<PersonalPage>
         ),
         ElevatedButton(
           style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(
-                const Color.fromARGB(255, 119, 118, 118)),
+            backgroundColor: WidgetStateProperty.all(AppColors.iconColor),
             elevation: WidgetStateProperty.all(4.0),
           ),
-          child: const Text(
+          child: Text(
             "编辑个人资料",
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
+            style: AppTextStyle.whiteTextStyle,
           ),
           onPressed: () async {
             if (loginStatus == false) {
               smsLogin(context);
-              showToast(
-                context,
-                "未登录",
-                "未登录",
-                toast.ToastificationType.success,
-                const Color(0xff047aff),
-                const Color(0xFFEDF7FF),
-              );
+              showWarnToast(context, "未登录", "未登录");
             } else {
               switchPage(context, const EditPersonalPage());
             }
@@ -769,40 +693,26 @@ class _PersonalPageState extends State<PersonalPage>
       pinned: true,
       delegate: SliverHeaderDelegate.fixedHeight(
         height: 45,
-        child: Material(
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-            child: TabBar(
-              labelStyle: const TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 17,
-                color: Colors.black,
-                fontFamily: 'Raleway',
-                decoration: TextDecoration.none,
-              ),
-              indicatorColor: Colors.blue,
-              unselectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 17,
-                color: Color.fromARGB(255, 119, 118, 118),
-                fontFamily: 'Raleway',
-                decoration: TextDecoration.none,
-              ),
-              controller: tabController,
-              tabs: const [
-                SizedBox(
-                  width: double.infinity,
-                  child: Center(
-                    child: Text('记忆库'),
-                  ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.background,
+          ),
+          child: TabBar(
+            labelStyle: AppTextStyle.coarseTextStyle,
+            indicatorColor: AppColors.iconColor,
+            unselectedLabelStyle: AppTextStyle.subsidiaryText,
+            controller: tabController,
+            tabs: const [
+              SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text('记忆库'),
                 ),
-                Text('拉取'),
-                Text('回复'),
-                Text('喜欢'),
-              ],
-            ),
+              ),
+              Text('拉取'),
+              Text('回复'),
+              Text('喜欢'),
+            ],
           ),
         ),
       ),
@@ -876,9 +786,7 @@ class _PersonalPageState extends State<PersonalPage>
         final memoryBank =
             userPersonalInformationManagement.userReviewMemoryBank![index];
         final completeState = memoryBank['complete_state'];
-
         final subscriptLength = memoryBank['subscript'].length;
-
         final question =
             parseJson(memoryBank['question'], memoryBank['subscript']);
         final answer = parseJson(memoryBank['answer'], memoryBank['subscript']);
@@ -886,15 +794,16 @@ class _PersonalPageState extends State<PersonalPage>
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Divider(
-              color: Color.fromRGBO(223, 223, 223, 1),
-              thickness: 0.9,
+            Divider(
+              color: AppColors.Gray,
+              thickness: 0.3,
               height: 0.9,
             ),
             const SizedBox(height: 5),
             InkWell(
               onTap: () {
-                _viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank);
+                _viewPostDataManagementForMemoryBanks
+                    .initMemoryData(memoryBank);
                 switchPage(context, const OtherMemoryBank());
               },
               child: Padding(
@@ -923,12 +832,14 @@ class _PersonalPageState extends State<PersonalPage>
                                     : 'assets/personal/set_time.svg',
                                 width: memoryBankCompletionStatus
                                         .displayIconStatus(completeState)
-                                    ? 27
+                                    ? 30
                                     : 20,
                                 height: memoryBankCompletionStatus
                                         .displayIconStatus(completeState)
-                                    ? 27
+                                    ? 30
                                     : 20,
+                                colorFilter: ColorFilter.mode(
+                                    AppColors.Gray, BlendMode.srcIn),
                               ),
                             ),
                             Expanded(
@@ -977,71 +888,42 @@ class _PersonalPageState extends State<PersonalPage>
                                         children: [
                                           TextSpan(
                                             text: memoryBank['name'],
-                                            style: const TextStyle(
-                                              fontSize: 17,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w900,
-                                            ),
+                                            style: AppTextStyle.textStyle,
                                           ),
                                           TextSpan(
                                             text:
                                                 ' @${memoryBank['user_name']}',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                              color: Color.fromRGBO(
-                                                  84, 87, 105, 1),
-                                            ),
+                                            style: AppTextStyle.subsidiaryText,
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                  const Text(
+                                  Text(
                                     ' ·',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      color: Color.fromRGBO(84, 87, 105, 1),
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                                    style: AppTextStyle.subsidiaryText,
                                   ),
                                   Text(
                                     '$subscriptLength个记忆项',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Color.fromRGBO(84, 87, 105, 1),
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    style: AppTextStyle.subsidiaryText,
                                   ),
                                 ],
                               ),
                               Text(
                                 memoryBank['theme'],
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
+                                style: AppTextStyle.textStyle,
                               ),
                               const SizedBox(height: 20),
                               Text(
                                 question,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
+                                style: AppTextStyle.textStyle,
                                 maxLines: 4,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 20),
                               Text(
                                 answer,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                ),
+                                style: AppTextStyle.subsidiaryText,
                                 maxLines: 7,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -1303,15 +1185,14 @@ class _PersonalPageState extends State<PersonalPage>
             likeBuilder: (bool isLiked) {
               return Icon(
                 isLiked ? likeIcon : unLikeIcon,
-                color: isLiked ? color : const Color.fromRGBO(84, 87, 105, 1),
+                color: isLiked ? color : AppColors.Gray,
                 size: 20,
               );
             },
             likeCount: count,
             isLiked: memoryBankIds.contains(memoryBank['id']),
             countBuilder: (int? count, bool isLiked, String text) {
-              var colorValue =
-                  isLiked ? color : const Color.fromRGBO(84, 87, 105, 1);
+              var colorValue = isLiked ? color : AppColors.Gray;
               return Text(
                 text,
                 style:
@@ -1335,11 +1216,11 @@ class _PersonalPageState extends State<PersonalPage>
       child: icon is String
           ? SvgPicture.asset(
               icon,
-              width: 25,
-              height: 25,
-              color: Colors.white,
+              width: 26,
+              height: 26,
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
             )
-          : Icon(icon, size: 25, color: Colors.white),
+          : Icon(icon, size: 26, color: Colors.white),
     );
   }
 
@@ -1371,18 +1252,13 @@ class _PersonalPageState extends State<PersonalPage>
                 assetPath,
                 width: 20,
                 height: 20,
+                colorFilter: ColorFilter.mode(AppColors.Gray, BlendMode.srcIn),
               ),
               const SizedBox(width: 7),
               Expanded(
                 child: Text(
                   text,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: Color.fromRGBO(84, 87, 105, 1),
-                    fontFamily: 'Raleway',
-                    decoration: TextDecoration.none,
-                  ),
+                  style: AppTextStyle.subsidiaryText,
                 ),
               ),
               const SizedBox(width: 13),

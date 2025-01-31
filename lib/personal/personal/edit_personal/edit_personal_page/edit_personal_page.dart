@@ -7,20 +7,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:city_pickers/city_pickers.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:toastification/toastification.dart' as toast;
-
-
+import 'package:yunji/personal/personal/edit_personal/edit_personal_module/address_picker_dialog.dart';
 
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
 
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-
 import 'package:yunji/main/global.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 
 class EditPersonalDataValueManagement extends GetxController {
   static EditPersonalDataValueManagement get to => Get.find();
@@ -68,16 +65,6 @@ class EditPersonalDataValueManagement extends GetxController {
   }
 }
 
-class SaveBackSpace extends GetxController {
-  static SaveBackSpace get to => Get.find();
-  bool backspaceValue = true;
-
-  void backspaceValueChange(bool value) {
-    backspaceValue = value;
-    update();
-  }
-}
-
 //更新选择器结果显示
 class SelectorResultsUpdateDisplay extends GetxController {
   static SelectorResultsUpdateDisplay get to => Get.find();
@@ -112,7 +99,9 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   String? profile;
   String? selectResidentialAddress;
   String? selectDateOfBirth;
-  final _editPersonalDataValueManagement = Get.put(EditPersonalDataValueManagement());
+  bool backspaceValue = true;
+  final _editPersonalDataValueManagement =
+      Get.put(EditPersonalDataValueManagement());
 
   // final ImagePicker _picker = ImagePicker();
 
@@ -127,6 +116,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   @override
   void initState() {
     super.initState();
+    backspaceValue =
+        _editPersonalDataValueManagement.nameValue?.isNotEmpty ?? false;
     name = _editPersonalDataValueManagement.nameValue;
     profile = _editPersonalDataValueManagement.profileValue;
     selectResidentialAddress =
@@ -134,13 +125,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     selectDateOfBirth = _editPersonalDataValueManagement.dateOfBirthValue;
   }
 
-  final saveBackSpace = Get.put(SaveBackSpace());
   final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
   final backgroundImageChangeManagement =
       Get.put(BackgroundImageChangeManagement());
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
-
 
   Future<void> _selectAndCropImage({
     required ImageSource source,
@@ -267,7 +256,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.background,
           appBar: _buildAppBar(context),
           body: ListView(
             children: <Widget>[
@@ -290,7 +279,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       leading: GestureDetector(
         onTap: () {
           if (_editPersonalDataValueManagement.rollbackTheChangedValue(
@@ -310,11 +299,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
             Navigator.of(context).pop();
           }
         },
-        child: const Icon(Icons.arrow_back),
+        child: Icon(Icons.arrow_back, color: AppColors.Gray),
       ),
-      title: const Text(
+      title: Text(
         '编辑个人资料',
-        style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+        style: AppTextStyle.titleStyle,
       ),
       actions: [
         GetBuilder<SelectorResultsUpdateDisplay>(
@@ -322,7 +311,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
           builder: (pcontroller) {
             return Padding(
               padding: const EdgeInsets.only(right: 20.0),
-              child: saveBackSpace.backspaceValue
+              child: backspaceValue
                   ? GestureDetector(
                       onTap: () {
                         if (_editPersonalDataValueManagement
@@ -344,7 +333,6 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                           );
 
                           editPersonal(
-                     
                             name,
                             profile,
                             selectResidentialAddress,
@@ -359,18 +347,14 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                           Navigator.pop(context);
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         '保存',
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w900),
+                        style: AppTextStyle.textStyle,
                       ),
                     )
-                  : const Text(
+                  : Text(
                       '保存',
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: Color.fromARGB(255, 119, 118, 118)),
+                      style: AppTextStyle.subsidiaryText,
                     ),
             );
           },
@@ -389,16 +373,16 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 25, top: 20),
               child: Text(
                 '编辑个人资料',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                style: AppTextStyle.titleStyle,
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-              child: Text('放弃更改?', style: TextStyle(fontSize: 16)),
+              child: Text('放弃更改?', style: AppTextStyle.textStyle),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 7),
@@ -421,7 +405,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     onPressed: () {
                       selectorResultsUpdateDisplay
                           .dateOfBirthSelectorResultValueChange(
-                              _editPersonalDataValueManagement.dateOfBirthValue);
+                              _editPersonalDataValueManagement
+                                  .dateOfBirthValue);
                       selectorResultsUpdateDisplay
                           .residentialAddressSelectorResultValueChange(
                               _editPersonalDataValueManagement
@@ -510,6 +495,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                       'assets/personal/camera.svg',
                       height: 47,
                       width: 47,
+                      colorFilter:
+                          const ColorFilter.mode(Colors.grey, BlendMode.srcIn),
                     ),
                   ),
                 ],
@@ -534,8 +521,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                       );
                     },
                     child: CircleAvatar(
-                      radius: 51,
-                      backgroundColor: Colors.white,
+                      radius: 54,
+                      backgroundColor: AppColors.background,
                       child: CircleAvatar(
                         backgroundColor: Colors.grey,
                         backgroundImage: headPortraitChangeManagement
@@ -546,7 +533,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             : const AssetImage(
                                     'assets/personal/gray_back_head.png')
                                 as ImageProvider,
-                        radius: 47.5,
+                        radius: 50,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
@@ -564,6 +551,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                                 'assets/personal/camera.svg',
                                 height: 47,
                                 width: 47,
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.grey, BlendMode.srcIn),
                               ),
                             ),
                           ],
@@ -597,33 +586,14 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               if (!status.isGranted) {
                 var permissionStatus = await Permission.camera.request();
                 if (!permissionStatus.isGranted) {
-                  toast.toastification.show(
-                    context: context,
-                    callbacks: toast.ToastificationCallbacks(
-                      onTap: (toastItem) => AppSettings.openAppSettings(
-                          type: AppSettingsType.settings),
-                    ),
-                    type: toast.ToastificationType.warning,
-                    style: toast.ToastificationStyle.flatColored,
-                    title: const Text(
-                      "未授权相机权限",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 17),
-                    ),
-                    description: const Text(
-                      "无法开启相机，点击提示开启权限",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 119, 118, 118),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    alignment: Alignment.topLeft,
-                    autoCloseDuration: const Duration(seconds: 4),
-                    borderRadius: BorderRadius.circular(12.0),
-                    boxShadow: toast.lowModeShadow,
-                    dragToClose: true,
+                  showWarnToast(
+                    context,
+                    "未授权相机权限",
+                    "无法开启相机，点击提示开启权限",
+                    () {
+                      AppSettings.openAppSettings(
+                          type: AppSettingsType.settings);
+                    },
                   );
                   return;
                 }
@@ -631,14 +601,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               onCameraTap();
               Navigator.pop(context);
             },
-            child: const SizedBox(
+            child: SizedBox(
               width: double.infinity,
               child: Text(
                 '拍摄照片',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700),
+                style: AppTextStyle.textStyle,
               ),
             ),
           ),
@@ -647,14 +614,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               onGalleryTap();
               Navigator.pop(context);
             },
-            child: const SizedBox(
+            child: SizedBox(
               width: double.infinity,
               child: Text(
                 '选择相册',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700),
+                style: AppTextStyle.textStyle,
               ),
             ),
           ),
@@ -680,33 +644,14 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               if (!status.isGranted) {
                 var permissionStatus = await Permission.camera.request();
                 if (!permissionStatus.isGranted) {
-                  toast.toastification.show(
-                    context: context,
-                    callbacks: toast.ToastificationCallbacks(
-                      onTap: (toastItem) => AppSettings.openAppSettings(
-                          type: AppSettingsType.settings),
-                    ),
-                    type: toast.ToastificationType.warning,
-                    style: toast.ToastificationStyle.flatColored,
-                    title: const Text(
-                      "未授权相机权限",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 17),
-                    ),
-                    description: const Text(
-                      "无法开启相机，点击提示开启权限",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 119, 118, 118),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    alignment: Alignment.topLeft,
-                    autoCloseDuration: const Duration(seconds: 4),
-                    borderRadius: BorderRadius.circular(12.0),
-                    boxShadow: toast.lowModeShadow,
-                    dragToClose: true,
+                  showWarnToast(
+                    context,
+                    "未授权相机权限",
+                    "无法开启相机，点击提示开启权限",
+                    () {
+                      AppSettings.openAppSettings(
+                          type: AppSettingsType.settings);
+                    },
                   );
                   return;
                 }
@@ -714,14 +659,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               onCameraTap();
               Navigator.pop(context);
             },
-            child: const SizedBox(
+            child: SizedBox(
               width: double.infinity,
               child: Text(
                 '拍摄照片',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700),
+                style: AppTextStyle.textStyle,
               ),
             ),
           ),
@@ -730,15 +672,12 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               onGalleryTap();
               Navigator.pop(context);
             },
-            child: const SizedBox(
+            child: SizedBox(
               width: double.infinity,
               child: Text(
                 // '选择相册(支持动图)',
                 '选择相册',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700),
+                style: AppTextStyle.textStyle,
               ),
             ),
           ),
@@ -775,7 +714,16 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               maxLength: 45,
               onChanged: (value) {
                 name = value.trim();
-                saveBackSpace.backspaceValueChange(value.isNotEmpty);
+
+                if (name == null || name!.isEmpty) {
+                  setState(() {
+                    backspaceValue = true;
+                  });
+                } else {
+                  setState(() {
+                    backspaceValue = false;
+                  });
+                }
               },
             ),
             const SizedBox(width: double.infinity, height: 20),
@@ -804,15 +752,16 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                   maxLength: 50,
                   readOnly: true,
                   onTap: () async {
-                    Result? result =
-                        await CityPickers.showCityPicker(context: context);
-                    selectResidentialAddress = (result != null &&
-                            result.provinceId != 'null')
-                        ? '${result.provinceName}.${result.cityName}.${result.areaName}'
-                        : ' ';
-                    selectorResultsUpdateDisplay
-                        .residentialAddressSelectorResultValueChange(
-                            selectResidentialAddress);
+                    // Result? result =
+                    //     await CityPickers.showCityPicker(context: context);
+                    // selectResidentialAddress = (result != null &&
+                    //         result.provinceId != 'null')
+                    //     ? '${result.provinceName}.${result.cityName}.${result.areaName}'
+                    //     : null;
+                    // selectorResultsUpdateDisplay
+                    //     .residentialAddressSelectorResultValueChange(
+                    //         selectResidentialAddress);
+                    showChineseAddressPickerDialog(context);
                   },
                 ),
                 const SizedBox(width: double.infinity, height: 20),
@@ -846,8 +795,8 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     Function()? onTap,
   }) {
     return TextFormField(
-      cursorColor: Colors.blue,
-      style: const TextStyle(fontWeight: FontWeight.w600),
+      cursorColor: AppColors.iconColor,
+      style: AppTextStyle.textStyle,
       controller: TextEditingController(text: initialValue),
       onChanged: onChanged,
       maxLines: maxLines,
@@ -856,22 +805,19 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       readOnly: readOnly,
       onTap: onTap,
       decoration: InputDecoration(
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 2),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.text, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: AppColors.iconColor, width: 2),
           borderRadius: BorderRadius.circular(25.0),
         ),
         border: const OutlineInputBorder(),
         labelText: label,
         hintText: hintText,
-        labelStyle: const TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          color: Color.fromARGB(255, 119, 118, 118),
-        ),
+        labelStyle: AppTextStyle.subsidiaryText,
         counterText: "",
+        hintStyle: AppTextStyle.subsidiaryText,
       ),
     );
   }
@@ -881,6 +827,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
+            backgroundColor: AppColors.background,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
@@ -891,22 +838,29 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 children: [
                   SizedBox(
                     height: 250,
-                    child: Localizations.override(
-                      context: context,
-                      locale: const Locale('en'),
-                      delegates: const [
-                        MyDefaultCupertinoLocalizations.delegate
-                      ],
-                      child: CupertinoDatePicker(
-                        mode: CupertinoDatePickerMode.date,
-                        minimumDate: DateTime(1900, 1, 1),
-                        maximumDate: DateTime.now(),
-                        initialDateTime: DateTime(2000, 1, 1),
-                        dateOrder: DatePickerDateOrder.ymd,
-                        onDateTimeChanged: (date) {
-                          selectDateOfBirth =
-                              DateFormat('yyyy年MM月dd日').format(date);
-                        },
+                    child: CupertinoTheme(
+                      data: CupertinoThemeData(
+                        textTheme: CupertinoTextThemeData(
+                          dateTimePickerTextStyle: AppTextStyle.titleStyle,
+                        ),
+                      ),
+                      child: Localizations.override(
+                        context: context,
+                        locale: const Locale('en'),
+                        delegates: const [
+                          MyDefaultCupertinoLocalizations.delegate
+                        ],
+                        child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.date,
+                          minimumDate: DateTime(1900, 1, 1),
+                          maximumDate: DateTime.now(),
+                          initialDateTime: DateTime(2000, 1, 1),
+                          dateOrder: DatePickerDateOrder.ymd,
+                          onDateTimeChanged: (date) {
+                            selectDateOfBirth =
+                                DateFormat('yyyy年MM月dd日').format(date);
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -920,12 +874,9 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text(
+                            child: Text(
                               '取消',
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black),
+                              style: AppTextStyle.textStyle,
                             ),
                           ),
                           TextButton(
@@ -934,12 +885,9 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                               selectorResultsUpdateDisplay
                                   .dateOfBirthSelectorResultValueChange(' ');
                             },
-                            child: const Text(
+                            child: Text(
                               '移除',
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.red),
+                              style: AppTextStyle.redTextStyle,
                             ),
                           ),
                         ],
@@ -951,12 +899,9 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                               .dateOfBirthSelectorResultValueChange(
                                   selectDateOfBirth);
                         },
-                        child: const Text(
+                        child: Text(
                           '确定',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
+                          style: AppTextStyle.textStyle,
                         ),
                       ),
                     ],

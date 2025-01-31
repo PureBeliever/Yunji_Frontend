@@ -1,25 +1,54 @@
+// {
+//     // Use IntelliSense to learn about possible attributes.
+//     // Hover to view descriptions of existing attributes.
+//     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+//     "version": "0.2.0",
+//     "configurations": [
+//         {
+//             "name": "yunji",
+//             "request": "launch",
+//             "type": "dart"
+//         },
+//         {
+//             "name": "yunji (profile mode)",
+//             "request": "launch",
+//             "type": "dart",
+//             "flutterMode": "profile"
+//         },
+//         {
+//             "name": "yunji (release mode)",
+//             "request": "launch",
+//             "type": "dart",
+//             "flutterMode": "release"
+//         }
+//     ]
+// }
+
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "yunji",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "yunji (profile mode)",
+            "name": "Run app_init.dart",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "program": "lib/main/main_init/app_init.dart" // 指定要运行的文件
         },
-        {
-            "name": "yunji (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        }
+        // {
+        //     "name": "yunji",
+        //     "request": "launch",
+        //     "type": "dart"
+        // },
+        // {
+        //     "name": "yunji (profile mode)",
+        //     "request": "launch",
+        //     "type": "dart",
+        //     "flutterMode": "profile"
+        // },
+        // {
+        //     "name": "yunji (release mode)",
+        //     "request": "launch",
+        //     "type": "dart",
+        //     "flutterMode": "release"
+        // }
     ]
 }

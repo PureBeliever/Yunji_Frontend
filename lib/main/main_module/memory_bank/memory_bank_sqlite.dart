@@ -1,5 +1,6 @@
 import 'package:yunji/home/home_page/home_page.dart';
 import 'package:yunji/home/login/login_init.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/main/global.dart';
 import 'dart:convert';
 
@@ -39,7 +40,7 @@ Future<void> _synchronizeApp() async {
       refreshofHomepageMemoryBankextends
           .updateMemoryRefreshValue(homePageMemoryDatabaseData);
     } else {
-      soginDependencySettings(contexts!);
+     smsLogin(contexts!);
     }
   } catch (e) {
     print('同步应用时发生错误: $e');

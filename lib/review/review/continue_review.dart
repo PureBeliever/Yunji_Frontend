@@ -271,8 +271,7 @@ class _ContinueReview extends State<ContinueReview> {
 
   void _handleNextStep(BuildContext context) {
     if (_continueLearningAboutDataManagement.theme.isEmpty) {
-      showToast(context, "请填写主题", "主题为空", toast.ToastificationType.success,
-          const Color(0xff047aff), const Color(0xFFEDF7FF));
+      showToast(context, "请填写主题", "主题为空");
       FocusScope.of(context).requestFocus(_focusNode);
     } else {
       int index = 0;

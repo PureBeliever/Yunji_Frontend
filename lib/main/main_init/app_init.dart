@@ -5,11 +5,13 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:yunji/home/algorithm_home_api.dart';
 
 //项目文件
 import 'package:yunji/home/home_page/home_page.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/home/login/login_init.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
@@ -28,12 +30,20 @@ void main() async {
   if (homePageMemoryDatabaseData != null && personalData != null) {
     _initializeUserData(homePageMemoryDatabaseData, personalData);
   } else {
-    soginDependencySettings(contexts!);
+    // soginDependencySettings(contexts!);
+    smsLogin(contexts!);
+    _createIntDatabaseTable();
   }
 
   Alarm.ringStream.stream.listen(
       (OnData) => OnRingCallback(OnData.notificationSettings.body, OnData.id));
 }
+  Future<void> _createIntDatabaseTable() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> number = ['1'];
+    await prefs.setStringList('intdatabase_number', number);
+    await prefs.setInt('intdatabase_length', 1);
+  }
 
 Future<void> _initializeApp() async {
   await Future.wait([

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/main/global.dart';
-import 'package:toastification/toastification.dart' as toast;
 import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/main/main_module/switch.dart';
@@ -33,6 +33,11 @@ class HeadPortraitChangeManagement extends GetxController {
     if (databasePath != null) {
       headPortraitValue = File(databasePath);
       changedHeadPortraitValue = headPortraitValue;
+
+      update();
+    } else {
+      headPortraitValue = null;
+      changedHeadPortraitValue = null;
       update();
     }
   }
@@ -59,32 +64,33 @@ class _PersonalHeadPortrait extends State<PersonalHeadPortrait> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 25, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, size: 26, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16.0),
-            child: Icon(Icons.more_vert, size: 25, color: Colors.white),
+            child: Icon(Icons.more_vert, size: 26, color: Colors.white),
           ),
         ],
       ),
-      body: Center(
-        child: Expanded(
-          child: GetBuilder<HeadPortraitChangeManagement>(
-            init: headPortraitChangeManagement,
-            builder: (controller) {
-              final imageProvider = controller.headPortraitValue != null
-                  ? FileImage(controller.headPortraitValue!)
-                  : FileImage(File('assets/personal/gray_back_head.png'));
-              return PhotoView(
-                imageProvider: imageProvider,
+      body: GetBuilder<HeadPortraitChangeManagement>(
+        init: headPortraitChangeManagement,
+        builder: (controller) {
+          return Center(
+              child: Column(
+            children: [
+              Expanded(
+                  child: PhotoView(
+                imageProvider: controller.headPortraitValue != null
+                    ? FileImage(controller.headPortraitValue!)
+                    : const AssetImage('assets/personal/gray_back_head.png'),
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 2,
-              );
-            },
-          ),
-        ),
+              )),
+            ],
+          ));
+        },
       ),
       bottomNavigationBar: SizedBox(
         height: 100,
@@ -92,14 +98,8 @@ class _PersonalHeadPortrait extends State<PersonalHeadPortrait> {
           child: OutlinedButton(
             onPressed: () {
               if (!loginStatus) {
-                soginDependencySettings(context);
-                showToast(
-                    context,
-                    "未登录",
-                    "未登录",
-                    toast.ToastificationType.success,
-                    const Color(0xff047aff),
-                    const Color(0xFFEDF7FF));
+                smsLogin(context);
+                showWarnToast(context, "未登录", "未登录");
               } else {
                 Navigator.pop(context);
                 switchPage(context, const EditPersonalPage());

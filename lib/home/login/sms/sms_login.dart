@@ -38,13 +38,11 @@ void smsLogin(BuildContext context) {
   void handleSendCode() {
     final phone = phoneController.text;
     if (!_isValidPhoneNumber(phone)) {
-      showToast(
+      showWarnToast(
         context,
         "手机号格式错误",
         "请输入正确的手机号码",
-        toast.ToastificationType.warning,
-        const Color(0xFFFFD700),
-        const Color(0xFFFFF8E5),
+
       );
       return;
     }
@@ -56,20 +54,16 @@ void smsLogin(BuildContext context) {
         context,
         "验证码已发送",
         "请注意查收验证码",
-        toast.ToastificationType.success,
-        const Color(0xff047aff),
-        const Color(0xFFEDF7FF),
+
       );
       sendingState.value = false;
       countdown();
     } else {
-      showToast(
+      showWarnToast(
         context,
         "请稍后重试",
         "需等待${seconds.value}秒",
-        toast.ToastificationType.warning,
-        const Color(0xFFFFD700),
-        const Color(0xFFFFF8E5),
+
       );
     }
   }
@@ -79,13 +73,11 @@ void smsLogin(BuildContext context) {
     if (!phoneNumberStatus.value ||
         sendingState.value ||
         !verifyAttempt.value) {
-      showToast(
+      showWarnToast(
         context,
         "验证码已过期",
         "请重新获取验证码",
-        toast.ToastificationType.warning,
-        const Color(0xFFFFD700),
-        const Color(0xFFFFF8E5),
+   
       );
       return;
     }
@@ -97,13 +89,10 @@ void smsLogin(BuildContext context) {
       _onLoginSuccess(context);
       Navigator.pop(context);
     } else {
-      showToast(
+      showErrorToast(
         context,
         "验证失败",
         "验证码错误",
-        toast.ToastificationType.error,
-        const Color(0xFFF44336),
-        const Color(0xFFFFEBEA),
       );
     }
     verifyAttempt.value = true;
@@ -331,16 +320,10 @@ void _onLoginSuccess(BuildContext context) {
     context,
     "登录成功",
     "欢迎使用本应用！",
-    toast.ToastificationType.success,
-    const Color(0xff047aff),
-    const Color(0xFFEDF7FF),
   );
   showToast(
     context,
     "右滑查看资料",
     "可以查看个人资料",
-    toast.ToastificationType.success,
-    const Color(0xff047aff),
-    const Color(0xFFEDF7FF),
   );
 }

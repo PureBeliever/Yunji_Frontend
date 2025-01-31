@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/main/main_module/dialog.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
@@ -164,10 +165,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget _buildFollowInfo() {
     return Row(
       children: [
-        Text(
-          '0 ',
-          style: AppTextStyle.textStyle
-        ),
+        Text('0 ', style: AppTextStyle.textStyle),
         Text(
           '正在关注  ',
           style: AppTextStyle.subsidiaryText,
@@ -197,9 +195,17 @@ class _HomeDrawerState extends State<HomeDrawer> {
             _buildMenuItem(context, '个人资料', 'assets/home/personal_data.svg',
                 const PersonalPage()), // 构建个人资料菜单项
             _buildMenuItem(
-                context, '会员', 'assets/home/member.svg', null), // 构建会员菜单项
+              context,
+              '会员',
+              'assets/home/member.svg',
+              null,
+            ), // 构建会员菜单项
             _buildMenuItem(
-                context, '收藏', 'assets/home/collect.svg', null), // 构建收藏菜单项
+              context,
+              '收藏',
+              'assets/home/collect.svg',
+              null,
+            ), // 构建收藏菜单项
             _buildMenuItem(
               context,
               '反馈',
@@ -277,11 +283,31 @@ class _MemoryAnalysisState extends State<MemoryAnalysis> {
           ),
         ),
         children: [
-          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
-          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
-          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
-          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
-          ListTile(title: Text('示例', style: AppTextStyle.textStyle,)),
+          ListTile(
+              title: Text(
+            '示例',
+            style: AppTextStyle.textStyle,
+          )),
+          ListTile(
+              title: Text(
+            '示例',
+            style: AppTextStyle.textStyle,
+          )),
+          ListTile(
+              title: Text(
+            '示例',
+            style: AppTextStyle.textStyle,
+          )),
+          ListTile(
+              title: Text(
+            '示例',
+            style: AppTextStyle.textStyle,
+          )),
+          ListTile(
+              title: Text(
+            '示例',
+            style: AppTextStyle.textStyle,
+          )),
         ],
       ),
     );

@@ -20,15 +20,20 @@ class MemoryBankList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      cacheExtent: 500,
-      itemCount: refreshofMemoryBankextends?.length ?? 0,
-      itemBuilder: (context, index) {
-        return MemoryBankItem(
-          data: refreshofMemoryBankextends?[index],
-          onTap: () => onItemTap(index),
-        );
-      },
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.background,
+      ),
+      child: ListView.builder(
+        cacheExtent: 500,
+        itemCount: refreshofMemoryBankextends?.length ?? 0,
+        itemBuilder: (context, index) {
+          return MemoryBankItem(
+            data: refreshofMemoryBankextends?[index],
+            onTap: () => onItemTap(index),
+          );
+        },
+      ),
     );
   }
 }

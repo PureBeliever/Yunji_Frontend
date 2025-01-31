@@ -36,19 +36,23 @@ class _OtherPersonalHeadPortraitState extends State<OtherPersonalHeadPortrait> {
         ),
       ),
       body: Center(
-        child: Expanded(
-          child: GetBuilder<OtherPeopleHeadPortraitChangeManagement>(
-            init: otherPeopleHeadPortraitChangeManagement,
-            builder: (controller) {
-              return PhotoView(
-                imageProvider: controller.headPortraitValue != null
-                    ? FileImage(controller.headPortraitValue!)
-                    : const AssetImage('assets/personal/gray_back_head.png'),
-                minScale: PhotoViewComputedScale.contained,
-                maxScale: PhotoViewComputedScale.covered * 2,
-              );
-            },
-          ),
+        child: Column(
+          children: [
+            Expanded(
+              child: GetBuilder<OtherPeopleHeadPortraitChangeManagement>(
+                init: otherPeopleHeadPortraitChangeManagement,
+                builder: (controller) {
+                  return PhotoView(
+                    imageProvider: controller.headPortraitValue != null
+                        ? FileImage(controller.headPortraitValue!)
+                        : const AssetImage('assets/personal/gray_back_head.png'),
+                    minScale: PhotoViewComputedScale.contained,
+                    maxScale: PhotoViewComputedScale.covered * 2,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

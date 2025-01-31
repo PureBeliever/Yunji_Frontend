@@ -85,8 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void _handleSpeedDialChildTap() {
     if (loginStatus == false) {
       smsLogin(context);
-      showToast(context, "未登录", "未登录", toast.ToastificationType.success,
-          const Color(0xff047aff), const Color(0xFFEDF7FF));
+      showToast(context, "未登录", "未登录");
     } else {
       switchPage(context, const CreatReviewPage());
     }
@@ -167,6 +166,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           'assets/home/personal_add.svg',
                                           width: 30,
                                           height: 30,
+                                          colorFilter: ColorFilter.mode(
+                                              AppColors.Gray, BlendMode.srcIn),
                                         ),
                                         onPressed: () {
                                           _scaffoldKey.currentState
@@ -220,71 +221,78 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: GetBuilder<RefreshofHomepageMemoryBankextends>(
                     init: refreshofHomepageMemoryBankextends,
                     builder: (refreshofHomepageMemoryBankextends) {
-                      return CustomScrollView(
-                        slivers: <Widget>[
-                          SliverAppBar(
-                            floating: true,
-                            pinned: false,
-                            snap: true,
-                            expandedHeight: appBarHeight + 40,
-                            surfaceTintColor: AppColors.background,
-                            backgroundColor: AppColors.background,
-                            toolbarHeight: appBarHeight,
-                            leading: GetBuilder<HeadPortraitChangeManagement>(
-                              init: headPortraitChangeManagement,
-                              builder: (headPortraitChangeManagement) {
-                                return headPortraitChangeManagement
-                                            .headPortraitValue !=
-                                        null
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 15.0),
-                                        child: IconButton(
-                                            padding: const EdgeInsets.all(0),
-                                            onPressed: () {
-                                              _scaffoldKey.currentState
-                                                  ?.openDrawer();
-                                            },
-                                            icon: CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: FileImage(
-                                                    headPortraitChangeManagement
-                                                        .headPortraitValue!))),
-                                      )
-                                    : IconButton(
-                                        icon: SvgPicture.asset(
-                                          'assets/home/personal_add.svg',
-                                          width: 30,
-                                          height: 30,
-                                        ),
-                                        onPressed: () {
-                                          _scaffoldKey.currentState
-                                              ?.openDrawer();
-                                        },
-                                      );
-                              },
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.background,
+                        ),
+                        child: CustomScrollView(
+                          slivers: <Widget>[
+                            SliverAppBar(
+                              floating: true,
+                              pinned: false,
+                              snap: true,
+                              expandedHeight: appBarHeight + 40,
+                              surfaceTintColor: AppColors.background,
+                              backgroundColor: AppColors.background,
+                              toolbarHeight: appBarHeight,
+                              leading: GetBuilder<HeadPortraitChangeManagement>(
+                                init: headPortraitChangeManagement,
+                                builder: (headPortraitChangeManagement) {
+                                  return headPortraitChangeManagement
+                                              .headPortraitValue !=
+                                          null
+                                      ? Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 15.0),
+                                          child: IconButton(
+                                              padding: const EdgeInsets.all(0),
+                                              onPressed: () {
+                                                _scaffoldKey.currentState
+                                                    ?.openDrawer();
+                                              },
+                                              icon: CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundImage: FileImage(
+                                                      headPortraitChangeManagement
+                                                          .headPortraitValue!))),
+                                        )
+                                      : IconButton(
+                                          icon: SvgPicture.asset(
+                                            'assets/home/personal_add.svg',
+                                            width: 30,
+                                            height: 30,
+                                          ),
+                                          onPressed: () {
+                                            _scaffoldKey.currentState
+                                                ?.openDrawer();
+                                          },
+                                        );
+                                },
+                              ),
+                              iconTheme:
+                                  const IconThemeData(color: Colors.black),
+                              flexibleSpace: _buildTabBar(),
                             ),
-                            iconTheme: const IconThemeData(color: Colors.black),
-                            flexibleSpace: _buildTabBar(),
-                          ),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (BuildContext context, int index) {
-                                return Container(
-                                  color: index.isOdd
-                                      ? Colors.white
-                                      : Colors.black12,
-                                  height: 100.0,
-                                  child: Center(
-                                    child: Text('$index',
-                                        textScaler: const TextScaler.linear(5)),
-                                  ),
-                                );
-                              },
-                              childCount: 20,
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (BuildContext context, int index) {
+                                  return Container(
+                                    color: index.isOdd
+                                        ? Colors.white
+                                        : Colors.black12,
+                                    height: 100.0,
+                                    child: Center(
+                                      child: Text('$index',
+                                          textScaler:
+                                              const TextScaler.linear(5)),
+                                    ),
+                                  );
+                                },
+                                childCount: 20,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     }))),
       ]),
@@ -312,7 +320,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildSpeedDial() {
     return SpeedDial(
-      
       backgroundColor: AppColors.iconColor,
       buttonSize: const Size(60, 60),
       animatedIcon: AnimatedIcons.add_event,

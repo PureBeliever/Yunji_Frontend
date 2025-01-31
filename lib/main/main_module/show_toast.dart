@@ -1,41 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:toastification/toastification.dart' as toast;
+import 'package:toastification/toastification.dart';
+import 'package:yunji/main/global.dart';
 
 void showToast(
   BuildContext context,
   String title,
   String message,
-  toast.ToastificationType type,
-  Color? primaryColor,
-  Color? backgroundColor,
 ) {
-  toast.toastification.show(
+  toastification.show(
     context: context,
-    type: type,
-    style: toast.ToastificationStyle.flatColored,
+    type: ToastificationType.success,
+    style: ToastificationStyle.flat,
     title: Text(
       title,
-      style: const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w800,
-        fontSize: 17,
-      ),
+      style: TextStyle(fontSize: 17),
     ),
     description: Text(
       message,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 119, 118, 118),
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-      ),
+      style: TextStyle(fontSize: 16),
     ),
-    alignment: Alignment.topRight,
+    alignment: Alignment.topCenter,
     autoCloseDuration: const Duration(seconds: 4),
+    primaryColor: Colors.blue,
+    foregroundColor: Colors.blue, // 修改前景色为白色
+    backgroundColor: Color.fromARGB(255, 225, 240, 255), // 设置背景色
     borderRadius: BorderRadius.circular(12.0),
-    boxShadow: toast.lowModeShadow,
-    primaryColor: primaryColor,
-    backgroundColor: backgroundColor,
-    dragToClose: true,
-    
+    closeButtonShowType: CloseButtonShowType.none,
+    showProgressBar: false,
+    boxShadow: lowModeShadow,
+  );
+}
+
+void showWarnToast(BuildContext context, String title, String message,
+    [Function? onTap]) {
+  toastification.show(
+    context: context,
+    type: ToastificationType.warning,
+    style: ToastificationStyle.flat,
+    title: Text(
+      title,
+      style: TextStyle(fontSize: 17),
+    ),
+    description: Text(
+      message,
+      style: TextStyle(fontSize: 16),
+    ),
+    alignment: Alignment.topCenter,
+    autoCloseDuration: const Duration(seconds: 4),
+    primaryColor: Colors.orange,
+    foregroundColor: Colors.orange, // 修改前景色为白色
+    backgroundColor: Color.fromARGB(255, 255, 246, 225), // 设置背景色
+    borderRadius: BorderRadius.circular(12.0),
+    closeButtonShowType: CloseButtonShowType.none,
+    showProgressBar: false,
+    boxShadow: lowModeShadow,
+    callbacks: onTap != null
+        ? ToastificationCallbacks(
+            onTap: (toastItem) => onTap(),
+          )
+        : ToastificationCallbacks(),
+  );
+}
+
+void showErrorToast(
+  BuildContext context,
+  String title,
+  String message,
+) {
+  toastification.show(
+    context: context,
+    type: ToastificationType.error,
+    style: ToastificationStyle.flat,
+    title: Text(
+      title,
+      style: TextStyle(fontSize: 17),
+    ),
+    description: Text(
+      message,
+      style: TextStyle(fontSize: 16),
+    ),
+    alignment: Alignment.topCenter,
+    autoCloseDuration: const Duration(seconds: 4),
+    primaryColor: Colors.red,
+    foregroundColor: Colors.red, // 修改前景色为白色
+    backgroundColor: Color.fromARGB(255, 255, 225, 225), // 设置背景色
+    borderRadius: BorderRadius.circular(12.0),
+    closeButtonShowType: CloseButtonShowType.none,
+    showProgressBar: false,
+    boxShadow: lowModeShadow,
   );
 }

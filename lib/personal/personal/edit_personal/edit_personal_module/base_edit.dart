@@ -7,6 +7,7 @@ import 'package:city_pickers/modal/base_citys.dart';
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:city_pickers/src/base/pickers.dart';
+import 'package:yunji/main/global.dart';
 
 class BaseView extends StatefulWidget {
   final double? progress;
@@ -38,7 +39,8 @@ class BaseView extends StatefulWidget {
   /// 是否开启全球化数据
   final bool? global;
 
-  const BaseView({super.key, 
+  const BaseView({
+    super.key,
     this.progress,
     required this.showType,
     required this.height,
@@ -65,10 +67,8 @@ class _BaseView extends State<BaseView> {
 
   FixedExtentScrollController provinceController =
       FixedExtentScrollController();
-  FixedExtentScrollController cityController =
-      FixedExtentScrollController();
-  FixedExtentScrollController areaController =
-      FixedExtentScrollController();
+  FixedExtentScrollController cityController = FixedExtentScrollController();
+  FixedExtentScrollController areaController = FixedExtentScrollController();
   FixedExtentScrollController villageController =
       FixedExtentScrollController(); // 增加第4级(村/镇)选择
 
@@ -86,9 +86,8 @@ class _BaseView extends State<BaseView> {
   void initState() {
     super.initState();
 
-    provinces =
-        Provinces(metaInfo: widget.provincesData, sort: widget.isSort)
-            .provinces;
+    provinces = Provinces(metaInfo: widget.provincesData, sort: widget.isSort)
+        .provinces;
 
     cityTree = CityTree(
         metaInfo: widget.citiesData, provincesInfo: widget.provincesData);
@@ -428,78 +427,60 @@ class _BaseView extends State<BaseView> {
       ));
     }
     return SizedBox(
-  height: 300,
-  child: Column(
-    children: <Widget>[
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Row(
-            children: pickerRows,
-          ),
-        ),
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
+      height: 300,
+      child: Column(
         children: <Widget>[
-          Row(
-            children: [
-              _buildTextButton(
-                onPressed: () => Navigator.pop(context),
-                text: '取消',
-                color: Colors.black,
-                customWidget: widget.cancelWidget,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: pickerRows,
               ),
-              _buildTextButton(
-                onPressed: () => Navigator.pop(context, _nullResult()),
-                text: '移除',
-                color: Colors.red,
-                customWidget: widget.cancelWidget,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      '取消',
+                      style: AppTextStyle.textStyle,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, _nullResult()),
+                    child: Text(
+                      '移除',
+                      style: AppTextStyle.redTextStyle,
+                    ),
+                  ),
+                ],
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, _buildResult()),
+                child: Text(
+                  '确定',
+                  style: AppTextStyle.textStyle,
+                ),
               ),
             ],
           ),
-          _buildTextButton(
-            onPressed: () => Navigator.pop(context, _buildResult()),
-            text: '确定',
-            color: Colors.black,
-            customWidget: widget.confirmWidget,
-          ),
         ],
       ),
-    ],
-  ),
-);
-
-
-  }
-  Widget _buildTextButton({
-  required VoidCallback onPressed,
-  required String text,
-  required Color color,
-  Widget? customWidget,
-}) {
-  return TextButton(
-    onPressed: onPressed,
-    child: customWidget ??
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-            color: color,
-          ),
-        ),
-  );
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return  Dialog(
+    return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
+      backgroundColor: AppColors.background,
       child: _bottomBuild(),
     );
   }

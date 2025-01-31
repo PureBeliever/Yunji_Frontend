@@ -145,17 +145,13 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                         context,
                         "请添加填写记忆项",
                         "记忆项为空",
-                        toast.ToastificationType.success,
-                        const Color(0xff047aff),
-                        const Color(0xFFEDF7FF));
+                        );
                   } else if (theme.isEmpty) {
                     showToast(
                         context,
                         "请填写主题",
                         "主题为空",
-                        toast.ToastificationType.success,
-                        const Color(0xff047aff),
-                        const Color(0xFFEDF7FF));
+                       );
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     FocusManager.instance.primaryFocus?.unfocus();
@@ -289,9 +285,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                     context,
                     "记忆项数量已到上限",
                     "记忆项数量已到上限",
-                    toast.ToastificationType.success,
-                    const Color(0xff047aff),
-                    const Color(0xFFEDF7FF));
+               );
               }
             },
             child: Text(
@@ -323,7 +317,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 230.0),
       child: ExpansionPanelList(
-        materialGapSize: commonFontSize,
+        materialGapSize: 17,
         expandIconColor: AppColors.Gray,
         elevation: 0,
         dividerColor: AppColors.background,

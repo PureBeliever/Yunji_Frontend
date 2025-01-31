@@ -327,9 +327,7 @@ class _ReviewPage extends State<ReviewPage> {
                         context,
                         "请填写主题",
                         "主题为空",
-                        toast.ToastificationType.success,
-                        const Color(0xff047aff),
-                        const Color(0xFFEDF7FF));
+                       );
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     int value = 0;

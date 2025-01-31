@@ -49,11 +49,29 @@ class AppTextStyle {
         fontWeight: FontWeight.w700,
         color: AppColors.text,
       );
+  static TextStyle get smallTextStyle => TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: AppColors.text,
+      );
+  static TextStyle get redTextStyle => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: Colors.red,
+      );
   static TextStyle get whiteTextStyle => TextStyle(
         fontSize: 17,
         fontWeight: FontWeight.w700,
         color: Colors.white,
       );
+  static TextStyle get greenTextStyle => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w400,
+        color: Colors.green,
+        decoration: TextDecoration.underline,
+        decorationColor: Colors.green,
+      );
+
   static TextStyle get blueTextStyle => TextStyle(
         fontSize: 17,
         fontWeight: FontWeight.w700,
@@ -64,6 +82,7 @@ class AppTextStyle {
         fontWeight: FontWeight.w900,
         color: AppColors.text,
       );
+
   static TextStyle get subsidiaryText => TextStyle(
         fontSize: 17,
         fontWeight: FontWeight.w400,
@@ -71,7 +90,7 @@ class AppTextStyle {
       );
   static TextStyle get titleStyle => TextStyle(
         fontSize: 21,
-        fontWeight: FontWeight.w900,
+        fontWeight: FontWeight.w700,
         color: AppColors.text,
       );
 

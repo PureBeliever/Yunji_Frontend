@@ -29,9 +29,9 @@ class OtherPersonalPage extends StatefulWidget {
 
 final _otherPeopleInformationListScrollDataManagement =
     Get.put(OtherPeopleInformationListScrollDataManagement());
+
 class OtherPeopleInformationListScrollDataManagement extends GetxController {
   static OtherPeopleInformationListScrollDataManagement get to => Get.find();
-
 
   bool backgroundState = false;
   double filter = 0.0;
@@ -165,8 +165,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       Get.put(OtherPeopleBackgroundImageChangeManagement());
   final _otherPeopleHeadPortraitChangeManagement =
       Get.put(OtherPeopleHeadPortraitChangeManagement());
-        final _viewPostDataManagementForMemoryBanks =
-    Get.put(ViewPostDataManagementForMemoryBanks());
+  final _viewPostDataManagementForMemoryBanks =
+      Get.put(ViewPostDataManagementForMemoryBanks());
   final _otherPeoplePersonalInformationManagement =
       Get.put(OtherPeoplePersonalInformationManagement());
 
@@ -209,15 +209,14 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
   }
 
   Future<void> _refresh() async {
-    requestTheOtherPersonalData(
-        _otherPeopleInformationListScrollDataManagement
-            .scrollDataValue['user_name']);
+    requestTheOtherPersonalData(_otherPeopleInformationListScrollDataManagement
+        .scrollDataValue['user_name']);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: EasyRefresh(
         callRefreshOverOffset: 5,
         header: ClassicHeader(
@@ -300,7 +299,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                               },
                               child: const Icon(
                                 Icons.arrow_back,
-                                size: 25,
+                                size: 26,
                                 color: Colors.white,
                               ),
                             ),
@@ -400,7 +399,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                       },
                                       child: CircleAvatar(
                                         radius: 27,
-                                        backgroundColor: Colors.white,
+                                        backgroundColor: AppColors.background,
                                         child: CircleAvatar(
                                           backgroundColor: Colors.grey,
                                           backgroundImage: _buildHeadPortraitImage(
@@ -420,7 +419,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                   ),
                   SliverToBoxAdapter(
                     child: Container(
-                      color: Colors.white,
+                      color: AppColors.background,
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 14.0, right: 8.0, top: 0),
@@ -443,48 +442,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                       ),
                     ),
                   ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: SliverHeaderDelegate.fixedHeight(
-                      height: 45,
-                      child: Material(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                          ),
-                          child: TabBar(
-                            labelStyle: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 17.5,
-                              color: Colors.black,
-                              fontFamily: 'Raleway',
-                              decoration: TextDecoration.none,
-                            ),
-                            indicatorColor: Colors.blue,
-                            unselectedLabelStyle: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 17,
-                              color: Color.fromARGB(255, 119, 118, 118),
-                              fontFamily: 'Raleway',
-                              decoration: TextDecoration.none,
-                            ),
-                            controller: tabController,
-                            tabs: const [
-                              SizedBox(
-                                width: double.infinity,
-                                child: Center(
-                                  child: Text('记忆库'),
-                                ),
-                              ),
-                              Text('拉取'),
-                              Text('回复'),
-                              Text('喜欢'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildSliverPersistentHeader(),
                 ];
               },
               body: TabBarView(
@@ -506,6 +464,38 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
     );
   }
 
+    SliverPersistentHeader _buildSliverPersistentHeader() {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: SliverHeaderDelegate.fixedHeight(
+        height: 45,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.background,
+          ),
+          child: TabBar(
+            labelStyle: AppTextStyle.coarseTextStyle,
+            indicatorColor: AppColors.iconColor,
+            unselectedLabelStyle: AppTextStyle.subsidiaryText,
+            controller: tabController,
+            tabs: const [
+              SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: Text('记忆库'),
+                ),
+              ),
+              Text('拉取'),
+              Text('回复'),
+              Text('喜欢'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
   Widget _buildActionIcon(dynamic icon) {
     return Container(
       width: 30,
@@ -515,7 +505,10 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         color: Colors.black.withOpacity(0.5),
       ),
       child: icon is String
-          ? SvgPicture.asset(icon, width: 25, height: 25, color: Colors.white)
+          ? SvgPicture.asset(icon,
+              width: 25,
+              height: 25,
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn))
           : Icon(icon, size: 25, color: Colors.white),
     );
   }
@@ -554,9 +547,9 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
           child: Container(
             width: 90,
             height: 40,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(60),
                 bottomRight: Radius.circular(60),
               ),
@@ -571,14 +564,11 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(0),
-                backgroundColor: Colors.blue,
+                backgroundColor: AppColors.iconColor,
               ),
-              child: const Text(
+              child: Text(
                 "关注",
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white),
+                style: AppTextStyle.whiteTextStyle,
               ),
               onPressed: () {},
             ),
@@ -591,26 +581,14 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
   Widget _buildNameText() {
     return Text(
       '${_otherPeopleInformationListScrollDataManagement.scrollDataValue['name']}',
-      style: const TextStyle(
-        fontWeight: FontWeight.w900,
-        fontSize: 24,
-        color: Colors.black,
-        fontFamily: 'Raleway',
-        decoration: TextDecoration.none,
-      ),
+      style: AppTextStyle.titleStyle,
     );
   }
 
   Widget _buildUserNameText() {
     return Text(
       '@${userNameChangeManagement.userNameValue}',
-      style: const TextStyle(
-        fontWeight: FontWeight.w400,
-        fontSize: 16,
-        color: Color.fromRGBO(84, 87, 105, 1),
-        fontFamily: 'Raleway',
-        decoration: TextDecoration.none,
-      ),
+      style: AppTextStyle.subsidiaryText,
     );
   }
 
@@ -623,13 +601,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
           ? Text(
               _otherPeopleInformationListScrollDataManagement
                   .scrollDataValue['introduction'],
-              style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 17,
-                color: Colors.black,
-                fontFamily: 'Raleway',
-                decoration: TextDecoration.none,
-              ),
+              style: AppTextStyle.textStyle,
             )
           : const SizedBox(),
     );
@@ -667,18 +639,17 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SvgPicture.asset(iconPath, width: 20, height: 20),
+              SvgPicture.asset(
+                iconPath,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(AppColors.Gray, BlendMode.srcIn),
+              ),
               const SizedBox(width: 7),
               Expanded(
                 child: Text(
                   text,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: Color.fromRGBO(84, 87, 105, 1),
-                    fontFamily: 'Raleway',
-                    decoration: TextDecoration.none,
-                  ),
+                  style: AppTextStyle.subsidiaryText,
                 ),
               ),
               const SizedBox(width: 13),
@@ -688,47 +659,23 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
   }
 
   Widget _buildFollowInfoRow() {
-    return const Row(
+    return Row(
       children: [
         Text(
           '0',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
-            color: Colors.black,
-            fontFamily: 'Raleway',
-            decoration: TextDecoration.none,
-          ),
+          style: AppTextStyle.textStyle,
         ),
         Text(
           ' 正在关注    ',
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Color.fromRGBO(84, 87, 105, 1),
-            fontFamily: 'Raleway',
-            decoration: TextDecoration.none,
-          ),
+          style: AppTextStyle.subsidiaryText,
         ),
         Text(
           '0',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
-            color: Colors.black,
-            fontFamily: 'Raleway',
-            decoration: TextDecoration.none,
-          ),
+          style: AppTextStyle.textStyle,
         ),
         Text(
           ' 关注者',
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Color.fromRGBO(84, 87, 105, 1),
-            fontFamily: 'Raleway',
-            decoration: TextDecoration.none,
-          ),
+          style: AppTextStyle.subsidiaryText,
         ),
       ],
     );
@@ -743,7 +690,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
         child: MemoryBankList(
           refreshofMemoryBankextends: memoryBank,
           onItemTap: (index) {
-            _viewPostDataManagementForMemoryBanks.initMemoryData(memoryBank![index]);
+            _viewPostDataManagementForMemoryBanks
+                .initMemoryData(memoryBank![index]);
             switchPage(context, const OtherMemoryBank());
           },
         ),
@@ -753,11 +701,14 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
 
   Widget _buildEmptyListView() {
     return SizeCacheWidget(
-      child: ListView.builder(
-        cacheExtent: 500,
-        itemBuilder: (context, index) {
-          return null;
-        },
+      child: Container(
+        color: AppColors.background,
+        child: ListView.builder(
+          cacheExtent: 500,
+          itemBuilder: (context, index) {
+            return null;
+          },
+        ),
       ),
     );
   }

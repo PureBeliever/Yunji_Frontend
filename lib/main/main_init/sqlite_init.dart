@@ -14,7 +14,7 @@ class DatabaseManager {
       onCreate: (db, version) async {
         await db.transaction((txn) async {
           await _createPersonalTable(db);
-          await _createIntDatabaseTable(db);
+    
           await _createJiyikuTable(db);
           await _createPersonalJiyikuTable(db);
           await _createPersonalJiyikudianjiTable(db);
@@ -32,17 +32,6 @@ class DatabaseManager {
     );
   }
 
-  Future<void> _createIntDatabaseTable(Database txn) async {
-    await txn.execute(
-      'CREATE TABLE intdatabase (id BIGINT PRIMARY KEY, number LONGTEXT, length INT);',
-    );
-    List<int> number = [1];
-    await txn.insert(
-      'intdatabase',
-      {'id': 0, 'number': number.toString(), 'length': 1},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
 
   Future<void> _createJiyikuTable(Database txn) async {
     await txn.execute(

@@ -65,35 +65,46 @@ List<Item> generateItems(int itemCount, List<int> indices,
 
 class _OtherMemoryBankState extends State<OtherMemoryBank> {
   late final List<Item> _data;
-
+  final viewPostDataManagementForMemoryBanks =
+    Get.put(ViewPostDataManagementForMemoryBanks());
   @override
   void initState() {
     super.initState();
     _data = generateItems(
-      ViewPostDataManagementForMemoryBanks.to.memoryCount,
-      ViewPostDataManagementForMemoryBanks.to.memoryIndices,
-      ViewPostDataManagementForMemoryBanks.to.problemCount,
-      ViewPostDataManagementForMemoryBanks.to.answerCount,
+      viewPostDataManagementForMemoryBanks.memoryCount,
+      viewPostDataManagementForMemoryBanks.memoryIndices,
+      viewPostDataManagementForMemoryBanks.problemCount,
+      viewPostDataManagementForMemoryBanks.answerCount,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Icon(
+              Icons.arrow_back,
+              size: 30,
+              color: AppColors.iconColorTwo,
+            )),
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0.9),
+          preferredSize: const Size.fromHeight(0.3),
           child: Container(
-            color: const Color.fromRGBO(223, 223, 223, 1),
-            height: 0.9,
+            color: AppColors.Gray,
+            height: 0.3,
           ),
         ),
         title: Text(
-          ViewPostDataManagementForMemoryBanks.to.memoryTitle,
-          style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+          viewPostDataManagementForMemoryBanks.memoryTitle,
+          style: AppTextStyle.titleStyle,
         ),
       ),
       body: ListView(
@@ -102,7 +113,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             onTap: () async {
               switchPage(context, const OtherPersonalPage());
               await requestTheOtherPersonalData(
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['user_name']);
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['user_name']);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
@@ -113,8 +124,8 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                     children: [
                       CircleAvatar(
                         radius: 21,
-                        backgroundImage: ViewPostDataManagementForMemoryBanks.to.memoryBankValue['head_portrait'] != null
-                            ? FileImage(File(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['head_portrait']))
+                        backgroundImage: viewPostDataManagementForMemoryBanks.memoryBankValue['head_portrait'] != null
+                            ? FileImage(File(viewPostDataManagementForMemoryBanks.memoryBankValue['head_portrait']))
                             : const AssetImage('assets/personal/gray_back_head.png'),
                       ),
                       const SizedBox(width: 11),
@@ -122,20 +133,12 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            ViewPostDataManagementForMemoryBanks.to.memoryBankValue['name'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black,
-                              fontSize: 17,
-                            ),
+                            viewPostDataManagementForMemoryBanks.memoryBankValue['name'],
+                            style:AppTextStyle.coarseTextStyle
                           ),
                           Text(
-                            '@${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['user_name']}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 16,
-                            ),
+                            '@${viewPostDataManagementForMemoryBanks.memoryBankValue['user_name']}',
+                            style: AppTextStyle.subsidiaryText,
                           )
                         ],
                       ),
@@ -147,14 +150,11 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(0),
-                        backgroundColor: Colors.blue,
+                        backgroundColor: AppColors.iconColor,
                       ),
-                      child: const Text(
+                      child: Text(
                         "关注",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white),
+                        style: AppTextStyle.whiteTextStyle
                       ),
                       onPressed: () {},
                     ),
@@ -164,9 +164,10 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             ),
           ),
           ExpansionPanelList(
-            materialGapSize: 15,
+            materialGapSize: 15, 
             elevation: 0,
-            dividerColor: Colors.white,
+            dividerColor: AppColors.background,
+            expandIconColor: AppColors.iconColorTwo,
             expansionCallback: (int index, bool isExpanded) {
               setState(() {
                 _data[index].isExpanded = isExpanded;
@@ -174,7 +175,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             },
             children: _data.map<ExpansionPanel>((Item item) {
               return ExpansionPanel(
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.background,
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return GestureDetector(
                     onTap: () {
@@ -185,16 +186,14 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                     child: ListTile(
                       title: Text(
                         item.headerValue,
-                        style: const TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w700),
+                        style: AppTextStyle.textStyle
                       ),
                     ),
                   );
                 },
                 body: ListTile(
                   title: Text(item.expandedValue,
-                      style: const TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.w700)),
+                      style: AppTextStyle.textStyle),
                 ),
                 isExpanded: item.isExpanded,
               );
@@ -204,15 +203,15 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                const Divider(
-                  color: Color.fromRGBO(223, 223, 223, 1),
-                  thickness: 0.9,
+               Divider(
+                  color: AppColors.Gray,
+                  thickness: 0.3,
                   height: 25,
                 ),
                 _buildInfoRow(),
-                const Divider(
-                  color: Color.fromRGBO(223, 223, 223, 1),
-                  thickness: 0.9,
+                Divider(
+                  color: AppColors.Gray,
+                  thickness: 0.3,
                   height: 25,
                 ),
                 GetBuilder<UserPersonalInformationManagement>(
@@ -224,9 +223,9 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
               ],
             ),
           ),
-          const Divider(
-            color: Color.fromRGBO(223, 223, 223, 1),
-            thickness: 0.9,
+           Divider(
+            color: AppColors.Gray,
+            thickness: 0.3,
             height: 25,
           ),
         ],
@@ -238,22 +237,22 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
     return Row(
       children: [
         _buildInfoText(
-          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['pull']} ',
+          '${viewPostDataManagementForMemoryBanks.memoryBankValue['pull']} ',
           '拉取',
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['collect']} ',
+          '${viewPostDataManagementForMemoryBanks.memoryBankValue['collect']} ',
           '收藏',
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['like']} ',
+          '${viewPostDataManagementForMemoryBanks.memoryBankValue['like']} ',
           '喜欢',
         ),
         const Spacer(flex: 2),
         _buildInfoText(
-          '${ViewPostDataManagementForMemoryBanks.to.memoryBankValue['reply']} ',
+          '${viewPostDataManagementForMemoryBanks.memoryBankValue['reply']} ',
           '回复',
         ),
       ],
@@ -265,15 +264,11 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
       children: [
         Text(
           value,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+          style: AppTextStyle.coarseTextStyle
         ),
         Text(
           label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w700,
-            color: Color.fromRGBO(84, 87, 105, 1),
-            fontSize: 17,
-          ),
+          style: AppTextStyle.textStyle
         ),
       ],
     );
@@ -299,38 +294,38 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             final List<int> changeUserPulledMemoryBankIndex =
                 userPersonalInformationManagement.userPulledMemoryBankIndex;
             if (isLiked == false) {
-              addPersonalMemoryBankData(ViewPostDataManagementForMemoryBanks.to.memoryBankValue);
+              addPersonalMemoryBankData(viewPostDataManagementForMemoryBanks.memoryBankValue);
               changeUserPulledMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? null
                   : changeUserPulledMemoryBankIndex.add(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id']);
               await synchronizeMemoryBankData(
                   changeUserPulledMemoryBankIndex,
                   'pull_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   1,
                   'pull');
             } else {
               changeUserPulledMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? changeUserPulledMemoryBankIndex.remove(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   : null;
               await synchronizeMemoryBankData(
                   changeUserPulledMemoryBankIndex,
                   'pull_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   -1,
                   'pull');
               if (!userPersonalInformationManagement.userPulledMemoryBankIndex
-                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
+                        .contains(viewPostDataManagementForMemoryBanks.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userLikedMemoryBankIndex
-                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
+                      .contains(viewPostDataManagementForMemoryBanks.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userReviewMemoryBankIndex
-                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])) {
+                      .contains(viewPostDataManagementForMemoryBanks.memoryBankValue['id'])) {
                 deletePersonalMemoryBankData(
-                    ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
+                    viewPostDataManagementForMemoryBanks.memoryBankValue['id']);
               }
             }
             return !isLiked;
@@ -338,7 +333,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userPulledMemoryBankIndex,
           memoryBank:
-              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
+              viewPostDataManagementForMemoryBanks.memoryBankValue,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
@@ -358,26 +353,26 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                 userPersonalInformationManagement.userCollectedMemoryBankIndex;
             if (isLiked == false) {
               changeUserCollectedMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? null
                   : changeUserCollectedMemoryBankIndex.add(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id']);
               synchronizeMemoryBankData(
                   changeUserCollectedMemoryBankIndex,
                   'collect_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   1,
                   'collect');
             } else {
               changeUserCollectedMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? changeUserCollectedMemoryBankIndex.remove(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   : null;
               synchronizeMemoryBankData(
                   changeUserCollectedMemoryBankIndex,
                   'collect_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   -1,
                   'collect');
             }
@@ -386,7 +381,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userCollectedMemoryBankIndex,
           memoryBank:
-              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
+              viewPostDataManagementForMemoryBanks.memoryBankValue,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
@@ -405,38 +400,38 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
             List<int> changeUserLikedMemoryBankIndex =
                 userPersonalInformationManagement.userLikedMemoryBankIndex;
             if (isLiked == false) {
-              addPersonalMemoryBankData(ViewPostDataManagementForMemoryBanks.to.memoryBankValue);
+              addPersonalMemoryBankData(viewPostDataManagementForMemoryBanks.memoryBankValue);
               changeUserLikedMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? null
                   : changeUserLikedMemoryBankIndex.add(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id']);
               synchronizeMemoryBankData(
                   changeUserLikedMemoryBankIndex,
                   'like_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   1,
                   '`like`');
             } else {
               changeUserLikedMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? changeUserLikedMemoryBankIndex.remove(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   : null;
               synchronizeMemoryBankData(
                   changeUserLikedMemoryBankIndex,
                   'like_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   -1,
                   '`like`');
               if (!userPersonalInformationManagement.userPulledMemoryBankIndex
-                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
+                        .contains(viewPostDataManagementForMemoryBanks.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userLikedMemoryBankIndex
-                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']) &&
+                      .contains(viewPostDataManagementForMemoryBanks.memoryBankValue['id']) &&
                   !userPersonalInformationManagement.userReviewMemoryBankIndex
-                      .contains(ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])) {
+                      .contains(viewPostDataManagementForMemoryBanks.memoryBankValue['id'])) {
                 deletePersonalMemoryBankData(
-                    ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
+                    viewPostDataManagementForMemoryBanks.memoryBankValue['id']);
               }
             }
             return !isLiked;
@@ -444,7 +439,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userLikedMemoryBankIndex,
           memoryBank:
-              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
+              viewPostDataManagementForMemoryBanks.memoryBankValue,
         ),
         const Spacer(flex: 1),
         _buildLikeButton(
@@ -464,26 +459,26 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
                 userPersonalInformationManagement.userReplyMemoryBankIndex;
             if (isLiked == false) {
               changeUserReplyMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? null
                   : changeUserReplyMemoryBankIndex.add(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id']);
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id']);
               synchronizeMemoryBankData(
                   changeUserReplyMemoryBankIndex,
                   'reply_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   1,
                   'reply');
             } else {
               changeUserReplyMemoryBankIndex.contains(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   ? changeUserReplyMemoryBankIndex.remove(
-                      ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'])
+                      viewPostDataManagementForMemoryBanks.memoryBankValue['id'])
                   : null;
               synchronizeMemoryBankData(
                   changeUserReplyMemoryBankIndex,
                   'reply_list',
-                  ViewPostDataManagementForMemoryBanks.to.memoryBankValue['id'],
+                  viewPostDataManagementForMemoryBanks.memoryBankValue['id'],
                   -1,
                   'reply');
             }
@@ -492,7 +487,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
           memoryBankIds:
               userPersonalInformationManagement.userReplyMemoryBankIndex,
           memoryBank:
-              ViewPostDataManagementForMemoryBanks.to.memoryBankValue,
+              viewPostDataManagementForMemoryBanks.memoryBankValue,
         ),
         const SizedBox(width: 10),
       ],
@@ -515,7 +510,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
       onTap: onTap,
       likeBuilder: (bool isLiked) => Icon(
         isLiked ? likeIcon : unLikeIcon,
-        color: isLiked ? color : const Color.fromRGBO(84, 87, 105, 1),
+        color: isLiked ? color : AppColors.Gray,
         size: 25,
       ),
       isLiked: memoryBankIds.contains(memoryBank['id']),
