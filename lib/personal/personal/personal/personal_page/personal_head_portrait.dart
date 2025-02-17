@@ -98,7 +98,7 @@ class _PersonalHeadPortrait extends State<PersonalHeadPortrait> {
           child: OutlinedButton(
             onPressed: () {
               if (!loginStatus) {
-                smsLogin(context);
+                smsLogin();
                 showWarnToast(context, "未登录", "未登录");
               } else {
                 Navigator.pop(context);

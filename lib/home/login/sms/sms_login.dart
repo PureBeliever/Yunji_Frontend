@@ -1,16 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:toastification/toastification.dart' as toast;
-
 
 import 'package:yunji/home/login/sms/sms_api.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 
-
 // 短信登录功能
-void smsLogin(BuildContext context) {
+void smsLogin() {
+  // 获取全局的 context
+  final BuildContext context = navigatorKey.currentContext!;
+
+  // 检查 context 是否为空
+  if (context == null) {
+    showErrorToast(
+      context,
+      "获取上下文失败",
+      "无法获取当前上下文，请重试。",
+    );
+    return;
+  }
+
   // 控制输入框的文本
   final phoneController = TextEditingController();
   final codeController = TextEditingController();
@@ -42,7 +52,6 @@ void smsLogin(BuildContext context) {
         context,
         "手机号格式错误",
         "请输入正确的手机号码",
-
       );
       return;
     }
@@ -54,7 +63,6 @@ void smsLogin(BuildContext context) {
         context,
         "验证码已发送",
         "请注意查收验证码",
-
       );
       sendingState.value = false;
       countdown();
@@ -63,7 +71,6 @@ void smsLogin(BuildContext context) {
         context,
         "请稍后重试",
         "需等待${seconds.value}秒",
-
       );
     }
   }
@@ -77,13 +84,13 @@ void smsLogin(BuildContext context) {
         context,
         "验证码已过期",
         "请重新获取验证码",
-   
       );
       return;
     }
 
     verifyAttempt.value = false;
-    final verified = await verification(phoneController.text, codeController.text);
+    final verified =
+        await verification(phoneController.text, codeController.text);
 
     if (verified) {
       _onLoginSuccess(context);
@@ -101,18 +108,14 @@ void smsLogin(BuildContext context) {
   // 显示登录对话框
   showDialog(
     context: context,
-    builder: (context) => PopScope(
-      canPop: false,
-      onPopInvoked: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Dialog(
-        child: LoginDialogContent(
-          phoneController: phoneController,
-          codeController: codeController,
-          sendingState: sendingState,
-          seconds: seconds,
-          onSendCode: handleSendCode,
-          onVerify: handleVerifyCode,
-        ),
+    builder: (context) => Dialog(
+      child: LoginDialogContent(
+        phoneController: phoneController,
+        codeController: codeController,
+        sendingState: sendingState,
+        seconds: seconds,
+        onSendCode: handleSendCode,
+        onVerify: handleVerifyCode,
       ),
     ),
   );
@@ -311,7 +314,6 @@ class LoginDialogContent extends StatelessWidget {
 bool _isValidPhoneNumber(String phone) {
   return phone.length == 11 && RegExp(r'^\d*$').hasMatch(phone);
 }
-
 
 // 登录成功后的处理
 void _onLoginSuccess(BuildContext context) {

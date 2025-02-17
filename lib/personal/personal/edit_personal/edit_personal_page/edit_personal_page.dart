@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/address_picker_dialog.dart';
 
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
@@ -240,11 +241,28 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               dateOfBirth: selectDateOfBirth,
             ) >
             0) {
-          showDialog(
+          buildDialog(
             context: context,
-            builder: (BuildContext context) {
-              return _buildDialog(context);
+            title: '编辑个人资料',
+            content: '放弃更改?',
+            onConfirm: () {
+              selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(
+                  _editPersonalDataValueManagement.dateOfBirthValue);
+              selectorResultsUpdateDisplay
+                  .residentialAddressSelectorResultValueChange(
+                      _editPersonalDataValueManagement.residentialAddressValue);
+              backgroundImageChangeManagement.restoreBackgroundImage();
+              headPortraitChangeManagement.restoreHeadPortrait();
+              name = _editPersonalDataValueManagement.nameValue;
+              profile = _editPersonalDataValueManagement.profileValue;
+              selectResidentialAddress = selectorResultsUpdateDisplay
+                  .residentialAddressSelectorResultValue;
+              selectDateOfBirth =
+                  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
             },
+            buttonRight: '放弃',
           );
         } else {
           Navigator.of(context).pop();
@@ -289,11 +307,30 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 dateOfBirth: selectDateOfBirth,
               ) >
               0) {
-            showDialog(
+            buildDialog(
               context: context,
-              builder: (BuildContext context) {
-                return _buildDialog(context);
+              title: '编辑个人资料',
+              content: '放弃更改?',
+              onConfirm: () {
+                selectorResultsUpdateDisplay
+                    .dateOfBirthSelectorResultValueChange(
+                        _editPersonalDataValueManagement.dateOfBirthValue);
+                selectorResultsUpdateDisplay
+                    .residentialAddressSelectorResultValueChange(
+                        _editPersonalDataValueManagement
+                            .residentialAddressValue);
+                backgroundImageChangeManagement.restoreBackgroundImage();
+                headPortraitChangeManagement.restoreHeadPortrait();
+                name = _editPersonalDataValueManagement.nameValue;
+                profile = _editPersonalDataValueManagement.profileValue;
+                selectResidentialAddress = selectorResultsUpdateDisplay
+                    .residentialAddressSelectorResultValue;
+                selectDateOfBirth =
+                    selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
+              buttonRight: '放弃',
             );
           } else {
             Navigator.of(context).pop();
@@ -360,82 +397,6 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildDialog(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: SizedBox(
-        height: 150,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 25, top: 20),
-              child: Text(
-                '编辑个人资料',
-                style: AppTextStyle.titleStyle,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-              child: Text('放弃更改?', style: AppTextStyle.textStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 7),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      '取消',
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.black),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      selectorResultsUpdateDisplay
-                          .dateOfBirthSelectorResultValueChange(
-                              _editPersonalDataValueManagement
-                                  .dateOfBirthValue);
-                      selectorResultsUpdateDisplay
-                          .residentialAddressSelectorResultValueChange(
-                              _editPersonalDataValueManagement
-                                  .residentialAddressValue);
-                      backgroundImageChangeManagement.restoreBackgroundImage();
-                      headPortraitChangeManagement.restoreHeadPortrait();
-                      name = _editPersonalDataValueManagement.nameValue;
-                      profile = _editPersonalDataValueManagement.profileValue;
-                      selectResidentialAddress = selectorResultsUpdateDisplay
-                          .residentialAddressSelectorResultValue;
-                      selectDateOfBirth = selectorResultsUpdateDisplay
-                          .dateOfBirthSelectorResultValue;
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      '放弃',
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

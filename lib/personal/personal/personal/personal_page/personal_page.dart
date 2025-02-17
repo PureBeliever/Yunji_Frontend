@@ -677,7 +677,7 @@ class _PersonalPageState extends State<PersonalPage>
           ),
           onPressed: () async {
             if (loginStatus == false) {
-              smsLogin(context);
+              smsLogin();
               showWarnToast(context, "未登录", "未登录");
             } else {
               switchPage(context, const EditPersonalPage());

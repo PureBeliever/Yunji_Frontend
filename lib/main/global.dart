@@ -103,7 +103,7 @@ class AppTextStyle {
 
 final header = {'Content-Type': 'application/json'};
 
-const website = 'http://47.92.98.170:36233';
+const website = 'http://192.168.1.82:36233';
 
 final dio = Dio();
 // 数据库管理
@@ -133,3 +133,6 @@ String generateRandomFilename() {
   Random random = Random();
   return '${List.generate(10, (_) => chars[random.nextInt(chars.length)]).join('')}.jpg';
 }
+
+final GlobalKey<NavigatorState> navigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'navigator');

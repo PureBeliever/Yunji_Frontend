@@ -1,22 +1,26 @@
 import 'dart:core';
 
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:keframe/keframe.dart';
-import 'package:toastification/toastification.dart' as toast;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:permission_handler/permission_handler.dart';
 
+import 'package:yunji/home/algorithm_home_api.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
+import 'package:yunji/main/global.dart';
+import 'package:yunji/main/main_module/dialog.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
+import 'package:yunji/review/notification_init.dart';
+import 'package:yunji/main/main_init/app_sqlite.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/main/global.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
-import 'package:yunji/personal/sliver_header_delegate.dart';
-import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/home_module/ball_indicator.dart';
-import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
@@ -31,9 +35,6 @@ class RefreshofHomepageMemoryBankextends extends GetxController {
     update();
   }
 }
-
-// 上下文
-BuildContext? contexts;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController tabController;
 
   Future<void> _refresh() async {
-    await refreshHomePageMemoryBank(contexts!);
+    await refreshHomePageMemoryBank(context);
   }
 
   @override
@@ -69,9 +70,107 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //     print("Failed to get native message: '${e.message}'.");
   //   }
   // }
+  Future<void> _mainInit() async {
+    await _initializeApp();
+    final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
+    final personalData = await queryPersonalData();
+    await refreshHomePageMemoryBank(context);
+
+    if (homePageMemoryDatabaseData != null && personalData != null) {
+      _initializeUserData(homePageMemoryDatabaseData, personalData);
+    } else {
+      smsLogin();
+      _createIntDatabaseTable();
+    }
+
+    Alarm.ringStream.stream.listen((OnData) =>
+        OnRingCallback(OnData.notificationSettings.body, OnData.id));
+  }
+
+  Future<void> _createIntDatabaseTable() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> number = ['1'];
+    await prefs.setStringList('intdatabase_number', number);
+    await prefs.setInt('intdatabase_length', 1);
+  }
+
+  Future<void> _initializeApp() async {
+    await Future.wait([
+      requestPermission(),
+      Alarm.init(),
+      databaseManager.initDatabase(),
+      _initializeNotification(),
+      initializeNightMode(),
+    ]);
+    tz.initializeTimeZones();
+  }
+
+  Future<void> _initializeNotification() async {
+    final notificationHelper = NotificationHelper();
+    await notificationHelper.initialize();
+  }
+
+  void _initializeUserData(
+      List<Map<String, dynamic>> homePageMemoryDatabaseData,
+      Map<String, dynamic> personalData) async {
+    final selectorResultsUpdateDisplay =
+        Get.put(SelectorResultsUpdateDisplay());
+    final editPersonalDataValueManagement =
+        Get.put(EditPersonalDataValueManagement());
+
+    refreshofHomepageMemoryBankextends
+        .updateMemoryRefreshValue(homePageMemoryDatabaseData);
+
+    loginStatus = true;
+
+    // 初始化背景图和头像
+    backgroundImageChangeManagement
+        .initBackgroundImage(personalData['background_image']);
+    headPortraitChangeManagement
+        .initHeadPortrait(personalData['head_portrait']);
+
+    // 更新选择器结果
+    selectorResultsUpdateDisplay
+        .dateOfBirthSelectorResultValueChange(personalData['birth_time']);
+    selectorResultsUpdateDisplay.residentialAddressSelectorResultValueChange(
+        personalData['residential_address']);
+
+    // 更新个人信息
+    editPersonalDataValueManagement.changePersonalInformation(
+      name: personalData['name'],
+      profile: personalData['introduction'],
+      residentialAddress: personalData['residential_address'],
+      dateOfBirth: personalData['birth_time'],
+      applicationDate: personalData['join_date'],
+    );
+
+    userPersonalInformationManagement
+        .requestUserPersonalInformationDataOnTheBackEnd(personalData);
+
+    userNameChangeManagement.userNameChanged(personalData['user_name']);
+  }
+
+  Future<void> requestPermission() async {
+    await Permission.notification.request();
+    await Permission.scheduleExactAlarm.request();
+  }
+
+  void OnRingCallback(String body, int id) {
+    buildDialog(
+      context: context,
+      title: '闹钟',
+      content: body,
+      onConfirm: () {
+        Alarm.stop(id);
+        Navigator.of(context).pop();
+      },
+      buttonRight: '停止闹钟',
+    );
+  }
 
   @override
   void initState() {
+    _mainInit();
     // _getNativeMessage();
     super.initState();
     tabController = TabController(
@@ -84,7 +183,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _handleSpeedDialChildTap() {
     if (loginStatus == false) {
-      smsLogin(context);
+      smsLogin();
       showToast(context, "未登录", "未登录");
     } else {
       switchPage(context, const CreatReviewPage());
@@ -93,13 +192,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: AppColors.statusBarBrightness,
-      systemNavigationBarColor: AppColors.background,
-      systemNavigationBarIconBrightness: AppColors.statusBarBrightness,
-      systemNavigationBarDividerColor: AppColors.background,
-    ));
-    contexts = context;
     double appBarHeight = MediaQuery.of(context).size.height * 0.05;
     return Scaffold(
       backgroundColor: AppColors.background,

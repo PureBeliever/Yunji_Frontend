@@ -28,10 +28,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run app_init.dart",
+            "name": "Run main.dart",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main/main_init/app_init.dart" // 指定要运行的文件
+            "program": "lib/main.dart" // 指定要运行的文件
         },
         // {
         //     "name": "yunji",

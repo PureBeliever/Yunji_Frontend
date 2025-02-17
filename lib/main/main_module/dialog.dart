@@ -87,6 +87,7 @@ void buildDialog({
   required String title,
   required String content,
   required VoidCallback onConfirm,
+  required String buttonRight,
 }) {
   showDialog(
     context: context,
@@ -131,7 +132,7 @@ void buildDialog({
                     TextButton(
                       onPressed: onConfirm,
                       child: Text(
-                        '确定',
+                        buttonRight,
                         style: AppTextStyle.textStyle,
                       ),
                     ),

@@ -142,16 +142,16 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                 onPressed: () {
                   if (question.isEmpty && answer.isEmpty) {
                     showToast(
-                        context,
-                        "请添加填写记忆项",
-                        "记忆项为空",
-                        );
+                      context,
+                      "请添加填写记忆项",
+                      "记忆项为空",
+                    );
                   } else if (theme.isEmpty) {
                     showToast(
-                        context,
-                        "请填写主题",
-                        "主题为空",
-                       );
+                      context,
+                      "请填写主题",
+                      "主题为空",
+                    );
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     FocusManager.instance.primaryFocus?.unfocus();
@@ -282,10 +282,10 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                 );
               } else {
                 showToast(
-                    context,
-                    "记忆项数量已到上限",
-                    "记忆项数量已到上限",
-               );
+                  context,
+                  "记忆项数量已到上限",
+                  "记忆项数量已到上限",
+                );
               }
             },
             child: Text(
@@ -329,7 +329,6 @@ class _CreatReviewPage extends State<CreatReviewPage> {
         children: _data.map<ExpansionPanel>((Item item) {
           return ExpansionPanel(
             backgroundColor: AppColors.background,
-           
             headerBuilder: (BuildContext context, bool isExpanded) {
               return Column(
                 children: [
@@ -396,9 +395,10 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                           });
                           Navigator.of(context).pop();
                         },
+                        buttonRight: '删除',
                       );
                     },
-                    child:  Icon(
+                    child: Icon(
                       color: AppColors.Gray,
                       Icons.remove,
                       size: 26,
