@@ -127,11 +127,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
           message: '是否切换为夜间模式(重启后生效)?',
           buttonLeft: '日间模式',
           buttonRight: '夜间模式',
-          onConfirmDayMode: () {
+          onConfirmLifeMode: () {
             saveLoginStatus(false);
             Navigator.of(context).pop();
           },
-          onConfirmNightMode: () {
+          onConfirmRightMode: () {
             saveLoginStatus(true);
             Navigator.of(context).pop();
           },

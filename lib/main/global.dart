@@ -41,6 +41,7 @@ class AppColors {
   static Color get text => isNight ? Colors.white : Colors.black;
   static Color get iconColor => isNight ? Colors.grey : Colors.blue;
   static Color get iconColorTwo => isNight ? Colors.grey : Colors.black;
+  static Color get iconColorThree => isNight ? Colors.grey : Colors.green;
 }
 
 class AppTextStyle {

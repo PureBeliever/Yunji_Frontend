@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
+import 'package:city_pickers/city_pickers.dart';
+import 'package:city_pickers/modal/result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,17 +11,16 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:yunji/main/main_module/dialog.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_module/address_picker_dialog.dart';
 
+import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
-
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 
+// 管理编辑个人资料数据的控制器
 class EditPersonalDataValueManagement extends GetxController {
   static EditPersonalDataValueManagement get to => Get.find();
 
@@ -29,6 +30,7 @@ class EditPersonalDataValueManagement extends GetxController {
   String? residentialAddressValue;
   String? applicationDateValue;
 
+  // 更改个人信息
   void changePersonalInformation({
     String? name,
     String? profile,
@@ -44,6 +46,7 @@ class EditPersonalDataValueManagement extends GetxController {
     update();
   }
 
+  // 回滚更改的值
   int rollbackTheChangedValue({
     String? name,
     String? profile,
@@ -66,20 +69,20 @@ class EditPersonalDataValueManagement extends GetxController {
   }
 }
 
-//更新选择器结果显示
+// 更新选择器结果显示的控制器
 class SelectorResultsUpdateDisplay extends GetxController {
   static SelectorResultsUpdateDisplay get to => Get.find();
   String? residentialAddressSelectorResultValue;
   String? dateOfBirthSelectorResultValue;
 
-// 日期选择器结果值更改
+  // 日期选择器结果值更改
   void dateOfBirthSelectorResultValueChange(
       String? dateOfBirthSelectorResultValueChange) {
     dateOfBirthSelectorResultValue = dateOfBirthSelectorResultValueChange;
     update();
   }
 
-// 地址选择器结果值更改
+  // 地址选择器结果值更改
   void residentialAddressSelectorResultValueChange(
       String? residentialAddressSelectorResultValueChange) {
     residentialAddressSelectorResultValue =
@@ -88,6 +91,7 @@ class SelectorResultsUpdateDisplay extends GetxController {
   }
 }
 
+// 编辑个人页面
 class EditPersonalPage extends StatefulWidget {
   const EditPersonalPage({super.key});
 
@@ -132,104 +136,6 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   final selectorResultsUpdateDisplay = Get.put(SelectorResultsUpdateDisplay());
   final ImagePicker _imagePicker = ImagePicker();
 
-  Future<void> _selectAndCropImage({
-    required ImageSource source,
-    required CropStyle cropStyle,
-    required List<CropAspectRatioPreset> aspectRatioPresets,
-    required Function(File) onImageCropped,
-  }) async {
-    try {
-      XFile? image = await _imagePicker.pickImage(source: source);
-
-      if (image != null && !image.path.endsWith('.gif')) {
-        CroppedFile? croppedFile = await ImageCropper().cropImage(
-          sourcePath: image.path,
-          cropStyle: cropStyle,
-          aspectRatioPresets: aspectRatioPresets,
-          uiSettings: [
-            AndroidUiSettings(
-              cropFrameColor: Colors.transparent,
-              toolbarTitle: '',
-              showCropGrid: false,
-              toolbarColor: Colors.black,
-              hideBottomControls: true,
-              statusBarColor: Colors.black,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: aspectRatioPresets.first,
-              lockAspectRatio: true,
-            ),
-            IOSUiSettings(title: ''),
-          ],
-        );
-        if (croppedFile != null) {
-          onImageCropped(File(croppedFile.path));
-        }
-      } else if (image != null) {
-        onImageCropped(File(image.path));
-      }
-    } catch (err) {
-      // Handle error
-    }
-  }
-
-  Future<void> _selectImage({
-    required ImageSource source,
-    required CropStyle cropStyle,
-    required List<CropAspectRatioPreset> aspectRatioPresets,
-    required Function(File) onImageCropped,
-  }) async {
-    await _selectAndCropImage(
-      source: source,
-      cropStyle: cropStyle,
-      aspectRatioPresets: aspectRatioPresets,
-      onImageCropped: onImageCropped,
-    );
-  }
-
-  Future<void> headPortraitSelectImage() async {
-    await _selectImage(
-      source: ImageSource.gallery,
-      cropStyle: CropStyle.circle,
-      aspectRatioPresets: [CropAspectRatioPreset.square],
-      onImageCropped: (file) {
-        headPortraitChangeManagement.selectAndShootImage(file);
-      },
-    );
-  }
-
-  Future<void> headPortraitSelectCamera() async {
-    await _selectImage(
-      source: ImageSource.camera,
-      cropStyle: CropStyle.circle,
-      aspectRatioPresets: [CropAspectRatioPreset.square],
-      onImageCropped: (file) {
-        headPortraitChangeManagement.selectAndShootImage(file);
-      },
-    );
-  }
-
-  Future<void> backgroundImageSelectImage() async {
-    await _selectImage(
-      source: ImageSource.gallery,
-      cropStyle: CropStyle.rectangle,
-      aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
-      onImageCropped: (file) {
-        backgroundImageChangeManagement.selectAndShootTheImage(file);
-      },
-    );
-  }
-
-  Future<void> backgroundImageSelectCamera() async {
-    await _selectImage(
-      source: ImageSource.camera,
-      cropStyle: CropStyle.rectangle,
-      aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
-      onImageCropped: (file) {
-        backgroundImageChangeManagement.selectAndShootTheImage(file);
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -241,29 +147,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               dateOfBirth: selectDateOfBirth,
             ) >
             0) {
-          buildDialog(
-            context: context,
-            title: '编辑个人资料',
-            content: '放弃更改?',
-            onConfirm: () {
-              selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(
-                  _editPersonalDataValueManagement.dateOfBirthValue);
-              selectorResultsUpdateDisplay
-                  .residentialAddressSelectorResultValueChange(
-                      _editPersonalDataValueManagement.residentialAddressValue);
-              backgroundImageChangeManagement.restoreBackgroundImage();
-              headPortraitChangeManagement.restoreHeadPortrait();
-              name = _editPersonalDataValueManagement.nameValue;
-              profile = _editPersonalDataValueManagement.profileValue;
-              selectResidentialAddress = selectorResultsUpdateDisplay
-                  .residentialAddressSelectorResultValue;
-              selectDateOfBirth =
-                  selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-            },
-            buttonRight: '放弃',
-          );
+          _buildDialog(context);
         } else {
           Navigator.of(context).pop();
         }
@@ -295,6 +179,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 
+  // 构建AppBar
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.background,
@@ -307,31 +192,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 dateOfBirth: selectDateOfBirth,
               ) >
               0) {
-            buildDialog(
-              context: context,
-              title: '编辑个人资料',
-              content: '放弃更改?',
-              onConfirm: () {
-                selectorResultsUpdateDisplay
-                    .dateOfBirthSelectorResultValueChange(
-                        _editPersonalDataValueManagement.dateOfBirthValue);
-                selectorResultsUpdateDisplay
-                    .residentialAddressSelectorResultValueChange(
-                        _editPersonalDataValueManagement
-                            .residentialAddressValue);
-                backgroundImageChangeManagement.restoreBackgroundImage();
-                headPortraitChangeManagement.restoreHeadPortrait();
-                name = _editPersonalDataValueManagement.nameValue;
-                profile = _editPersonalDataValueManagement.profileValue;
-                selectResidentialAddress = selectorResultsUpdateDisplay
-                    .residentialAddressSelectorResultValue;
-                selectDateOfBirth =
-                    selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-              buttonRight: '放弃',
-            );
+            _buildDialog(context);
           } else {
             Navigator.of(context).pop();
           }
@@ -400,6 +261,138 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 
+  // 选择并裁剪图片
+  Future<void> _selectAndCropImage({
+    required ImageSource source,
+    required CropStyle cropStyle,
+    required List<CropAspectRatioPreset> aspectRatioPresets,
+    required Function(File) onImageCropped,
+  }) async {
+    try {
+      XFile? image = await _imagePicker.pickImage(source: source);
+
+      if (image != null && !image.path.endsWith('.gif')) {
+        CroppedFile? croppedFile = await ImageCropper().cropImage(
+          sourcePath: image.path,
+          cropStyle: cropStyle,
+          aspectRatioPresets: aspectRatioPresets,
+          uiSettings: [
+            AndroidUiSettings(
+              cropFrameColor: Colors.transparent,
+              toolbarTitle: '',
+              showCropGrid: false,
+              toolbarColor: Colors.black,
+              hideBottomControls: true,
+              statusBarColor: Colors.black,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: aspectRatioPresets.first,
+              lockAspectRatio: true,
+            ),
+            IOSUiSettings(title: ''),
+          ],
+        );
+        if (croppedFile != null) {
+          onImageCropped(File(croppedFile.path));
+        }
+      } else if (image != null) {
+        onImageCropped(File(image.path));
+      }
+    } catch (err) {
+      // Handle error
+    }
+  }
+
+  // 选择图片
+  Future<void> _selectImage({
+    required ImageSource source,
+    required CropStyle cropStyle,
+    required List<CropAspectRatioPreset> aspectRatioPresets,
+    required Function(File) onImageCropped,
+  }) async {
+    await _selectAndCropImage(
+      source: source,
+      cropStyle: cropStyle,
+      aspectRatioPresets: aspectRatioPresets,
+      onImageCropped: onImageCropped,
+    );
+  }
+
+  // 选择头像图片
+  Future<void> headPortraitSelectImage() async {
+    await _selectImage(
+      source: ImageSource.gallery,
+      cropStyle: CropStyle.circle,
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+      onImageCropped: (file) {
+        headPortraitChangeManagement.selectAndShootImage(file);
+      },
+    );
+  }
+
+  // 选择头像相机
+  Future<void> headPortraitSelectCamera() async {
+    await _selectImage(
+      source: ImageSource.camera,
+      cropStyle: CropStyle.circle,
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+      onImageCropped: (file) {
+        headPortraitChangeManagement.selectAndShootImage(file);
+      },
+    );
+  }
+
+  // 选择背景图片
+  Future<void> backgroundImageSelectImage() async {
+    await _selectImage(
+      source: ImageSource.gallery,
+      cropStyle: CropStyle.rectangle,
+      aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
+      onImageCropped: (file) {
+        backgroundImageChangeManagement.selectAndShootTheImage(file);
+      },
+    );
+  }
+
+  // 选择背景相机
+  Future<void> backgroundImageSelectCamera() async {
+    await _selectImage(
+      source: ImageSource.camera,
+      cropStyle: CropStyle.rectangle,
+      aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
+      onImageCropped: (file) {
+        backgroundImageChangeManagement.selectAndShootTheImage(file);
+      },
+    );
+  }
+
+  // 构建对话框
+  void _buildDialog(BuildContext context) {
+    buildDialog(
+      context: context,
+      title: '编辑个人资料',
+      content: '放弃更改?',
+      onConfirm: () {
+        selectorResultsUpdateDisplay.dateOfBirthSelectorResultValueChange(
+            _editPersonalDataValueManagement.dateOfBirthValue);
+        selectorResultsUpdateDisplay
+            .residentialAddressSelectorResultValueChange(
+                _editPersonalDataValueManagement.residentialAddressValue);
+        backgroundImageChangeManagement.restoreBackgroundImage();
+        headPortraitChangeManagement.restoreHeadPortrait();
+        name = _editPersonalDataValueManagement.nameValue;
+        profile = _editPersonalDataValueManagement.profileValue;
+        selectResidentialAddress =
+            selectorResultsUpdateDisplay.residentialAddressSelectorResultValue;
+        selectDateOfBirth =
+            selectorResultsUpdateDisplay.dateOfBirthSelectorResultValue;
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      },
+      buttonRight: '放弃',
+    );
+  }
+
+  // 构建图片部分
   Widget _buildImageSection(BuildContext context) {
     return SizedBox(
       height: 320,
@@ -530,138 +523,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 
-  Widget _buildImageDialog(
-      BuildContext context, Function onCameraTap, Function onGalleryTap) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextButton(
-            onPressed: () async {
-              var status = await Permission.camera.status;
-              if (!status.isGranted) {
-                var permissionStatus = await Permission.camera.request();
-                if (!permissionStatus.isGranted) {
-                  showWarnToast(
-                    context,
-                    "未授权相机权限",
-                    "无法开启相机，点击提示开启权限",
-                    () {
-                      AppSettings.openAppSettings(
-                          type: AppSettingsType.settings);
-                    },
-                  );
-                  return;
-                }
-              }
-              onCameraTap();
-              Navigator.pop(context);
-            },
-            child: SizedBox(
-              width: double.infinity,
-              child: Text(
-                '拍摄照片',
-                style: AppTextStyle.textStyle,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              onGalleryTap();
-              Navigator.pop(context);
-            },
-            child: SizedBox(
-              width: double.infinity,
-              child: Text(
-                '选择相册',
-                style: AppTextStyle.textStyle,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildheadDialog(
-      BuildContext context, Function onCameraTap, Function onGalleryTap) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextButton(
-            onPressed: () async {
-              var status = await Permission.camera.status;
-              if (!status.isGranted) {
-                var permissionStatus = await Permission.camera.request();
-                if (!permissionStatus.isGranted) {
-                  showWarnToast(
-                    context,
-                    "未授权相机权限",
-                    "无法开启相机，点击提示开启权限",
-                    () {
-                      AppSettings.openAppSettings(
-                          type: AppSettingsType.settings);
-                    },
-                  );
-                  return;
-                }
-              }
-              onCameraTap();
-              Navigator.pop(context);
-            },
-            child: SizedBox(
-              width: double.infinity,
-              child: Text(
-                '拍摄照片',
-                style: AppTextStyle.textStyle,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              onGalleryTap();
-              Navigator.pop(context);
-            },
-            child: SizedBox(
-              width: double.infinity,
-              child: Text(
-                // '选择相册(支持动图)',
-                '选择相册',
-                style: AppTextStyle.textStyle,
-              ),
-            ),
-          ),
-          // TextButton(
-          //   onPressed: () {
-          //     _pickVideoAndConvertToGif();
-          //   },
-          //   child: const SizedBox(
-          //     width: double.infinity,
-          //     child: Text(
-          //       '选择视频转动图',
-          //       style: TextStyle(
-          //           color: Colors.black,
-          //           fontSize: 17,
-          //           fontWeight: FontWeight.w700),
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
-
+  // 构建表单字段
   Widget _buildFormFields() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -713,16 +575,16 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                   maxLength: 50,
                   readOnly: true,
                   onTap: () async {
-                    // Result? result =
-                    //     await CityPickers.showCityPicker(context: context);
-                    // selectResidentialAddress = (result != null &&
-                    //         result.provinceId != 'null')
-                    //     ? '${result.provinceName}.${result.cityName}.${result.areaName}'
-                    //     : null;
-                    // selectorResultsUpdateDisplay
-                    //     .residentialAddressSelectorResultValueChange(
-                    //         selectResidentialAddress);
-                    showChineseAddressPickerDialog(context);
+                    Result? result =
+                        await CityPickers.showCityPicker(context: context);
+                    selectResidentialAddress = (result != null &&
+                            result.provinceId != 'null')
+                        ? '${result.provinceName}.${result.cityName}.${result.areaName}'
+                        : null;
+                    selectorResultsUpdateDisplay
+                        .residentialAddressSelectorResultValueChange(
+                            selectResidentialAddress);
+                    // showChineseAddressPickerDialog(context);
                   },
                 ),
                 const SizedBox(width: double.infinity, height: 20),
@@ -744,6 +606,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 
+  // 构建文本表单字段
   Widget _buildTextFormField({
     required String label,
     String? hintText,
@@ -783,6 +646,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 
+  // 构建日期选择器对话框
   Future _buildDatePickerDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -873,4 +737,138 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
           );
         });
   }
+}
+
+// 构建图片对话框
+Widget _buildImageDialog(
+    BuildContext context, Function onCameraTap, Function onGalleryTap) {
+  return Dialog(
+    backgroundColor: AppColors.background,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextButton(
+          onPressed: () async {
+            var status = await Permission.camera.status;
+            if (!status.isGranted) {
+              var permissionStatus = await Permission.camera.request();
+              if (!permissionStatus.isGranted) {
+                showWarnToast(
+                  context,
+                  "未授权相机权限",
+                  "无法开启相机，点击提示开启权限",
+                  () {
+                    AppSettings.openAppSettings(type: AppSettingsType.settings);
+                  },
+                );
+                return;
+              }
+            }
+            onCameraTap();
+            Navigator.pop(context);
+          },
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              '拍摄照片',
+              style: AppTextStyle.textStyle,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            onGalleryTap();
+            Navigator.pop(context);
+          },
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              '选择相册',
+              style: AppTextStyle.textStyle,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+// 构建头像对话框
+Widget _buildheadDialog(
+    BuildContext context, Function onCameraTap, Function onGalleryTap) {
+  return Dialog(
+    backgroundColor: AppColors.background,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextButton(
+          onPressed: () async {
+            var status = await Permission.camera.status;
+            if (!status.isGranted) {
+              var permissionStatus = await Permission.camera.request();
+              if (!permissionStatus.isGranted) {
+                showWarnToast(
+                  context,
+                  "未授权相机权限",
+                  "无法开启相机，点击提示开启权限",
+                  () {
+                    AppSettings.openAppSettings(type: AppSettingsType.settings);
+                  },
+                );
+                return;
+              }
+            }
+            onCameraTap();
+            Navigator.pop(context);
+          },
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              '拍摄照片',
+              style: AppTextStyle.textStyle,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            onGalleryTap();
+            Navigator.pop(context);
+          },
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              // '选择相册(支持动图)',
+              '选择相册',
+              style: AppTextStyle.textStyle,
+            ),
+          ),
+        ),
+        // TextButton(
+        //   onPressed: () {
+        //     _pickVideoAndConvertToGif();
+        //   },
+        //   child: const SizedBox(
+        //     width: double.infinity,
+        //     child: Text(
+        //       '选择视频转动图',
+        //       style: TextStyle(
+        //           color: Colors.black,
+        //           fontSize: 17,
+        //           fontWeight: FontWeight.w700),
+        //     ),
+        //   ),
+        // ),
+      ],
+    ),
+  );
 }

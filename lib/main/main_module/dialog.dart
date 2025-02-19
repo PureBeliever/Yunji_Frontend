@@ -7,8 +7,8 @@ void dialogTwoButton({
   required String message,
   required String buttonLeft,
   required String buttonRight,
-  required VoidCallback onConfirmDayMode,
-  required VoidCallback onConfirmNightMode,
+  required VoidCallback onConfirmLifeMode,
+  required VoidCallback onConfirmRightMode,
 }) {
   showDialog(
     context: context,
@@ -56,14 +56,14 @@ void dialogTwoButton({
                     Row(
                       children: [
                         TextButton(
-                          onPressed: onConfirmDayMode,
+                          onPressed: onConfirmLifeMode,
                           child: Text(
                             buttonLeft,
                             style: AppTextStyle.textStyle,
                           ),
                         ),
                         TextButton(
-                          onPressed: onConfirmNightMode,
+                          onPressed: onConfirmRightMode,
                           child: Text(
                             buttonRight,
                             style: AppTextStyle.textStyle,

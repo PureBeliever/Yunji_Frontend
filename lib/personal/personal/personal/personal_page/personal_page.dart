@@ -1,3 +1,4 @@
+// 导入 Dart 和 Flutter 包
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:like_button/like_button.dart';
 
+// 导入项目相关包
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
@@ -29,6 +31,7 @@ import 'package:yunji/personal/personal/personal/personal_page/personal_head_por
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/personal/personal/personal/personal_sqlite.dart';
 
+// 个人页面类
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
 
@@ -36,6 +39,7 @@ class PersonalPage extends StatefulWidget {
   State<PersonalPage> createState() => _PersonalPageState();
 }
 
+// 用户信息列表滚动数据管理
 final _userInformationListScrollDataManagement =
     Get.put(UserInformationListScrollDataManagement());
 
@@ -81,6 +85,7 @@ class UserInformationListScrollDataManagement extends GetxController {
   }
 }
 
+// 记忆库完成状态管理
 class MemoryBankCompletionStatus extends GetxController {
   static MemoryBankCompletionStatus get to => Get.find();
   final _continueLearningAboutDataManagement =
@@ -184,6 +189,7 @@ class MemoryBankCompletionStatus extends GetxController {
   }
 }
 
+// 用户个人信息管理
 class UserPersonalInformationManagement extends GetxController {
   static UserPersonalInformationManagement get to => Get.find();
 
@@ -263,6 +269,7 @@ class UserPersonalInformationManagement extends GetxController {
   }
 }
 
+// 个人页面状态管理
 class _PersonalPageState extends State<PersonalPage>
     with TickerProviderStateMixin {
   late TabController tabController;
@@ -463,7 +470,7 @@ class _PersonalPageState extends State<PersonalPage>
         double percent = ((constraints.maxHeight - kToolbarHeight) *
             40 /
             (200 - kToolbarHeight));
-        double dx = 68 - percent * 1.20;
+        double dx = 85 - percent * 1.80;
         double size = (80 + percent * 2) / 100;
 
         return Stack(
@@ -533,7 +540,7 @@ class _PersonalPageState extends State<PersonalPage>
                 transform: Matrix4.identity()
                   ..scale(size)
                   ..translate(
-                      dx, constraints.maxHeight / 2.3 - 0.06 * kToolbarHeight),
+                      dx, constraints.maxHeight / 1.85 - 0.3 * kToolbarHeight),
                 child: GestureDetector(
                   onTap: () {
                     switchPage(context, const PersonalHeadPortrait());

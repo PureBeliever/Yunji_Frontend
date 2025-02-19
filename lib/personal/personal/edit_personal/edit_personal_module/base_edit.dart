@@ -428,48 +428,53 @@ class _BaseView extends State<BaseView> {
     }
     return SizedBox(
       height: 300,
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                children: pickerRows,
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      '取消',
-                      style: AppTextStyle.textStyle,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, _nullResult()),
-                    child: Text(
-                      '移除',
-                      style: AppTextStyle.redTextStyle,
-                    ),
-                  ),
-                ],
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, _buildResult()),
-                child: Text(
-                  '确定',
-                  style: AppTextStyle.textStyle,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.background,
+        ),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  children: pickerRows,
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        '取消',
+                        style: AppTextStyle.textStyle,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, _nullResult()),
+                      child: Text(
+                        '移除',
+                        style: AppTextStyle.redTextStyle,
+                      ),
+                    ),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, _buildResult()),
+                  child: Text(
+                    '确定',
+                    style: AppTextStyle.textStyle,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/main/global.dart';
@@ -105,145 +106,23 @@ class _ContinueReview extends State<ContinueReview> {
   }
 
   void _showClearDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: SizedBox(
-            height: 150,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 20),
-                  child: Text(
-                    '复习',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-                  child:
-                      Text('是否清空所有讲解?', style: TextStyle(fontSize: 16)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          '取消',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: _clearAllExplanations,
-                        child: const Text(
-                          '确定',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    buildDialog(
+        context: context,
+        title: '复习',
+        content: '是否清空所有讲解?',
+        onConfirm: _clearAllExplanations,
+        buttonRight: '确定');
   }
 
   void _showDeleteDialog(BuildContext context, Item item) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: SizedBox(
-            height: 150,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 20),
-                  child: Text(
-                    '复习',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-                  child:
-                      Text('清空还是删除当前讲解?', style: TextStyle(fontSize: 16)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          '取消',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                      ),
-                      Row(children: [
-                        TextButton(
-                          onPressed: () {
-                            _deleteSpecificExplanation(item);
-                          },
-                          child: const Text(
-                            '删除',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            _clearSpecificExplanation(item);
-                          },
-                          child: const Text(
-                            '清空',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black),
-                          ),
-                        )
-                      ])
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    dialogTwoButton(
+        context: context,
+        title: '复习',
+        message: '是否删除当前讲解?',
+        onConfirmLifeMode: () => _deleteSpecificExplanation(item),
+        onConfirmRightMode: () => _clearSpecificExplanation(item),
+        buttonLeft: '删除',
+        buttonRight: '清空');
   }
 
   void _clearAllExplanations() {
@@ -296,7 +175,7 @@ class _ContinueReview extends State<ContinueReview> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: const Icon(Icons.close, size: 30)),
+            child: Icon(Icons.close, size: 30, color: AppColors.iconColorTwo)),
         actions: [
           SizedBox(
             height: 30,
@@ -304,14 +183,11 @@ class _ContinueReview extends State<ContinueReview> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(
                     left: 15, right: 15, top: 0, bottom: 0),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.iconColorThree,
               ),
-              child: const Text(
+              child: Text(
                 "清空讲解",
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white),
+                style: AppTextStyle.whiteTextStyle,
               ),
               onPressed: () {
                 _showClearDialog(context);
@@ -326,14 +202,11 @@ class _ContinueReview extends State<ContinueReview> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 0, bottom: 0),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: AppColors.iconColor,
                 ),
-                child: const Text(
+                child: Text(
                   "下一步",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
+                  style: AppTextStyle.whiteTextStyle,
                 ),
                 onPressed: () {
                   _handleNextStep(context);
@@ -342,21 +215,17 @@ class _ContinueReview extends State<ContinueReview> {
             ),
           ),
         ],
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: ListView(
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 15, right: 15, top: 10),
             child: Text(
               '复读回顾 >> 清空讲解 >> 更加清晰简洁的讲解 >> 遗忘处查漏补缺 >> 完成讲解',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
+              style: AppTextStyle.textStyle,
             ),
           ),
           Padding(
@@ -369,15 +238,12 @@ class _ContinueReview extends State<ContinueReview> {
               controller: _controller,
               maxLength: 50,
               focusNode: _focusNode,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                  fontSize: 17),
+              style: AppTextStyle.textStyle,
               textInputAction: TextInputAction.done,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 counterText: "",
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.background,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Color(0x00FF0000)),
                   borderRadius: BorderRadius.all(
@@ -395,9 +261,10 @@ class _ContinueReview extends State<ContinueReview> {
             ),
           ),
           ExpansionPanelList(
-            materialGapSize: 15,
+            materialGapSize: 17,
+            expandIconColor: AppColors.Gray,
             elevation: 0,
-            dividerColor: Colors.white,
+            dividerColor: AppColors.background,
             expansionCallback: (int index, bool isExpanded) {
               setState(() {
                 _data[index].isExpanded = isExpanded;
@@ -405,7 +272,7 @@ class _ContinueReview extends State<ContinueReview> {
             },
             children: _data.map<ExpansionPanel>((Item item) {
               return ExpansionPanel(
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.background,
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return ListTile(
                     title: TextField(
@@ -416,15 +283,12 @@ class _ContinueReview extends State<ContinueReview> {
                       maxLength: 150,
                       maxLines: 10,
                       minLines: 1,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                          fontSize: 17),
+                      style: AppTextStyle.textStyle,
                       textInputAction: TextInputAction.done,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         counterText: "",
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: AppColors.background,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0x00FF0000)),
                           borderRadius: BorderRadius.all(
@@ -452,25 +316,22 @@ class _ContinueReview extends State<ContinueReview> {
                     maxLength: 1500,
                     maxLines: 30,
                     minLines: 1,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                        fontSize: 17),
+                    style: AppTextStyle.textStyle,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       suffixIcon: GestureDetector(
                           onTap: () {
                             _showDeleteDialog(context, item);
                           },
-                          child: const Icon(
-                            color: Color.fromRGBO(134, 134, 134, 1),
+                          child: Icon(
+                            color: AppColors.Gray,
                             Icons.remove,
                             size: 26,
                           )),
                       border: InputBorder.none,
                       counterText: "",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: AppColors.background,
                       enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0x00FF0000)),
                         borderRadius: BorderRadius.all(
@@ -496,8 +357,8 @@ class _ContinueReview extends State<ContinueReview> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 100),
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
+                  backgroundColor: AppColors.background,
+                  side: BorderSide(color: AppColors.Gray),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -508,9 +369,9 @@ class _ContinueReview extends State<ContinueReview> {
                     _data.add(Item(question: '', answer: '', isExpanded: true));
                   });
                 },
-                child: const Icon(
+                child: Icon(
                   Icons.add,
-                  color: Color.fromRGBO(84, 87, 105, 1),
+                  color: AppColors.Gray,
                 ),
               ),
             ),
@@ -523,10 +384,10 @@ class _ContinueReview extends State<ContinueReview> {
         },
         elevation: 5.0,
         highlightElevation: 20.0,
-        backgroundColor: Colors.blue,
-        child: const Text(
+        backgroundColor: AppColors.iconColor,
+        child: Text(
           '退出\n键盘',
-          style: TextStyle(color: Colors.white, fontSize: 15),
+          style: AppTextStyle.whiteTextStyle,
         ),
       ),
     );

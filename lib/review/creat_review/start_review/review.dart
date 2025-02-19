@@ -5,11 +5,10 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:toastification/toastification.dart' as toast;
 
 import 'package:yunji/main/global.dart';
+import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/creat_review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 
@@ -96,7 +95,8 @@ class _ReviewPage extends State<ReviewPage> {
       _reviewDataManagement.questions,
       _reviewDataManagement.answer,
     );
-    _controller = TextEditingController(text: _reviewDataManagement.memoryTheme);
+    _controller =
+        TextEditingController(text: _reviewDataManagement.memoryTheme);
     theme = _reviewDataManagement.memoryTheme;
     message = _reviewDataManagement.isMessageNotificationEnabled;
     alarmInformation = _reviewDataManagement.isAlarmNotificationEnabled;
@@ -110,145 +110,23 @@ class _ReviewPage extends State<ReviewPage> {
   }
 
   void _showClearDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: SizedBox(
-            height: 150,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 20),
-                  child: Text(
-                    '复习',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-                  child:
-                      Text('是否清空所有讲解?', style: TextStyle(fontSize: 16)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          '取消',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: _clearAllExplanations,
-                        child: const Text(
-                          '确定',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    buildDialog(
+        context: context,
+        title: '复习',
+        content: '是否清空所有讲解?',
+        onConfirm: _clearAllExplanations,
+        buttonRight: '确定');
   }
 
   void _showDeleteDialog(BuildContext context, Item item) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: SizedBox(
-            height: 150,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 20),
-                  child: Text(
-                    '复习',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 25, top: 10, bottom: 20),
-                  child:
-                      Text('清空还是删除当前讲解?', style: TextStyle(fontSize: 16)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text(
-                          '取消',
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                      ),
-                      Row(children: [
-                        TextButton(
-                          onPressed: () {
-                            _deleteSpecificExplanation(item);
-                          },
-                          child: const Text(
-                            '删除',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            _clearSpecificExplanation(item);
-                          },
-                          child: const Text(
-                            '清空',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black),
-                          ),
-                        )
-                      ])
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    dialogTwoButton(
+        context: context,
+        title: '复习',
+        message: '是否删除当前讲解?',
+        onConfirmLifeMode: () => _deleteSpecificExplanation(item),
+        onConfirmRightMode: () => _clearSpecificExplanation(item),
+        buttonLeft: '删除',
+        buttonRight: '清空');
   }
 
   void _clearAllExplanations() {
@@ -282,7 +160,7 @@ class _ReviewPage extends State<ReviewPage> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: const Icon(Icons.close, size: 30)),
+            child: Icon(Icons.close, size: 30, color: AppColors.iconColorTwo)),
         actions: [
           SizedBox(
             height: 30,
@@ -290,14 +168,11 @@ class _ReviewPage extends State<ReviewPage> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(
                     left: 15, right: 15, top: 0, bottom: 0),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.iconColorThree,
               ),
-              child: const Text(
+              child: Text(
                 "清空讲解",
-                style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white),
+                style: AppTextStyle.whiteTextStyle,
               ),
               onPressed: () {
                 _showClearDialog(context);
@@ -312,22 +187,19 @@ class _ReviewPage extends State<ReviewPage> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(
                       left: 5, right: 5, top: 0, bottom: 0),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: AppColors.iconColor,
                 ),
-                child: const Text(
+                child: Text(
                   "完成",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
+                  style: AppTextStyle.whiteTextStyle,
                 ),
                 onPressed: () async {
                   if (theme.isEmpty) {
                     showToast(
-                        context,
-                        "请填写主题",
-                        "主题为空",
-                       );
+                      context,
+                      "请填写主题",
+                      "主题为空",
+                    );
                     FocusScope.of(context).requestFocus(_focusNode);
                   } else {
                     int value = 0;
@@ -428,8 +300,7 @@ class _ReviewPage extends State<ReviewPage> {
                         alarmInformation,
                         completeReviewStatus,
                         numberOfReviews,
-                        _reviewDataManagement.reviewSchemeName
-                       );
+                        _reviewDataManagement.reviewSchemeName);
                     Navigator.of(context).pop();
                   }
                 },
@@ -437,10 +308,10 @@ class _ReviewPage extends State<ReviewPage> {
             ),
           ),
         ],
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: ListView(
         children: [
           Column(
@@ -463,11 +334,7 @@ class _ReviewPage extends State<ReviewPage> {
                       ),
                     ),
                   ),
-                  const Text('信息通知',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromRGBO(84, 87, 105, 1),
-                          fontSize: 17)),
+                  Text('信息通知', style: AppTextStyle.textStyle),
                 ],
               ),
               Row(
@@ -487,24 +354,16 @@ class _ReviewPage extends State<ReviewPage> {
                       ),
                     ),
                   ),
-                  const Text('闹钟信息通知',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromRGBO(84, 87, 105, 1),
-                          fontSize: 17)),
+                  Text('闹钟信息通知', style: AppTextStyle.textStyle),
                 ],
               ),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 10),
+          Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
             child: Text(
               '复读回顾 >> 清空讲解 >> 更加清晰简洁的讲解 >> 遗忘处查漏补缺 >> 完成讲解',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
+              style: AppTextStyle.textStyle,
             ),
           ),
           Padding(
@@ -517,15 +376,12 @@ class _ReviewPage extends State<ReviewPage> {
               focusNode: _focusNode,
               controller: _controller,
               maxLength: 50,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                  fontSize: 17),
+              style: AppTextStyle.textStyle,
               textInputAction: TextInputAction.done,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 counterText: "",
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.background,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Color(0x00FF0000)),
                   borderRadius: BorderRadius.all(
@@ -543,9 +399,10 @@ class _ReviewPage extends State<ReviewPage> {
             ),
           ),
           ExpansionPanelList(
-            materialGapSize: 15,
+            materialGapSize: 17,
+            expandIconColor: AppColors.Gray,
             elevation: 0,
-            dividerColor: Colors.white,
+            dividerColor: AppColors.background,
             expansionCallback: (int index, bool isExpanded) {
               setState(() {
                 _data[index].isExpanded = isExpanded;
@@ -553,7 +410,7 @@ class _ReviewPage extends State<ReviewPage> {
             },
             children: _data.map<ExpansionPanel>((Item item) {
               return ExpansionPanel(
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.background,
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return ListTile(
                     title: TextField(
@@ -564,15 +421,12 @@ class _ReviewPage extends State<ReviewPage> {
                       maxLength: 150,
                       maxLines: 10,
                       minLines: 1,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                          fontSize: 17),
+                      style: AppTextStyle.textStyle,
                       textInputAction: TextInputAction.done,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         counterText: "",
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: AppColors.background,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0x00FF0000)),
                           borderRadius: BorderRadius.all(
@@ -600,10 +454,7 @@ class _ReviewPage extends State<ReviewPage> {
                     maxLength: 1500,
                     maxLines: 30,
                     minLines: 1,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                        fontSize: 17),
+                    style: AppTextStyle.textStyle,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       suffixIcon: GestureDetector(
@@ -613,15 +464,15 @@ class _ReviewPage extends State<ReviewPage> {
                               item,
                             );
                           },
-                          child: const Icon(
-                            color: Color.fromRGBO(134, 134, 134, 1),
+                          child: Icon(
+                            color: AppColors.Gray,
                             Icons.remove,
                             size: 26,
                           )),
                       border: InputBorder.none,
                       counterText: "",
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: AppColors.background,
                       enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0x00FF0000)),
                         borderRadius: BorderRadius.all(
@@ -647,8 +498,8 @@ class _ReviewPage extends State<ReviewPage> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 100),
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
+                  backgroundColor: AppColors.background,
+                  side: BorderSide(color: AppColors.Gray),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -659,9 +510,9 @@ class _ReviewPage extends State<ReviewPage> {
                     _data.add(Item(question: '', answer: '', isExpanded: true));
                   });
                 },
-                child: const Icon(
+                child: Icon(
                   Icons.add,
-                  color: Color.fromRGBO(84, 87, 105, 1),
+                  color: AppColors.iconColor,
                 ),
               ),
             ),
@@ -674,10 +525,10 @@ class _ReviewPage extends State<ReviewPage> {
         },
         elevation: 5.0,
         highlightElevation: 20.0,
-        backgroundColor: Colors.blue,
-        child: const Text(
+        backgroundColor: AppColors.iconColor,
+        child: Text(
           '退出\n键盘',
-          style: TextStyle(color: Colors.white, fontSize: 15),
+          style: AppTextStyle.whiteTextStyle,
         ),
       ),
     );

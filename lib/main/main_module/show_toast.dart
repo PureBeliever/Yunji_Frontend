@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
-import 'package:yunji/main/global.dart';
 
 void showToast(
   BuildContext context,

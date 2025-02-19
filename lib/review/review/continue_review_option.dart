@@ -48,17 +48,18 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
     return Padding(
       padding: const EdgeInsets.only(left: 17.0, top: 16),
       child: ChoiceChip(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
+        side: BorderSide(color: AppColors.Gray),
         label: Text(
           reviewScheme[index],
           softWrap: true,
           maxLines: 20,
           style: TextStyle(
             fontSize: 17.0,
-            color: _valueChoice == index ? Colors.white : Colors.black54,
+            color: _valueChoice == index ? Colors.white : AppColors.Gray,
           ),
         ),
-        selectedColor: Colors.blue,
+        selectedColor: AppColors.iconColor,
         onSelected: (bool selected) {
           setState(() {
             if (selected) {
@@ -150,8 +151,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
         alarmInformation,
         state,
         reviewRecord,
-        reviewSchemeName
-       );
+        reviewSchemeName);
 
     Navigator.of(context).pop();
     Navigator.of(context).pop();
@@ -165,9 +165,10 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: const Icon(
+            child: Icon(
               Icons.arrow_back,
-              size: 28,
+              size: 30,
+              color: AppColors.iconColorTwo,
             )),
         actions: [
           Padding(
@@ -178,27 +179,25 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 0, bottom: 0),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: AppColors.iconColor,
                 ),
                 onPressed: _handleCompleteButtonPress,
-                child: const Text(
+                child: Text(
                   "完成",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
+                  style: AppTextStyle.whiteTextStyle,
                 ),
               ),
             ),
           ),
         ],
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
       ),
       body: ListView(
         children: [
           Row(
-
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,11 +220,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                           ),
                         ),
                       ),
-                      const Text('信息通知',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 17)),
+                      Text('信息通知', style: AppTextStyle.textStyle),
                     ],
                   ),
                   const SizedBox(width: 15),
@@ -246,48 +241,45 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                           ),
                         ),
                       ),
-                      const Text('闹钟信息通知',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(84, 87, 105, 1),
-                              fontSize: 17)),
+                      Text('闹钟信息通知', style: AppTextStyle.textStyle),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(width: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Color.fromRGBO(84, 87, 105, 1)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+              Padding(
+                padding: const EdgeInsets.only(right: 30.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: AppColors.background,
+                    side: BorderSide(color: AppColors.Gray),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  switchPage(
-                      context,
-                      CustomMemoryScheme(
-                          question: continueLearningAboutDataManagement.question
-                              .map((key, value) =>
-                                  MapEntry(int.parse(key), value.toString())),
-                          answer: continueLearningAboutDataManagement.answer
-                              .map((key, value) =>
-                                  MapEntry(int.parse(key), value.toString())),
-                          theme: continueLearningAboutDataManagement.theme,
-                          message: continueLearningAboutDataManagement.message,
-                          alarmInformation: continueLearningAboutDataManagement
-                              .alarmInformation,
-                          continueReview: true,
-                          id: continueLearningAboutDataManagement.id));
-                },
-                child: const Text(
-                  '自定义记忆方案',
-                  style: TextStyle(
-                    color: Color.fromRGBO(84, 87, 105, 1),
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
+                  onPressed: () {
+                    switchPage(
+                        context,
+                        CustomMemoryScheme(
+                            question: continueLearningAboutDataManagement
+                                .question
+                                .map((key, value) =>
+                                    MapEntry(int.parse(key), value.toString())),
+                            answer: continueLearningAboutDataManagement.answer
+                                .map((key, value) =>
+                                    MapEntry(int.parse(key), value.toString())),
+                            theme: continueLearningAboutDataManagement.theme,
+                            message:
+                                continueLearningAboutDataManagement.message,
+                            alarmInformation:
+                                continueLearningAboutDataManagement
+                                    .alarmInformation,
+                            continueReview: true,
+                            id: continueLearningAboutDataManagement.id));
+                  },
+                  child: Text(
+                    '自定义记忆方案',
+                    style: AppTextStyle.subsidiaryText,
                   ),
                 ),
               ),
@@ -301,7 +293,7 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
     );
   }
 }
