@@ -56,10 +56,10 @@ dependencies:
   app_settings: ^5.1.1 # 打开设备设置页面的库
   keframe: ^3.0.0 # 优化动画帧率的库
   shared_preferences: ^2.1.1 # 轻量级的本地存储库
+  lpinyin: ^2.0.3 # 汉字拼音转换的库
 
-  city_pickers: ^1.3.0
+  # city_pickers: ^1.3.0
   # flutter_ali_auth: ^0.7.0
-
   # flutter_ffmpeg: ^0.4.2
   # video_editor_2: ^3.0.2
 

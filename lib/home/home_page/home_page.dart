@@ -23,7 +23,7 @@ import 'package:yunji/home/home_page/home_drawer.dart';
 import 'package:yunji/home/home_module/ball_indicator.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
+import 'package:yunji/review/review/creat_review/creat_review_page.dart';
 
 // 主页记忆板刷新
 class RefreshofHomepageMemoryBankextends extends GetxController {

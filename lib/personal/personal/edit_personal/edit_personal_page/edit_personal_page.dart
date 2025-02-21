@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
-import 'package:city_pickers/city_pickers.dart';
-import 'package:city_pickers/modal/result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +11,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:yunji/main/main_module/dialog.dart';
+import 'package:yunji/personal/personal/edit_personal/edit_personal_module/city_picker/city_picker.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_api.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
@@ -584,7 +583,6 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     selectorResultsUpdateDisplay
                         .residentialAddressSelectorResultValueChange(
                             selectResidentialAddress);
-                    // showChineseAddressPickerDialog(context);
                   },
                 ),
                 const SizedBox(width: double.infinity, height: 20),

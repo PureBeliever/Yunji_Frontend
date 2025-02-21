@@ -7,9 +7,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/global.dart';
-import 'package:yunji/review/creat_review/creat_review/creat_review_api.dart';
+import 'package:yunji/review/review/creat_review/creat_review_api.dart';
 import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/review/creat_review/creat_review/creat_review_page.dart';
+import 'package:yunji/review/review/creat_review/creat_review_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/custom_memory_scheme.dart';
 import 'package:yunji/review/notification_init.dart';
@@ -148,8 +148,10 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                   child: RichText(
                       text: TextSpan(children: <TextSpan>[
                     TextSpan(
-                        text: '若需信息或闹钟提醒复习\n', style: AppTextStyle.subsidiaryText),
-                    TextSpan(text: '请点击打开：', style: AppTextStyle.subsidiaryText),
+                        text: '若需信息或闹钟提醒复习\n',
+                        style: AppTextStyle.subsidiaryText),
+                    TextSpan(
+                        text: '请点击打开：', style: AppTextStyle.subsidiaryText),
                     TextSpan(
                         text: '自启动权限',
                         style: AppTextStyle.greenTextStyle,
@@ -165,7 +167,6 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                   ])),
                 ),
               ),
-           
               const SizedBox(width: 15),
             ],
           ),

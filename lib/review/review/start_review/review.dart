@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/review/creat_review/start_review/review_api.dart';
+import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 
 class Item {

@@ -8,8 +8,8 @@ import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/review/custom_memory_scheme.dart';
 
 import 'package:yunji/review/notification_init.dart';
-import 'package:yunji/review/review/continue_review.dart';
-import 'package:yunji/review/creat_review/start_review/review_api.dart';
+import 'package:yunji/review/review/continue_review/continue_review.dart';
+import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/main/global.dart';
 
 class ContinueReviewOption extends StatefulWidget {
