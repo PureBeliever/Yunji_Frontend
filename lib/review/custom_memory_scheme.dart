@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:alarm/alarm.dart';
@@ -11,7 +10,6 @@ import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/review/creat_review/creat_review_api.dart';
-import 'package:yunji/review/review/creat_review/creat_review_page.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';

@@ -88,6 +88,10 @@ class SelectorResultsUpdateDisplay extends GetxController {
         residentialAddressSelectorResultValueChange;
     update();
   }
+
+  void refreshSaveButton() {
+    update();
+  }
 }
 
 // 编辑个人页面
@@ -536,15 +540,12 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
               maxLength: 45,
               onChanged: (value) {
                 name = value.trim();
-
                 if (name == null || name!.isEmpty) {
-                  setState(() {
-                    backspaceValue = true;
-                  });
+                  backspaceValue = false;
+                  selectorResultsUpdateDisplay.refreshSaveButton();
                 } else {
-                  setState(() {
-                    backspaceValue = false;
-                  });
+                  backspaceValue = true;
+                  selectorResultsUpdateDisplay.refreshSaveButton();
                 }
               },
             ),

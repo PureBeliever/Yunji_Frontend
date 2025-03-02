@@ -197,197 +197,145 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       backgroundColor: AppColors.background,
       key: _scaffoldKey,
       drawer: const HomeDrawer(),
-      body: TabBarView(controller: tabController, children: [
-        GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity! > 5) {
-                _scaffoldKey.currentState?.openDrawer();
-              } else if (details.primaryVelocity! < -5) {
-                tabController.animateTo(1);
-              }
-            },
-            child: BallIndicator(
-                onRefresh: _refresh,
-                ballColors: const [
-                  Colors.blue,
-                  Colors.red,
-                  Colors.green,
-                  Colors.amber,
-                  Colors.pink,
-                  Colors.purple,
-                  Colors.cyan,
-                  Colors.orange,
-                  Colors.yellow,
-                ],
-                child: GetBuilder<RefreshofHomepageMemoryBankextends>(
-                    init: refreshofHomepageMemoryBankextends,
-                    builder: (refreshofHomepageMemoryBankextends) {
-                      return CustomScrollView(
-                        slivers: <Widget>[
-                          SliverAppBar(
-                            floating: true,
-                            pinned: false,
-                            snap: true,
-                            expandedHeight: appBarHeight + 40,
-                            surfaceTintColor: AppColors.background,
-                            backgroundColor: AppColors.background,
-                            toolbarHeight: appBarHeight,
-                            leading: GetBuilder<HeadPortraitChangeManagement>(
-                              init: headPortraitChangeManagement,
-                              builder: (headPortraitChangeManagement) {
-                                return headPortraitChangeManagement
-                                            .headPortraitValue !=
-                                        null
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 15.0),
-                                        child: IconButton(
-                                            padding: const EdgeInsets.all(0),
-                                            onPressed: () {
-                                              _scaffoldKey.currentState
-                                                  ?.openDrawer();
-                                            },
-                                            icon: CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: FileImage(
-                                                    headPortraitChangeManagement
-                                                        .headPortraitValue!))),
-                                      )
-                                    : IconButton(
-                                        icon: SvgPicture.asset(
-                                          'assets/home/personal_add.svg',
-                                          width: 30,
-                                          height: 30,
-                                          colorFilter: ColorFilter.mode(
-                                              AppColors.Gray, BlendMode.srcIn),
-                                        ),
-                                        onPressed: () {
-                                          _scaffoldKey.currentState
-                                              ?.openDrawer();
-                                        },
-                                      );
-                              },
-                            ),
-                            iconTheme: const IconThemeData(color: Colors.black),
-                            flexibleSpace: _buildTabBar(),
-                          ),
-                          SliverList.builder(
-                            itemCount: refreshofHomepageMemoryBankextends
-                                .memoryRefreshValue.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return MemoryBankItem(
-                                data: refreshofHomepageMemoryBankextends
-                                    .memoryRefreshValue[index],
-                                onTap: () {
-                                  _viewPostDataManagementForMemoryBanks
-                                      .initMemoryData(
-                                          refreshofHomepageMemoryBankextends
-                                              .memoryRefreshValue[index]);
-                                  switchPage(context, const OtherMemoryBank());
-                                },
-                              );
-                            },
-                          )
-                        ],
-                      );
-                    }))),
-        GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity! > 5) {
-                tabController.animateTo(0);
-              }
-            },
-            child: BallIndicator(
-                onRefresh: _refresh,
-                ballColors: const [
-                  Colors.blue,
-                  Colors.red,
-                  Colors.green,
-                  Colors.amber,
-                  Colors.pink,
-                  Colors.purple,
-                  Colors.cyan,
-                  Colors.orange,
-                  Colors.yellow,
-                ],
-                child: GetBuilder<RefreshofHomepageMemoryBankextends>(
-                    init: refreshofHomepageMemoryBankextends,
-                    builder: (refreshofHomepageMemoryBankextends) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.background,
-                        ),
-                        child: CustomScrollView(
-                          slivers: <Widget>[
-                            SliverAppBar(
-                              floating: true,
-                              pinned: false,
-                              snap: true,
-                              expandedHeight: appBarHeight + 40,
-                              surfaceTintColor: AppColors.background,
-                              backgroundColor: AppColors.background,
-                              toolbarHeight: appBarHeight,
-                              leading: GetBuilder<HeadPortraitChangeManagement>(
-                                init: headPortraitChangeManagement,
-                                builder: (headPortraitChangeManagement) {
-                                  return headPortraitChangeManagement
-                                              .headPortraitValue !=
-                                          null
-                                      ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 15.0),
-                                          child: IconButton(
-                                              padding: const EdgeInsets.all(0),
-                                              onPressed: () {
-                                                _scaffoldKey.currentState
-                                                    ?.openDrawer();
-                                              },
-                                              icon: CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundImage: FileImage(
-                                                      headPortraitChangeManagement
-                                                          .headPortraitValue!))),
-                                        )
-                                      : IconButton(
-                                          icon: SvgPicture.asset(
-                                            'assets/home/personal_add.svg',
-                                            width: 30,
-                                            height: 30,
-                                          ),
-                                          onPressed: () {
-                                            _scaffoldKey.currentState
-                                                ?.openDrawer();
-                                          },
-                                        );
-                                },
-                              ),
-                              iconTheme:
-                                  const IconThemeData(color: Colors.black),
-                              flexibleSpace: _buildTabBar(),
-                            ),
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  return Container(
-                                    color: index.isOdd
-                                        ? Colors.white
-                                        : Colors.black12,
-                                    height: 100.0,
-                                    child: Center(
-                                      child: Text('$index',
-                                          textScaler:
-                                              const TextScaler.linear(5)),
+      body: BallIndicator(
+          onRefresh: _refresh,
+          ballColors: const [
+            Colors.blue,
+            Colors.red,
+            Colors.green,
+            Colors.amber,
+            Colors.pink,
+            Colors.purple,
+            Colors.cyan,
+            Colors.orange,
+            Colors.yellow,
+          ],
+          child: GetBuilder<RefreshofHomepageMemoryBankextends>(
+              init: refreshofHomepageMemoryBankextends,
+              builder: (refreshofHomepageMemoryBankextends) {
+                return NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      SliverAppBar(
+                        floating: true,
+                        pinned: false,
+                        snap: true,
+                        expandedHeight: appBarHeight + 72,
+                        surfaceTintColor: AppColors.background,
+                        backgroundColor: AppColors.background,
+                        toolbarHeight: appBarHeight,
+                        leading: GetBuilder<HeadPortraitChangeManagement>(
+                          init: headPortraitChangeManagement,
+                          builder: (headPortraitChangeManagement) {
+                            return headPortraitChangeManagement
+                                        .headPortraitValue !=
+                                    null
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: IconButton(
+                                      padding: const EdgeInsets.all(0),
+                                      onPressed: () {
+                                        _scaffoldKey.currentState?.openDrawer();
+                                      },
+                                      icon: CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: FileImage(
+                                            headPortraitChangeManagement
+                                                .headPortraitValue!),
+                                      ),
                                     ),
+                                  )
+                                : IconButton(
+                                    icon: SvgPicture.asset(
+                                      'assets/home/personal_add.svg',
+                                      width: 30,
+                                      height: 30,
+                                      colorFilter: ColorFilter.mode(
+                                          AppColors.Gray, BlendMode.srcIn),
+                                    ),
+                                    onPressed: () {
+                                      _scaffoldKey.currentState?.openDrawer();
+                                    },
                                   );
-                                },
-                                childCount: 20,
-                              ),
-                            ),
-                          ],
+                          },
                         ),
-                      );
-                    }))),
-      ]),
+                        iconTheme: const IconThemeData(color: Colors.black),
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.background,
+                            ),
+                            alignment: Alignment.bottomCenter,
+                            child: TabBar(
+                              labelStyle: AppTextStyle.coarseTextStyle,
+                              indicatorColor: AppColors.iconColor,
+                              unselectedLabelStyle: AppTextStyle.subsidiaryText,
+                              controller: tabController,
+                              tabs: const [
+                                Tab(text: '推荐'),
+                                Tab(text: '正在关注'),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
+                  body: TabBarView(
+                    controller: tabController,
+                    children: [
+                      GestureDetector(
+                        onHorizontalDragEnd: (details) {
+                          if (details.primaryVelocity! > 5) {
+                            _scaffoldKey.currentState?.openDrawer();
+                          } else if (details.primaryVelocity! < -5) {
+                            tabController.animateTo(1);
+                          }
+                        },
+                        child: ListView.builder(
+                          itemCount: refreshofHomepageMemoryBankextends
+                              .memoryRefreshValue.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return MemoryBankItem(
+                              data: refreshofHomepageMemoryBankextends
+                                  .memoryRefreshValue[index],
+                              onTap: () {
+                                _viewPostDataManagementForMemoryBanks
+                                    .initMemoryData(
+                                        refreshofHomepageMemoryBankextends
+                                            .memoryRefreshValue[index]);
+                                switchPage(context, const OtherMemoryBank());
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      GestureDetector(
+                        onHorizontalDragEnd: (details) {
+                          if (details.primaryVelocity! > 5) {
+                            tabController.animateTo(0);
+                          }
+                        },
+                        child: ListView.builder(
+                          itemCount: 20,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              color:
+                                  index.isOdd ? Colors.white : Colors.black12,
+                              height: 100.0,
+                              child: Center(
+                                child: Text('$index',
+                                    textScaler: const TextScaler.linear(5)),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              })),
       floatingActionButton: _buildSpeedDial(),
     );
   }
@@ -420,46 +368,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       childrenButtonSize: const Size(53, 53),
       shape: const CircleBorder(),
       children: [_buildSpeedDialChild()],
-    );
-  }
-
-  Widget? _buildTabBar() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const SizedBox(height: 30),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.background,
-          ),
-          child: TabBar(
-            labelStyle: AppTextStyle.coarseTextStyle,
-            indicatorColor: AppColors.iconColor,
-            unselectedLabelStyle: AppTextStyle.subsidiaryText,
-            controller: tabController,
-            tabs: [
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: Center(
-                  child: Text(
-                    '推荐',
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    '正在关注',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
