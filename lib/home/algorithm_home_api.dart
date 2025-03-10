@@ -62,7 +62,8 @@ Future<void> refreshHomePageMemoryBank(BuildContext context) async {
 
     final memoryBankData = await queryHomePageMemoryBank();
     if (memoryBankData != null) {
-      refreshofHomepageMemoryBankextends
+      // 主页记忆库刷新
+      homePageMemoryBankRefreshController
           .updateMemoryRefreshValue(memoryBankData);
     }
 

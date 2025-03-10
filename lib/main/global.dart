@@ -104,7 +104,8 @@ class AppTextStyle {
 
 final header = {'Content-Type': 'application/json'};
 
-const website = 'http://192.168.1.82:36233';
+const website = 'http://47.92.98.170:36233';
+// const website = 'http://192.168.1.100:36233';
 
 final dio = Dio();
 // 数据库管理
@@ -121,8 +122,8 @@ final backgroundImageChangeManagement =
 final headPortraitChangeManagement = Get.put(HeadPortraitChangeManagement());
 
 // 主页记忆库刷新
-final refreshofHomepageMemoryBankextends =
-    Get.put(RefreshofHomepageMemoryBankextends());
+final homePageMemoryBankRefreshController =
+    Get.put(HomepageMemoryBankRefreshController());
 
 // 用户个人信息管理
 final userPersonalInformationManagement =

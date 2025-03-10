@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 class DatabaseManager {
   late Database database;
@@ -9,17 +15,27 @@ class DatabaseManager {
     });
   }
   Future<Database> initDatabase() async {
+    // 根据平台选择合适的数据库工厂
+    if (kIsWeb) {
+      databaseFactory = databaseFactoryFfiWeb;
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      // 移动平台使用默认的 sqflite 实现，不使用 FFI
+      await Permission.notification.request();
+      await Permission.scheduleExactAlarm.request();
+    } else {
+      // 桌面平台（例如 Windows、macOS、Linux）使用 FFI 实现
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+      await Permission.notification.request();
+      await Permission.scheduleExactAlarm.request();
+    }
     final database = openDatabase(
       join(await getDatabasesPath(), 'database.db'),
       onCreate: (db, version) async {
-        await db.transaction((txn) async {
-          await _createPersonalTable(db);
-    
-          await _createJiyikuTable(db);
-          await _createPersonalJiyikuTable(db);
-          await _createPersonalJiyikudianjiTable(db);
-
-        });
+        await _createPersonalTable(db);
+        await _createJiyikuTable(db);
+        await _createPersonalJiyikuTable(db);
+        await _createPersonalJiyikudianjiTable(db);
       },
       version: 1,
     );
@@ -31,7 +47,6 @@ class DatabaseManager {
       'CREATE TABLE personal_data( user_name  char(20)   PRIMARY KEY , name  char(50), introduction  char(170) ,residential_address  char(40), birth_time  char(15), background_image char(50), head_portrait char(50),join_date  char(15) ,like_list JSON,collect_list JSON,pull_list JSON,review_list JSON,reply_list JSON);',
     );
   }
-
 
   Future<void> _createJiyikuTable(Database txn) async {
     await txn.execute(
@@ -50,7 +65,6 @@ class DatabaseManager {
       'reply INT);',
     );
   }
-
 
   Future<void> _createPersonalJiyikuTable(Database txn) async {
     await txn.execute(

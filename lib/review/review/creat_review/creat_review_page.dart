@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 import 'package:keframe/keframe.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
-import 'package:yunji/review/review/creat_review/creat_review_option.dart';
 import 'package:yunji/main/main_module/dialog.dart';
 
 class CreatReviewController extends GetxController {
@@ -99,7 +97,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
         appBar: AppBar(
           leading: GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
             child: Icon(Icons.close, size: 30, color: AppColors.iconColorTwo),
           ),
@@ -155,7 +153,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                   } else {
                     FocusManager.instance.primaryFocus?.unfocus();
                     creatReviewController.initData(question, answer, theme);
-                    switchPage(context, const CreatReviewOption());
+                    Navigator.pushNamed(context, '/creat_review_page/creat_review_option');
                   }
                 },
               ),
@@ -392,7 +390,7 @@ class _CreatReviewPage extends State<CreatReviewPage> {
                             _data.removeWhere((element) =>
                                 element.subscript == item.subscript);
                           });
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                         },
                         buttonRight: '删除',
                       );

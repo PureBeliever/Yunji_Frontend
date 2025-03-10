@@ -4,8 +4,8 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/review/custom_memory_scheme.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
@@ -181,7 +181,14 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                       left: 10, right: 10, top: 0, bottom: 0),
                   backgroundColor: AppColors.iconColor,
                 ),
-                onPressed: _handleCompleteButtonPress,
+                onPressed: () {
+                  if (loginStatus == false) {
+                    smsLogin();
+                    showToast(context, "未登录", "未登录");
+                  } else {
+                    _handleCompleteButtonPress();
+                  }
+                },
                 child: Text(
                   "完成",
                   style: AppTextStyle.whiteTextStyle,
@@ -258,24 +265,19 @@ class _ContinueReviewOption extends State<ContinueReviewOption> {
                     ),
                   ),
                   onPressed: () {
-                    switchPage(
-                        context,
-                        CustomMemoryScheme(
-                            question: continueLearningAboutDataManagement
-                                .question
-                                .map((key, value) =>
-                                    MapEntry(int.parse(key), value.toString())),
-                            answer: continueLearningAboutDataManagement.answer
-                                .map((key, value) =>
-                                    MapEntry(int.parse(key), value.toString())),
-                            theme: continueLearningAboutDataManagement.theme,
-                            message:
-                                continueLearningAboutDataManagement.message,
-                            alarmInformation:
-                                continueLearningAboutDataManagement
-                                    .alarmInformation,
-                            continueReview: true,
-                            id: continueLearningAboutDataManagement.id));
+                    Navigator.pushNamed(
+                      context,
+                      '/creat_review_page/creat_review_option/custom_memory_scheme',
+                      arguments: {
+                        'question': continueLearningAboutDataManagement.question.map((key, value) => MapEntry(int.parse(key), value.toString())),
+                        'answer': continueLearningAboutDataManagement.answer.map((key, value) => MapEntry(int.parse(key), value.toString())),
+                        'theme': continueLearningAboutDataManagement.theme,
+                        'message': continueLearningAboutDataManagement.message,
+                        'alarmInformation': continueLearningAboutDataManagement.alarmInformation,
+                        'continueReview': true,
+                        'id': continueLearningAboutDataManagement.id,
+                      },
+                    );
                   },
                   child: Text(
                     '自定义记忆方案',

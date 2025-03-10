@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/setting/setting_user/setting_user.dart';
+
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
@@ -22,7 +21,7 @@ class SettingPage extends StatelessWidget {
         ),
       ),
       body: ListTile(
-        onTap: () => switchPage(context, const SettingUser()),
+        onTap: () => Navigator.pushNamed(context, '/settings/setting_user'),
         leading: Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: SvgPicture.asset(

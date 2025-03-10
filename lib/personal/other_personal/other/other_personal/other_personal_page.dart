@@ -10,7 +10,6 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:keframe/keframe.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_background_image.dart';
 import 'package:yunji/personal/other_personal/other/other_personal/other_personal_head_portrait.dart';
@@ -341,8 +340,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                                 otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue[
                                                     'background_image']);
-                                        switchPage(context,
-                                            const OtherPersonalBackgroundImage());
+                                        Navigator.pushNamed(context, '/other_personal_page/other_personal_background_image');
                                       },
                                       child: _buildBackgroundImage(
                                           otherPeopleInformationListScrollDataManagement),
@@ -394,8 +392,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                                 otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue[
                                                     'head_portrait']);
-                                        switchPage(context,
-                                            const OtherPersonalHeadPortrait());
+                                        Navigator.pushNamed(context, '/other_personal_page/other_personal_head_portrait');
                                       },
                                       child: CircleAvatar(
                                         radius: 27,
@@ -542,7 +539,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
             _otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
                 _otherPeopleInformationListScrollDataManagement
                     .scrollDataValue['head_portrait']);
-            switchPage(context, const OtherPersonalHeadPortrait());
+            Navigator.pushNamed(context, '/other_personal_page/other_personal_head_portrait');
           },
           child: Container(
             width: 90,
@@ -692,7 +689,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
           onItemTap: (index) {
             _viewPostDataManagementForMemoryBanks
                 .initMemoryData(memoryBank![index]);
-            switchPage(context, const OtherMemoryBank());
+            Navigator.pushNamed(context, '/other_memory_bank');
           },
         ),
       ),

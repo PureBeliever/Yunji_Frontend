@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yunji/main/main_module/dialog.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/main/global.dart';
-import 'package:yunji/review/review/continue_review/continue_review_option.dart';
-import 'package:toastification/toastification.dart' as toast;
+
 
 class Item {
   Item({
@@ -131,21 +129,21 @@ class _ContinueReview extends State<ContinueReview> {
         item.answer = ' ';
       }
     });
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
   void _clearSpecificExplanation(Item item) {
     setState(() {
       item.answer = '';
     });
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
   void _deleteSpecificExplanation(Item item) {
     setState(() {
       _data.remove(item);
     });
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
   void _handleNextStep(BuildContext context) {
@@ -163,7 +161,7 @@ class _ContinueReview extends State<ContinueReview> {
           index++;
         }
       }
-      switchPage(context, const ContinueReviewOption());
+      Navigator.pushNamed(context, '/personal/continue_review/continue_review_option');
     }
   }
 
@@ -173,7 +171,7 @@ class _ContinueReview extends State<ContinueReview> {
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
             child: Icon(Icons.close, size: 30, color: AppColors.iconColorTwo)),
         actions: [

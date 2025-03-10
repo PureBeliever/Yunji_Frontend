@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/main/global.dart';
-import 'package:yunji/main/main_module/switch.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_module/default_cupertion.dart';
-import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 import 'package:yunji/review/review/creat_review/creat_review_api.dart';
 import 'package:yunji/review/review/start_review/review_api.dart';
 import 'package:yunji/review/notification_init.dart';
@@ -88,7 +88,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
         backgroundColor: AppColors.background,
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
           child: Icon(
             Icons.arrow_back,
@@ -103,7 +103,12 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
         actions: [
           TextButton(
             onPressed: () async {
-              await _handleCompletion();
+              if (loginStatus == false) {
+                smsLogin();
+                showWarnToast(context, "未登录", "未登录");
+              } else {
+                await _handleCompletion();
+              }
             },
             child: Icon(
               Icons.check,
@@ -288,8 +293,7 @@ class _CustomMemoryScheme extends State<CustomMemoryScheme> {
         reviewSchemeName,
       );
     }
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    switchPage(context, const PersonalPage());
+   Navigator.pushNamedAndRemoveUntil(context, '/personal', (route) => route.isFirst);
   }
 
   Future _buildDatePickerDialog(BuildContext context, Item item,

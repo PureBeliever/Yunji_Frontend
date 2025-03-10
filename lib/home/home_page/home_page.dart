@@ -1,5 +1,3 @@
-import 'dart:core';
-
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -7,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:yunji/home/algorithm_home_api.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
@@ -17,17 +14,14 @@ import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_pe
 import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/main/main_init/app_sqlite.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
-import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
 import 'package:yunji/home/home_module/ball_indicator.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/review/review/creat_review/creat_review_page.dart';
 
-// 主页记忆板刷新
-class RefreshofHomepageMemoryBankextends extends GetxController {
-  static RefreshofHomepageMemoryBankextends get to => Get.find();
+// 主页记忆板刷新 (优化后名称)
+class HomepageMemoryBankRefreshController extends GetxController {
+  static HomepageMemoryBankRefreshController get to => Get.find();
   List<Map<String, dynamic>> memoryRefreshValue = [];
 
   void updateMemoryRefreshValue(List<Map<String, dynamic>> value) {
@@ -44,6 +38,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  // 主页记忆库刷新
+final homePageMemoryBankRefreshController =
+    Get.put(HomepageMemoryBankRefreshController());
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _viewPostDataManagementForMemoryBanks =
       Get.put(ViewPostDataManagementForMemoryBanks());
@@ -60,44 +58,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // static const platform = MethodChannel('com.example.yunji/channel');
-
-  // Future<void> _getNativeMessage() async {
-  //   try {
-  //     final String result = await platform.invokeMethod('getNativeMessage');
-  //     print(result);
-  //   } on PlatformException catch (e) {
-  //     print("Failed to get native message: '${e.message}'.");
-  //   }
-  // }
   Future<void> _mainInit() async {
     await _initializeApp();
-    final homePageMemoryDatabaseData = await queryHomePageMemoryBank();
-    final personalData = await queryPersonalData();
+    final results =
+        await Future.wait([queryHomePageMemoryBank(), queryPersonalData()]);
+    final homePageMemoryDatabaseData =
+        results[0] as List<Map<String, dynamic>>?;
+    final personalData = results[1] as Map<String, dynamic>?;
+
     await refreshHomePageMemoryBank(context);
 
     if (homePageMemoryDatabaseData != null && personalData != null) {
-      _initializeUserData(homePageMemoryDatabaseData, personalData);
+      await _initializeUserData(homePageMemoryDatabaseData, personalData);
     } else {
       smsLogin();
-      _createIntDatabaseTable();
+      await _createIntDatabaseTable();
     }
 
-    Alarm.ringStream.stream.listen((OnData) =>
-        OnRingCallback(OnData.notificationSettings.body, OnData.id));
+    Alarm.ringStream.stream.listen((onData) => _onRingCallback(
+        onData.notificationSettings.body, onData.id));
   }
 
   Future<void> _createIntDatabaseTable() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> number = ['1'];
+    final prefs = await SharedPreferences.getInstance();
+    final number = ['1'];
     await prefs.setStringList('intdatabase_number', number);
     await prefs.setInt('intdatabase_length', 1);
   }
 
   Future<void> _initializeApp() async {
     await Future.wait([
-      requestPermission(),
       Alarm.init(),
+
       databaseManager.initDatabase(),
       _initializeNotification(),
       initializeNightMode(),
@@ -110,7 +102,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     await notificationHelper.initialize();
   }
 
-  void _initializeUserData(
+  Future<void> _initializeUserData(
       List<Map<String, dynamic>> homePageMemoryDatabaseData,
       Map<String, dynamic> personalData) async {
     final selectorResultsUpdateDisplay =
@@ -118,7 +110,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final editPersonalDataValueManagement =
         Get.put(EditPersonalDataValueManagement());
 
-    refreshofHomepageMemoryBankextends
+homePageMemoryBankRefreshController
         .updateMemoryRefreshValue(homePageMemoryDatabaseData);
 
     loginStatus = true;
@@ -146,23 +138,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     userPersonalInformationManagement
         .requestUserPersonalInformationDataOnTheBackEnd(personalData);
-
     userNameChangeManagement.userNameChanged(personalData['user_name']);
   }
 
-  Future<void> requestPermission() async {
-    await Permission.notification.request();
-    await Permission.scheduleExactAlarm.request();
-  }
-
-  void OnRingCallback(String body, int id) {
+  void _onRingCallback(String body, int id) {
     buildDialog(
       context: context,
       title: '闹钟',
       content: body,
       onConfirm: () {
         Alarm.stop(id);
-        Navigator.of(context).pop();
+        Navigator.pop(context);
       },
       buttonRight: '停止闹钟',
     );
@@ -170,8 +156,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    _mainInit();
-    // _getNativeMessage();
     super.initState();
     tabController = TabController(
       length: 2,
@@ -179,163 +163,149 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
       animationDuration: const Duration(milliseconds: 100),
     );
-  }
-
-  void _handleSpeedDialChildTap() {
-    if (loginStatus == false) {
-      smsLogin();
-      showToast(context, "未登录", "未登录");
-    } else {
-      switchPage(context, const CreatReviewPage());
-    }
+    _mainInit();
   }
 
   @override
   Widget build(BuildContext context) {
-    double appBarHeight = MediaQuery.of(context).size.height * 0.05;
+    final double appBarHeight = MediaQuery.of(context).size.height * 0.05;
     return Scaffold(
       backgroundColor: AppColors.background,
       key: _scaffoldKey,
       drawer: const HomeDrawer(),
       body: BallIndicator(
-          onRefresh: _refresh,
-          ballColors: const [
-            Colors.blue,
-            Colors.red,
-            Colors.green,
-            Colors.amber,
-            Colors.pink,
-            Colors.purple,
-            Colors.cyan,
-            Colors.orange,
-            Colors.yellow,
-          ],
-          child: GetBuilder<RefreshofHomepageMemoryBankextends>(
-              init: refreshofHomepageMemoryBankextends,
-              builder: (refreshofHomepageMemoryBankextends) {
-                return NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      SliverAppBar(
-                        floating: true,
-                        pinned: false,
-                        snap: true,
-                        expandedHeight: appBarHeight + 72,
-                        surfaceTintColor: AppColors.background,
-                        backgroundColor: AppColors.background,
-                        toolbarHeight: appBarHeight,
-                        leading: GetBuilder<HeadPortraitChangeManagement>(
-                          init: headPortraitChangeManagement,
-                          builder: (headPortraitChangeManagement) {
-                            return headPortraitChangeManagement
-                                        .headPortraitValue !=
-                                    null
-                                ? Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: IconButton(
-                                      padding: const EdgeInsets.all(0),
-                                      onPressed: () {
-                                        _scaffoldKey.currentState?.openDrawer();
-                                      },
-                                      icon: CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: FileImage(
-                                            headPortraitChangeManagement
-                                                .headPortraitValue!),
-                                      ),
-                                    ),
-                                  )
-                                : IconButton(
-                                    icon: SvgPicture.asset(
-                                      'assets/home/personal_add.svg',
-                                      width: 30,
-                                      height: 30,
-                                      colorFilter: ColorFilter.mode(
-                                          AppColors.Gray, BlendMode.srcIn),
-                                    ),
-                                    onPressed: () {
-                                      _scaffoldKey.currentState?.openDrawer();
-                                    },
-                                  );
-                          },
+        onRefresh: _refresh,
+        ballColors: const [
+          Colors.blue,
+          Colors.red,
+          Colors.green,
+          Colors.amber,
+          Colors.pink,
+          Colors.purple,
+          Colors.cyan,
+          Colors.orange,
+          Colors.yellow,
+        ],
+        child: GetBuilder<HomepageMemoryBankRefreshController>(
+          init: homePageMemoryBankRefreshController,
+          builder: (controller) {
+            return NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    floating: true,
+                    pinned: false,
+                    snap: true,
+                    expandedHeight: appBarHeight + 72,
+                    surfaceTintColor: AppColors.background,
+                    backgroundColor: AppColors.background,
+                    toolbarHeight: appBarHeight,
+                    leading: GetBuilder<HeadPortraitChangeManagement>(
+                      init: headPortraitChangeManagement,
+                      builder: (portraitController) {
+                        return portraitController.headPortraitValue != null
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 15.0),
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () =>
+                                      _scaffoldKey.currentState?.openDrawer(),
+                                  icon: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: FileImage(
+                                        portraitController.headPortraitValue!),
+                                  ),
+                                ),
+                              )
+                            : IconButton(
+                                icon: SvgPicture.asset(
+                                  'assets/home/personal_add.svg',
+                                  width: 30,
+                                  height: 30,
+                                  colorFilter: ColorFilter.mode(
+                                      AppColors.Gray, BlendMode.srcIn),
+                                ),
+                                onPressed: () =>
+                                    _scaffoldKey.currentState?.openDrawer(),
+                              );
+                      },
+                    ),
+                    iconTheme: const IconThemeData(color: Colors.black),
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.background,
                         ),
-                        iconTheme: const IconThemeData(color: Colors.black),
-                        flexibleSpace: FlexibleSpaceBar(
-                          background: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.background,
-                            ),
-                            alignment: Alignment.bottomCenter,
-                            child: TabBar(
-                              labelStyle: AppTextStyle.coarseTextStyle,
-                              indicatorColor: AppColors.iconColor,
-                              unselectedLabelStyle: AppTextStyle.subsidiaryText,
-                              controller: tabController,
-                              tabs: const [
-                                Tab(text: '推荐'),
-                                Tab(text: '正在关注'),
-                              ],
+                        alignment: Alignment.bottomCenter,
+                        child: TabBar(
+                          labelStyle: AppTextStyle.coarseTextStyle,
+                          indicatorColor: AppColors.iconColor,
+                          unselectedLabelStyle: AppTextStyle.subsidiaryText,
+                          controller: tabController,
+                          tabs: const [
+                            Tab(text: '推荐'),
+                            Tab(text: '正在关注'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ];
+              },
+              body: TabBarView(
+                controller: tabController,
+                children: [
+                  GestureDetector(
+                    onHorizontalDragEnd: (details) {
+                      if (details.primaryVelocity! > 5) {
+                        _scaffoldKey.currentState?.openDrawer();
+                      } else if (details.primaryVelocity! < -5) {
+                        tabController.animateTo(1);
+                      }
+                    },
+                    child: ListView.builder(
+                      itemCount: controller.memoryRefreshValue.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return MemoryBankItem(
+                          data: controller.memoryRefreshValue[index],
+                          onTap: () {
+                            _viewPostDataManagementForMemoryBanks.initMemoryData(
+                                controller.memoryRefreshValue[index]);
+                            Navigator.pushNamed(
+                                context, '/other_memory_bank');
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  GestureDetector(
+                    onHorizontalDragEnd: (details) {
+                      if (details.primaryVelocity! > 5) {
+                        tabController.animateTo(0);
+                      }
+                    },
+                    child: ListView.builder(
+                      itemCount: 20,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          color: index.isOdd ? Colors.white : Colors.black12,
+                          height: 100.0,
+                          child: Center(
+                            child: Text(
+                              '$index',
+                              textScaler: const TextScaler.linear(5),
                             ),
                           ),
-                        ),
-                      ),
-                    ];
-                  },
-                  body: TabBarView(
-                    controller: tabController,
-                    children: [
-                      GestureDetector(
-                        onHorizontalDragEnd: (details) {
-                          if (details.primaryVelocity! > 5) {
-                            _scaffoldKey.currentState?.openDrawer();
-                          } else if (details.primaryVelocity! < -5) {
-                            tabController.animateTo(1);
-                          }
-                        },
-                        child: ListView.builder(
-                          itemCount: refreshofHomepageMemoryBankextends
-                              .memoryRefreshValue.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return MemoryBankItem(
-                              data: refreshofHomepageMemoryBankextends
-                                  .memoryRefreshValue[index],
-                              onTap: () {
-                                _viewPostDataManagementForMemoryBanks
-                                    .initMemoryData(
-                                        refreshofHomepageMemoryBankextends
-                                            .memoryRefreshValue[index]);
-                                switchPage(context, const OtherMemoryBank());
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      GestureDetector(
-                        onHorizontalDragEnd: (details) {
-                          if (details.primaryVelocity! > 5) {
-                            tabController.animateTo(0);
-                          }
-                        },
-                        child: ListView.builder(
-                          itemCount: 20,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              color:
-                                  index.isOdd ? Colors.white : Colors.black12,
-                              height: 100.0,
-                              child: Center(
-                                child: Text('$index',
-                                    textScaler: const TextScaler.linear(5)),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                );
-              })),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
       floatingActionButton: _buildSpeedDial(),
     );
   }
@@ -351,10 +321,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       backgroundColor: AppColors.background,
       label: '创建记忆库',
-      labelShadow: List.empty(),
+      labelShadow: const [],
       labelBackgroundColor: AppColors.background,
       labelStyle: AppTextStyle.littleTitleStyle,
-      onTap: _handleSpeedDialChildTap,
+      onTap: () => Navigator.pushNamed(context, '/creat_review_page'),
     );
   }
 
@@ -363,7 +333,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       backgroundColor: AppColors.iconColor,
       buttonSize: const Size(60, 60),
       animatedIcon: AnimatedIcons.add_event,
-      animatedIconTheme: IconThemeData(color: AppColors.background, size: 28),
+      animatedIconTheme:
+        IconThemeData(color: AppColors.background, size: 28),
       spacing: 12,
       childrenButtonSize: const Size(53, 53),
       shape: const CircleBorder(),

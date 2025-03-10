@@ -1,50 +1,42 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:yunji/home/login/sms/sms_api.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
 
 // 短信登录功能
 void smsLogin() {
-  // 获取全局的 context
-  final BuildContext context = navigatorKey.currentContext!;
-
-  // 检查 context 是否为空
+  // 获取全局的 context（若无法获取则直接返回）
+  final BuildContext? context = navigatorKey.currentContext;
   if (context == null) {
-    showErrorToast(
-      context,
-      "获取上下文失败",
-      "无法获取当前上下文，请重试。",
-    );
     return;
   }
 
-  // 控制输入框的文本
+  // 输入框控制器
   final phoneController = TextEditingController();
   final codeController = TextEditingController();
 
-  // 管理发送状态和倒计时
-  final sendingState = ValueNotifier(true);
-  final seconds = ValueNotifier(60);
-  final phoneNumberStatus = ValueNotifier(false);
-  final verifyAttempt = ValueNotifier(true);
+  // 状态管理：验证码发送状态、倒计时、手机号校验状态与验证尝试状态
+  final sendingState = ValueNotifier<bool>(true);
+  final seconds = ValueNotifier<int>(60);
+  final phoneNumberStatus = ValueNotifier<bool>(false);
+  final verifyAttempt = ValueNotifier<bool>(true);
 
-  // 倒计时功能
+  // 倒计时，每秒递减，结束后重置状态
   void countdown() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (seconds.value <= 0) {
         timer.cancel();
         sendingState.value = true;
         seconds.value = 60;
-        return;
+      } else {
+        seconds.value--;
       }
-      seconds.value--;
     });
   }
 
-  // 处理发送验证码的逻辑
+  // 发送验证码逻辑
   void handleSendCode() {
     final phone = phoneController.text;
     if (!_isValidPhoneNumber(phone)) {
@@ -75,11 +67,9 @@ void smsLogin() {
     }
   }
 
-  // 处理验证验证码的逻辑
+  // 验证验证码逻辑
   void handleVerifyCode() async {
-    if (!phoneNumberStatus.value ||
-        sendingState.value ||
-        !verifyAttempt.value) {
+    if (!phoneNumberStatus.value || sendingState.value || !verifyAttempt.value) {
       showWarnToast(
         context,
         "验证码已过期",
@@ -89,9 +79,7 @@ void smsLogin() {
     }
 
     verifyAttempt.value = false;
-    final verified =
-        await verification(phoneController.text, codeController.text);
-
+    final verified = await verification(phoneController.text, codeController.text);
     if (verified) {
       _onLoginSuccess(context);
       Navigator.pop(context);
@@ -108,16 +96,18 @@ void smsLogin() {
   // 显示登录对话框
   showDialog(
     context: context,
-    builder: (context) => Dialog(
-      child: LoginDialogContent(
-        phoneController: phoneController,
-        codeController: codeController,
-        sendingState: sendingState,
-        seconds: seconds,
-        onSendCode: handleSendCode,
-        onVerify: handleVerifyCode,
-      ),
-    ),
+    builder: (context) {
+      return Dialog(
+        child: LoginDialogContent(
+          phoneController: phoneController,
+          codeController: codeController,
+          sendingState: sendingState,
+          seconds: seconds,
+          onSendCode: handleSendCode,
+          onVerify: handleVerifyCode,
+        ),
+      );
+    },
   );
 }
 
@@ -131,36 +121,38 @@ class LoginDialogContent extends StatelessWidget {
   final VoidCallback onVerify;
 
   const LoginDialogContent({
-    super.key,
+    Key? key,
     required this.phoneController,
     required this.codeController,
     required this.sendingState,
     required this.seconds,
     required this.onSendCode,
     required this.onVerify,
-  });
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 320,
-        width: 200,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              _buildHeader(context),
-              const SizedBox(height: 8),
-              _buildPhoneInput(),
-              const SizedBox(height: 10),
-              _buildCodeInput(),
-              _buildAgreement(),
-              _buildLoginButton(),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 320,
+      width: 200,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            _buildHeader(context),
+            const SizedBox(height: 8),
+            _buildPhoneInput(),
+            const SizedBox(height: 10),
+            _buildCodeInput(),
+            _buildAgreement(),
+            _buildLoginButton(),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
-  // 构建对话框头部
+  // 构建对话框头部（标题与关闭按钮）
   Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,8 +184,8 @@ class LoginDialogContent extends StatelessWidget {
           borderSide: const BorderSide(color: Colors.black, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
           borderRadius: BorderRadius.circular(25.0),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
         ),
         border: const OutlineInputBorder(),
         labelText: '手机号',
@@ -207,7 +199,7 @@ class LoginDialogContent extends StatelessWidget {
     );
   }
 
-  // 构建验证码输入框
+  // 构建验证码输入框及“获取验证码”按钮
   Widget _buildCodeInput() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -221,12 +213,12 @@ class LoginDialogContent extends StatelessWidget {
             maxLength: 4,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black, width: 2),
                 borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.black, width: 2),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.blue, width: 2),
                 borderRadius: BorderRadius.circular(25.0),
+                borderSide: const BorderSide(color: Colors.blue, width: 2),
               ),
               border: const OutlineInputBorder(),
               labelText: '验证码',
@@ -251,7 +243,7 @@ class LoginDialogContent extends StatelessWidget {
     );
   }
 
-  // 构建用户协议
+  // 构建用户协议说明
   Widget _buildAgreement() {
     return Row(
       children: [
@@ -260,12 +252,12 @@ class LoginDialogContent extends StatelessWidget {
           child: Checkbox(
             value: true,
             activeColor: Colors.blue,
-            onChanged: (bool? value) {},
+            onChanged: (_) {},
           ),
         ),
-        Expanded(
+         Expanded(
           child: RichText(
-            text: const TextSpan(
+            text: TextSpan(
               style: TextStyle(
                 color: Color.fromARGB(255, 119, 118, 118),
                 fontSize: 14,
@@ -300,22 +292,18 @@ class LoginDialogContent extends StatelessWidget {
       onPressed: onVerify,
       child: const Text(
         "验证登录",
-        style: TextStyle(
-          fontSize: 17,
-          fontWeight: FontWeight.w900,
-          color: Colors.white,
-        ),
+        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
       ),
     );
   }
 }
 
-// 验证手机号格式
+// 验证手机号格式是否合法
 bool _isValidPhoneNumber(String phone) {
-  return phone.length == 11 && RegExp(r'^\d*$').hasMatch(phone);
+  return phone.length == 11 && RegExp(r'^\d+$').hasMatch(phone);
 }
 
-// 登录成功后的处理
+// 登录成功后的处理逻辑
 void _onLoginSuccess(BuildContext context) {
   loginStatus = true;
   showToast(

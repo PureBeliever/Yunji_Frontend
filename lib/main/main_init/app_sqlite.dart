@@ -1,4 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yunji/main/global.dart';
 
 // 查询主页记忆库
@@ -22,4 +21,3 @@ Future<Map<String, dynamic>?> queryPersonalData() async {
     return null;
   }
 }
-

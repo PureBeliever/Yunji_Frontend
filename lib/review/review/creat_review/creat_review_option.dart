@@ -6,12 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/main/global.dart';
+import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/review/review/creat_review/creat_review_api.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/review/review/creat_review/creat_review_page.dart';
-import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/review/custom_memory_scheme.dart';
 import 'package:yunji/review/notification_init.dart';
 
 class CreatReviewOption extends StatefulWidget {
@@ -83,7 +82,7 @@ class _CreatReviewOption extends State<CreatReviewOption> {
         surfaceTintColor: AppColors.background,
         leading: GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
             child: Icon(
               Icons.arrow_back,
@@ -100,7 +99,14 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                     const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
                 backgroundColor: AppColors.iconColor,
               ),
-              onPressed: _handleCompletion,
+              onPressed: () {
+                if (loginStatus == false) {
+                  smsLogin();
+                  showWarnToast(context, "未登录", "未登录");
+                } else {
+                  _handleCompletion();
+                }
+              },
               child: Text(
                 "完成",
                 style: AppTextStyle.whiteTextStyle,
@@ -199,17 +205,20 @@ class _CreatReviewOption extends State<CreatReviewOption> {
                         ),
                       ),
                       onPressed: () {
-                        switchPage(
+                        Navigator.pushNamed(
                             context,
-                            CustomMemoryScheme(
-                                question: creatReviewController.question,
-                                answer: creatReviewController.answer,
-                                theme: creatReviewController.theme!,
-                                message: creatReviewController.message,
-                                alarmInformation:
-                                    creatReviewController.alarmInformation,
-                                continueReview: false,
-                                id: 0));
+                            '/creat_review_page/creat_review_option/custom_memory_scheme',
+                            arguments: {
+                              'question': creatReviewController.question,
+                              'answer': creatReviewController.answer,
+                              'theme': creatReviewController.theme!,
+                              'message': creatReviewController.message,
+                              'alarmInformation':
+                                  creatReviewController.alarmInformation,
+                              'continueReview': false,
+                              'id': 0,
+                            },
+                        );
                       },
                       child: Text(
                         '自定义记忆方案',
@@ -316,9 +325,6 @@ class _CreatReviewOption extends State<CreatReviewOption> {
       {"0": reviewSchemeName},
       reviewSchemeName,
     );
-
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    switchPage(context, const PersonalPage());
+    Navigator.pushNamedAndRemoveUntil(context, '/personal', (route) => route.isFirst);
   }
 }

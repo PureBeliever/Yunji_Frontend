@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/setting/setting_user/setting_user_name/setting_user_name.dart';
 import 'package:yunji/main/global.dart';
 
 class SettingUser extends StatefulWidget {
@@ -29,7 +27,7 @@ class _SettingUser extends State<SettingUser> {
         backgroundColor: Colors.white,
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
           child: const Icon(
             Icons.arrow_back,
@@ -42,7 +40,7 @@ class _SettingUser extends State<SettingUser> {
       ),
       body: InkWell(
         onTap: () {
-          switchPage(context, const SettingUserName());
+          Navigator.pushNamed(context, '/settings/setting_user/setting_user_name');
         },
         child: ListTile(
             title: const Text(

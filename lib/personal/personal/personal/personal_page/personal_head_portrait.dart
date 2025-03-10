@@ -6,9 +6,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/main/global.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
-import 'package:yunji/main/main_module/switch.dart';
-import 'package:yunji/home/login/login_init.dart';
 
 class PersonalHeadPortrait extends StatefulWidget {
   const PersonalHeadPortrait({super.key});
@@ -101,8 +98,7 @@ class _PersonalHeadPortrait extends State<PersonalHeadPortrait> {
                 smsLogin();
                 showWarnToast(context, "未登录", "未登录");
               } else {
-                Navigator.pop(context);
-                switchPage(context, const EditPersonalPage());
+                Navigator.popAndPushNamed(context, '/personal/edit_personal_page');
               }
             },
             style: OutlinedButton.styleFrom(

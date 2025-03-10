@@ -17,13 +17,11 @@ import 'package:yunji/main/main_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_sqlite.dart';
 import 'package:yunji/main/main_module/show_toast.dart';
-import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
 import 'package:yunji/review/review/continue_review/continue_review.dart';
 import 'package:yunji/personal/sliver_header_delegate.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_api.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/review/review/start_review/review.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_background_image.dart';
@@ -31,13 +29,7 @@ import 'package:yunji/personal/personal/personal/personal_page/personal_head_por
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/personal/personal/personal/personal_sqlite.dart';
 
-// 个人页面类
-class PersonalPage extends StatefulWidget {
-  const PersonalPage({super.key});
 
-  @override
-  State<PersonalPage> createState() => _PersonalPageState();
-}
 
 // 用户信息列表滚动数据管理
 final _userInformationListScrollDataManagement =
@@ -158,7 +150,7 @@ class MemoryBankCompletionStatus extends GetxController {
             onTap: () {
               _continueLearningAboutDataManagement
                   .initMemoryData(widgetsDisplayValues);
-              switchPage(context, const ContinueReview());
+              Navigator.pushNamed(context, '/personal/continue_review');
             },
             child: Text(
               '继续学习',
@@ -175,7 +167,7 @@ class MemoryBankCompletionStatus extends GetxController {
     return GestureDetector(
       onTap: () {
         _reviewDataManagement.initMemoryData(widgetsDisplayValues);
-        switchPage(context, const ReviewPage());
+        Navigator.pushNamed(context, '/personal/review_page');
       },
       child: Text(
         '开始复习',
@@ -267,6 +259,13 @@ class UserPersonalInformationManagement extends GetxController {
       }
     }
   }
+}
+// 个人页面类
+class PersonalPage extends StatefulWidget {
+  const PersonalPage({super.key});
+
+  @override
+  State<PersonalPage> createState() => _PersonalPageState();
 }
 
 // 个人页面状态管理
@@ -487,7 +486,7 @@ class _PersonalPageState extends State<PersonalPage>
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        switchPage(context, const PersonalBackgroundImage());
+                        Navigator.pushNamed(context, '/personal/personal_background_image');
                       },
                       child: GetBuilder<BackgroundImageChangeManagement>(
                         init: backgroundImageChangeManagement,
@@ -543,7 +542,7 @@ class _PersonalPageState extends State<PersonalPage>
                       dx, constraints.maxHeight / 1.85 - 0.3 * kToolbarHeight),
                 child: GestureDetector(
                   onTap: () {
-                    switchPage(context, const PersonalHeadPortrait());
+                    Navigator.pushNamed(context, '/personal/personal_head_portrait');
                   },
                   child: CircleAvatar(
                     radius: 27,
@@ -659,7 +658,7 @@ class _PersonalPageState extends State<PersonalPage>
       children: [
         GestureDetector(
           onTap: () {
-            switchPage(context, const PersonalHeadPortrait());
+            Navigator.pushNamed(context, '/personal/personal_head_portrait');
           },
           child: Container(
             width: 90,
@@ -687,7 +686,7 @@ class _PersonalPageState extends State<PersonalPage>
               smsLogin();
               showWarnToast(context, "未登录", "未登录");
             } else {
-              switchPage(context, const EditPersonalPage());
+              Navigator.pushNamed(context, '/personal/edit_personal_page');
             }
           },
         ),
@@ -744,7 +743,7 @@ class _PersonalPageState extends State<PersonalPage>
                     userPersonalInformationManagement
                         .userPulledMemoryBank![index],
                   );
-                  switchPage(context, const OtherMemoryBank());
+                  Navigator.pushNamed(context, '/other_memory_bank');
                 },
               ),
             ),
@@ -767,7 +766,7 @@ class _PersonalPageState extends State<PersonalPage>
                     userPersonalInformationManagement
                         .userLikedMemoryBank![index],
                   );
-                  switchPage(context, const OtherMemoryBank());
+                  Navigator.pushNamed(context, '/other_memory_bank');
                 },
               ),
             ),
@@ -811,7 +810,7 @@ class _PersonalPageState extends State<PersonalPage>
               onTap: () {
                 _viewPostDataManagementForMemoryBanks
                     .initMemoryData(memoryBank);
-                switchPage(context, const OtherMemoryBank());
+                Navigator.pushNamed(context, '/other_memory_bank');
               },
               child: Padding(
                 padding:
@@ -865,7 +864,7 @@ class _PersonalPageState extends State<PersonalPage>
                           children: [
                             IconButton(
                               onPressed: () async {
-                                switchPage(context, const OtherPersonalPage());
+                                Navigator.pushNamed(context, '/other_personal_page');
                                 await requestTheOtherPersonalData(
                                     memoryBank['user_name']);
                               },

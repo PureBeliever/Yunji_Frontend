@@ -4,13 +4,9 @@ import 'package:get/get.dart';
 
 import 'package:yunji/home/home_module/size_expansion_tile_state.dart';
 import 'package:yunji/main/main_module/dialog.dart';
-import 'package:yunji/main/main_module/show_toast.dart';
 import 'package:yunji/personal/personal/edit_personal/edit_personal_page/edit_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
-import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
-import 'package:yunji/setting/setting_page.dart';
 import 'package:yunji/main/global.dart';
-import 'package:yunji/main/main_module/switch.dart';
 
 // 主页面抽屉组件
 class HomeDrawer extends StatefulWidget {
@@ -94,8 +90,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       builder: (controller) {
         return IconButton(
           onPressed: () {
-            Navigator.pop(context);
-            switchPage(context, const PersonalPage());
+            Navigator.popAndPushNamed(context, '/personal');
           },
           padding: EdgeInsets.zero,
           icon: CircleAvatar(
@@ -129,11 +124,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
           buttonRight: '夜间模式',
           onConfirmLifeMode: () {
             saveLoginStatus(false);
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
           onConfirmRightMode: () {
             saveLoginStatus(true);
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
         );
       },
@@ -193,27 +188,27 @@ class _HomeDrawerState extends State<HomeDrawer> {
           physics: const BouncingScrollPhysics(),
           children: [
             _buildMenuItem(context, '个人资料', 'assets/home/personal_data.svg',
-                const PersonalPage()), // 构建个人资料菜单项
+                '/personal'), // 构建个人资料菜单项
             _buildMenuItem(
               context,
               '会员',
               'assets/home/member.svg',
-              null,
+              '/member',
             ), // 构建会员菜单项
             _buildMenuItem(
               context,
               '收藏',
               'assets/home/collect.svg',
-              null,
+              '/collect',
             ), // 构建收藏菜单项
             _buildMenuItem(
               context,
               '反馈',
               'assets/home/feedback.svg',
-              null,
+              '/feedback',
             ), // 构建反馈菜单项
             _buildMenuItem(context, '设置', 'assets/home/setting.svg',
-                const SettingPage()), // 构建设置菜单项
+                '/settings'), // 构建设置菜单项
             Padding(
               padding: const EdgeInsets.only(left: 28, right: 26),
               child: Divider(
@@ -231,13 +226,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   // 构建菜单项
   Widget _buildMenuItem(
-      BuildContext context, String title, String assetPath, Widget? page,
-      {VoidCallback? onTap}) {
+      BuildContext context, String title, String assetPath, String route,
+      ) {
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
-        if (page != null) switchPage(context, page);
-        if (onTap != null) onTap();
+        Navigator.popAndPushNamed(context, route);
+      
       },
       child: ListTile(
         leading: Padding(

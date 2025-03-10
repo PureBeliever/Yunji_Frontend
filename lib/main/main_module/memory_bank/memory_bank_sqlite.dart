@@ -35,7 +35,7 @@ Future<void> _synchronizeApp() async {
     if (personalData != null && homePageMemoryDatabaseData != null) {
       userPersonalInformationManagement
           .requestUserPersonalInformationDataOnTheBackEnd(personalData);
-      refreshofHomepageMemoryBankextends
+      homePageMemoryBankRefreshController
           .updateMemoryRefreshValue(homePageMemoryDatabaseData);
     } else {
       smsLogin();

@@ -7,9 +7,7 @@ import 'package:like_button/like_button.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_api.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_sqlite.dart';
 import 'package:yunji/personal/other_personal/other_personal_api.dart';
-import 'package:yunji/main/main_module/switch.dart';
 import 'package:yunji/main/global.dart';
-import 'package:yunji/personal/other_personal/other/other_personal/other_personal_page.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_page.dart';
 
 // ignore: camel_case_types
@@ -86,7 +84,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
       appBar: AppBar(
         leading: GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
             child: Icon(
               Icons.arrow_back,
@@ -111,7 +109,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
         children: [
           InkWell(
             onTap: () async {
-              switchPage(context, const OtherPersonalPage());
+              Navigator.pushNamed(context, '/other_personal_page');
               await requestTheOtherPersonalData(
                   viewPostDataManagementForMemoryBanks.memoryBankValue['user_name']);
             },
