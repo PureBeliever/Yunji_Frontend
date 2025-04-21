@@ -32,11 +32,25 @@ Future<bool> verification(String mobileNumber, String code) async {
     if (response.statusCode == 200) {
       verificationState = true;
       requestTheUsersPersonalData(response.data['username']);
-
     }
   } catch (e) {
     print('验证失败: $e');
   }
 
   return verificationState;
+}
+
+Future<bool> getName() async {
+  try {
+    final response = await dio.get('$website/getUserName',
+        options: Options(headers: header));
+
+    if (response.statusCode == 200) {
+      requestTheUsersPersonalData(response.data['username']);
+    }
+  } catch (e) {
+    print('验证失败: $e');
+  }
+
+  return true;
 }

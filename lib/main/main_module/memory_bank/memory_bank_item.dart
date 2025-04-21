@@ -11,7 +11,8 @@ class MemoryBankList extends StatelessWidget {
   final List<Map<String, dynamic>>? refreshofMemoryBankextends;
   final Function(int) onItemTap;
 
-  const MemoryBankList({super.key, 
+  const MemoryBankList({
+    super.key,
     required this.refreshofMemoryBankextends,
     required this.onItemTap,
   });
@@ -52,26 +53,26 @@ class MemoryBankItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.background,
         ),
         child: Column(
           children: [
-             Divider(
+            Divider(
               color: AppColors.Gray,
-               thickness: 0.3,
+              thickness: 0.3,
               height: 0.9,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 3.0, horizontal: 2.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
                     onPressed: () async {
-                      Navigator.pushNamed(context, '/other_personal_page');
+                      Navigator.pushNamed(context, '/other_memory_bank/other_personal_page');
                       await requestTheOtherPersonalData(data['user_name']);
                     },
                     icon: CircleAvatar(
@@ -106,7 +107,7 @@ class MemoryBankItem extends StatelessWidget {
                                 ),
                               ),
                             ),
-                             Text(
+                            Text(
                               '·',
                               style: AppTextStyle.subsidiaryText,
                             ),
@@ -130,7 +131,7 @@ class MemoryBankItem extends StatelessWidget {
                         const SizedBox(height: 20),
                         Text(
                           parseJson(data['answer'], data['subscript']),
-                          style: AppTextStyle.textStyle,
+                          style: AppTextStyle.subsidiaryText,
                           maxLines: 7,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -214,30 +215,19 @@ class LikeButtonRow extends StatelessWidget {
               if (!changeUserPulledMemoryBankIndex.contains(data['id'])) {
                 changeUserPulledMemoryBankIndex.add(data['id']);
               }
-              await synchronizeMemoryBankData(
-                  changeUserPulledMemoryBankIndex,
-                  'pull_list',
-                  data['id'],
-                  1,
-                  'pull');
+              await synchronizeMemoryBankData(changeUserPulledMemoryBankIndex,
+                  'pull_list', data['id'], 1, 'pull');
             } else {
               if (changeUserPulledMemoryBankIndex.contains(data['id'])) {
                 changeUserPulledMemoryBankIndex.remove(data['id']);
               }
-              await synchronizeMemoryBankData(
-                  changeUserPulledMemoryBankIndex,
-                  'pull_list',
-                  data['id'],
-                  -1,
-                  'pull');
-              if (!userPersonalInformationManagement
-                      .userPulledMemoryBankIndex
+              await synchronizeMemoryBankData(changeUserPulledMemoryBankIndex,
+                  'pull_list', data['id'], -1, 'pull');
+              if (!userPersonalInformationManagement.userPulledMemoryBankIndex
                       .contains(data['id']) &&
-                  !userPersonalInformationManagement
-                      .userLikedMemoryBankIndex
+                  !userPersonalInformationManagement.userLikedMemoryBankIndex
                       .contains(data['id']) &&
-                  !userPersonalInformationManagement
-                      .userReviewMemoryBankIndex
+                  !userPersonalInformationManagement.userReviewMemoryBankIndex
                       .contains(data['id'])) {
                 deletePersonalMemoryBankData(data['id']);
               }
@@ -264,22 +254,14 @@ class LikeButtonRow extends StatelessWidget {
               if (!changeUserCollectedMemoryBankIndex.contains(data['id'])) {
                 changeUserCollectedMemoryBankIndex.add(data['id']);
               }
-              synchronizeMemoryBankData(
-                  changeUserCollectedMemoryBankIndex,
-                  'collect_list',
-                  data['id'],
-                  1,
-                  'collect');
+              synchronizeMemoryBankData(changeUserCollectedMemoryBankIndex,
+                  'collect_list', data['id'], 1, 'collect');
             } else {
               if (changeUserCollectedMemoryBankIndex.contains(data['id'])) {
                 changeUserCollectedMemoryBankIndex.remove(data['id']);
               }
-              synchronizeMemoryBankData(
-                  changeUserCollectedMemoryBankIndex,
-                  'collect_list',
-                  data['id'],
-                  -1,
-                  'collect');
+              synchronizeMemoryBankData(changeUserCollectedMemoryBankIndex,
+                  'collect_list', data['id'], -1, 'collect');
             }
             return !isLiked;
           },
@@ -304,30 +286,19 @@ class LikeButtonRow extends StatelessWidget {
               if (!changeUserLikedMemoryBankIndex.contains(data['id'])) {
                 changeUserLikedMemoryBankIndex.add(data['id']);
               }
-              synchronizeMemoryBankData(
-                  changeUserLikedMemoryBankIndex,
-                  'like_list',
-                  data['id'],
-                  1,
-                  '`like`');
+              synchronizeMemoryBankData(changeUserLikedMemoryBankIndex,
+                  'like_list', data['id'], 1, '`like`');
             } else {
               if (changeUserLikedMemoryBankIndex.contains(data['id'])) {
                 changeUserLikedMemoryBankIndex.remove(data['id']);
               }
-              synchronizeMemoryBankData(
-                  changeUserLikedMemoryBankIndex,
-                  'like_list',
-                  data['id'],
-                  -1,
-                  '`like`');
-              if (!userPersonalInformationManagement
-                      .userPulledMemoryBankIndex
+              synchronizeMemoryBankData(changeUserLikedMemoryBankIndex,
+                  'like_list', data['id'], -1, '`like`');
+              if (!userPersonalInformationManagement.userPulledMemoryBankIndex
                       .contains(data['id']) &&
-                  !userPersonalInformationManagement
-                      .userLikedMemoryBankIndex
+                  !userPersonalInformationManagement.userLikedMemoryBankIndex
                       .contains(data['id']) &&
-                  !userPersonalInformationManagement
-                      .userReviewMemoryBankIndex
+                  !userPersonalInformationManagement.userReviewMemoryBankIndex
                       .contains(data['id'])) {
                 deletePersonalMemoryBankData(data['id']);
               }
@@ -354,22 +325,14 @@ class LikeButtonRow extends StatelessWidget {
               if (!changeUserReplyMemoryBankIndex.contains(data['id'])) {
                 changeUserReplyMemoryBankIndex.add(data['id']);
               }
-              synchronizeMemoryBankData(
-                  changeUserReplyMemoryBankIndex,
-                  'reply_list',
-                  data['id'],
-                  1,
-                  'reply');
+              synchronizeMemoryBankData(changeUserReplyMemoryBankIndex,
+                  'reply_list', data['id'], 1, 'reply');
             } else {
               if (changeUserReplyMemoryBankIndex.contains(data['id'])) {
                 changeUserReplyMemoryBankIndex.remove(data['id']);
               }
-              synchronizeMemoryBankData(
-                  changeUserReplyMemoryBankIndex,
-                  'reply_list',
-                  data['id'],
-                  -1,
-                  'reply');
+              synchronizeMemoryBankData(changeUserReplyMemoryBankIndex,
+                  'reply_list', data['id'], -1, 'reply');
             }
             return !isLiked;
           },

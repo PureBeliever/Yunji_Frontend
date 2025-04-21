@@ -29,8 +29,6 @@ import 'package:yunji/personal/personal/personal/personal_page/personal_head_por
 import 'package:yunji/home/login/sms/sms_login.dart';
 import 'package:yunji/personal/personal/personal/personal_sqlite.dart';
 
-
-
 // 用户信息列表滚动数据管理
 final _userInformationListScrollDataManagement =
     Get.put(UserInformationListScrollDataManagement());
@@ -260,6 +258,7 @@ class UserPersonalInformationManagement extends GetxController {
     }
   }
 }
+
 // 个人页面类
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
@@ -371,7 +370,7 @@ class _PersonalPageState extends State<PersonalPage>
       iconTheme: const IconThemeData(color: Colors.white, size: 28),
       textStyle: const TextStyle(
         color: Colors.white,
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: FontWeight.w700,
       ),
       messageBuilder: (context, state, text, dateTime) {
@@ -380,7 +379,7 @@ class _PersonalPageState extends State<PersonalPage>
           '更新于${timeOfDay.hour}:${timeOfDay.minute}',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         );
@@ -486,7 +485,8 @@ class _PersonalPageState extends State<PersonalPage>
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/personal/personal_background_image');
+                        Navigator.pushNamed(
+                            context, '/personal/personal_background_image');
                       },
                       child: GetBuilder<BackgroundImageChangeManagement>(
                         init: backgroundImageChangeManagement,
@@ -542,7 +542,8 @@ class _PersonalPageState extends State<PersonalPage>
                       dx, constraints.maxHeight / 1.85 - 0.3 * kToolbarHeight),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/personal/personal_head_portrait');
+                    Navigator.pushNamed(
+                        context, '/personal/personal_head_portrait');
                   },
                   child: CircleAvatar(
                     radius: 27,
@@ -864,7 +865,8 @@ class _PersonalPageState extends State<PersonalPage>
                           children: [
                             IconButton(
                               onPressed: () async {
-                                Navigator.pushNamed(context, '/other_personal_page');
+                                Navigator.pushNamed(context,
+                                    '/other_memory_bank/other_personal_page');
                                 await requestTheOtherPersonalData(
                                     memoryBank['user_name']);
                               },

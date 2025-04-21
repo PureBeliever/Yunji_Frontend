@@ -69,17 +69,20 @@ void smsLogin() {
 
   // 验证验证码逻辑
   void handleVerifyCode() async {
-    if (!phoneNumberStatus.value || sendingState.value || !verifyAttempt.value) {
-      showWarnToast(
-        context,
-        "验证码已过期",
-        "请重新获取验证码",
-      );
-      return;
-    }
+    // if (!phoneNumberStatus.value ||
+    //     sendingState.value ||
+    //     !verifyAttempt.value) {
+    //   showWarnToast(
+    //     context,
+    //     "验证码已过期",
+    //     "请重新获取验证码",
+    //   );
+    //   return;
+    // }
 
-    verifyAttempt.value = false;
-    final verified = await verification(phoneController.text, codeController.text);
+    // verifyAttempt.value = false;
+    // final verified = await verification(phoneController.text, codeController.text);
+    final verified = await getName();
     if (verified) {
       _onLoginSuccess(context);
       Navigator.pop(context);
@@ -255,7 +258,7 @@ class LoginDialogContent extends StatelessWidget {
             onChanged: (_) {},
           ),
         ),
-         Expanded(
+        Expanded(
           child: RichText(
             text: TextSpan(
               style: TextStyle(
@@ -292,7 +295,8 @@ class LoginDialogContent extends StatelessWidget {
       onPressed: onVerify,
       child: const Text(
         "验证登录",
-        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
+        style: TextStyle(
+            fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
       ),
     );
   }

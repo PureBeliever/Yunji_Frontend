@@ -109,7 +109,7 @@ class _OtherMemoryBankState extends State<OtherMemoryBank> {
         children: [
           InkWell(
             onTap: () async {
-              Navigator.pushNamed(context, '/other_personal_page');
+              Navigator.pushNamed(context, '/other_memory_bank/other_personal_page');
               await requestTheOtherPersonalData(
                   viewPostDataManagementForMemoryBanks.memoryBankValue['user_name']);
             },

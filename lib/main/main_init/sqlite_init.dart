@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
@@ -29,15 +28,17 @@ class DatabaseManager {
       await Permission.notification.request();
       await Permission.scheduleExactAlarm.request();
     }
-    final database = openDatabase(
+    final database = await databaseFactory.openDatabase(
       join(await getDatabasesPath(), 'database.db'),
-      onCreate: (db, version) async {
-        await _createPersonalTable(db);
-        await _createJiyikuTable(db);
-        await _createPersonalJiyikuTable(db);
-        await _createPersonalJiyikudianjiTable(db);
-      },
-      version: 1,
+      options: OpenDatabaseOptions(
+        version: 1, // 添加版本号
+        onCreate: (db, version) async {
+          await _createPersonalTable(db);
+          await _createJiyikuTable(db);
+          await _createPersonalJiyikuTable(db);
+          await _createPersonalJiyikudianjiTable(db);
+        },
+      ),
     );
     return database;
   }

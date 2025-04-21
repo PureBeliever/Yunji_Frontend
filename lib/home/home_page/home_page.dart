@@ -1,4 +1,5 @@
 import 'package:alarm/alarm.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +16,6 @@ import 'package:yunji/review/notification_init.dart';
 import 'package:yunji/main/main_init/app_sqlite.dart';
 import 'package:yunji/main/main_module/memory_bank/memory_bank_item.dart';
 import 'package:yunji/home/home_page/home_drawer.dart';
-import 'package:yunji/home/home_module/ball_indicator.dart';
 import 'package:yunji/personal/other_personal/other/other_memory_bank.dart';
 import 'package:yunji/personal/personal/personal/personal_page/personal_head_portrait.dart';
 
@@ -38,16 +38,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  // 主页记忆库刷新
-final homePageMemoryBankRefreshController =
-    Get.put(HomepageMemoryBankRefreshController());
-
+  // 控制器和状态管理
+  final homePageMemoryBankRefreshController =
+      Get.put(HomepageMemoryBankRefreshController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _viewPostDataManagementForMemoryBanks =
       Get.put(ViewPostDataManagementForMemoryBanks());
 
+  // Tab控制器
   late TabController tabController;
 
+  // 刷新主页记忆库
   Future<void> _refresh() async {
     await refreshHomePageMemoryBank(context);
   }
@@ -58,6 +59,7 @@ final homePageMemoryBankRefreshController =
     super.dispose();
   }
 
+  // 初始化主应用
   Future<void> _mainInit() async {
     await _initializeApp();
     final results =
@@ -75,10 +77,11 @@ final homePageMemoryBankRefreshController =
       await _createIntDatabaseTable();
     }
 
-    Alarm.ringStream.stream.listen((onData) => _onRingCallback(
-        onData.notificationSettings.body, onData.id));
+    Alarm.ringStream.stream.listen((onData) =>
+        _onRingCallback(onData.notificationSettings.body, onData.id));
   }
 
+  // 创建内部数据库表
   Future<void> _createIntDatabaseTable() async {
     final prefs = await SharedPreferences.getInstance();
     final number = ['1'];
@@ -86,10 +89,10 @@ final homePageMemoryBankRefreshController =
     await prefs.setInt('intdatabase_length', 1);
   }
 
+  // 初始化应用
   Future<void> _initializeApp() async {
     await Future.wait([
       Alarm.init(),
-
       databaseManager.initDatabase(),
       _initializeNotification(),
       initializeNightMode(),
@@ -97,11 +100,13 @@ final homePageMemoryBankRefreshController =
     tz.initializeTimeZones();
   }
 
+  // 初始化通知
   Future<void> _initializeNotification() async {
     final notificationHelper = NotificationHelper();
     await notificationHelper.initialize();
   }
 
+  // 初始化用户数据
   Future<void> _initializeUserData(
       List<Map<String, dynamic>> homePageMemoryDatabaseData,
       Map<String, dynamic> personalData) async {
@@ -110,7 +115,7 @@ final homePageMemoryBankRefreshController =
     final editPersonalDataValueManagement =
         Get.put(EditPersonalDataValueManagement());
 
-homePageMemoryBankRefreshController
+    homePageMemoryBankRefreshController
         .updateMemoryRefreshValue(homePageMemoryDatabaseData);
 
     loginStatus = true;
@@ -141,6 +146,7 @@ homePageMemoryBankRefreshController
     userNameChangeManagement.userNameChanged(personalData['user_name']);
   }
 
+  // 处理闹钟响铃回调
   void _onRingCallback(String body, int id) {
     buildDialog(
       context: context,
@@ -166,6 +172,14 @@ homePageMemoryBankRefreshController
     _mainInit();
   }
 
+  // 构建经典头部
+  ClassicHeader _buildClassicHeader() {
+    return ClassicHeader(
+        iconTheme: const IconThemeData(color: Colors.black, size: 20),
+        showMessage: false,
+        showText: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final double appBarHeight = MediaQuery.of(context).size.height * 0.05;
@@ -173,89 +187,81 @@ homePageMemoryBankRefreshController
       backgroundColor: AppColors.background,
       key: _scaffoldKey,
       drawer: const HomeDrawer(),
-      body: BallIndicator(
-        onRefresh: _refresh,
-        ballColors: const [
-          Colors.blue,
-          Colors.red,
-          Colors.green,
-          Colors.amber,
-          Colors.pink,
-          Colors.purple,
-          Colors.cyan,
-          Colors.orange,
-          Colors.yellow,
-        ],
-        child: GetBuilder<HomepageMemoryBankRefreshController>(
-          init: homePageMemoryBankRefreshController,
-          builder: (controller) {
-            return NestedScrollView(
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
-                    floating: true,
-                    pinned: false,
-                    snap: true,
-                    expandedHeight: appBarHeight + 72,
-                    surfaceTintColor: AppColors.background,
-                    backgroundColor: AppColors.background,
-                    toolbarHeight: appBarHeight,
-                    leading: GetBuilder<HeadPortraitChangeManagement>(
-                      init: headPortraitChangeManagement,
-                      builder: (portraitController) {
-                        return portraitController.headPortraitValue != null
-                            ? Padding(
-                                padding: const EdgeInsets.only(left: 15.0),
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () =>
-                                      _scaffoldKey.currentState?.openDrawer(),
-                                  icon: CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: FileImage(
-                                        portraitController.headPortraitValue!),
-                                  ),
-                                ),
-                              )
-                            : IconButton(
-                                icon: SvgPicture.asset(
-                                  'assets/home/personal_add.svg',
-                                  width: 30,
-                                  height: 30,
-                                  colorFilter: ColorFilter.mode(
-                                      AppColors.Gray, BlendMode.srcIn),
-                                ),
+      body: GetBuilder<HomepageMemoryBankRefreshController>(
+        init: homePageMemoryBankRefreshController,
+        builder: (controller) {
+          return NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  floating: true,
+                  pinned: false,
+                  snap: true,
+                  expandedHeight: appBarHeight + 72,
+                  surfaceTintColor: AppColors.background,
+                  backgroundColor: AppColors.background,
+                  toolbarHeight: appBarHeight,
+                  leading: GetBuilder<HeadPortraitChangeManagement>(
+                    init: headPortraitChangeManagement,
+                    builder: (portraitController) {
+                      return portraitController.headPortraitValue != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 15.0),
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
                                 onPressed: () =>
                                     _scaffoldKey.currentState?.openDrawer(),
-                              );
-                      },
-                    ),
-                    iconTheme: const IconThemeData(color: Colors.black),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.background,
-                        ),
-                        alignment: Alignment.bottomCenter,
-                        child: TabBar(
-                          labelStyle: AppTextStyle.coarseTextStyle,
-                          indicatorColor: AppColors.iconColor,
-                          unselectedLabelStyle: AppTextStyle.subsidiaryText,
-                          controller: tabController,
-                          tabs: const [
-                            Tab(text: '推荐'),
-                            Tab(text: '正在关注'),
-                          ],
-                        ),
+                                icon: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: FileImage(
+                                      portraitController.headPortraitValue!),
+                                ),
+                              ),
+                            )
+                          : IconButton(
+                              icon: SvgPicture.asset(
+                                'assets/home/personal_add.svg',
+                                width: 30,
+                                height: 30,
+                                colorFilter: ColorFilter.mode(
+                                    AppColors.Gray, BlendMode.srcIn),
+                              ),
+                              onPressed: () =>
+                                  _scaffoldKey.currentState?.openDrawer(),
+                            );
+                    },
+                  ),
+                  iconTheme: const IconThemeData(color: Colors.black),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.background,
+                      ),
+                      alignment: Alignment.bottomCenter,
+                      child: TabBar(
+                        labelStyle: AppTextStyle.coarseTextStyle,
+                        indicatorColor: AppColors.iconColor,
+                        unselectedLabelStyle: AppTextStyle.subsidiaryText,
+                        controller: tabController,
+                        tabs: const [
+                          Tab(text: '推荐'),
+                          Tab(text: '正在关注'),
+                        ],
                       ),
                     ),
                   ),
-                ];
-              },
-              body: TabBarView(
-                controller: tabController,
-                children: [
-                  GestureDetector(
+                ),
+              ];
+            },
+            body: TabBarView(
+              controller: tabController,
+              children: [
+                EasyRefresh(
+                  callRefreshOverOffset: 5,
+                  header: _buildClassicHeader(),
+                  onRefresh: _refresh,
+                  child: GestureDetector(
                     onHorizontalDragEnd: (details) {
                       if (details.primaryVelocity! > 5) {
                         _scaffoldKey.currentState?.openDrawer();
@@ -269,16 +275,21 @@ homePageMemoryBankRefreshController
                         return MemoryBankItem(
                           data: controller.memoryRefreshValue[index],
                           onTap: () {
-                            _viewPostDataManagementForMemoryBanks.initMemoryData(
-                                controller.memoryRefreshValue[index]);
-                            Navigator.pushNamed(
-                                context, '/other_memory_bank');
+                            _viewPostDataManagementForMemoryBanks
+                                .initMemoryData(
+                                    controller.memoryRefreshValue[index]);
+                            Navigator.pushNamed(context, '/other_memory_bank');
                           },
                         );
                       },
                     ),
                   ),
-                  GestureDetector(
+                ),
+                EasyRefresh(
+                  callRefreshOverOffset: 5,
+                  header: _buildClassicHeader(),
+                  onRefresh: _refresh,
+                  child: GestureDetector(
                     onHorizontalDragEnd: (details) {
                       if (details.primaryVelocity! > 5) {
                         tabController.animateTo(0);
@@ -300,11 +311,11 @@ homePageMemoryBankRefreshController
                       },
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-        ),
+                )
+              ],
+            ),
+          );
+        },
       ),
       floatingActionButton: _buildSpeedDial(),
     );
@@ -333,8 +344,7 @@ homePageMemoryBankRefreshController
       backgroundColor: AppColors.iconColor,
       buttonSize: const Size(60, 60),
       animatedIcon: AnimatedIcons.add_event,
-      animatedIconTheme:
-        IconThemeData(color: AppColors.background, size: 28),
+      animatedIconTheme: IconThemeData(color: AppColors.background, size: 28),
       spacing: 12,
       childrenButtonSize: const Size(53, 53),
       shape: const CircleBorder(),

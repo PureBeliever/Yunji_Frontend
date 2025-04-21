@@ -82,13 +82,14 @@ void dialogTwoButton({
   );
 }
 
-void buildDialog({
+bool buildDialog({
   required BuildContext context,
   required String title,
   required String content,
   required VoidCallback onConfirm,
   required String buttonRight,
 }) {
+  bool result = true;
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -123,6 +124,7 @@ void buildDialog({
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+                        result = false;
                       },
                       child: Text(
                         '取消',
@@ -146,4 +148,5 @@ void buildDialog({
       );
     },
   );
+  return result;
 }

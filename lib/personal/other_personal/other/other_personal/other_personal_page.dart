@@ -228,14 +228,14 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
           textDimension: 190,
           iconTheme: const IconThemeData(color: Colors.white, size: 28),
           textStyle: const TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+              color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700),
           messageBuilder: (context, state, text, dateTime) {
             TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
             return Text(
               '更新于${timeOfDay.hour}:${timeOfDay.minute}',
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600),
             );
           },
@@ -340,7 +340,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                                 otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue[
                                                     'background_image']);
-                                        Navigator.pushNamed(context, '/other_personal_page/other_personal_background_image');
+                                        Navigator.pushNamed(context,
+                                            '/other_personal_page/other_personal_background_image');
                                       },
                                       child: _buildBackgroundImage(
                                           otherPeopleInformationListScrollDataManagement),
@@ -392,7 +393,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
                                                 otherPeopleInformationListScrollDataManagement
                                                         .scrollDataValue[
                                                     'head_portrait']);
-                                        Navigator.pushNamed(context, '/other_personal_page/other_personal_head_portrait');
+                                        Navigator.pushNamed(context,
+                                            '/other_personal_page/other_personal_head_portrait');
                                       },
                                       child: CircleAvatar(
                                         radius: 27,
@@ -461,7 +463,7 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
     );
   }
 
-    SliverPersistentHeader _buildSliverPersistentHeader() {
+  SliverPersistentHeader _buildSliverPersistentHeader() {
     return SliverPersistentHeader(
       pinned: true,
       delegate: SliverHeaderDelegate.fixedHeight(
@@ -491,7 +493,6 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
       ),
     );
   }
-
 
   Widget _buildActionIcon(dynamic icon) {
     return Container(
@@ -539,7 +540,8 @@ class _OtherPersonalPageState extends State<OtherPersonalPage>
             _otherPeopleHeadPortraitChangeManagement.initHeadPortrait(
                 _otherPeopleInformationListScrollDataManagement
                     .scrollDataValue['head_portrait']);
-            Navigator.pushNamed(context, '/other_personal_page/other_personal_head_portrait');
+            Navigator.pushNamed(
+                context, '/other_personal_page/other_personal_head_portrait');
           },
           child: Container(
             width: 90,

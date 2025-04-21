@@ -141,20 +141,22 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_editPersonalDataValueManagement.rollbackTheChangedValue(
-              name: name,
-              profile: profile,
-              residentialAddress: selectResidentialAddress,
-              dateOfBirth: selectDateOfBirth,
-            ) >
-            0) {
-          _buildDialog(context);
-        } else {
-          Navigator.of(context).pop();
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (!didPop) {
+          if (_editPersonalDataValueManagement.rollbackTheChangedValue(
+                name: name,
+                profile: profile,
+                residentialAddress: selectResidentialAddress,
+                dateOfBirth: selectDateOfBirth,
+              ) >
+              0) {
+            _buildDialog(context);
+          } else {
+            Navigator.of(context).pop();
+          }
         }
-        return true;
       },
       child: GestureDetector(
         onTap: () {
