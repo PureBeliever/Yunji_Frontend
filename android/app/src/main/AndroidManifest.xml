@@ -1,0 +1,113 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:label="云忆"
+        android:name="${applicationName}"
+        android:networkSecurityConfig="@xml/network"
+        android:icon="@mipmap/ic_launcher">
+
+        <!--注册flutter_local_notifications依赖服务,用于请求通知权限 -->
+        <service android:name=".WakeUpService" />
+        <receiver android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+        <receiver android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        <!--注册flutter_local_notifications依赖服务,用于请求通知权限 -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <!-- 指定一个 Android 主题在此 Activity 启动时应用。
+                 当 Flutter UI 初始化时，此主题对用户可见。
+                 在此之后，此主题继续决定 Flutter UI 背后的窗口背景。 -->
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+            />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <!-- 不要删除下面的 meta-data。
+             这用于 Flutter 工具生成 GeneratedPluginRegistrant.java -->
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+    </application>
+
+    <!-- 必须查询可以处理文本的活动，请参阅：
+     https://developer.android.com/training/package-visibility?hl=zh-cn 和
+     https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT。
+
+     特别是，这在 Flutter 引擎中用于 io.flutter.plugin.text.ProcessTextPlugin。 -->
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 允许应用写入外部存储，例如SD卡 -->
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 允许应用读取外部存储，例如SD卡 -->
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 允许应用使用设备的摄像头 -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 允许应用访问网络连接 -->
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 允许应用访问Wi-Fi网络状态信息 -->
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 允许应用访问所有网络信息 -->
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!-- 允许应用更改网络连接状态 -->
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 允许应用写入外部存储，注意此权限重复声明 -->
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 允许应用更改Wi-Fi连接状态 -->
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 允许应用读取设备的电话状态 -->
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 允许应用在设备启动后自动启动 -->
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 允许应用在设备休眠时保持CPU运行 -->
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- 允许应用设置精确的闹钟 -->
+
+</manifest>

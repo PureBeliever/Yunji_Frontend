@@ -1,0 +1,22 @@
+{
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "jdk.java.imports.groups": [
+        "java",
+        "javax",
+        "org",
+        "com",
+        ""
+    ],
+    "cSpell.words": [
+        "jiyikucontroller",
+        "Jiyikudianjipersonal",
+        "keframe",
+        "nameisempty",
+        "settingzhanghaoxiugaicontroller",
+        "Timu",
+        "yunji",
+        "zhutizhi"
+    ],
+    "cmake.sourceDirectory": "C:/Users/Administrator/Desktop/yunji/linux"
+}
