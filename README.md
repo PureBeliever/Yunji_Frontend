@@ -1,11 +1,18 @@
+![图片描述](images/my_image.png)
+<image-card alt="Build Status" src="https://img.shields.io/github/workflow/status/username/repo/CI" ></image-card>
+<image-card alt="License" src="https://img.shields.io/github/license/username/repo" ></image-card>
+
+
 # 云吉记忆
 一个由 Flutter 编写的跨平台学习应用，旨在根据艾宾浩斯遗忘曲线设定记忆任务，加强知识记忆，并结合费曼学习法，通过填写记忆模块来加深理解和学习知识。
+
 
 ## 目录
 - [简介](#简介)
 - [功能特性](#功能特性)
 - [快速开始](#快速开始)
 - [项目结构](#项目结构)
+
   
 ## 简介
 云吉记忆是一个由 Flutter 编写的跨平台学习应用，旨在根据艾宾浩斯遗忘曲线，设定记忆任务，加强知识的记忆，根据费曼学习法，填写记忆模块，更大程度的理解和学习知识。该应用支持 iOS、Android 和 Web 平台，采用模块化架构，便于扩展和维护。
@@ -16,8 +23,10 @@
 - **首页展示**：动态内容展示，支持下拉刷新。
 - **模块化架构**：基于 Clean Architecture，按功能分离，便于维护
 - **状态管理**：使用 GetX 实现高效的状态管理和路由。
+
   
 ## 用法示例
+
 
 ## 前提条件
 
