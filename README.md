@@ -1,9 +1,9 @@
-![图片描述](images/my_image.png)
-<image-card alt="Build Status" src="https://img.shields.io/github/workflow/status/username/repo/CI" ></image-card>
-<image-card alt="License" src="https://img.shields.io/github/license/username/repo" ></image-card>
-
+<div style="text-align: center;">
+  <img src="android/app/src/main/res/drawable/app.png" alt="图片描述" width="300" style="display: block; margin: 0 auto;">
+</div>
 
 # 云吉记忆
+
 一个由 Flutter 编写的跨平台学习应用，旨在根据艾宾浩斯遗忘曲线设定记忆任务，加强知识记忆，并结合费曼学习法，通过填写记忆模块来加深理解和学习知识。
 
 
