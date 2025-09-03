@@ -1,6 +1,4 @@
-<div style="text-align: center;">
-  <img src="android/app/src/main/res/drawable/app.png" alt="图片描述" width="300" style="display: block; margin: 0 auto;">
-</div>
+<img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="图片描述" style="float: right; width: 300px; height: auto; margin-left: 20px;">
 
 # 云吉记忆
 
