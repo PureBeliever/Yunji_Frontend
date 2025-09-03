@@ -1,7 +1,4 @@
-<img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="图片描述" style="float: right; width: 300px; height: auto; margin-left: 20px;">
-
-# 云吉记忆
-
+# 云吉记忆  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="图片描述" style="float: right; width: 300px; height: auto; margin-left: 20px;">
 一个由 Flutter 编写的跨平台学习应用，旨在根据艾宾浩斯遗忘曲线设定记忆任务，加强知识记忆，并结合费曼学习法，通过填写记忆模块来加深理解和学习知识。
 
 
